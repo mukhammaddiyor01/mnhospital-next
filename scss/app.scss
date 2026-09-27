@@ -208,6 +208,16 @@
 .user-menu-button { padding: 0; color: $secondary; background: transparent; }
 .form-error { padding: 9px 11px; color: #b33b45 !important; border-radius: 5px; background: #fff0f1; font-size: 11px !important; }
 .detail-layout { display: grid; grid-template-columns: 1.4fr .8fr; gap: 18px; }
+.service-loading { min-height: 420px; padding: 38px; border: 1px solid $border; border-radius: 13px; background: #fff; }
+.service-loading-icon, .service-loading-line, .service-loading-copy, .service-loading-meta { border-radius: 7px; background: linear-gradient(90deg, #edf3f7 25%, #f8fbfc 50%, #edf3f7 75%); background-size: 200% 100%; animation: service-loading-pulse 1.3s ease-in-out infinite; }
+.service-loading-icon { width: 58px; height: 58px; margin-bottom: 28px; border-radius: 13px; }
+.service-loading-line { height: 13px; margin-bottom: 14px; }
+.service-loading-line-wide { width: min(70%, 420px); }
+.service-loading-line-medium { width: min(45%, 270px); }
+.service-loading-copy { width: 82%; height: 11px; margin-top: 38px; }
+.service-loading-copy-short { width: 64%; margin-top: 12px; }
+.service-loading-meta { width: 100%; height: 52px; margin-top: 30px; }
+@keyframes service-loading-pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .detail-panel, .detail-aside { padding: 38px; border-radius: 13px; background: #fff; }
 .detail-panel { border: 1px solid $border; }
 .detail-icon { display: grid; width: 58px; height: 58px; place-items: center; margin-bottom: 28px; color: #fff; border-radius: 13px; background: $primary; }
