@@ -17,11 +17,11 @@ const DoctorsPage = () => {
 	const router = useRouter();
 	const [search, setSearch] = useState('');
 	const [specialty, setSpecialty] = useState('');
-	const [doctors, setDoctors] = useState<any[]>(fallbackDoctors);
 	useEffect(() => { if (router.isReady && typeof router.query.search === 'string') setSearch(router.query.search); }, [router.isReady, router.query.search]);
 	const inquiry = { page: 1, limit: 12, sort: 'docPoints', direction: 'DESC', ...(specialty ? { docSpecialty: specialty } : {}), search: { ...(search ? { text: search } : {}) } };
-	const { data, loading } = useQuery(GET_DOCTORS, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network', onCompleted: (result) => { if (result?.getDoctors?.list?.length) setDoctors(result.getDoctors.list); } });
-	const submitHandler = (event: FormEvent) => { event.preventDefault(); setDoctors((current) => current); };
+	const { data, loading } = useQuery(GET_DOCTORS, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
+	const doctors = data?.getDoctors?.list?.length ? data.getDoctors.list : fallbackDoctors;
+	const submitHandler = (event: FormEvent) => { event.preventDefault(); };
 	const initials = (name?: string) => name?.split(' ').map((part) => part[0]).join('').slice(0, 2) || 'MN';
 	const portraitClass = (index: number) => index === 1 ? 'teal' : index === 2 ? 'slate' : 'blue';
 

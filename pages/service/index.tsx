@@ -24,9 +24,9 @@ const ServicesPage = () => {
 	const [search, setSearch] = useState('');
 	const [type, setType] = useState('');
 	const [page, setPage] = useState(1);
-	const [services, setServices] = useState<any[]>(serviceList);
 	const inquiry = { page, limit: 6, sort: 'serviceRank', direction: 'DESC', search: { ...(search ? { text: search } : {}), ...(type ? { serviceTypeList: [type] } : {}) } };
-	const { data, loading } = useQuery(GET_SERVICES, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network', onCompleted: (result) => { if (result?.getServices?.list?.length) setServices(result.getServices.list); } });
+	const { data, loading } = useQuery(GET_SERVICES, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
+	const services = data?.getServices?.list?.length ? data.getServices.list : serviceList;
 	const totalCounter = data?.getServices?.metaCounter;
 	const total = Array.isArray(totalCounter) ? totalCounter[0]?.total ?? services.length : totalCounter?.total ?? services.length;
 	const submitHandler = (event: FormEvent) => { event.preventDefault(); setPage(1); };

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useState } from 'react';
 import Icon from '../common/Icon';
 import SectionHeading from '../common/SectionHeading';
 import { HomeServiceCard } from './types/homepage';
@@ -24,16 +23,12 @@ const iconForService = (serviceType?: ServiceType) => {
 };
 
 const Services = () => {
-	const [services, setServices] = useState<HomeServiceCard[]>(initialServices);
-	const { loading } = useQuery(GET_SERVICES, {
+	const { data, loading } = useQuery(GET_SERVICES, {
 		variables: { input: { page: 1, limit: 6, sort: 'serviceViews', direction: 'DESC', search: {} } },
 		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-and-network',
-		onCompleted: (data) => {
-			const result = data?.getServices?.list ?? [];
-			if (result.length) setServices(result.map((service: any) => ({ _id: service._id, serviceTitle: service.serviceTitle ?? service.serviceName ?? 'Clinical service', serviceDesc: service.serviceDesc ?? 'Thoughtful care from the MN Hospital clinical team.', servicePrice: Number(service.servicePrice ?? 0), icon: iconForService(service.serviceType), label: String(service.serviceType ?? 'consultation').replaceAll('_', ' ') })));
-		},
 	});
+	const services: HomeServiceCard[] = data?.getServices?.list?.length ? data.getServices.list.map((service: any) => ({ _id: service._id, serviceTitle: service.serviceTitle ?? service.serviceName ?? 'Clinical service', serviceDesc: service.serviceDesc ?? 'Thoughtful care from the MN Hospital clinical team.', servicePrice: Number(service.servicePrice ?? 0), icon: iconForService(service.serviceType), label: String(service.serviceType ?? 'consultation').replaceAll('_', ' ') })) : initialServices;
 
 	return (
 	<section className="services-section section-light">
