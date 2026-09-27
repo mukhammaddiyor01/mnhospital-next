@@ -42,12 +42,26 @@ $clinical-muted: #70869a;
 .clinical-tag-blue { color: $clinical-primary; background: $clinical-primary-soft; }
 .clinical-tag-green { color: $clinical-teal; background: $clinical-teal-soft; }
 .clinical-ad-mark { color: $clinical-muted; font-size: 8px; font-weight: 800; }
+.clinical-rail-kicker { color: $clinical-secondary; font-size: 8px; font-weight: 800; letter-spacing: .1em; }
 .clinical-ad-card { transition: .2s; }
 .clinical-ad-card-0 { background: linear-gradient(140deg, #eaf4ff, #fff); }
 .clinical-ad-card-1 { background: linear-gradient(145deg, #fff, #f7fbfd); }
 .clinical-ad-card-2 { background: linear-gradient(140deg, #edf6ff, #fff); }
 .clinical-ad-card-3 { background: #eefaf7; border-color: #cceee4; }
 .clinical-ad-image { height: 78px; margin: 12px -2px 8px; border-radius: 8px; background-position: center; background-size: cover; }
+.clinical-rail .service-rank, .clinical-rail .news-views { color: $clinical-primary; font-size: 8px; font-weight: 800; }
+.clinical-rail .news-views { color: $clinical-muted; font-weight: 600; }
+.clinical-rail .service-ad h3, .clinical-rail .news-card h3, .clinical-rail .support-card h3 { margin-top: 9px; }
+.clinical-rail .service-meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 9px; color: $clinical-muted; border-top: 1px solid $clinical-line; font-size: 8px; }
+.clinical-rail .service-meta span:first-child { color: $clinical-navy; font-weight: 800; }
+.clinical-rail .service-ad > a { color: $clinical-primary; border: 1px solid $clinical-line; background: transparent; }
+.clinical-rail .news-card { background: linear-gradient(145deg, #fff, #f7fbfd); }
+.clinical-rail .news-card h3 { font-size: 13px; }
+.clinical-rail .news-card > a { color: $clinical-primary; border: 0; background: transparent; justify-content: flex-start; padding: 0; }
+.clinical-rail .support-card { background: #eefaf7; border-color: #cceee4; }
+.clinical-rail .support-card .clinical-rail-kicker { color: $clinical-teal; }
+.clinical-rail .support-card > a { color: #fff; border-color: $clinical-teal; background: $clinical-teal; }
+.clinical-rail .technology > a { color: $clinical-primary; border-color: $clinical-line; background: transparent; }
 .clinical-center-column { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
 .clinical-hero-card { padding: 26px; border-radius: 12px; background: linear-gradient(135deg, #fff 0%, #f4f8fb 70%, #dceaff 100%); box-shadow: 0 4px 24px rgba(23, 51, 75, .06); }
 .clinical-accreditation, .clinical-eyebrow { display: inline-flex; padding: 5px 9px; color: #2d4964; border-radius: 999px; background: #dbeafe; font-size: 8px; font-weight: 800; letter-spacing: .08em; }
@@ -76,7 +90,7 @@ $clinical-muted: #70869a;
 .clinical-metrics span { margin-top: 6px; color: $clinical-navy; font-size: 10px; font-weight: 800; }
 .clinical-metrics small { margin-top: 2px; color: $clinical-muted; font-size: 8px; }
 .clinical-content-section { padding-top: 20px; }
-.clinical-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 10px; margin-bottom: 17px; }
+.clinical-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin-bottom: 17px; }
 .clinical-section-kicker { color: $clinical-secondary; font-size: 8px; font-weight: 800; letter-spacing: .13em; }
 .clinical-section-heading h2, .clinical-trust-section h2, .clinical-cta-card h2 { margin: 4px 0 0; color: $clinical-navy; font: 700 23px/1.2 'Manrope', Arial, sans-serif; letter-spacing: -.04em; }
 .clinical-section-heading > a { color: $clinical-primary; font-size: 9px; font-weight: 800; }
