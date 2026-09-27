@@ -20,7 +20,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/favicon.svg" />
 			</Head>
-			<div id="pc-wrap" className="clinical-shell">
+			<div id="pc-wrap" className="clinical-shell app-frame">
 				<Top />
 				<main id="main">{isHome ? <Component {...props} /> : <div className="clinical-workspace clinical-inner-workspace"><AdvertisementRail side="left" /><div className="clinical-center-column"><Component {...props} /></div><AdvertisementRail side="right" /></div>}</main>
 				<MobileBottomNav />
