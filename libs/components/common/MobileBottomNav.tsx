@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Icon from './Icon';
 
-const MobileBottomNav = () => <nav className="mobile-bottom-nav" aria-label="Mobile navigation"><Link href="/"><Icon name="home" /><span>Home</span></Link><Link href="/appointment"><Icon name="event" /><span>Book</span></Link><Link href="/doctor"><Icon name="stethoscope" /><span>Doctors</span></Link><Link href="/account/signin"><Icon name="person" /><span>Profile</span></Link></nav>;
+const MobileBottomNav = () => <nav className="clinical-bottom-nav" aria-label="Mobile navigation"><Link className="active" href="/"><span>⌂</span><small>Home</small></Link><Link href="/service"><span>▣</span><small>Services</small></Link><Link href="/doctor"><span>♧</span><small>Doctors</small></Link><Link href="/appointment"><span>□</span><small>Appointments</small></Link><Link href="/contact"><span>◎</span><small>Contact</small></Link><Link className="clinical-bottom-book" href="/appointment">Book now</Link></nav>;
 
 export default MobileBottomNav;

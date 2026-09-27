@@ -17,6 +17,7 @@ export const GET_SERVICES = gql`
 				serviceImages
 				serviceDesc
 				serviceDuration
+				meLiked { memberId likeRefId myFavorite }
 			}
 			metaCounter { total }
 		}

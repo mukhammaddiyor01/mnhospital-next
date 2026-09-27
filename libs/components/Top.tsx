@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Icon from './common/Icon';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
@@ -12,39 +12,25 @@ const Top = () => {
 	const user = useReactiveVar(userVar);
 
 	const closeMenu = () => setMenuOpen(false);
+	const searchHandler = (event: FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		const input = event.currentTarget.elements.namedItem('globalSearch') as HTMLInputElement;
+		void router.push(input.value.trim() ? `/doctor?search=${encodeURIComponent(input.value.trim())}` : '/doctor');
+	};
+	const initials = user.memberFullName?.split(' ').map((part) => part[0]).join('').slice(0, 2) || 'MK';
 
 	return (
-		<header className="site-header">
-			<div className="utility-bar">
-				<div className="container utility-inner">
-					<span>Your health is our priority</span>
-					<a href="tel:103"><Icon name="emergency" /> 24/7 Support: 103</a>
-				</div>
+		<header className="clinical-header">
+			<div className="clinical-header-inner">
+				<Link className="clinical-brand" href="/" onClick={closeMenu}><span className="clinical-brand-icon">+</span><span><strong>MN Hospital</strong><small>Clinical Care</small></span></Link>
+				<form className="clinical-header-search" onSubmit={searchHandler}><span>⌕</span><input name="globalSearch" placeholder="Search doctors, treatments, services..." aria-label="Search doctors, treatments, services" /></form>
+				<nav className="clinical-desktop-navigation" aria-label="Main navigation"><Link className={router.pathname === '/' ? 'active' : ''} href="/">Home</Link><Link className={router.pathname.startsWith('/service') ? 'active' : ''} href="/service">Services</Link><Link className={router.pathname.startsWith('/doctor') ? 'active' : ''} href="/doctor">Doctors</Link><Link className={router.pathname === '/about' ? 'active' : ''} href="/about">About us</Link><Link className={router.pathname === '/contact' ? 'active' : ''} href="/contact">Contact</Link></nav>
+				<button className="clinical-mobile-menu" aria-label="Open menu" onClick={() => setMenuOpen((open) => !open)}><Icon name={menuOpen ? 'close' : 'menu'} /></button>
+				<div className="clinical-header-actions"><Link className="clinical-book-top" href="/appointment">Book appointment</Link>{user._id ? <button className="clinical-profile" title="Log out" onClick={logOut}>{initials}</button> : <Link className="clinical-profile" href="/account/signin">{initials}</Link>}</div>
 			</div>
-			<div className="container nav-inner">
-				<Link className="brand" href="/" onClick={closeMenu}>
-					<span className="brand-mark"><Icon name="health_and_safety" /></span>
-					<span>MN <strong>Hospital</strong></span>
-				</Link>
-				<button className="mobile-menu-button" aria-label="Open menu" onClick={() => setMenuOpen((open) => !open)}>
-					<Icon name={menuOpen ? 'close' : 'menu'} />
-				</button>
-				<nav className={`main-navigation ${menuOpen ? 'is-open' : ''}`} aria-label="Main navigation">
-					<Link className={router.pathname === '/' ? 'active' : ''} href="/" onClick={closeMenu}>Home</Link>
-					<Link className={router.pathname.startsWith('/service') ? 'active' : ''} href="/service" onClick={closeMenu}>Services</Link>
-					<Link className={router.pathname.startsWith('/doctor') ? 'active' : ''} href="/doctor" onClick={closeMenu}>Doctors</Link>
-					<Link className={router.pathname === '/about' ? 'active' : ''} href="/about" onClick={closeMenu}>About Us</Link>
-					<Link className={router.pathname === '/contact' ? 'active' : ''} href="/contact" onClick={closeMenu}>Contact</Link>
-					<div className="mobile-nav-actions">
-						<Link className="sign-in-link" href="/account/signin" onClick={closeMenu}>Sign In</Link>
-						<Link className="button button-primary" href="/appointment" onClick={closeMenu}>Book an Appointment</Link>
-					</div>
-				</nav>
-				<div className="desktop-nav-actions">
-					{user._id ? <button className="sign-in-link user-menu-button" onClick={logOut}>{user.memberFullName ?? user.memberNick} · Log out</button> : <Link className="sign-in-link" href="/account/signin">Sign In</Link>}
-					<Link className="button button-primary button-small" href="/appointment">Book an Appointment</Link>
-				</div>
-			</div>
+			<nav className={`clinical-mobile-navigation ${menuOpen ? 'is-open' : ''}`} aria-label="Main navigation">
+				<Link className={router.pathname === '/' ? 'active' : ''} href="/" onClick={closeMenu}>Home</Link><Link className={router.pathname.startsWith('/service') ? 'active' : ''} href="/service" onClick={closeMenu}>Services</Link><Link className={router.pathname.startsWith('/doctor') ? 'active' : ''} href="/doctor" onClick={closeMenu}>Doctors</Link><Link className={router.pathname === '/about' ? 'active' : ''} href="/about" onClick={closeMenu}>About us</Link><Link className={router.pathname === '/contact' ? 'active' : ''} href="/contact" onClick={closeMenu}>Contact</Link><Link href="/account/signin" onClick={closeMenu}>Sign in</Link>
+			</nav>
 		</header>
 	);
 };

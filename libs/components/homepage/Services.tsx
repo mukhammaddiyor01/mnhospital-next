@@ -6,6 +6,7 @@ import { HomeServiceCard } from './types/homepage';
 import { useQuery } from '@apollo/client';
 import { GET_SERVICES } from '@/apollo/service/query';
 import { ServiceType } from '../service/enums/service.enum';
+import { formatKrw } from '../common/currency';
 
 const initialServices: HomeServiceCard[] = [
 	{ _id: 'general-medicine', serviceTitle: 'General Medicine', serviceDesc: 'Comprehensive primary care for adults, focused on prevention, diagnosis, and treatment.', servicePrice: 150000, icon: 'stethoscope', label: 'Consultation' },
@@ -45,7 +46,7 @@ const Services = () => {
 						<span className="service-label">{service.label}</span>
 						<h3>{service.serviceTitle}</h3>
 						<p>{service.serviceDesc}</p>
-						<div className="service-card-bottom"><span>From <strong>{Number(service.servicePrice ?? 0).toLocaleString('en-US')} UZS</strong></span><Link href={`/service/${service._id}`} aria-label={`Learn more about ${service.serviceTitle}`}><Icon name="arrow_outward" /></Link></div>
+						<div className="service-card-bottom"><span>From <strong>{formatKrw(service.servicePrice)}</strong></span><Link href={`/service/${service._id}`} aria-label={`Learn more about ${service.serviceTitle}`}><Icon name="arrow_outward" /></Link></div>
 					</article>
 				))}
 			</div>
