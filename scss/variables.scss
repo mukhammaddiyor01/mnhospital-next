@@ -1,0 +1,21 @@
+$primary: #1677c8;
+$primary-dark: #075c9d;
+$secondary: #12304a;
+$tertiary: #18a991;
+$surface: #ffffff;
+$surface-soft: #f4f8fb;
+$ink: #12304a;
+$muted: #647b8c;
+$border: #dce7ef;
+$font-body: 'DM Sans', Arial, sans-serif;
+$font-heading: 'Manrope', Arial, sans-serif;
+
+:root {
+	--primary: #{$primary};
+	--secondary: #{$secondary};
+	--tertiary: #{$tertiary};
+	--surface-soft: #{$surface-soft};
+	--ink: #{$ink};
+	--muted: #{$muted};
+	--border: #{$border};
+}
