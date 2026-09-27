@@ -4,6 +4,7 @@ import Top from '../Top';
 import Footer from '../Footer';
 import { useEffect } from 'react';
 import { getJwtToken, updateUserInfo } from '@/libs/auth';
+import MobileBottomNav from '../common/MobileBottomNav';
 
 const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 	const Layout = (props: P & { children?: ReactNode }) => {
@@ -18,6 +19,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 			<div id="pc-wrap">
 				<Top />
 				<main id="main"><Component {...props} /></main>
+				<MobileBottomNav />
 				<Footer />
 			</div>
 		</>;

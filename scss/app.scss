@@ -33,6 +33,7 @@
 .desktop-nav-actions { display: flex; align-items: center; gap: 22px; margin-left: 10px; }
 .sign-in-link { color: $secondary; font-size: 13px; font-weight: 700; }
 .mobile-menu-button, .mobile-nav-actions { display: none; }
+.mobile-bottom-nav { display: none; }
 
 .hero-section { position: relative; overflow: hidden; padding: 82px 0 52px; background: linear-gradient(135deg, #f4f8fb 0%, #fff 60%, #edf8f7 100%); }
 .hero-section::before { position: absolute; top: 0; right: -15%; width: 45%; height: 100%; content: ''; opacity: .35; background: radial-gradient(circle, #b7ffec 0, transparent 67%); pointer-events: none; }
@@ -265,6 +266,10 @@
 	.footer-brand { grid-column: 1 / -1; }
 	.footer-info { grid-column: auto; }
 	.footer-bottom { display: grid; gap: 7px; }
+	.mobile-bottom-nav { position: fixed; z-index: 10; right: 12px; bottom: 12px; left: 12px; display: grid; grid-template-columns: repeat(4, 1fr); padding: 9px 7px; border: 1px solid rgba(220, 231, 239, .9); border-radius: 13px; background: rgba(255, 255, 255, .95); box-shadow: 0 9px 24px rgba(18, 48, 74, .15); backdrop-filter: blur(12px); }
+	.mobile-bottom-nav a { display: grid; justify-items: center; gap: 3px; color: $muted; font-size: 9px; font-weight: 700; }
+	.mobile-bottom-nav a:hover, .mobile-bottom-nav a:focus { color: $primary; }
+	.mobile-bottom-nav .material-symbols-rounded { font-size: 20px; }
 }
 
 @media (max-width: 420px) {
