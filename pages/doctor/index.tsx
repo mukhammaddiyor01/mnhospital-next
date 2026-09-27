@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import { GET_DOCTORS } from '@/apollo/doctor/query';
 import Icon from '@/libs/components/common/Icon';
-import { DoctorSpecialty } from '@/libs/components/doctor/enums/doctor.enum';
+import { DoctorSort, DoctorSpecialty } from '@/libs/components/doctor/enums/doctor.enum';
 
 const fallbackDoctors = [
 	{ _id: 'azizbek-rahimov', docFullName: 'Dr. Azizbek Rahimov', docSpecialty: DoctorSpecialty.CARDIOLOGIST, docExperience: 15, docPoints: 4.9 },
@@ -18,7 +18,7 @@ const DoctorsPage = () => {
 	const [search, setSearch] = useState('');
 	const [specialty, setSpecialty] = useState('');
 	useEffect(() => { if (router.isReady && typeof router.query.search === 'string') setSearch(router.query.search); }, [router.isReady, router.query.search]);
-	const inquiry = { page: 1, limit: 12, sort: 'docPoints', direction: 'DESC', ...(specialty ? { docSpecialty: specialty } : {}), search: { ...(search ? { text: search } : {}) } };
+	const inquiry = { page: 1, limit: 12, sort: DoctorSort.POINTS, direction: 'DESC', ...(specialty ? { docSpecialty: specialty } : {}), search: { ...(search ? { text: search } : {}) } };
 	const { data, loading } = useQuery(GET_DOCTORS, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const doctors = data?.getDoctors?.list?.length ? data.getDoctors.list : fallbackDoctors;
 	const submitHandler = (event: FormEvent) => { event.preventDefault(); };

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useQuery as useApolloQuery } from '@apollo/client';
 import { useQuery as useReactQuery } from '@tanstack/react-query';
 import { GET_DOCTORS } from '@/apollo/doctor/query';
+import { DoctorSort } from '@/libs/components/doctor/enums/doctor.enum';
 import { GET_SERVICES } from '@/apollo/service/query';
 import type { HospitalStatus } from '@/pages/api/hospital-status';
 import Icon from '../common/Icon';
@@ -45,7 +46,7 @@ const doctorRole = (specialty?: string) => {
 const ClinicalHome = () => {
 	const [notice, setNotice] = useState('');
 	const servicesQuery = useApolloQuery(GET_SERVICES, { variables: { input: { page: 1, limit: 6, sort: 'serviceViews', direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
-	const doctorsQuery = useApolloQuery(GET_DOCTORS, { variables: { input: { page: 1, limit: 3, sort: 'docPoints', direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
+	const doctorsQuery = useApolloQuery(GET_DOCTORS, { variables: { input: { page: 1, limit: 3, sort: DoctorSort.POINTS, direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const { data: hospitalStatus = defaultStatus } = useReactQuery<HospitalStatus>({
 		queryKey: ['hospital-status'],
 		queryFn: async () => {

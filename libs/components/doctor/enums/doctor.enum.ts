@@ -9,8 +9,8 @@ export enum DoctorSpecialty {
 }
 
 export enum DoctorSort {
-	CREATED_AT = 'createdAt',
-	POINTS = 'docPoints',
-	EXPERIENCE = 'docExperience',
-	PATIENTS = 'docPatients',
+	CREATED_AT = 'CREATED_AT',
+	POINTS = 'POINTS',
+	EXPERIENCE = 'EXPERIENCE',
+	PATIENTS = 'PATIENTS',
 }
