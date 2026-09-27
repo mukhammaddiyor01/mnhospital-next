@@ -299,6 +299,51 @@ $clinical-muted: #70869a;
 .clinical-mypage-grid p { margin: 0; color: $clinical-muted; font-size: 9px; line-height: 1.45; }
 .clinical-auth-gate { display: grid; justify-items: start; gap: 11px; }
 .clinical-auth-gate > div { display: flex; gap: 8px; }
+.clinical-auth-page { padding: 16px 0 8px; }
+.clinical-auth-card { position: relative; width: 100%; min-height: 560px; overflow: hidden; border: 1px solid $clinical-line; border-radius: 18px; background: #fff; box-shadow: 0 22px 55px rgba(23, 51, 75, .12); }
+.clinical-auth-visual { position: absolute; z-index: 3; top: 0; bottom: 0; left: 50%; width: 50%; overflow: hidden; color: #fff; background: linear-gradient(145deg, rgba(0, 94, 163, .93), rgba(18, 48, 74, .98)), radial-gradient(circle at 80% 20%, rgba(41, 211, 173, .55), transparent 42%); transform: translateX(0); transition: transform .65s cubic-bezier(.22, 1, .36, 1); }
+.clinical-auth-visual::before, .clinical-auth-visual::after { position: absolute; border: 1px solid rgba(255, 255, 255, .15); border-radius: 50%; content: ''; }
+.clinical-auth-visual::before { top: -85px; right: -80px; width: 270px; height: 270px; }
+.clinical-auth-visual::after { bottom: -115px; left: -95px; width: 330px; height: 330px; }
+.clinical-auth-card.is-register .clinical-auth-visual { transform: translateX(-100%); }
+.clinical-auth-visual-content { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 38px; text-align: center; transition: opacity .3s ease, transform .55s cubic-bezier(.22, 1, .36, 1); }
+.clinical-auth-visual-content h2 { margin: 2px 0; color: #fff; font: 750 29px/1.15 'Manrope', Arial, sans-serif; letter-spacing: -.045em; }
+.clinical-auth-visual-content p { max-width: 250px; margin: 0 0 8px; color: #d7e8f4; font-size: 11px; line-height: 1.65; }
+.clinical-auth-visual-content button { min-height: 38px; padding: 0 20px; color: #fff; border: 1px solid rgba(255, 255, 255, .7); border-radius: 999px; cursor: pointer; background: rgba(255, 255, 255, .08); font-size: 10px; font-weight: 800; backdrop-filter: blur(7px); transition: .2s; }
+.clinical-auth-visual-content button:hover { color: $clinical-navy; background: #fff; }
+.clinical-auth-shield { display: grid; width: 54px; height: 54px; place-items: center; margin-bottom: 5px; border: 1px solid rgba(255, 255, 255, .28); border-radius: 17px; background: rgba(255, 255, 255, .1); }
+.clinical-auth-shield .material-symbols-rounded { font-size: 28px; }
+.clinical-auth-kicker { color: #bdeedf; font-size: 8px; font-weight: 800; letter-spacing: .14em; }
+.clinical-auth-welcome-register { opacity: 0; pointer-events: none; transform: translateX(26px); }
+.clinical-auth-card.is-register .clinical-auth-welcome-register { opacity: 1; pointer-events: auto; transform: translateX(0); }
+.clinical-auth-card.is-register .clinical-auth-welcome-login { opacity: 0; pointer-events: none; transform: translateX(-26px); }
+.clinical-auth-form { position: absolute; top: 0; bottom: 0; display: flex; width: 50%; flex-direction: column; justify-content: center; padding: 34px 38px; opacity: 0; visibility: hidden; transition: opacity .35s ease, transform .65s cubic-bezier(.22, 1, .36, 1), visibility .35s; }
+.clinical-login-form { left: 0; opacity: 1; visibility: visible; transform: translateX(0); }
+.clinical-register-form { left: 50%; transform: translateX(-100%); }
+.clinical-auth-card.is-register .clinical-login-form { opacity: 0; visibility: hidden; transform: translateX(100%); }
+.clinical-auth-card.is-register .clinical-register-form { opacity: 1; visibility: visible; transform: translateX(0); }
+.clinical-auth-brand { display: inline-flex; align-items: center; align-self: flex-start; gap: 7px; margin-bottom: 18px; color: $clinical-navy; font: 750 13px 'Manrope', Arial, sans-serif; }
+.clinical-auth-brand > span { display: grid; width: 27px; height: 27px; place-items: center; color: #fff; border-radius: 7px; background: $clinical-primary; }
+.clinical-auth-brand .material-symbols-rounded { font-size: 17px; }
+.clinical-auth-form h1 { margin: 5px 0 4px; color: $clinical-navy; font: 750 29px/1.15 'Manrope', Arial, sans-serif; letter-spacing: -.05em; }
+.clinical-auth-form > p { margin: 0 0 17px; color: $clinical-muted; font-size: 10px; }
+.clinical-auth-form label { display: grid; gap: 5px; margin-bottom: 11px; color: $clinical-navy; font-size: 9px; font-weight: 800; }
+.clinical-auth-field { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 7px; height: 39px; padding: 0 10px; border: 1px solid $clinical-line; border-radius: 8px; background: $clinical-low; transition: .2s; }
+.clinical-auth-field:focus-within { border-color: $clinical-primary; background: #fff; box-shadow: 0 0 0 3px rgba(0, 94, 163, .08); }
+.clinical-auth-field > .material-symbols-rounded { color: $clinical-primary; font-size: 16px; }
+.clinical-auth-field input { width: 100%; min-width: 0; color: $clinical-navy; border: 0; outline: 0; background: transparent; font-size: 10px; }
+.clinical-auth-field button { display: grid; padding: 2px; color: $clinical-muted; border: 0; cursor: pointer; background: transparent; }
+.clinical-auth-field button .material-symbols-rounded { font-size: 16px; }
+.clinical-auth-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.clinical-auth-submit { display: flex; min-height: 40px; align-items: center; justify-content: center; gap: 7px; margin-top: 3px; color: #fff; border: 0; border-radius: 8px; cursor: pointer; background: $clinical-primary; box-shadow: 0 8px 18px rgba(0, 94, 163, .18); font-size: 10px; font-weight: 800; }
+.clinical-auth-submit:disabled { cursor: wait; opacity: .65; }
+.clinical-auth-submit .material-symbols-rounded { font-size: 15px; }
+.clinical-auth-error { margin: 0 0 8px !important; padding: 8px 9px; color: #b42318 !important; border-radius: 7px; background: #fff0f1; font-size: 9px !important; }
+.clinical-auth-mobile-switch { display: none; margin-top: 13px; color: $clinical-muted; border: 0; background: transparent; font-size: 9px; }
+.clinical-auth-mobile-switch b { color: $clinical-primary; }
+.clinical-auth-trust { display: flex; justify-content: center; gap: 22px; padding: 13px 8px 0; color: $clinical-muted; font-size: 8px; font-weight: 700; }
+.clinical-auth-trust span { display: inline-flex; align-items: center; gap: 4px; }
+.clinical-auth-trust .material-symbols-rounded { color: $clinical-teal; font-size: 14px; }
 .clinical-footer { width: 100%; margin: auto; padding: 36px 0 72px; color: $clinical-muted; background: #fff; }
 .clinical-footer-grid, .clinical-copyright { width: min(820px, calc(100% - 32px)); margin-right: auto; margin-left: auto; }
 .clinical-footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 35px; }
@@ -350,6 +395,22 @@ $clinical-muted: #70869a;
 	.clinical-profile-portrait { min-height: 280px; }
 	.clinical-profile-facts { grid-template-columns: 1fr; }
 	.clinical-profile-contact, .clinical-mypage-grid { grid-template-columns: 1fr; }
+	.clinical-auth-page { padding-top: 0; }
+	.clinical-auth-card { min-height: 690px; }
+	.clinical-auth-visual { top: 0; right: 0; bottom: auto; left: 0; width: 100%; height: 205px; transform: translateY(0); }
+	.clinical-auth-card.is-register .clinical-auth-visual { transform: translateY(0); }
+	.clinical-auth-visual-content { padding: 22px; }
+	.clinical-auth-visual-content h2 { font-size: 23px; }
+	.clinical-auth-shield { width: 42px; height: 42px; border-radius: 12px; }
+	.clinical-auth-shield .material-symbols-rounded { font-size: 22px; }
+	.clinical-auth-form { top: 205px; bottom: 0; left: 0; width: 100%; justify-content: flex-start; padding: 25px 22px; transform: translateX(24px); }
+	.clinical-login-form { opacity: 1; visibility: visible; transform: translateX(0); }
+	.clinical-register-form { transform: translateX(-24px); }
+	.clinical-auth-card.is-register .clinical-login-form { transform: translateX(24px); }
+	.clinical-auth-card.is-register .clinical-register-form { transform: translateX(0); }
+	.clinical-auth-brand { display: none; }
+	.clinical-auth-mobile-switch { display: block; }
+	.clinical-auth-trust { flex-wrap: wrap; gap: 7px 14px; }
 	.clinical-trust-grid, .clinical-value-grid { grid-template-columns: 1fr; }
 	.clinical-section-heading { display: block; }
 	.clinical-section-heading > a { display: inline-block; margin-top: 8px; }
@@ -368,3 +429,7 @@ $clinical-muted: #70869a;
 }
 
 @media (max-width: 520px) { .clinical-bottom-nav a { font-size: 15px; } }
+
+@media (prefers-reduced-motion: reduce) {
+	.clinical-auth-visual, .clinical-auth-visual-content, .clinical-auth-form { transition-duration: .01ms; }
+}
