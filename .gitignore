@@ -1,7 +1,18 @@
 node_modules
 .next
 out
+# Local environment files (keep the documented template tracked)
 .env
-.env.local
+.env.*
+!.env.example
+
+# Local credentials and certificates
+secrets*.json
+credentials*.json
+service-account*.json
+*.pem
+*.key
+*.p12
+*.pfx
 *.tsbuildinfo
 .DS_Store
