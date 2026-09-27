@@ -5,6 +5,7 @@ export const GET_SERVICES = gql`
 		getServices(input: $input) {
 			list {
 				_id
+				memberId
 				serviceName
 				serviceType
 				serviceStatus
@@ -17,6 +18,7 @@ export const GET_SERVICES = gql`
 				serviceImages
 				serviceDesc
 				serviceDuration
+				memberData { _id docFullName docSpecialty docImage docExperience docPoints }
 				meLiked { memberId likeRefId myFavorite }
 			}
 			metaCounter { total }

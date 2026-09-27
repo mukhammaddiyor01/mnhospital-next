@@ -1,32 +1,34 @@
 import { BookingOrderStatus, PaymentMethod, PaymentStatus } from '../enums/booking.enum';
 
-export interface BookingOrderInput {
+export interface AppointmentDraft {
 	serviceId: string;
 	doctorId: string;
-	bookingDate: string;
-	bookingTime: string;
-	patientName: string;
-	patientPhone: string;
-	reason?: string;
+	date: string;
+	startsAt: string;
+	patientNote: string;
 }
 
 export interface BookingOrder {
 	_id: string;
-	status: BookingOrderStatus;
-	serviceId: string;
-	doctorId: string;
-	bookingDate: string;
-	bookingTime: string;
-	patientName: string;
-	patientPhone: string;
-	totalPrice: number;
+	orderCode: string;
+	bookingOrderStatus: BookingOrderStatus;
+	bookingOrderItems: Array<{
+		serviceId: string;
+		doctorId: string;
+		serviceName: string;
+		servicePrice: string;
+		serviceDuration: string;
+		requestedStartAt: string;
+	}>;
+	bookingOrderTotalAmount: number;
+	bookingOrderCurrency: string;
 	createdAt: string;
 }
 
 export interface Payment {
 	_id: string;
 	bookingOrderId: string;
-	method: PaymentMethod;
-	status: PaymentStatus;
-	amount: number;
+	paymentMethod: PaymentMethod;
+	paymentStatus: PaymentStatus;
+	paymentAmount: number;
 }
