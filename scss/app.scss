@@ -205,6 +205,16 @@
 .auth-panel small a { color: $primary; font-weight: 700; }
 .user-menu-button { padding: 0; color: $secondary; background: transparent; }
 .form-error { padding: 9px 11px; color: #b33b45 !important; border-radius: 5px; background: #fff0f1; font-size: 11px !important; }
+.list-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.service-search { display: flex; flex: 1; align-items: center; gap: 9px; height: 43px; padding: 0 12px; border: 1px solid $border; border-radius: 6px; background: #fff; }
+.service-search .material-symbols-rounded { color: $primary; font-size: 18px; }
+.service-search input { flex: 1; min-width: 0; border: 0; outline: 0; color: $secondary; font-size: 12px; }
+.list-toolbar select { height: 43px; padding: 0 12px; color: $secondary; border: 1px solid $border; border-radius: 6px; background: #fff; font-size: 11px; }
+.pagination-row { display: flex; justify-content: space-between; margin-top: 28px; color: $muted; font-size: 11px; }
+.pagination-row div { display: flex; gap: 8px; align-items: center; }
+.pagination-row button, .pagination-row b { display: grid; width: 30px; height: 30px; place-items: center; color: $secondary; border: 1px solid $border; border-radius: 5px; background: #fff; }
+.pagination-row button:disabled { cursor: not-allowed; opacity: .4; }
+.pagination-row b { color: #fff; border-color: $primary; background: $primary; font-size: 11px; }
 
 @media (max-width: 960px) {
 	.main-navigation { gap: 17px; }
@@ -251,6 +261,9 @@
 	.service-grid, .doctor-grid { grid-template-columns: 1fr; }
 	.popular-service-list { grid-template-columns: 1fr; }
 	.updates-grid { grid-template-columns: 1fr; }
+	.list-toolbar { align-items: stretch; flex-wrap: wrap; }
+	.service-search { flex-basis: 100%; }
+	.list-toolbar select, .list-toolbar .button { flex: 1; }
 	.doctor-card { grid-template-columns: 78px 1fr; }
 	.doctor-avatar { width: 78px; height: 105px; }
 	.care-section { padding: 75px 0; }
