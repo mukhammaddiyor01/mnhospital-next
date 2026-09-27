@@ -148,6 +148,16 @@
 .process-number { position: absolute; top: 20px; right: 20px; color: #c9e1f4; font-family: $font-heading; font-size: 24px; font-weight: 800; }
 .process-step h3 { margin: 23px 0 8px; color: $secondary; font-family: $font-heading; font-size: 15px; }
 .process-step p { margin: 0; color: $muted; font-size: 11px; line-height: 1.6; }
+.updates-section { padding: 100px 0; }
+.updates-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 17px; }
+.update-card { padding: 23px; border: 1px solid $border; border-radius: 10px; background: #fff; }
+.update-card-top { display: flex; justify-content: space-between; color: $primary; font-size: 10px; font-weight: 700; }
+.update-card-top span { display: inline-flex; align-items: center; gap: 5px; }
+.update-card-top .material-symbols-rounded { font-size: 16px; }
+.update-card-top small { color: $muted; font-weight: 400; }
+.update-card h3 { margin: 23px 0 10px; color: $secondary; font-family: $font-heading; font-size: 17px; letter-spacing: -.03em; }
+.update-card p { min-height: 58px; margin: 0; color: $muted; font-size: 11px; line-height: 1.65; }
+.update-card a { display: inline-flex; gap: 8px; margin-top: 21px; color: $primary; font-size: 11px; font-weight: 700; }
 
 .site-footer { padding: 70px 0 0; color: #b7cbd9; background: #0b263d; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.4fr; gap: 45px; padding-bottom: 58px; }
@@ -235,6 +245,7 @@
 	.section-heading .text-link { margin-top: 18px; }
 	.service-grid, .doctor-grid { grid-template-columns: 1fr; }
 	.popular-service-list { grid-template-columns: 1fr; }
+	.updates-grid { grid-template-columns: 1fr; }
 	.doctor-card { grid-template-columns: 78px 1fr; }
 	.doctor-avatar { width: 78px; height: 105px; }
 	.care-section { padding: 75px 0; }

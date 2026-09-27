@@ -6,6 +6,7 @@ import PopularServices from '@/libs/components/homepage/PopularServices';
 import FeaturedDoctors from '@/libs/components/homepage/FeaturedDoctors';
 import CareExperience from '@/libs/components/homepage/CareExperience';
 import HowItWorks from '@/libs/components/homepage/HowItWorks';
+import HospitalUpdates from '@/libs/components/homepage/HospitalUpdates';
 
 const Home: NextPage = () => (
 	<div className="home-page">
@@ -15,6 +16,7 @@ const Home: NextPage = () => (
 		<FeaturedDoctors />
 		<CareExperience />
 		<HowItWorks />
+		<HospitalUpdates />
 	</div>
 );
 
