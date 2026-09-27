@@ -230,7 +230,7 @@ $clinical-muted: #70869a;
 .clinical-bottom-nav { position: fixed; z-index: 100; right: 0; bottom: 0; left: 50%; display: flex; width: min(1300px, 100%); min-height: 54px; align-items: center; gap: 3px; transform: translateX(-50%); padding: 6px max(16px, calc((100% - 820px) / 2)); border-top: 1px solid $clinical-line; background: rgba(255, 255, 255, .95); box-shadow: 0 -4px 20px rgba(23, 51, 75, .08); backdrop-filter: blur(12px); }
 .clinical-bottom-nav a { display: flex; flex: 1; flex-direction: column; align-items: center; gap: 1px; color: $clinical-muted; font-size: 17px; }
 .clinical-bottom-nav a.active, .clinical-bottom-nav a:hover { color: $clinical-primary; }
-.clinical-bottom-nav small { font-size: 8px; font-weight: 700; }
+.clinical-bottom-nav a > span:last-child { font-size: 8px; font-weight: 700; }
 .clinical-bottom-book { flex: 0 0 auto !important; padding: 8px 12px; color: #fff !important; border-radius: 7px; background: $clinical-primary; font-size: 9px !important; font-weight: 800; }
 
 @media (max-width: 1120px) {
