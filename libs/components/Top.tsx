@@ -4,6 +4,7 @@ import { FormEvent } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
 import { logOut } from '@/libs/auth';
+import Icon from './common/Icon';
 
 const Top = () => {
 	const router = useRouter();
@@ -19,9 +20,9 @@ const Top = () => {
 	return (
 		<header className="clinical-header">
 			<div className="clinical-header-inner">
-				<Link className="clinical-brand" href="/"><span className="clinical-brand-icon">+</span><span><strong>MN Hospital</strong><small>Clinical Care</small></span></Link>
+				<Link className="clinical-brand" href="/"><span className="clinical-brand-icon"><Icon name="local_hospital" /></span><span><strong>MN Hospital</strong><small>Clinical Care</small></span></Link>
 				<form className="clinical-header-search" onSubmit={searchHandler}><span>⌕</span><input name="globalSearch" placeholder="Search doctors, treatments, services..." aria-label="Search doctors, treatments, services" /></form>
-				<div className="clinical-header-actions"><Link className="clinical-book-top" href="/appointment">Book appointment</Link>{user._id ? <button className="clinical-profile" title="Log out" onClick={logOut}>{initials}</button> : <Link className="clinical-profile" href="/account/signin">{initials}</Link>}</div>
+				<div className="clinical-header-actions"><Link className="clinical-book-top" href="/appointment">Book an Appointment</Link>{user._id ? <button className="clinical-profile" title="Log out" onClick={logOut}>{initials}</button> : <Link className="clinical-profile" href="/account/signin"><Icon name="person" /></Link>}</div>
 			</div>
 		</header>
 	);

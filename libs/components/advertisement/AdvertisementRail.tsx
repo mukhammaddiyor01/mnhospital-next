@@ -4,6 +4,7 @@ import { GET_ADVERTISEMENTS } from '@/apollo/advertisement/query';
 import { formatKrw } from '../common/currency';
 import { AdvertisementCardVariant } from './enums/advertisement.enum';
 import { Advertisement, AdvertisementPreview } from './types/advertisement';
+import Icon from '../common/Icon';
 
 type AdvertisementRailSide = 'left' | 'right';
 
@@ -18,23 +19,25 @@ interface AdvertisementCardProps {
 }
 
 const fallbackAdvertisements: AdvertisementPreview[] = [
-	{ _id: 'general-medicine', advertisementTitle: 'General Medicine', advertisementContent: 'Primary care, prevention, diagnosis, and treatment from the MN Hospital team.', advertisementLink: '/service', previewLabel: 'POPULAR SERVICE', previewRank: '#1', previewPrice: 150000, previewViews: 1284, previewAction: 'View service →' },
-	{ _id: 'cardiology', advertisementTitle: 'Cardiology', advertisementContent: 'Heart health diagnostics and treatment plans with experienced specialists.', advertisementLink: '/service', previewLabel: 'MOST REQUESTED', previewRank: '4.9 ★', previewPrice: 250000, previewViews: 856, previewAction: 'View service →' },
-	{ _id: 'clinical-promo', advertisementTitle: 'Full body health checkup', advertisementContent: 'Pathology tests, ECG, imaging and expert consultation.', advertisementLink: '/service', previewLabel: 'SERVICE PROMO', previewPrice: 149000, previewOriginalPrice: 220000, previewDiscount: '30% OFF', previewAction: 'View package →' },
-	{ _id: 'heart-health', advertisementTitle: 'Five simple ways to support your heart health', advertisementContent: 'Small, consistent choices can make a meaningful difference long term.', advertisementLink: '/article', previewLabel: 'HEALTH ARTICLE', previewReads: 306, previewAction: 'Read article →' },
-	{ _id: 'hospital-update', advertisementTitle: 'A new wing for a better patient experience', advertisementContent: 'More comfortable spaces and faster access for every patient.', advertisementLink: '/article', previewLabel: 'ANNOUNCEMENT', previewReads: 420, previewAction: 'Read hospital update →' },
-	{ _id: 'robotic-suite', advertisementTitle: 'Advanced robotic surgery suite', advertisementContent: 'New clinical technology is now available for selected surgical pathways.', advertisementLink: '/service', previewLabel: 'HOSPITAL UPDATE', previewAction: 'Learn more →' },
-	{ _id: 'patient-support', advertisementTitle: 'Need help choosing?', advertisementContent: 'Our care coordinator can help you find the right service and doctor.', advertisementLink: '/contact', previewLabel: 'PATIENT SUPPORT', previewAction: 'Talk to support →' },
-	{ _id: 'telehealth', advertisementTitle: 'Instant video consultation', advertisementContent: 'Connect securely with a certified physician from home.', advertisementLink: '/appointment', previewLabel: 'TELEHEALTH', previewRank: 'Available', previewAction: 'Start consultation →' },
+	{ _id: 'ambulance', advertisementTitle: 'Ambulance & Trauma', advertisementContent: 'Instant GPS-dispatched emergency ambulance response.', advertisementLink: 'tel:1800662273', previewLabel: '24/7 DIRECT LINE', previewAction: '1-800-MN-CARE' },
+	{ _id: 'robotic-suite', advertisementTitle: 'Robotic Surgery Excellence', advertisementContent: 'Minimally invasive 3D HD-enabled procedures with sub-millimeter accuracy.', advertisementLink: '/service', previewLabel: 'TECHNOLOGY', previewAction: 'Learn More' },
+	{ _id: 'rapid-care', advertisementTitle: 'Fast-Track Specialist Booking', advertisementContent: 'Skip wait times. Book priority consultations with department directors within 3 hours.', advertisementLink: '/appointment', previewLabel: 'RAPID CARE', previewRank: 'Active Now', previewAction: 'Book Rapid Slot' },
+	{ _id: 'cardiac-camp', advertisementTitle: 'Free Cardiac Screening', advertisementContent: 'This Saturday, 9 AM–2 PM. Complimentary lipid profile, BP & cardiologist triage.', advertisementLink: '/appointment', previewLabel: 'COMMUNITY CAMP', previewRank: 'Free', previewAction: 'Reserve Seat' },
+	{ _id: 'clinical-promo', advertisementTitle: 'Full Body Health Checkup', advertisementContent: 'Comprehensive package includes 72 pathology tests, 3T MRI screen, ECG & expert consult.', advertisementLink: '/service', previewLabel: 'SPECIAL PROMO', previewPrice: 149000, previewOriginalPrice: 220000, previewDiscount: '30% OFF', previewAction: 'View Package' },
+	{ _id: 'telehealth', advertisementTitle: 'Instant Video Consult', advertisementContent: 'Connect securely with certified physicians from your home in under 60 seconds.', advertisementLink: '/appointment', previewLabel: 'TELEHEALTH', previewRank: 'Available', previewAction: 'Start Teleconsult' },
+	{ _id: 'hospital-update', advertisementTitle: 'Hospital Announcement', advertisementContent: 'New Advanced Da Vinci Xi Robotic Suite now operational for urological and spinal surgeries.', advertisementLink: '/article', previewLabel: 'ANNOUNCEMENT' },
+	{ _id: 'accreditation', advertisementTitle: 'JCI & NABH Gold', advertisementContent: 'Global safety standard.', advertisementLink: '/about', previewLabel: 'ACCREDITED' },
 ];
 
 const advertisementVariants: Record<AdvertisementRailSide, AdvertisementCardVariant[]> = {
-	left: [AdvertisementCardVariant.SERVICE, AdvertisementCardVariant.PROMO, AdvertisementCardVariant.NEWS, AdvertisementCardVariant.SUPPORT],
-	right: [AdvertisementCardVariant.SERVICE, AdvertisementCardVariant.NEWS, AdvertisementCardVariant.TECHNOLOGY, AdvertisementCardVariant.COMMUNITY],
+	left: [AdvertisementCardVariant.SUPPORT, AdvertisementCardVariant.SERVICE, AdvertisementCardVariant.PROMO, AdvertisementCardVariant.NEWS],
+	right: [AdvertisementCardVariant.TECHNOLOGY, AdvertisementCardVariant.COMMUNITY, AdvertisementCardVariant.TECHNOLOGY, AdvertisementCardVariant.SUPPORT],
 };
 
 const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProps) => {
 	const variant = advertisementVariants[side][index % advertisementVariants[side].length];
+	const isEmergency = advertisement._id === 'ambulance';
+	const isAccreditation = advertisement._id === 'accreditation';
 	const isService = variant === AdvertisementCardVariant.SERVICE;
 	const isPromo = variant === AdvertisementCardVariant.PROMO;
 	const isNews = variant === AdvertisementCardVariant.NEWS;
@@ -42,13 +45,14 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 	const isCommunity = variant === AdvertisementCardVariant.COMMUNITY;
 	const action = advertisement.previewAction ?? 'Learn more →';
 
-	return <article className={`clinical-rail-card clinical-ad-card ${variant}`}>
+	return <article className={`clinical-rail-card clinical-ad-card ${variant} ${isEmergency ? 'emergency' : ''} ${isAccreditation ? 'accreditation' : ''}`}>
+		{isEmergency && <div className="clinical-emergency-label"><Icon name="ambulance" /> {advertisement.previewLabel}</div>}
 		{isService && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-blue">{advertisement.previewLabel ?? 'FEATURED SERVICE'}</span><span className="service-rank">{advertisement.previewRank ?? 'AD'}</span></div>}
 		{isPromo && <div className="clinical-rail-row"><span className="clinical-rail-kicker">{advertisement.previewLabel ?? 'PROMOTION'}</span>{advertisement.previewDiscount && <b>{advertisement.previewDiscount}</b>}</div>}
 		{isNews && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? 'HOSPITAL UPDATE'}</span>{advertisement.previewReads && <span className="news-views">{advertisement.previewReads.toLocaleString('ko-KR')} reads</span>}</div>}
-		{isSupport && <div className="clinical-rail-kicker">{advertisement.previewLabel ?? 'PROMOTION'}</div>}
+		{isSupport && !isEmergency && <div className="clinical-rail-kicker">{advertisement.previewLabel ?? 'PROMOTION'}</div>}
 		{isCommunity && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? 'FEATURED'}</span>{advertisement.previewRank && <b>{advertisement.previewRank}</b>}</div>}
-		{!isService && !isPromo && !isNews && !isSupport && !isCommunity && <div className="clinical-rail-kicker">✦ {advertisement.previewLabel ?? 'HOSPITAL UPDATE'}</div>}
+		{!isService && !isPromo && !isNews && !isSupport && !isCommunity && <div className="clinical-rail-kicker"><Icon name={advertisement._id === 'robotic-suite' ? 'smart_toy' : 'video_camera_front'} /> {advertisement.previewLabel ?? 'HOSPITAL UPDATE'}</div>}
 		{advertisement.advertisementImage && <div className="clinical-ad-image" style={{ backgroundImage: `url(${advertisement.advertisementImage})` }} aria-label={advertisement.advertisementTitle} />}
 		<h3>{advertisement.advertisementTitle}</h3>
 		<p>{advertisement.advertisementContent}</p>
