@@ -212,6 +212,9 @@
 .detail-panel { border: 1px solid $border; }
 .detail-icon { display: grid; width: 58px; height: 58px; place-items: center; margin-bottom: 28px; color: #fff; border-radius: 13px; background: $primary; }
 .detail-icon .material-symbols-rounded { font-size: 29px; }
+.detail-header { display: flex; align-items: flex-start; justify-content: space-between; }
+.detail-header .like-button { color: $muted; border-color: $border; background: #fff; }
+.detail-header .like-button.liked, .detail-header .like-button:hover { color: #e9576b; border-color: #f0b7bf; }
 .detail-panel h1 { max-width: 640px; margin: 14px 0; color: $secondary; font-family: $font-heading; font-size: clamp(36px, 5vw, 62px); letter-spacing: -.07em; }
 .detail-panel > p { max-width: 620px; color: $muted; font-size: 15px; line-height: 1.8; }
 .detail-meta { display: flex; flex-wrap: wrap; gap: 18px; margin: 28px 0; padding: 18px 0; border-top: 1px solid $border; border-bottom: 1px solid $border; }
