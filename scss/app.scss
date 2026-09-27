@@ -102,13 +102,17 @@
 .popular-services .eyebrow { color: #74dcc8; }
 .popular-services .text-link { color: #a2e9dc; border-color: #a2e9dc; }
 .popular-service-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
-.popular-service-card { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 13px; padding: 18px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 9px; background: rgba(255, 255, 255, .06); transition: transform .2s ease, background .2s ease; }
+.popular-service-card { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 9px; padding: 12px 18px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 9px; background: rgba(255, 255, 255, .06); transition: transform .2s ease, background .2s ease; }
 .popular-service-card:hover { transform: translateY(-4px); background: rgba(255, 255, 255, .11); }
+.popular-service-link { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 13px; }
 .popular-service-card .service-icon { width: 42px; height: 42px; color: #76dfce; background: rgba(24, 169, 145, .17); }
 .popular-service-card strong { display: block; color: #fff; font-family: $font-heading; font-size: 14px; }
 .popular-service-card small { display: block; margin-top: 5px; color: #a7c0ce; font-size: 10px; line-height: 1.45; }
 .popular-price { display: flex; align-items: center; gap: 6px; color: #a2e9dc; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .popular-price .material-symbols-rounded { font-size: 16px; }
+.like-button { display: grid; width: 29px; height: 29px; place-items: center; color: #9bb4c4; border: 1px solid rgba(255, 255, 255, .18); border-radius: 50%; background: transparent; }
+.like-button:hover, .like-button.liked { color: #ff7b8a; border-color: rgba(255, 123, 138, .5); }
+.like-button .material-symbols-rounded { font-size: 16px; }
 
 .doctors-section { background: #fff; }
 .doctor-card { display: grid; grid-template-columns: 88px 1fr; gap: 17px; padding: 19px; border: 1px solid $border; border-radius: 11px; background: #fff; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
