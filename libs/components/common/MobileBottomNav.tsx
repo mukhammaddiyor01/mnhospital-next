@@ -16,7 +16,6 @@ const MobileBottomNav = () => {
 
 	return <nav className="bottom-nav clinical-bottom-nav" aria-label="Primary navigation">
 		{navigationItems.map((item) => <Link className={isActive(item.href) ? 'active' : ''} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined} key={item.href}><Icon name={item.icon} /><span>{item.label}</span></Link>)}
-		<Link className="bottom-book clinical-bottom-book" href="/appointment">Book now</Link>
 	</nav>;
 };
 
