@@ -4,6 +4,7 @@ import { GET_MEMBER } from '@/apollo/member/query';
 import { userVar } from '@/apollo/store';
 import { logOut } from '@/libs/auth';
 import Icon from '@/libs/components/common/Icon';
+import { resolveApiAsset } from '@/libs/config';
 
 const PatientProfile = () => {
 	const session = useReactiveVar(userVar);
@@ -20,7 +21,7 @@ const PatientProfile = () => {
 
 	return <>
 		<section className="clinical-inner-section clinical-patient-profile">
-			<div className="clinical-patient-identity"><span className="clinical-profile-large" style={member.memberImage ? { backgroundImage: `url(${member.memberImage})` } : undefined}>{member.memberImage ? null : initials}</span><div><span className="clinical-section-kicker">{String(member.memberType ?? 'PATIENT').replaceAll('_', ' ')}</span><h2>{displayName}</h2><p>@{member.memberNick} · {String(member.memberStatus ?? 'ACTIVE').toLowerCase()}</p></div></div>
+			<div className="clinical-patient-identity"><span className="clinical-profile-large" style={member.memberImage ? { backgroundImage: `url(${resolveApiAsset(member.memberImage)})` } : undefined}>{member.memberImage ? null : initials}</span><div><span className="clinical-section-kicker">{String(member.memberType ?? 'PATIENT').replaceAll('_', ' ')}</span><h2>{displayName}</h2><p>@{member.memberNick} · {String(member.memberStatus ?? 'ACTIVE').toLowerCase()}</p></div></div>
 			<div className="clinical-profile-contact"><span><Icon name="call" /><small>Phone</small><b>{member.memberPhone || 'Not provided'}</b></span><span><Icon name="mail" /><small>Email</small><b>{member.memberMail || 'Not provided'}</b></span><span><Icon name="verified_user" /><small>Account</small><b>{String(member.memberAuthType ?? 'PHONE').replaceAll('_', ' ')}</b></span></div>
 			{loading ? <p className="clinical-query-status">Refreshing your profile…</p> : null}{error ? <p className="clinical-form-error">Live profile data is unavailable. Showing your secure session details.</p> : null}
 		</section>

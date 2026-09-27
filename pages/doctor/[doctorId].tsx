@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { GET_DOCTOR } from '@/apollo/doctor/query';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
+import { resolveApiAsset } from '@/libs/config';
 
 const DoctorDetailPage = () => {
 	const router = useRouter();
@@ -28,7 +29,7 @@ const DoctorDetailPage = () => {
 	return <div className="clinical-inner-page">
 		<section className="clinical-inner-hero clinical-doctor-profile-hero"><div><div className="clinical-crumb"><Link href="/">Home</Link> / <Link href="/doctor">Doctors</Link> / Profile</div><span className="clinical-eyebrow">SPECIALIST PROFILE</span><h1>{loading ? 'Loading specialist…' : name}</h1><p>{doctor?.docDesc ?? 'Evidence-based care, clear communication, and a treatment plan built around the patient.'}</p></div></section>
 		<section className="clinical-inner-section clinical-doctor-profile">
-			<div className="clinical-profile-portrait" style={doctor?.docImage ? { backgroundImage: `linear-gradient(145deg, rgba(18, 48, 74, .05), rgba(18, 48, 74, .7)), url(${doctor.docImage})` } : undefined}><span>{initials}</span></div>
+			<div className="clinical-profile-portrait" style={doctor?.docImage ? { backgroundImage: `linear-gradient(145deg, rgba(18, 48, 74, .05), rgba(18, 48, 74, .7)), url(${resolveApiAsset(doctor.docImage)})` } : undefined}><span>{initials}</span></div>
 			<div className="clinical-profile-copy"><span className="clinical-section-kicker">{specialty}</span><h2>{name}</h2><p>{doctor?.docDesc ?? 'This profile is shown in preview mode until a matching doctor record is available from the API.'}</p><div className="clinical-profile-facts"><span><Icon name="workspace_premium" /><b>{doctor?.docExperience ?? 10}+ years</b><small>Experience</small></span><span><Icon name="groups" /><b>{doctor?.docPatients ?? 0}</b><small>Patients</small></span><span><Icon name="star" /><b>{Number(doctor?.docPoints ?? 0).toFixed(1)}</b><small>Rating</small></span></div>{error && <p className="clinical-form-error">The specialist profile could not be loaded. Please return to the directory and try again.</p>}<div className="clinical-profile-actions"><Link className="clinical-primary-button" href={`/appointment?doctor=${doctorId}`}>Book an appointment <Icon name="arrow_forward" /></Link><Link className="clinical-secondary-button" href="/doctor">All doctors</Link></div></div>
 		</section>
 	</div>;

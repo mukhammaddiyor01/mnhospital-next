@@ -5,6 +5,7 @@ import { formatKrw } from '../common/currency';
 import { AdvertisementCardVariant } from './enums/advertisement.enum';
 import { Advertisement, AdvertisementPreview } from './types/advertisement';
 import Icon from '../common/Icon';
+import { resolveApiAsset } from '@/libs/config';
 
 type AdvertisementRailSide = 'left' | 'right';
 
@@ -53,7 +54,7 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 		{isSupport && !isEmergency && <div className="clinical-rail-kicker">{advertisement.previewLabel ?? 'PROMOTION'}</div>}
 		{isCommunity && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? 'FEATURED'}</span>{advertisement.previewRank && <b>{advertisement.previewRank}</b>}</div>}
 		{!isService && !isPromo && !isNews && !isSupport && !isCommunity && <div className="clinical-rail-kicker"><Icon name={advertisement._id === 'robotic-suite' ? 'smart_toy' : 'video_camera_front'} /> {advertisement.previewLabel ?? 'HOSPITAL UPDATE'}</div>}
-		{advertisement.advertisementImage && <div className="clinical-ad-image" style={{ backgroundImage: `url(${advertisement.advertisementImage})` }} aria-label={advertisement.advertisementTitle} />}
+		{advertisement.advertisementImage && <div className="clinical-ad-image" style={{ backgroundImage: `url(${resolveApiAsset(advertisement.advertisementImage)})` }} aria-label={advertisement.advertisementTitle} />}
 		<h3>{advertisement.advertisementTitle}</h3>
 		<p>{advertisement.advertisementContent}</p>
 		{isService && advertisement.previewPrice != null && <div className="service-meta"><span>{formatKrw(advertisement.previewPrice)}</span><span>{Number(advertisement.previewViews ?? 0).toLocaleString('ko-KR')} views</span></div>}

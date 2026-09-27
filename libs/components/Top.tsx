@@ -4,6 +4,7 @@ import { FormEvent } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
 import Icon from './common/Icon';
+import { resolveApiAsset } from '@/libs/config';
 
 const Top = () => {
 	const router = useRouter();
@@ -22,7 +23,7 @@ const Top = () => {
 			<div className="clinical-header-inner">
 				<Link className="clinical-brand" href="/"><span className="clinical-brand-icon"><Icon name="local_hospital" /></span><span><strong>MN Hospital</strong><small>Clinical Care</small></span></Link>
 				{isHome ? <form className="clinical-header-search" onSubmit={searchHandler}><span>⌕</span><input name="globalSearch" placeholder="Search doctors, treatments, services..." aria-label="Search doctors, treatments, services" /></form> : null}
-				<div className="clinical-header-actions"><Link className="clinical-book-top" href="/appointment">Book an Appointment</Link>{user._id ? <Link className="clinical-profile" href="/mypage" aria-label="Open my patient profile" title="My profile" style={user.memberImage ? { backgroundImage: `url(${user.memberImage})` } : undefined}><span>{initials}</span></Link> : <Link className="clinical-signup-top" href="/account/join">Sign Up</Link>}</div>
+				<div className="clinical-header-actions"><Link className="clinical-book-top" href="/appointment">Book an Appointment</Link>{user._id ? <Link className="clinical-profile" href="/mypage" aria-label="Open my patient profile" title="My profile" style={user.memberImage ? { backgroundImage: `url(${resolveApiAsset(user.memberImage)})` } : undefined}><span>{initials}</span></Link> : <Link className="clinical-signup-top" href="/account/join">Sign Up</Link>}</div>
 			</div>
 		</header>
 	);
