@@ -3,7 +3,7 @@ import { SocialAuthMode, SocialProvider, startSocialAuth } from '@/libs/auth';
 const providers: Array<{ id: SocialProvider; label: string; mark: string }> = [
 	{ id: 'GOOGLE', label: 'Google', mark: 'G' },
 	{ id: 'NAVER', label: 'Naver', mark: 'N' },
-	{ id: 'LINE', label: 'LINE', mark: 'L' },
+	{ id: 'KAKAO', label: 'Kakao', mark: 'K' },
 ];
 
 interface SocialAuthButtonsProps {

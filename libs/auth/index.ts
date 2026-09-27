@@ -26,7 +26,7 @@ const syncSession = (token: string, member?: MemberSession) => {
 	userVar({ ...claims, ...member, _id: String(member?._id ?? claims._id ?? ''), memberNick: member?.memberNick ?? claims.memberNick ?? '' });
 };
 
-export type SocialProvider = 'GOOGLE' | 'NAVER' | 'LINE';
+export type SocialProvider = 'GOOGLE' | 'NAVER' | 'KAKAO';
 export type SocialAuthMode = 'login' | 'register';
 
 interface SocialAuthTransaction {
@@ -61,7 +61,7 @@ const getProviderClientId = (provider: SocialProvider) => {
 	const clientIds: Record<SocialProvider, string | undefined> = {
 		GOOGLE: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 		NAVER: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID,
-		LINE: process.env.NEXT_PUBLIC_LINE_CHANNEL_ID,
+		KAKAO: process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY,
 	};
 	return clientIds[provider]?.trim();
 };
@@ -69,18 +69,18 @@ const getProviderClientId = (provider: SocialProvider) => {
 export const startSocialAuth = async (provider: SocialProvider, mode: SocialAuthMode) => {
 	if (typeof window === 'undefined') throw new Error('Social authentication is only available in the browser.');
 	const clientId = getProviderClientId(provider);
-	if (!clientId) throw new Error(`${provider === 'LINE' ? 'LINE' : provider[0] + provider.slice(1).toLowerCase()} sign-in is not configured yet.`);
+	if (!clientId) throw new Error(`${provider[0] + provider.slice(1).toLowerCase()} sign-in is not configured yet.`);
 
 	const redirectUri = `${window.location.origin}/account/oauth/callback`;
 	const state = randomToken();
-	const codeVerifier = provider === 'NAVER' ? undefined : randomToken(48);
+	const codeVerifier = provider === 'GOOGLE' ? randomToken(48) : undefined;
 	const transaction: SocialAuthTransaction = { provider, mode, state, codeVerifier, createdAt: Date.now() };
 	window.sessionStorage.setItem(SOCIAL_TRANSACTION_KEY, JSON.stringify(transaction));
 
 	const providerConfig = {
 		GOOGLE: { endpoint: 'https://accounts.google.com/o/oauth2/v2/auth', scope: 'openid email profile' },
 		NAVER: { endpoint: 'https://nid.naver.com/oauth2.0/authorize', scope: undefined },
-		LINE: { endpoint: 'https://access.line.me/oauth2/v2.1/authorize', scope: 'openid profile' },
+		KAKAO: { endpoint: 'https://kauth.kakao.com/oauth/authorize', scope: undefined },
 	}[provider];
 	const params = new URLSearchParams({ response_type: 'code', client_id: clientId, redirect_uri: redirectUri, state });
 	if (providerConfig.scope) params.set('scope', providerConfig.scope);

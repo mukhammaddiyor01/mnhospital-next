@@ -350,7 +350,7 @@ $clinical-muted: #70869a;
 .clinical-social-button > span { display: grid; width: 20px; height: 20px; flex: 0 0 20px; place-items: center; border-radius: 6px; font: 900 10px/1 Arial, sans-serif; }
 .clinical-social-button.is-google > span { color: #4285f4; border: 1px solid #dbe4f0; background: #fff; }
 .clinical-social-button.is-naver > span { color: #fff; background: #03c75a; }
-.clinical-social-button.is-line > span { color: #fff; border-radius: 50%; background: #06c755; }
+.clinical-social-button.is-kakao > span { color: #191919; background: #fee500; }
 .clinical-auth-mobile-switch { display: none; margin-top: 13px; color: $clinical-muted; border: 0; background: transparent; font-size: 9px; }
 .clinical-auth-mobile-switch b { color: $clinical-primary; }
 .clinical-auth-trust { display: flex; justify-content: center; gap: 22px; padding: 13px 8px 0; color: $clinical-muted; font-size: 8px; font-weight: 700; }
