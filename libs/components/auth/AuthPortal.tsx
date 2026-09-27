@@ -3,6 +3,7 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import { logIn, signUp } from '@/libs/auth';
 import Icon from '@/libs/components/common/Icon';
+import SocialAuthButtons from './SocialAuthButtons';
 
 type AuthMode = 'login' | 'register';
 
@@ -57,6 +58,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
 				<label>Password<div className="clinical-auth-field"><Icon name="lock" /><input autoComplete="current-password" value={loginForm.memberPassword} onChange={(event) => setLoginForm({ ...loginForm, memberPassword: event.target.value })} type={showLoginPassword ? 'text' : 'password'} placeholder="••••••••" required /><button type="button" onClick={() => setShowLoginPassword((value) => !value)} aria-label={showLoginPassword ? 'Hide password' : 'Show password'}><Icon name={showLoginPassword ? 'visibility' : 'visibility_off'} /></button></div></label>
 				{mode === 'login' && error ? <p className="clinical-auth-error" role="alert">{error}</p> : null}
 				<button className="clinical-auth-submit" type="submit" disabled={submitting}>{submitting ? 'Signing in…' : 'Sign In'} <Icon name="arrow_forward" /></button>
+				<SocialAuthButtons mode="login" disabled={submitting} onError={setError} />
 				<button className="clinical-auth-mobile-switch" type="button" onClick={() => switchMode('register')}>New patient? <b>Create account</b></button>
 			</form>
 
@@ -68,6 +70,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
 				<label>Password<div className="clinical-auth-field"><Icon name="lock" /><input autoComplete="new-password" value={registerForm.memberPassword} onChange={(event) => setRegisterForm({ ...registerForm, memberPassword: event.target.value })} type={showRegisterPassword ? 'text' : 'password'} placeholder="••••••••" minLength={6} required /><button type="button" onClick={() => setShowRegisterPassword((value) => !value)} aria-label={showRegisterPassword ? 'Hide password' : 'Show password'}><Icon name={showRegisterPassword ? 'visibility' : 'visibility_off'} /></button></div></label>
 				{mode === 'register' && error ? <p className="clinical-auth-error" role="alert">{error}</p> : null}
 				<button className="clinical-auth-submit" type="submit" disabled={submitting}>{submitting ? 'Creating account…' : 'Create Account'} <Icon name="arrow_forward" /></button>
+				<SocialAuthButtons mode="register" disabled={submitting} onError={setError} />
 				<button className="clinical-auth-mobile-switch" type="button" onClick={() => switchMode('login')}>Already registered? <b>Sign in</b></button>
 			</form>
 		</div>

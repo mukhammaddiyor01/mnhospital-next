@@ -1,7 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import { initializeApollo } from '@/apollo/client';
 import { userVar } from '@/apollo/store';
-import { LOGIN, SIGN_UP } from '@/apollo/member/mutation';
+import { LOGIN, SIGN_UP, SOCIAL_AUTHENTICATE } from '@/apollo/member/mutation';
 import { MemberSession } from '@/libs/components/member/types/member';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { getJwtToken, removeJwtToken, setJwtToken } from './token';
@@ -24,6 +24,97 @@ const syncSession = (token: string, member?: MemberSession) => {
 	}
 	updateStorage(token);
 	userVar({ ...claims, ...member, _id: String(member?._id ?? claims._id ?? ''), memberNick: member?.memberNick ?? claims.memberNick ?? '' });
+};
+
+export type SocialProvider = 'GOOGLE' | 'NAVER' | 'LINE';
+export type SocialAuthMode = 'login' | 'register';
+
+interface SocialAuthTransaction {
+	provider: SocialProvider;
+	mode: SocialAuthMode;
+	state: string;
+	codeVerifier?: string;
+	createdAt: number;
+}
+
+const SOCIAL_TRANSACTION_KEY = 'mn-hospital-social-auth';
+const SOCIAL_TRANSACTION_TTL = 10 * 60 * 1000;
+
+const encodeBase64Url = (bytes: Uint8Array) => {
+	let binary = '';
+	bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+	return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+
+const randomToken = (length = 32) => {
+	const bytes = new Uint8Array(length);
+	window.crypto.getRandomValues(bytes);
+	return encodeBase64Url(bytes);
+};
+
+const createCodeChallenge = async (verifier: string) => {
+	const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+	return encodeBase64Url(new Uint8Array(digest));
+};
+
+const getProviderClientId = (provider: SocialProvider) => {
+	const clientIds: Record<SocialProvider, string | undefined> = {
+		GOOGLE: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+		NAVER: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID,
+		LINE: process.env.NEXT_PUBLIC_LINE_CHANNEL_ID,
+	};
+	return clientIds[provider]?.trim();
+};
+
+export const startSocialAuth = async (provider: SocialProvider, mode: SocialAuthMode) => {
+	if (typeof window === 'undefined') throw new Error('Social authentication is only available in the browser.');
+	const clientId = getProviderClientId(provider);
+	if (!clientId) throw new Error(`${provider === 'LINE' ? 'LINE' : provider[0] + provider.slice(1).toLowerCase()} sign-in is not configured yet.`);
+
+	const redirectUri = `${window.location.origin}/account/oauth/callback`;
+	const state = randomToken();
+	const codeVerifier = provider === 'NAVER' ? undefined : randomToken(48);
+	const transaction: SocialAuthTransaction = { provider, mode, state, codeVerifier, createdAt: Date.now() };
+	window.sessionStorage.setItem(SOCIAL_TRANSACTION_KEY, JSON.stringify(transaction));
+
+	const providerConfig = {
+		GOOGLE: { endpoint: 'https://accounts.google.com/o/oauth2/v2/auth', scope: 'openid email profile' },
+		NAVER: { endpoint: 'https://nid.naver.com/oauth2.0/authorize', scope: undefined },
+		LINE: { endpoint: 'https://access.line.me/oauth2/v2.1/authorize', scope: 'openid profile' },
+	}[provider];
+	const params = new URLSearchParams({ response_type: 'code', client_id: clientId, redirect_uri: redirectUri, state });
+	if (providerConfig.scope) params.set('scope', providerConfig.scope);
+	if (codeVerifier) {
+		params.set('code_challenge', await createCodeChallenge(codeVerifier));
+		params.set('code_challenge_method', 'S256');
+	}
+	window.location.assign(`${providerConfig.endpoint}?${params.toString()}`);
+};
+
+export const readSocialAuthTransaction = (): SocialAuthTransaction | null => {
+	if (typeof window === 'undefined') return null;
+	try {
+		const transaction = JSON.parse(window.sessionStorage.getItem(SOCIAL_TRANSACTION_KEY) ?? '') as SocialAuthTransaction;
+		if (!transaction.state || !transaction.provider || Date.now() - transaction.createdAt > SOCIAL_TRANSACTION_TTL) return null;
+		return transaction;
+	} catch { return null; }
+};
+
+export const clearSocialAuthTransaction = () => {
+	if (typeof window !== 'undefined') window.sessionStorage.removeItem(SOCIAL_TRANSACTION_KEY);
+};
+
+export const completeSocialAuth = async (transaction: SocialAuthTransaction, authorizationCode: string) => {
+	const redirectUri = `${window.location.origin}/account/oauth/callback`;
+	const result = await initializeApollo().mutate({
+		mutation: SOCIAL_AUTHENTICATE,
+		variables: { input: { provider: transaction.provider, authorizationCode, redirectUri, state: transaction.state, codeVerifier: transaction.codeVerifier } },
+		fetchPolicy: 'network-only',
+	});
+	const member = result.data?.socialAuthenticate as MemberSession | undefined;
+	if (!member?.accessToken) throw new Error('The server did not return an access token.');
+	syncSession(member.accessToken, member);
+	return member;
 };
 
 export { getJwtToken, setJwtToken } from './token';

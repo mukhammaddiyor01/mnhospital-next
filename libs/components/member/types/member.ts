@@ -5,7 +5,7 @@ export interface Member {
 	memberType: MemberType | string;
 	memberStatus: MemberStatus | string;
 	memberAuthType: MemberAuthType | string;
-	memberPhone: string;
+	memberPhone?: string;
 	memberMail?: string;
 	memberNick: string;
 	memberFullName?: string;

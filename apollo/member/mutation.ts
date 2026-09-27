@@ -8,5 +8,6 @@ const MEMBER_FIELDS = `
 
 export const LOGIN = gql`mutation Login($input: LoginInput!) { login(input: $input) { ${MEMBER_FIELDS} } }`;
 export const SIGN_UP = gql`mutation Signup($input: MemberInput!) { signup(input: $input) { ${MEMBER_FIELDS} } }`;
+export const SOCIAL_AUTHENTICATE = gql`mutation SocialAuthenticate($input: SocialAuthInput!) { socialAuthenticate(input: $input) { ${MEMBER_FIELDS} } }`;
 export const UPDATE_MEMBER = gql`mutation UpdateMember($input: MemberUpdate!) { updateMember(input: $input) { ${MEMBER_FIELDS} } }`;
 export const LIKE_TARGET_MEMBER = gql`mutation LikeTargetMember($memberId: String!) { likeTargetMember(memberId: $memberId) { ${MEMBER_FIELDS} } }`;
