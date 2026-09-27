@@ -1,0 +1,11 @@
+export enum ReferenceGroup {
+	MEMBER = 'MEMBER',
+	DOCTOR = 'DOCTOR',
+	PATIENT = 'PATIENT',
+	SERVICE = 'SERVICE',
+	ARTICLE = 'ARTICLE',
+	COMMENT = 'COMMENT',
+	APPOINTMENT = 'APPOINTMENT',
+}
+
+export enum CommentStatus { ACTIVE = 'ACTIVE', DELETE = 'DELETE', BLOCK = 'BLOCK' }
