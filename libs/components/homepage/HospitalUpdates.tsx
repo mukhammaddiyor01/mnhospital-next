@@ -16,7 +16,7 @@ const HospitalUpdates = () => {
 		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-and-network',
 	});
-	const articles = data?.getArticles?.list?.length ? data.getArticles.list : fallbackArticles;
+	const articles = data?.getArticles?.list?.length ? data.getArticles.list.map((article: any) => ({ ...article, articleTitle: article.articleTitle ?? article.articleName ?? 'MN Hospital update', articleContent: article.articleContent ?? article.articleDesc ?? 'News and practical guidance from the MN Hospital team.' })) : fallbackArticles;
 
 	return <section className="updates-section section-light"><div className="container"><SectionHeading eyebrow="MN Hospital journal" title="Care beyond the appointment." description="Practical health information and updates from our clinical community." linkLabel="Read all updates" linkHref="/article" /><div className="updates-grid">{articles.map((article: any) => <article className="update-card" key={article._id}><div className="update-card-top"><span><Icon name="auto_stories" /> {String(article.articleCategory).replaceAll('_', ' ')}</span><small>{article.articleViews ?? 0} reads</small></div><h3>{article.articleTitle}</h3><p>{article.articleContent}</p><Link href={`/article/${article._id}`}>Read article <span>→</span></Link></article>)}</div>{loading && <span className="query-status">Loading the latest hospital updates…</span>}</div></section>;
 };

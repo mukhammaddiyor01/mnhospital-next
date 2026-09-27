@@ -18,7 +18,7 @@ const FeaturedDoctors = () => {
 		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-and-network',
 	});
-	const doctors: HomeDoctorCard[] = data?.getDoctors?.list?.length ? data.getDoctors.list.map((doctor: any) => ({ _id: doctor._id, docFullName: doctor.docFullName, docSpecialty: doctor.docSpecialty, docExperience: doctor.docExperience, docPoints: doctor.docPoints, role: String(doctor.docSpecialty ?? 'General Practitioner').replaceAll('_', ' '), image: doctor.docFullName?.split(' ').map((part: string) => part[0]).join('').slice(0, 2), availability: doctor.docRoom ? `Room ${doctor.docRoom}` : 'Available today' })) : initialDoctors;
+	const doctors: HomeDoctorCard[] = data?.getDoctors?.list?.length ? data.getDoctors.list.map((doctor: any) => ({ _id: doctor._id, docFullName: doctor.docFullName ?? 'MN Hospital doctor', docSpecialty: doctor.docSpecialty, docExperience: Number(doctor.docExperience ?? 0), docPoints: Number(doctor.docPoints ?? 0), role: String(doctor.docSpecialty ?? 'General Practitioner').replaceAll('_', ' '), image: doctor.docFullName?.split(' ').map((part: string) => part[0]).join('').slice(0, 2) || 'MN', availability: doctor.docRoom ? `Room ${doctor.docRoom}` : 'Available today' })) : initialDoctors;
 
 	return (
 	<section className="doctors-section">

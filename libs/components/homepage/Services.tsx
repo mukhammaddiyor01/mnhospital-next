@@ -30,7 +30,7 @@ const Services = () => {
 		fetchPolicy: 'cache-and-network',
 		onCompleted: (data) => {
 			const result = data?.getServices?.list ?? [];
-			if (result.length) setServices(result.map((service: any) => ({ _id: service._id, serviceTitle: service.serviceTitle, serviceDesc: service.serviceDesc, servicePrice: service.servicePrice, icon: iconForService(service.serviceType), label: String(service.serviceType ?? 'consultation').replaceAll('_', ' ') })));
+			if (result.length) setServices(result.map((service: any) => ({ _id: service._id, serviceTitle: service.serviceTitle ?? service.serviceName ?? 'Clinical service', serviceDesc: service.serviceDesc ?? 'Thoughtful care from the MN Hospital clinical team.', servicePrice: Number(service.servicePrice ?? 0), icon: iconForService(service.serviceType), label: String(service.serviceType ?? 'consultation').replaceAll('_', ' ') })));
 		},
 	});
 
@@ -45,7 +45,7 @@ const Services = () => {
 						<span className="service-label">{service.label}</span>
 						<h3>{service.serviceTitle}</h3>
 						<p>{service.serviceDesc}</p>
-						<div className="service-card-bottom"><span>From <strong>{service.servicePrice.toLocaleString('en-US')} UZS</strong></span><Link href={`/service/${service._id}`} aria-label={`Learn more about ${service.serviceTitle}`}><Icon name="arrow_outward" /></Link></div>
+						<div className="service-card-bottom"><span>From <strong>{Number(service.servicePrice ?? 0).toLocaleString('en-US')} UZS</strong></span><Link href={`/service/${service._id}`} aria-label={`Learn more about ${service.serviceTitle}`}><Icon name="arrow_outward" /></Link></div>
 					</article>
 				))}
 			</div>
