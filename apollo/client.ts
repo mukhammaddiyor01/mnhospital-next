@@ -5,7 +5,7 @@ import createUploadLink from 'apollo-upload-client/public/createUploadLink.js';
 import { getJwtToken } from '@/libs/auth/token';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
-const apiUrl = process.env.NEXT_PUBLIC_API_GRAPHQL_URL ?? 'http://localhost:3007/graphql';
+const apiUrl = process.env.NEXT_PUBLIC_API_GRAPHQL_URL ?? 'http://localhost:2001/graphql';
 
 function getHeaders(): Record<string, string> {
 	const token = getJwtToken();

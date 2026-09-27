@@ -19,4 +19,4 @@ cp .env.example .env.local
 npm run dev
 ```
 
-The GraphQL API defaults to `http://localhost:3007/graphql`.
+The GraphQL API defaults to `http://localhost:2001/graphql`.
