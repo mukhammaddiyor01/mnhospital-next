@@ -23,8 +23,8 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 			<div id="pc-wrap" className="clinical-shell app-frame">
 				<Top />
 				<main id="main">{isHome ? <Component {...props} /> : <div className="clinical-workspace clinical-inner-workspace"><AdvertisementRail side="left" /><div className="clinical-center-column"><Component {...props} /></div><AdvertisementRail side="right" /></div>}</main>
-				<MobileBottomNav />
 				<Footer />
+				<MobileBottomNav />
 			</div>
 		</>;
 	};

@@ -36,7 +36,7 @@ $clinical-muted: #70869a;
 .clinical-rail-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(23, 51, 75, .09); }
 .clinical-rail-card h3 { margin: 8px 0 5px; color: $clinical-navy; font: 700 14px/1.25 'Manrope', Arial, sans-serif; }
 .clinical-rail-card p { margin: 0; color: #5f6e78; font-size: 10px; line-height: 1.5; }
-.clinical-rail-card > a { display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: 5px; margin-top: 11px; padding: 8px 9px; color: $clinical-primary; border: 1px solid $clinical-line; border-radius: 7px; font-size: 10px; font-weight: 800; }
+.clinical-rail-card > a { display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: 5px; margin-top: 11px; padding: 8px 9px; color: #fff; border: 0; border-radius: 7px; background: $clinical-primary; font-size: 10px; font-weight: 800; }
 .clinical-rail-row { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
 .clinical-tag { display: inline-flex; padding: 3px 6px; border-radius: 4px; font-size: 8px; font-weight: 800; }
 .clinical-tag-blue { color: $clinical-primary; background: $clinical-primary-soft; }
@@ -44,20 +44,16 @@ $clinical-muted: #70869a;
 .clinical-ad-mark { color: $clinical-muted; font-size: 8px; font-weight: 800; }
 .clinical-rail-kicker { color: $clinical-secondary; font-size: 8px; font-weight: 800; letter-spacing: .1em; }
 .clinical-ad-card { transition: .2s; }
-.clinical-ad-card-0 { background: linear-gradient(140deg, #eaf4ff, #fff); }
-.clinical-ad-card-1 { background: linear-gradient(145deg, #fff, #f7fbfd); }
-.clinical-ad-card-2 { background: linear-gradient(140deg, #edf6ff, #fff); }
-.clinical-ad-card-3 { background: #eefaf7; border-color: #cceee4; }
 .clinical-ad-image { height: 78px; margin: 12px -2px 8px; border-radius: 8px; background-position: center; background-size: cover; }
 .clinical-rail .service-rank, .clinical-rail .news-views { color: $clinical-primary; font-size: 8px; font-weight: 800; }
 .clinical-rail .news-views { color: $clinical-muted; font-weight: 600; }
 .clinical-rail .service-ad h3, .clinical-rail .news-card h3, .clinical-rail .support-card h3 { margin-top: 9px; }
 .clinical-rail .service-meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 9px; color: $clinical-muted; border-top: 1px solid $clinical-line; font-size: 8px; }
 .clinical-rail .service-meta span:first-child { color: $clinical-navy; font-weight: 800; }
-.clinical-rail .service-ad > a { color: $clinical-primary; border: 1px solid $clinical-line; background: transparent; }
+.clinical-rail .service-ad > a { justify-content: space-between; margin-top: 9px; color: $clinical-primary; border: 1px solid $clinical-line; background: transparent; }
 .clinical-rail .news-card { background: linear-gradient(145deg, #fff, #f7fbfd); }
 .clinical-rail .news-card h3 { font-size: 13px; }
-.clinical-rail .news-card > a { color: $clinical-primary; border: 0; background: transparent; justify-content: flex-start; padding: 0; }
+.clinical-rail .news-card > a { justify-content: flex-start; margin-top: 9px; padding: 0; color: $clinical-primary; border: 0; background: transparent; }
 .clinical-rail .support-card { background: #eefaf7; border-color: #cceee4; }
 .clinical-rail .support-card .clinical-rail-kicker { color: $clinical-teal; }
 .clinical-rail .support-card > a { color: #fff; border-color: $clinical-teal; background: $clinical-teal; }
@@ -65,9 +61,11 @@ $clinical-muted: #70869a;
 .clinical-rail .promo { background: linear-gradient(140deg, #eaf4ff, #fff); }
 .clinical-rail .promo .clinical-rail-row > b { padding: 3px 6px; color: #179269; border-radius: 999px; background: $clinical-teal-soft; font-size: 8px; }
 .clinical-rail .promo .clinical-rail-kicker { color: $clinical-primary; }
-.clinical-rail .promo-price { margin-top: 8px; color: $clinical-navy; font: 800 20px 'Manrope', Arial, sans-serif; }
-.clinical-rail .promo-price small { margin-left: 4px; color: $clinical-muted; font: 400 9px 'DM Sans', Arial, sans-serif; }
-.clinical-rail .promo > a, .clinical-rail .technology > a { justify-content: space-between; }
+.clinical-rail .promo-price { margin-top: 8px; color: $clinical-navy; font: 800 15px 'Manrope', Arial, sans-serif; white-space: nowrap; }
+.clinical-rail .promo-price del { margin-left: 4px; color: $clinical-muted; font: 400 9px 'DM Sans', Arial, sans-serif; }
+.clinical-rail .promo > a, .clinical-rail .technology > a { justify-content: space-between; color: $clinical-primary; border: 1px solid $clinical-line; background: transparent; }
+.clinical-rail .technology { background: linear-gradient(140deg, #edf6ff, #fff); }
+.clinical-rail .technology .clinical-rail-kicker { color: $clinical-primary; }
 .clinical-rail .community { background: #fff; }
 .clinical-rail .community .clinical-rail-row > b { color: $clinical-primary; font-size: 9px; }
 .clinical-rail .community > a { color: #fff; border-color: $clinical-primary; background: $clinical-primary; }

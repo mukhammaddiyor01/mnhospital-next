@@ -11,6 +11,17 @@ export interface Advertisement {
 	updatedAt?: string;
 }
 
+export interface AdvertisementPreview extends Advertisement {
+	previewLabel?: string;
+	previewRank?: string;
+	previewPrice?: number;
+	previewOriginalPrice?: number;
+	previewViews?: number;
+	previewReads?: number;
+	previewDiscount?: string;
+	previewAction?: string;
+}
+
 export interface AdvertisementsInquiry {
 	page: number;
 	limit: number;
