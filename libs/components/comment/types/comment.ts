@@ -19,3 +19,9 @@ export interface CommentsInquiry {
 	direction?: 'ASC' | 'DESC';
 	search: { commentRefId: string };
 }
+
+export interface CreateCommentInput {
+	commentGroup: ReferenceGroup;
+	commentContent: string;
+	commentRefId: string;
+}

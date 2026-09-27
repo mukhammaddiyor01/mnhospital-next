@@ -235,6 +235,12 @@
 .related-card span { color: $muted; font-size: 11px; line-height: 1.5; }
 .comments-section { margin-top: 52px; padding-top: 34px; border-top: 1px solid $border; }
 .comment-count { color: $muted; font-size: 13px; }
+.comment-form { display: grid; gap: 10px; margin-top: 24px; padding: 20px; border: 1px solid $border; border-radius: 9px; background: #fff; }
+.comment-form label { color: $secondary; font-size: 12px; font-weight: 700; }
+.comment-form textarea { width: 100%; min-height: 96px; padding: 12px; color: $secondary; border: 1px solid $border; border-radius: 6px; outline: 0; resize: vertical; font: inherit; font-size: 12px; }
+.comment-form textarea:focus { border-color: $primary; }
+.comment-form-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.comment-form-footer .form-error { margin: 0; }
 .comment-list { display: grid; gap: 14px; margin-top: 22px; }
 .comment-card { padding: 18px 20px; border: 1px solid $border; border-radius: 9px; background: #fff; }
 .comment-card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
