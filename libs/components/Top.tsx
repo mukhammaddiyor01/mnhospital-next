@@ -2,10 +2,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Icon from './common/Icon';
+import { useReactiveVar } from '@apollo/client';
+import { userVar } from '@/apollo/store';
+import { logOut } from '@/libs/auth';
 
 const Top = () => {
 	const router = useRouter();
 	const [menuOpen, setMenuOpen] = useState(false);
+	const user = useReactiveVar(userVar);
 
 	const closeMenu = () => setMenuOpen(false);
 
@@ -37,7 +41,7 @@ const Top = () => {
 					</div>
 				</nav>
 				<div className="desktop-nav-actions">
-					<Link className="sign-in-link" href="/account/signin">Sign In</Link>
+					{user._id ? <button className="sign-in-link user-menu-button" onClick={logOut}>{user.memberFullName ?? user.memberNick} · Log out</button> : <Link className="sign-in-link" href="/account/signin">Sign In</Link>}
 					<Link className="button button-primary button-small" href="/appointment">Book an Appointment</Link>
 				</div>
 			</div>
