@@ -5,14 +5,25 @@ out
 .env
 .env.*
 !.env.example
+.envrc
+.direnv/
+.vercel/
 
 # Local credentials and certificates
 secrets*.json
 credentials*.json
 service-account*.json
+*.credentials.json
 *.pem
 *.key
+*.crt
+*.cer
+*.der
 *.p12
 *.pfx
+*.jks
+*.keystore
+.npmrc.local
+.yarnrc.local
 *.tsbuildinfo
 .DS_Store
