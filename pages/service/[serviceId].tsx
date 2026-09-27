@@ -1,12 +1,20 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useQuery } from '@apollo/client';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
+import { GET_RECOMMENDED_SERVICES, GET_SERVICE } from '@/apollo/service/query';
 
 const ServiceDetailPage = () => {
 	const router = useRouter();
-	const title = String(router.query.serviceId ?? 'medical service').replaceAll('-', ' ');
-	return <div className="inner-page"><div className="container"><div className="placeholder-panel"><span className="eyebrow"><Icon name="medical_services" /> Service detail</span><h1>{title.charAt(0).toUpperCase() + title.slice(1)}</h1><p>Our clinical team combines modern diagnostics with a thoughtful, patient-first experience. Service detail data will be loaded from the MN Hospital GraphQL API.</p><Link className="button button-primary" href="/appointment">Book this service <span>→</span></Link></div></div></div>;
+	const serviceId = String(router.query.serviceId ?? '');
+	const fallbackTitle = serviceId.replaceAll('-', ' ');
+	const { data, loading, error } = useQuery(GET_SERVICE, { variables: { serviceId }, skip: !serviceId || !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
+	const { data: relatedData } = useQuery(GET_RECOMMENDED_SERVICES, { variables: { serviceId, limit: 3 }, skip: !serviceId || !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-first' });
+	const service = data?.getService;
+	const relatedServices = relatedData?.getRecommendedServices?.list ?? [];
+	const title = service?.serviceTitle ?? fallbackTitle;
+	return <div className="inner-page"><div className="container"><div className="detail-layout"><article className="detail-panel"><div className="detail-icon"><Icon name="medical_services" /></div><span className="eyebrow">{service?.serviceType ?? 'Clinical service'}</span><h1>{title.charAt(0).toUpperCase() + title.slice(1)}</h1><p>{service?.serviceDesc ?? 'Our clinical team combines modern diagnostics with a thoughtful, patient-first experience.'}</p><div className="detail-meta"><span><Icon name="schedule" /> {service?.serviceDuration ?? 'Available 24/7'}</span><span><Icon name="payments" /> {service?.servicePrice ? `${Number(service.servicePrice).toLocaleString('en-US')} UZS` : 'Price on request'}</span><span><Icon name="location_on" /> {service?.serviceRoom ?? 'MN Hospital'}</span></div><Link className="button button-primary" href={`/appointment?service=${service?._id ?? serviceId}`}>Book this service <span>→</span></Link></article><aside className="detail-aside"><span className="eyebrow">Your care, connected</span><h2>Precision starts with the right next step.</h2><p>Choose a specialist and time that works for you. Your request is securely connected to the hospital booking flow.</p><Link className="button button-secondary" href="/doctor">Find a doctor</Link></aside></div>{loading && <span className="query-status">Loading service details…</span>}{error && <span className="query-status">Showing the service overview while the clinical API reconnects.</span>}{relatedServices.length > 0 && <section className="related-section"><div className="section-heading"><div><span className="eyebrow">You may also need</span><h2>Related services</h2></div></div><div className="related-grid">{relatedServices.map((item: any) => <Link className="related-card" href={`/service/${item._id}`} key={item._id}><Icon name="arrow_outward" /><strong>{item.serviceTitle}</strong><span>{item.serviceDesc}</span></Link>)}</div></section>}</div></div>;
 };
 
 export default withLayoutMain(ServiceDetailPage);
