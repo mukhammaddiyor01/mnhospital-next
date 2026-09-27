@@ -95,6 +95,7 @@
 .service-card-bottom strong { color: $secondary; }
 .service-card-bottom a { display: grid; width: 30px; height: 30px; place-items: center; color: #fff; border-radius: 50%; background: $primary; }
 .service-card-bottom a .material-symbols-rounded { font-size: 16px; }
+.query-status { display: block; margin-top: 16px; color: $muted; font-size: 10px; }
 
 .doctors-section { background: #fff; }
 .doctor-card { display: grid; grid-template-columns: 88px 1fr; gap: 17px; padding: 19px; border: 1px solid $border; border-radius: 11px; background: #fff; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
