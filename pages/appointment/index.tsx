@@ -39,7 +39,7 @@ const AppointmentPage = () => {
 		skip: !canLoadSlots,
 		fetchPolicy: 'network-only',
 	});
-	const slots = canLoadSlots ? (slotsQuery.data?.getAvailableDoctorSlots ?? []) : ['09:00', '10:30', '14:00', '16:00'].map((time) => ({ startsAt: `${form.date}T${time}:00`, endsAt: '' }));
+	const slots = canLoadSlots ? (slotsQuery.data?.getAvailableDoctorSlots ?? []) : form.date ? ['09:00', '10:30', '14:00', '16:00'].map((time) => ({ startsAt: `${form.date}T${time}:00`, endsAt: '' })) : [];
 	const [addCartItem, addState] = useMutation(ADD_CART_ITEM);
 	const [createBookingOrder, orderState] = useMutation(CREATE_BOOKING_ORDER);
 
@@ -73,7 +73,10 @@ const AppointmentPage = () => {
 			setMessage(error.message ?? 'The booking order could not be created. Please try another time.');
 		}
 	};
-	const formatSlot = (value: string) => new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(new Date(value));
+	const formatSlot = (value: string) => {
+		const date = new Date(value);
+		return Number.isNaN(date.getTime()) ? 'Unavailable' : new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(date);
+	};
 	const busy = addState.loading || orderState.loading;
 
 	return <div className="clinical-inner-page">
