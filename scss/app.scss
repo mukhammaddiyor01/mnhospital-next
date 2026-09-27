@@ -233,6 +233,14 @@
 .related-card > .material-symbols-rounded { justify-self: end; color: $primary; }
 .related-card strong { color: $secondary; font-family: $font-heading; font-size: 15px; }
 .related-card span { color: $muted; font-size: 11px; line-height: 1.5; }
+.comments-section { margin-top: 52px; padding-top: 34px; border-top: 1px solid $border; }
+.comment-count { color: $muted; font-size: 13px; }
+.comment-list { display: grid; gap: 14px; margin-top: 22px; }
+.comment-card { padding: 18px 20px; border: 1px solid $border; border-radius: 9px; background: #fff; }
+.comment-card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.comment-card-header time { color: $muted; font-size: 12px; }
+.comment-card p { margin: 10px 0 0; color: $muted; line-height: 1.7; }
+.comments-empty { margin-top: 20px; color: $muted; }
 .list-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
 .service-search { display: flex; flex: 1; align-items: center; gap: 9px; height: 43px; padding: 0 12px; border: 1px solid $border; border-radius: 6px; background: #fff; }
 .service-search .material-symbols-rounded { color: $primary; font-size: 18px; }
