@@ -96,6 +96,8 @@
 .service-card-bottom strong { color: $secondary; }
 .service-card-bottom a { display: grid; width: 30px; height: 30px; place-items: center; color: #fff; border-radius: 50%; background: $primary; }
 .service-card-bottom a .material-symbols-rounded { font-size: 16px; }
+.service-card-bottom .like-button { color: $muted; border-color: $border; background: #fff; }
+.service-card-bottom .like-button.liked, .service-card-bottom .like-button:hover { color: #e9576b; border-color: #f0b7bf; }
 .query-status { display: block; margin-top: 16px; color: $muted; font-size: 10px; }
 .popular-services { padding: 88px 0; color: #fff; background: $secondary; }
 .popular-services .section-heading h2 { color: #fff; }
