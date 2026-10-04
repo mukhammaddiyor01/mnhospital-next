@@ -18,7 +18,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 				<title>MN Hospital | Clinical Precision & Empathetic Care</title>
 				<meta name="description" content="Expert medical care available 24/7 at MN Hospital." />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<link rel="icon" href="/favicon.svg" />
+				<link rel="icon" type="image/png" href="/favicon.png" />
 			</Head>
 			<div id="pc-wrap" className="clinical-shell app-frame">
 				<Top />
