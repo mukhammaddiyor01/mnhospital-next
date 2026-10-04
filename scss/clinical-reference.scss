@@ -149,6 +149,28 @@ $clinical-muted: #70869a;
 .clinical-doctor-card > b { color: $clinical-primary; font-size: 9px; }
 .clinical-doctor-card p { margin: 4px 0 11px; color: $clinical-muted; font-size: 8px; }
 .clinical-doctor-book { display: flex; align-items: center; justify-content: center; padding: 8px; color: #fff; border-radius: 6px; background: $clinical-primary; font-size: 9px; font-weight: 800; }
+.clinical-article-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.clinical-article-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(23,51,75,.05); transition: transform .2s, box-shadow .2s; }
+.clinical-article-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(23,51,75,.1); }
+.clinical-article-image { position: relative; display: block; height: 145px; overflow: hidden; background: $clinical-low; }
+.clinical-article-image img { object-fit: cover; transition: transform .3s; }
+.clinical-article-card:hover .clinical-article-image img { transform: scale(1.04); }
+.clinical-article-body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 14px; }
+.clinical-article-category { padding: 3px 7px; color: $clinical-primary; border-radius: 4px; background: $clinical-primary-soft; font-size: 8px; font-weight: 800; letter-spacing: .06em; }
+.clinical-article-body h3 { margin: 10px 0 6px; color: $clinical-navy; font: 700 13px/1.35 'Manrope', Arial, sans-serif; }
+.clinical-article-body h3 a:hover { color: $clinical-primary; }
+.clinical-article-body p { display: -webkit-box; overflow: hidden; margin: 0 0 15px; color: #5f6e78; font-size: 10px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.clinical-article-read, .clinical-article-back { display: inline-flex; align-items: center; gap: 5px; color: $clinical-primary; font-size: 9px; font-weight: 800; }
+.clinical-article-read { margin-top: auto; }
+.clinical-article-read .material-symbols-rounded, .clinical-article-back .material-symbols-rounded { font-size: 15px; }
+.clinical-article-page { display: flex; flex-direction: column; gap: 32px; }
+.clinical-article-detail { display: flex; flex-direction: column; gap: 18px; }
+.clinical-article-detail-image { position: relative; height: 300px; overflow: hidden; border-radius: 10px; background: $clinical-low; }
+.clinical-article-detail-image img { object-fit: cover; }
+.clinical-article-copy { padding: 24px 28px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(23,51,75,.05); }
+.clinical-article-copy p { max-width: 67ch; margin: 0 0 16px; color: #425466; font-size: 13px; line-height: 1.8; }
+.clinical-article-copy p:last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { .clinical-hero-slide, .clinical-article-card, .clinical-article-image img { transition: none; } }
 .clinical-trust-section { padding: 32px; border-radius: 10px; background: $clinical-low; box-shadow: 0 2px 12px rgba(23, 51, 75, .04); }
 .clinical-trust-section > div:first-child { max-width: 620px; }
 .clinical-trust-section p { margin: 7px 0 0; color: #5f6e78; font-size: 11px; }
@@ -461,7 +483,10 @@ $clinical-muted: #70869a;
 	.clinical-hero-visual { height: 170px; }
 	.clinical-metrics { grid-template-columns: 1fr 1fr; }
 	.clinical-metrics strong { font-size: 20px; }
-	.clinical-department-grid, .clinical-doctor-grid, .clinical-service-detail-grid, .clinical-directory-grid, .clinical-about-grid, .clinical-contact-grid, .clinical-testimonial-grid, .clinical-doctor-profile { grid-template-columns: 1fr; }
+	.clinical-department-grid, .clinical-doctor-grid, .clinical-article-grid, .clinical-service-detail-grid, .clinical-directory-grid, .clinical-about-grid, .clinical-contact-grid, .clinical-testimonial-grid, .clinical-doctor-profile { grid-template-columns: 1fr; }
+	.clinical-article-image { height: 190px; }
+	.clinical-article-detail-image { height: 210px; }
+	.clinical-article-copy { padding: 20px; }
 	.clinical-profile-portrait { min-height: 280px; }
 	.clinical-profile-facts { grid-template-columns: 1fr; }
 	.clinical-profile-contact, .clinical-mypage-grid { grid-template-columns: 1fr; }

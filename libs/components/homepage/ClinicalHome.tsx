@@ -6,6 +6,10 @@ import { useQuery as useReactQuery } from '@tanstack/react-query';
 import { GET_DOCTORS } from '@/apollo/doctor/query';
 import { DoctorSort } from '@/libs/components/doctor/enums/doctor.enum';
 import { GET_SERVICES } from '@/apollo/service/query';
+import { GET_ARTICLES } from '@/apollo/article/query';
+import { ArticleStatus } from '@/libs/components/article/enums/article.enum';
+import { Article } from '@/libs/components/article/types/article';
+import { fallbackArticles, ArticleCard } from '@/libs/components/article/ArticleCard';
 import type { HospitalStatus } from '@/pages/api/hospital-status';
 import Icon from '../common/Icon';
 import { resolveApiAsset } from '@/libs/config';
@@ -57,6 +61,7 @@ const ClinicalHome = () => {
 	}, []);
 	const servicesQuery = useApolloQuery(GET_SERVICES, { variables: { input: { page: 1, limit: 6, sort: 'serviceViews', direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const doctorsQuery = useApolloQuery(GET_DOCTORS, { variables: { input: { page: 1, limit: 3, sort: DoctorSort.POINTS, direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
+	const articlesQuery = useApolloQuery(GET_ARTICLES, { variables: { input: { page: 1, limit: 3, sort: 'createdAt', direction: 'DESC', search: { articleStatus: ArticleStatus.PUBLISHED } } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const { data: hospitalStatus = defaultStatus } = useReactQuery<HospitalStatus>({
 		queryKey: ['hospital-status'],
 		queryFn: async () => {
@@ -71,6 +76,7 @@ const ClinicalHome = () => {
 	const usingFallbackDoctors = !doctorsQuery.data?.getDoctors?.list?.length;
 	const services: ClinicalServiceCard[] = usingFallbackServices ? fallbackServices : servicesQuery.data.getServices.list.map((service: ClinicalServiceCard) => ({ ...service, serviceTitle: service.serviceTitle ?? 'Clinical service', serviceDesc: service.serviceDesc ?? 'Care from the MN Hospital clinical team.' }));
 	const doctors: ClinicalDoctorCard[] = usingFallbackDoctors ? fallbackDoctors : doctorsQuery.data.getDoctors.list;
+	const articles: Article[] = articlesQuery.data?.getArticles?.list?.length ? articlesQuery.data.getArticles.list : fallbackArticles;
 	const initials = (name?: string) => name?.replace(/^Dr\.\s*/i, '').split(' ').map((part) => part[0]).join('').slice(0, 2) || 'MN';
 
 	return <div className="clinical-home"><div className="clinical-workspace" id="home">
@@ -83,6 +89,7 @@ const ClinicalHome = () => {
 			<section className="clinical-content-section" id="departments"><SectionHeading kicker="SPECIALIZED CENTERS OF EXCELLENCE" title="Core Departments" linkLabel="View All Specializations" linkHref="/service" /><div className="clinical-department-grid">{services.slice(0, 4).map((service, index) => <article className="clinical-department" key={service._id}><div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{usingFallbackServices ? ['Cath Lab 24/7', 'Stroke Center', 'Robotic Joint Care', 'NICU Level III'][index] : labelForService(service.serviceType)}</span></div><h3>{serviceName(service)}</h3><p>{service.serviceDesc}</p><div className="clinical-dept-bottom"><span>{usingFallbackServices ? ['14 Surgeons • 98.6% Success', '11 Specialists • Rapid TPA', '16 Consultants • MAKO Robotic', '18 Pediatricians • Warm Care'][index] : `${Number(service.serviceViews ?? 0).toLocaleString('ko-KR')} views`}</span><Link href={usingFallbackServices ? '/service' : `/service/${service._id}`}>Explore <Icon name="chevron_right" /></Link></div></article>)}</div></section>
 
 			<section className="clinical-content-section clinical-doctors" id="doctors"><SectionHeading kicker="LEADING MEDICAL MINDS" title="Featured Doctors" linkLabel="Explore All Doctors" linkHref="/doctor" /><div className="clinical-doctor-grid">{doctors.map((doctor, index) => <article className="clinical-doctor-card" key={doctor._id}><div className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? 'teal' : index === 2 ? 'slate' : 'blue'}`}>{doctor.docImage ? (usingFallbackDoctors ? <Image src={doctor.docImage} alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty)}`} fill sizes="(max-width: 680px) calc(100vw - 64px), 245px" /> : <span className="clinical-api-doctor-image" style={{ backgroundImage: `url(${resolveApiAsset(doctor.docImage)})` }} />) : initials(doctor.docFullName)}<span className="clinical-rating"><Icon name="star" /> {Number(doctor.docPoints ?? 0).toFixed(1)} ({[320, 275, 410][index] ?? 120}+ reviews)</span></div><h3>{doctor.docFullName}</h3><b>{doctorRole(doctor.docSpecialty)}</b><p>{index === 0 ? 'MD, FACC' : index === 1 ? 'MD, PhD' : 'MBBS, FAAP'} • {Number(doctor.docExperience ?? 0)} Years Exp.</p><Link className="clinical-doctor-book" href={`/appointment?doctor=${doctor._id}`}>Book Consultation</Link></article>)}</div></section>
+			<section className="clinical-content-section clinical-articles" id="articles"><SectionHeading kicker="FROM THE MN HOSPITAL JOURNAL" title="Latest Articles" linkLabel="Explore All Articles" linkHref="/article" /><div className="clinical-article-grid">{articles.slice(0, 3).map((article) => <ArticleCard article={article} key={article._id} />)}</div></section>
 
 			<section className="clinical-trust-section"><div><span className="clinical-section-kicker">THE STANDARD OF HEALING</span><h2>Why Patients Choose MN Hospital</h2><p>We integrate compassionate clinical empathy with world-class tertiary healthcare standards to ensure optimal clinical outcomes and swift patient recuperation.</p></div><div className="clinical-trust-grid"><TrustItem icon="verified_user" title="Accredited Excellence" text="Fully certified by international Joint Commission International (JCI) and national healthcare audit boards for zero-compromise safety." /><TrustItem icon="biotech" title="Modern Diagnostic Labs" text="In-house 3T MRI, 128-slice dual source CT scanners, automated pathology, and same-day electronic test result delivery." /><TrustItem icon="favorite" title="Personalized Care" text="Dedicated patient coordinators, transparent billing plans, bedside telemetry, and post-discharge recovery monitoring." /></div></section>
 

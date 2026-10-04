@@ -6,6 +6,7 @@ const navigationItems = [
 	{ label: 'Home', href: '/', icon: 'home' },
 	{ label: 'Services', href: '/service', icon: 'medical_services' },
 	{ label: 'Doctors', href: '/doctor', icon: 'stethoscope' },
+	{ label: 'Articles', href: '/article', icon: 'article' },
 	{ label: 'Appointments', href: '/appointment', icon: 'calendar_month' },
 	{ label: 'Contact', href: '/contact', icon: 'support_agent' },
 ];
