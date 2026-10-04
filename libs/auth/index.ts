@@ -2,6 +2,7 @@ import { jwtDecode } from 'jwt-decode';
 import { initializeApollo } from '@/apollo/client';
 import { userVar } from '@/apollo/store';
 import { LOGIN, SIGN_UP, SOCIAL_AUTHENTICATE } from '@/apollo/member/mutation';
+import { LOGIN_DOCTOR } from '@/apollo/doctor/mutation';
 import { MemberSession } from '@/libs/components/member/types/member';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { getJwtToken, removeJwtToken, setJwtToken } from './token';
@@ -23,7 +24,8 @@ const syncSession = (token: string, member?: MemberSession) => {
 		return;
 	}
 	updateStorage(token);
-	userVar({ ...claims, ...member, _id: String(member?._id ?? claims._id ?? ''), memberNick: member?.memberNick ?? claims.memberNick ?? '' });
+	const doctorClaims = claims as JwtPayload & { docNick?: string; docFullName?: string; docImage?: string };
+	userVar({ ...claims, ...member, _id: String(member?._id ?? claims._id ?? ''), memberNick: member?.memberNick ?? claims.memberNick ?? doctorClaims.docNick ?? '', memberFullName: member?.memberFullName ?? claims.memberFullName ?? doctorClaims.docFullName, memberImage: member?.memberImage ?? claims.memberImage ?? doctorClaims.docImage ?? '' });
 };
 
 export type SocialProvider = 'GOOGLE' | 'NAVER' | 'KAKAO';
@@ -139,6 +141,14 @@ export const logIn = async (memberNick: string, memberPassword: string) => {
 	if (!member?.accessToken) throw new Error('The server did not return an access token.');
 	syncSession(member.accessToken, member);
 	return member;
+};
+
+export const logInDoctor = async (docNick: string, docPassword: string) => {
+	const result = await initializeApollo().mutate({ mutation: LOGIN_DOCTOR, variables: { input: { docNick, docPassword } }, fetchPolicy: 'network-only' });
+	const doctor = result.data?.loginDoctor as { _id: string; memberType: MemberType; docNick: string; docFullName: string; docImage: string; accessToken: string } | undefined;
+	if (!doctor?.accessToken) throw new Error('The server did not return an access token.');
+	syncSession(doctor.accessToken, { _id: doctor._id, memberType: doctor.memberType, memberNick: doctor.docNick, memberFullName: doctor.docFullName, memberImage: doctor.docImage, accessToken: doctor.accessToken });
+	return doctor;
 };
 
 const requestSignUp = async (memberNick: string, memberPassword: string, memberPhone: string, memberFullName?: string) => {

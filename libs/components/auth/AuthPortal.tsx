@@ -36,7 +36,8 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
 		setSubmitting(true);
 		try {
 			await logIn(loginForm.memberNick, loginForm.memberPassword);
-			await router.push('/mypage');
+			const destination = typeof router.query.redirect === 'string' && router.query.redirect.startsWith('/') && !router.query.redirect.startsWith('//') ? router.query.redirect : '/mypage';
+			await router.push(destination);
 		} catch (err: unknown) {
 			setError(err instanceof Error ? err.message : 'Unable to sign in. Please check your details.');
 		} finally { setSubmitting(false); }
@@ -70,6 +71,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
 				{mode === 'login' && error ? <p className="clinical-auth-error" role="alert">{error}</p> : null}
 				<button className="clinical-auth-submit" type="submit" disabled={submitting}>{submitting ? 'Signing in…' : 'Sign In'} <Icon name="arrow_forward" /></button>
 				<SocialAuthButtons mode="login" disabled={submitting} onError={setError} />
+				<Link className="clinical-doctor-login-link" href="/account/doctor-signin">Doctor sign in</Link>
 				<button className="clinical-auth-mobile-switch" type="button" onClick={() => switchMode('register')}>New patient? <b>Create account</b></button>
 			</form>
 

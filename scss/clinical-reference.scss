@@ -174,6 +174,8 @@ $clinical-muted: #70869a;
 .clinical-article-copy { padding: 24px 28px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(23,51,75,.05); }
 .clinical-article-copy p { max-width: 67ch; margin: 0 0 16px; color: #425466; font-size: 13px; line-height: 1.8; }
 .clinical-article-copy p:last-child { margin-bottom: 0; }
+.clinical-doctor-login-link { display: inline-block; margin-top: 12px; color: $clinical-primary; font-size: 11px; font-weight: 700; }
+.clinical-doctor-signin { display: grid; max-width: 420px; gap: 16px; margin: 0 auto; }
 @media (prefers-reduced-motion: reduce) { .clinical-hero-slide, .clinical-article-card, .clinical-article-image img { transition: none; } }
 .clinical-trust-section { padding: 32px; border-radius: 10px; background: $clinical-low; box-shadow: 0 2px 12px rgba(23, 51, 75, .04); }
 .clinical-trust-section > div:first-child { max-width: 620px; }
