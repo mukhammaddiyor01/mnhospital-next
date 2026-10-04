@@ -10,6 +10,7 @@ export interface Comment {
 	createdAt: string;
 	updatedAt: string;
 	memberData?: { memberNick: string; memberFullName?: string; memberImage?: string };
+	doctorData?: { docFullName: string; docImage?: string };
 }
 
 export interface CommentsInquiry {

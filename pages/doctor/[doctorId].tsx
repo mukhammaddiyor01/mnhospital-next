@@ -6,6 +6,8 @@ import { GET_DOCTOR } from '@/apollo/doctor/query';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
 import { resolveApiAsset } from '@/libs/config';
+import CommentsSection from '@/libs/components/comment/CommentsSection';
+import { ReferenceGroup } from '@/libs/components/comment/enums/comment.enum';
 
 const DoctorDetailPage = () => {
 	const router = useRouter();
@@ -32,6 +34,7 @@ const DoctorDetailPage = () => {
 			<div className="clinical-profile-portrait" style={doctor?.docImage ? { backgroundImage: `linear-gradient(145deg, rgba(18, 48, 74, .05), rgba(18, 48, 74, .7)), url(${resolveApiAsset(doctor.docImage)})` } : undefined}><span>{initials}</span></div>
 			<div className="clinical-profile-copy"><span className="clinical-section-kicker">{specialty}</span><h2>{name}</h2><p>{doctor?.docDesc ?? 'This profile is shown in preview mode until a matching doctor record is available from the API.'}</p><div className="clinical-profile-facts"><span><Icon name="workspace_premium" /><b>{doctor?.docExperience ?? 10}+ years</b><small>Experience</small></span><span><Icon name="groups" /><b>{doctor?.docPatients ?? 0}</b><small>Patients</small></span><span><Icon name="star" /><b>{Number(doctor?.docPoints ?? 0).toFixed(1)}</b><small>Rating</small></span></div>{error && <p className="clinical-form-error">The specialist profile could not be loaded. Please return to the directory and try again.</p>}<div className="clinical-profile-actions"><Link className="clinical-primary-button" href={`/appointment?doctor=${doctorId}`}>Book an appointment <Icon name="arrow_forward" /></Link><Link className="clinical-secondary-button" href="/doctor">All doctors</Link></div></div>
 		</section>
+		{doctor && <CommentsSection targetId={doctor._id} group={ReferenceGroup.DOCTOR} />}
 	</div>;
 };
 
