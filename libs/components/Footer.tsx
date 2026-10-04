@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Icon from './common/Icon';
 import MnLogo from './common/MnLogo';
+import SocialLinks from './common/SocialLinks';
 
 const Footer = () => <footer id="footer" className="clinical-footer">
 	<div className="clinical-footer-grid">
@@ -25,7 +26,7 @@ const Footer = () => <footer id="footer" className="clinical-footer">
 			<Link className="clinical-footer-cta" href="/appointment">Plan your visit <Icon name="arrow_forward" /></Link>
 		</div>
 	</div>
-	<div className="clinical-copyright"><span>© {new Date().getFullYear()} MN Hospital. All rights reserved.</span><a href="tel:103"><Icon name="emergency" /> Emergency: 103</a></div>
+	<div className="clinical-copyright"><span>© {new Date().getFullYear()} MN Hospital. All rights reserved.</span><a href="tel:103"><Icon name="emergency" /> Emergency: 103</a><SocialLinks /></div>
 </footer>;
 
 export default Footer;
