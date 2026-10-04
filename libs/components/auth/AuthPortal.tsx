@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { logIn, signUp } from '@/libs/auth';
 import Icon from '@/libs/components/common/Icon';
@@ -10,15 +10,24 @@ type AuthMode = 'login' | 'register';
 const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
 	const router = useRouter();
 	const [mode, setMode] = useState<AuthMode>(initialMode);
+	const [transitionMode, setTransitionMode] = useState<AuthMode | null>(null);
 	const [showLoginPassword, setShowLoginPassword] = useState(false);
 	const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 	const [loginForm, setLoginForm] = useState({ memberNick: '', memberPassword: '' });
 	const [registerForm, setRegisterForm] = useState({ memberFullName: '', memberNick: '', memberPhone: '', memberPassword: '' });
 	const [error, setError] = useState('');
 	const [submitting, setSubmitting] = useState(false);
+	useEffect(() => {
+		setMode(initialMode);
+		setTransitionMode(null);
+		setError('');
+	}, [initialMode]);
 
 	const switchMode = (nextMode: AuthMode) => {
+		if (nextMode === mode) return;
+		if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
 		setError('');
+		setTransitionMode(nextMode);
 		setMode(nextMode);
 	};
 	const submitLogin = async (event: FormEvent) => {
@@ -45,10 +54,12 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
 	};
 
 	return <div className="clinical-auth-page">
-		<div className={`clinical-auth-card ${mode === 'register' ? 'is-register' : ''}`}>
+		<div className={`clinical-auth-card ${mode === 'register' ? 'is-register' : ''} ${transitionMode ? `animate-${transitionMode}` : ''}`}>
 			<div className="clinical-auth-visual" aria-live="polite">
-				<div className="clinical-auth-visual-content clinical-auth-welcome-register"><span className="clinical-auth-shield"><Icon name="health_and_safety" /></span><span className="clinical-auth-kicker">ALREADY A PATIENT?</span><h2>Welcome back.</h2><p>Sign in to review appointments and continue your care journey.</p><button type="button" onClick={() => switchMode('login')}>Sign In</button></div>
-				<div className="clinical-auth-visual-content clinical-auth-welcome-login"><span className="clinical-auth-shield"><Icon name="favorite" /></span><span className="clinical-auth-kicker">NEW TO MN HOSPITAL?</span><h2>Hello there.</h2><p>Create your secure patient account and manage care in one place.</p><button type="button" onClick={() => switchMode('register')}>Create Account</button></div>
+				<div className="clinical-auth-card-bg clinical-auth-card-bg-1" aria-hidden="true" />
+				<div className="clinical-auth-card-bg clinical-auth-card-bg-2" aria-hidden="true" />
+				<div className="clinical-auth-visual-content clinical-auth-welcome-register" aria-hidden={mode !== 'register'}><span className="clinical-auth-shield"><Icon name="health_and_safety" /></span><span className="clinical-auth-kicker">ALREADY A PATIENT?</span><h2>Welcome back.</h2><p>Sign in to review appointments and continue your care journey.</p><button type="button" tabIndex={mode === 'register' ? 0 : -1} onClick={() => switchMode('login')}>Sign In</button></div>
+				<div className="clinical-auth-visual-content clinical-auth-welcome-login" aria-hidden={mode !== 'login'}><span className="clinical-auth-shield"><Icon name="favorite" /></span><span className="clinical-auth-kicker">NEW TO MN HOSPITAL?</span><h2>Hello there.</h2><p>Create your secure patient account and manage care in one place.</p><button type="button" tabIndex={mode === 'login' ? 0 : -1} onClick={() => switchMode('register')}>Create Account</button></div>
 			</div>
 
 			<form className="clinical-auth-form clinical-login-form" onSubmit={submitLogin} aria-hidden={mode !== 'login'}>
