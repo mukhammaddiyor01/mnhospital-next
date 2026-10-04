@@ -11,6 +11,7 @@ export interface Article {
 	articleLikes: number;
 	articleViews: number;
 	articleComments: number;
+	meLiked?: Array<{ memberId: string; likeRefId: string; myFavorite: boolean }>;
 	createdAt: string;
 	updatedAt: string;
 }

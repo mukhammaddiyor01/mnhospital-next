@@ -156,6 +156,10 @@ $clinical-muted: #70869a;
 .clinical-article-image img { object-fit: cover; transition: transform .3s; }
 .clinical-article-card:hover .clinical-article-image img { transform: scale(1.04); }
 .clinical-article-body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 14px; }
+.clinical-article-card-top, .clinical-article-actions { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; }
+.clinical-article-card-top .like-button, .clinical-article-actions .like-button { color: $clinical-primary; border-color: $clinical-line; }
+.clinical-article-card-top .like-button.liked, .clinical-article-actions .like-button.liked { color: #dc4c64; }
+.clinical-article-actions { justify-content: flex-start; margin-top: 14px; color: $clinical-muted; font-size: 10px; }
 .clinical-article-category { padding: 3px 7px; color: $clinical-primary; border-radius: 4px; background: $clinical-primary-soft; font-size: 8px; font-weight: 800; letter-spacing: .06em; }
 .clinical-article-body h3 { margin: 10px 0 6px; color: $clinical-navy; font: 700 13px/1.35 'Manrope', Arial, sans-serif; }
 .clinical-article-body h3 a:hover { color: $clinical-primary; }
