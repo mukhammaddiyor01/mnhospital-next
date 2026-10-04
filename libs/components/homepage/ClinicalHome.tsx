@@ -16,6 +16,7 @@ import { resolveApiAsset } from '@/libs/config';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
 import { ClinicalDoctorCard, ClinicalServiceCard } from './types/clinical-home';
 import { DoctorSpecialty } from '../doctor/enums/doctor.enum';
+import DepartmentSwiper from './DepartmentSwiper';
 
 const heroSlides = [
 	{ image: '/img/hospital-care-1.png', alt: 'A doctor welcoming a patient in a bright hospital atrium', title: 'Care that starts with listening', description: 'Expert guidance in a welcoming space.' },
@@ -42,9 +43,7 @@ const fallbackDoctors: ClinicalDoctorCard[] = [
 	{ _id: 'sarah-jenkins', docFullName: 'Dr. Sarah Jenkins', docSpecialty: DoctorSpecialty.PEDIATRICIAN, docExperience: 12, docPoints: 4.9, docImage: DOCTOR_IMAGES[2] },
 ];
 
-const iconForService = (serviceType?: string) => ({ CARDIOLOGY: 'cardiology', NEUROLOGY: 'neurology', ORTHOPEDICS: 'orthopedics', PEDIATRICS: 'child_care' }[serviceType ?? ''] ?? 'medical_services');
 const labelForService = (serviceType?: string) => String(serviceType ?? 'Clinical service').replaceAll('_', ' ');
-const serviceName = (service: ClinicalServiceCard) => service.serviceTitle ?? 'Clinical service';
 const doctorRole = (specialty?: string) => {
 	if (specialty === DoctorSpecialty.CARDIOLOGIST) return 'Chief Interventional Cardiologist';
 	if (specialty === DoctorSpecialty.NEUROLOGIST) return 'Head of Neurosurgery';
@@ -86,7 +85,7 @@ const ClinicalHome = () => {
 
 			<section className="clinical-metrics"><Metric value={hospitalStatus.yearsExperience} label="Years Experience" note="Pioneering medicine" /><Metric value={hospitalStatus.expertDoctors} label="Expert Doctors" note="Board-certified specialists" /><Metric value={hospitalStatus.patientSatisfaction} label="Patient Satisfaction" note="Verified survey ratings" teal /><Metric value={hospitalStatus.emergencyCare} label="Emergency Care" note="Always available" /></section>
 
-			<section className="clinical-content-section" id="departments"><SectionHeading kicker="SPECIALIZED CENTERS OF EXCELLENCE" title="Core Departments" linkLabel="View All Specializations" linkHref="/service" /><div className="clinical-department-grid">{services.slice(0, 4).map((service, index) => <article className="clinical-department" key={service._id}><div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{usingFallbackServices ? ['Cath Lab 24/7', 'Stroke Center', 'Robotic Joint Care', 'NICU Level III'][index] : labelForService(service.serviceType)}</span></div><h3>{serviceName(service)}</h3><p>{service.serviceDesc}</p><div className="clinical-dept-bottom"><span>{usingFallbackServices ? ['14 Surgeons • 98.6% Success', '11 Specialists • Rapid TPA', '16 Consultants • MAKO Robotic', '18 Pediatricians • Warm Care'][index] : `${Number(service.serviceViews ?? 0).toLocaleString('ko-KR')} views`}</span><Link href={usingFallbackServices ? '/service' : `/service/${service._id}`}>Explore <Icon name="chevron_right" /></Link></div></article>)}</div></section>
+			<section className="clinical-content-section" id="departments"><SectionHeading kicker="SPECIALIZED CENTERS OF EXCELLENCE" title="Core Departments" linkLabel="View All Specializations" linkHref="/service" /><DepartmentSwiper services={services} usingFallback={usingFallbackServices} /></section>
 
 			<section className="clinical-content-section clinical-doctors" id="doctors"><SectionHeading kicker="LEADING MEDICAL MINDS" title="Featured Doctors" linkLabel="Explore All Doctors" linkHref="/doctor" /><div className="clinical-doctor-grid">{doctors.map((doctor, index) => <article className="clinical-doctor-card" key={doctor._id}><div className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? 'teal' : index === 2 ? 'slate' : 'blue'}`}>{doctor.docImage ? (usingFallbackDoctors ? <Image src={doctor.docImage} alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty)}`} fill sizes="(max-width: 680px) calc(100vw - 64px), 245px" /> : <span className="clinical-api-doctor-image" style={{ backgroundImage: `url(${resolveApiAsset(doctor.docImage)})` }} />) : initials(doctor.docFullName)}<span className="clinical-rating"><Icon name="star" /> {Number(doctor.docPoints ?? 0).toFixed(1)} ({[320, 275, 410][index] ?? 120}+ reviews)</span></div><h3>{doctor.docFullName}</h3><b>{doctorRole(doctor.docSpecialty)}</b><p>{index === 0 ? 'MD, FACC' : index === 1 ? 'MD, PhD' : 'MBBS, FAAP'} • {Number(doctor.docExperience ?? 0)} Years Exp.</p><Link className="clinical-doctor-book" href={`/appointment?doctor=${doctor._id}`}>Book Consultation</Link></article>)}</div></section>
 			<section className="clinical-content-section clinical-articles" id="articles"><SectionHeading kicker="FROM THE MN HOSPITAL JOURNAL" title="Latest Articles" linkLabel="Explore All Articles" linkHref="/article" /><div className="clinical-article-grid">{articles.slice(0, 3).map((article) => <ArticleCard article={article} key={article._id} />)}</div></section>

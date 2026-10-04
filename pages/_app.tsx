@@ -4,6 +4,9 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useApollo } from '@/apollo/client';
 import { createQueryClient } from '@/libs/query/query-client';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
 import '@/scss/app.scss';
 
 export default function App({ Component, pageProps }: AppProps) {

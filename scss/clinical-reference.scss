@@ -130,6 +130,14 @@ $clinical-muted: #70869a;
 .clinical-section-heading > a, .clinical-dept-bottom a { display: inline-flex; align-items: center; gap: 3px; color: $clinical-primary; font-size: 9px; font-weight: 800; }
 .clinical-section-heading > a .material-symbols-rounded, .clinical-dept-bottom a .material-symbols-rounded { font-size: 14px; }
 .clinical-department-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.clinical-department-swiper { overflow: hidden; margin: -8px -12px 0; padding: 0 12px; }
+.clinical-department-swiper .swiper { overflow: visible; padding: 12px 0 36px; }
+.clinical-department-swiper.is-single .swiper { max-width: 400px; }
+.clinical-department-swiper .swiper-slide { height: auto; }
+.clinical-department-swiper .clinical-department { height: 100%; border: 1px solid $clinical-line; }
+.clinical-department-swiper .swiper-pagination { bottom: 1px; }
+.clinical-department-swiper .swiper-pagination-bullet { width: 8px; height: 8px; background: #8aa9bc; opacity: .55; }
+.clinical-department-swiper .swiper-pagination-bullet-active { width: 22px; border-radius: 9px; background: $clinical-primary; opacity: 1; }
 .clinical-department { padding: 20px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(23, 51, 75, .05); transition: .2s; }
 .clinical-department:hover, .clinical-directory-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(23, 51, 75, .09); }
 .clinical-department-top { display: flex; align-items: center; justify-content: space-between; }
