@@ -188,6 +188,9 @@ $clinical-muted: #70869a;
 .clinical-profile-list a { display: flex; flex-direction: column; gap: 5px; padding: 17px; border-radius: 8px; background: #fff; box-shadow: 0 4px 16px rgba(23,51,75,.05); }
 .clinical-profile-list strong { color: $clinical-navy; font-size: 12px; }
 .clinical-profile-list span { color: $clinical-muted; font-size: 10px; }
+.clinical-patient-activity { display: grid; gap: 24px; margin-top: 18px; }
+.clinical-patient-activity > div h2 { margin: 0 0 12px; color: $clinical-navy; font: 700 17px 'Manrope', Arial, sans-serif; }
+.clinical-patient-activity .clinical-profile-list a:hover { color: $clinical-primary; box-shadow: 0 8px 22px rgba(23, 51, 75, .1); }
 .clinical-public-profile { display: flex; align-items: center; gap: 20px; }
 .clinical-public-profile h2 { margin: 0 0 5px; color: $clinical-navy; }
 .clinical-public-profile p { margin: 0 0 12px; color: $clinical-muted; }

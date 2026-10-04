@@ -45,3 +45,21 @@ export const GET_RECOMMENDED_SERVICES = gql`
 		}
 	}
 `;
+
+export const GET_VISITED_SERVICES = gql`
+	query GetVisitedServices($input: OrdinaryInquiry!) {
+		getVisited(input: $input) {
+			list { _id serviceTitle serviceDesc serviceType serviceImages }
+			metaCounter { total }
+		}
+	}
+`;
+
+export const GET_FAVORITE_SERVICES = gql`
+	query GetFavoriteServices($input: OrdinaryInquiry!) {
+		getFavorites(input: $input) {
+			list { _id serviceTitle serviceDesc serviceType serviceImages }
+			metaCounter { total }
+		}
+	}
+`;
