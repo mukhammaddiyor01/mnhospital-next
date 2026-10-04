@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_DOCTOR_FOLLOWERS, GET_DOCTOR_FOLLOWINGS, GET_MEMBER_FOLLOWERS, GET_MEMBER_FOLLOWINGS } from '@/apollo/follow/query';
 
@@ -14,14 +15,19 @@ const asMember = (member?: MemberInfo): Person | null => member ? { _id: member.
 const asDoctor = (doctor?: DoctorInfo): Person | null => doctor ? { _id: doctor._id, name: doctor.docFullName, href: `/doctor/${doctor._id}` } : null;
 
 const FollowLists = ({ profileId, kind }: { profileId: string; kind: 'doctor' | 'patient' }) => {
+	const [followerLimit, setFollowerLimit] = useState(50);
+	const [followingLimit, setFollowingLimit] = useState(50);
 	const validId = /^[a-f\d]{24}$/i.test(profileId);
-	const memberFollowers = useQuery(GET_MEMBER_FOLLOWERS, { variables: { input: { page: 1, limit: 50, search: { followingId: profileId } } }, skip: !validId || kind !== 'patient' });
-	const doctorFollowers = useQuery(GET_DOCTOR_FOLLOWERS, { variables: { input: { page: 1, limit: 50, search: { doctorId: profileId } } }, skip: !validId || kind !== 'doctor' });
-	const memberFollowings = useQuery(GET_MEMBER_FOLLOWINGS, { variables: { input: { page: 1, limit: 50, search: { followerId: profileId } } }, skip: !validId });
-	const doctorFollowings = useQuery(GET_DOCTOR_FOLLOWINGS, { variables: { input: { page: 1, limit: 50, search: { memberId: profileId } } }, skip: !validId });
+	const memberFollowers = useQuery(GET_MEMBER_FOLLOWERS, { variables: { input: { page: 1, limit: followerLimit, search: { followingId: profileId } } }, skip: !validId || kind !== 'patient' });
+	const doctorFollowers = useQuery(GET_DOCTOR_FOLLOWERS, { variables: { input: { page: 1, limit: followerLimit, search: { doctorId: profileId } } }, skip: !validId || kind !== 'doctor' });
+	const memberFollowings = useQuery(GET_MEMBER_FOLLOWINGS, { variables: { input: { page: 1, limit: followingLimit, search: { followerId: profileId } } }, skip: !validId });
+	const doctorFollowings = useQuery(GET_DOCTOR_FOLLOWINGS, { variables: { input: { page: 1, limit: followingLimit, search: { memberId: profileId } } }, skip: !validId });
 	const followers = kind === 'doctor' ? (doctorFollowers.data?.getDoctorFollowers?.list ?? []).map((item: DoctorFollower) => asMember(item.memberData) ?? asDoctor(item.followerDoctorData)) : (memberFollowers.data?.getMemberFollowers?.list ?? []).map((item: MemberFollower) => asMember(item.followerData) ?? asDoctor(item.followerDoctorData));
 	const followings = [...(memberFollowings.data?.getMemberFollowings?.list ?? []).map((item: MemberFollowing) => asMember(item.followingData)), ...(doctorFollowings.data?.getDoctorFollowings?.list ?? []).map((item: DoctorFollowing) => asDoctor(item.doctorData))];
-	return <section className="clinical-follow-grid"><div><h2>Followers</h2>{followers.filter(Boolean).length ? <ul>{followers.filter(Boolean).map((person: Person) => <li key={person._id}><Link href={person.href}>{person.name}</Link></li>)}</ul> : <p>No followers yet.</p>}</div><div><h2>Following</h2>{followings.filter(Boolean).length ? <ul>{followings.filter(Boolean).map((person: Person) => <li key={person._id}><Link href={person.href}>{person.name}</Link></li>)}</ul> : <p>Not following anyone yet.</p>}</div></section>;
+	const followerQuery = kind === 'doctor' ? doctorFollowers : memberFollowers;
+	const followerTotal = kind === 'doctor' ? doctorFollowers.data?.getDoctorFollowers?.metaCounter?.[0]?.total ?? 0 : memberFollowers.data?.getMemberFollowers?.metaCounter?.[0]?.total ?? 0;
+	const followingTotal = (memberFollowings.data?.getMemberFollowings?.metaCounter?.[0]?.total ?? 0) + (doctorFollowings.data?.getDoctorFollowings?.metaCounter?.[0]?.total ?? 0);
+	return <section className="clinical-follow-grid"><div><h2>Followers</h2>{followers.filter(Boolean).length ? <ul>{followers.filter(Boolean).map((person: Person) => <li key={person._id}><Link href={person.href}>{person.name}</Link></li>)}</ul> : <p>{followerQuery.loading ? 'Loading followers…' : followerQuery.error ? 'Followers are temporarily unavailable.' : 'No followers yet.'}</p>}{followers.length < followerTotal && <button type="button" onClick={() => setFollowerLimit((limit) => limit + 50)}>Show more followers</button>}</div><div><h2>Following</h2>{followings.filter(Boolean).length ? <ul>{followings.filter(Boolean).map((person: Person) => <li key={person._id}><Link href={person.href}>{person.name}</Link></li>)}</ul> : <p>{memberFollowings.loading || doctorFollowings.loading ? 'Loading following…' : memberFollowings.error || doctorFollowings.error ? 'Following list is temporarily unavailable.' : 'Not following anyone yet.'}</p>}{followings.length < followingTotal && <button type="button" onClick={() => setFollowingLimit((limit) => limit + 50)}>Show more following</button>}</div></section>;
 };
 
 export default FollowLists;
