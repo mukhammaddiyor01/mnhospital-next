@@ -12,7 +12,22 @@ $clinical-muted: #70869a;
 
 .clinical-shell { max-width: 1300px; min-height: 100vh; margin: 0 auto; color: $clinical-text; background: $clinical-surface; box-shadow: 0 4px 20px rgba(23, 51, 75, .06); font: 13px/1.55 'DM Sans', Arial, sans-serif; }
 .clinical-header { position: sticky; z-index: 20; top: 0; border-bottom: 1px solid $clinical-line; background: rgba(246, 250, 253, .94); backdrop-filter: blur(14px); }
-.clinical-header-inner { display: flex; width: min(820px, calc(100% - 32px)); height: 80px; align-items: center; gap: 18px; margin: auto; }
+.clinical-header-inner { position: relative; z-index: 1; display: flex; width: min(820px, calc(100% - 32px)); height: 80px; align-items: center; gap: 18px; margin: auto; }
+.clinical-animated-wave { position: absolute; z-index: 0; right: 0; left: 0; height: 56px; overflow: hidden; pointer-events: none; }
+.clinical-animated-wave svg { display: block; width: 100%; height: 100%; }
+.clinical-animated-wave--header { bottom: -42px; transform: rotate(180deg); }
+.clinical-animated-wave--footer { top: -42px; }
+.clinical-wave-layer { transform-box: view-box; transform-origin: left center; animation: mn-wave-drift 10s linear infinite; }
+.clinical-wave-layer--back { opacity: .55; animation-duration: 10s; }
+.clinical-wave-layer--middle { opacity: .75; animation-duration: 8s; animation-direction: reverse; }
+.clinical-wave-layer--front { opacity: .96; animation-duration: 6s; }
+.clinical-animated-wave--header .clinical-wave-layer--back { fill: #79bee4; }
+.clinical-animated-wave--header .clinical-wave-layer--middle { fill: #b4ddf0; }
+.clinical-animated-wave--header .clinical-wave-layer--front { fill: #eaf5fb; }
+.clinical-animated-wave--footer .clinical-wave-layer--back { fill: #376078; }
+.clinical-animated-wave--footer .clinical-wave-layer--middle { fill: #2b4354; }
+.clinical-animated-wave--footer .clinical-wave-layer--front { fill: #202832; }
+@keyframes mn-wave-drift { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 .mn-logo { display: inline-flex; align-items: center; gap: 10px; color: #12304a; text-decoration: none; white-space: nowrap; }
 .mn-logo__mark { display: block; width: 64px; height: 40px; flex: none; object-fit: contain; transform-origin: center; }
 .mn-logo__name { font: 800 19px/1 'Manrope', Arial, sans-serif; }
@@ -475,8 +490,7 @@ $clinical-muted: #70869a;
 .clinical-oauth-status .material-symbols-rounded { font-size: 30px; }
 .clinical-oauth-loader { width: 22px; height: 22px; margin-top: 6px; border: 2px solid #dce9f2; border-top-color: $clinical-primary; border-radius: 50%; animation: clinical-spin .8s linear infinite; }
 @keyframes clinical-spin { to { transform: rotate(360deg); } }
-.clinical-footer { position: relative; width: 100%; margin: auto; padding: 54px 0 84px; overflow: hidden; color: #d4dce4; background: linear-gradient(125deg, #202832, #111923 76%); }
-.clinical-footer::before { position: absolute; top: -27px; left: -4%; width: 108%; height: 48px; border-radius: 50%; background: $clinical-surface; content: ''; }
+.clinical-footer { position: relative; width: 100%; margin: auto; padding: 54px 0 84px; color: #d4dce4; background: linear-gradient(125deg, #202832, #111923 76%); }
 .clinical-footer-grid, .clinical-copyright { position: relative; width: min(920px, calc(100% - 40px)); margin-right: auto; margin-left: auto; }
 .clinical-footer-grid { display: grid; grid-template-columns: .9fr 1.1fr 1.35fr; gap: 38px; align-items: start; }
 .clinical-footer h2 { position: relative; margin: 0 0 26px; color: #fff; font: 800 15px 'Manrope', Arial, sans-serif; }
@@ -591,6 +605,7 @@ $clinical-muted: #70869a;
 
 @media (prefers-reduced-motion: reduce) {
 	.clinical-auth-card .clinical-auth-card-bg { animation: none; }
+	.clinical-wave-layer { animation: none; }
 	.clinical-auth-visual-content, .clinical-auth-form, .clinical-auth-card.animate-register .clinical-register-form, .clinical-auth-card.animate-login .clinical-login-form { transition-duration: .01ms; transition-delay: 0ms; }
 	.clinical-oauth-loader { animation-duration: 2s; }
 }

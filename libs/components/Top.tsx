@@ -6,6 +6,7 @@ import { userVar } from '@/apollo/store';
 import { resolveApiAsset } from '@/libs/config';
 import { MemberType } from './member/enums/member.enum';
 import MnLogo from './common/MnLogo';
+import AnimatedWave from './common/AnimatedWave';
 
 const Top = () => {
 	const router = useRouter();
@@ -27,6 +28,7 @@ const Top = () => {
 				{isHome ? <form className="clinical-header-search" onSubmit={searchHandler}><img className="clinical-search-mark" src="/img/mn-logo-mark.png" alt="" width={24} height={20} /><input name="globalSearch" placeholder="Search doctors, treatments, services..." aria-label="Search doctors, treatments, services" /></form> : null}
 				<div className="clinical-header-actions"><Link className="clinical-book-top" href="/appointment">Book an Appointment</Link>{user._id ? <Link className="clinical-profile" href={user.memberType === MemberType.DOCTOR ? `/doctor/${user._id}` : '/mypage'} aria-label="Open my profile" title="My profile" style={user.memberImage ? { backgroundImage: `url(${resolveApiAsset(user.memberImage)})` } : undefined}><span>{initials}</span></Link> : <Link className="clinical-signup-top" href="/account/join">Sign Up</Link>}</div>
 			</div>
+			<AnimatedWave variant="header" />
 		</header>
 	);
 };

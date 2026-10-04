@@ -2,8 +2,10 @@ import Link from 'next/link';
 import Icon from './common/Icon';
 import MnLogo from './common/MnLogo';
 import SocialLinks from './common/SocialLinks';
+import AnimatedWave from './common/AnimatedWave';
 
 const Footer = () => <footer id="footer" className="clinical-footer">
+	<AnimatedWave variant="footer" />
 	<div className="clinical-footer-grid">
 		<nav className="clinical-footer-links" aria-label="Footer navigation">
 			<h2>Explore MN Hospital</h2>
