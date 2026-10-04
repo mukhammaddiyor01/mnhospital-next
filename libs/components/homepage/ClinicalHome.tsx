@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery as useApolloQuery } from '@apollo/client';
@@ -13,7 +13,11 @@ import AdvertisementRail from '../advertisement/AdvertisementRail';
 import { ClinicalDoctorCard, ClinicalServiceCard } from './types/clinical-home';
 import { DoctorSpecialty } from '../doctor/enums/doctor.enum';
 
-const HERO_IMAGE = 'https://lh3.googleusercontent.com/aida-public/AB6AXuA7hsoTilygtbDlOFYiqr2mazgMR4djba8ywLLgQZbikcx7t4eaLXyZuiU1sncQPj5COIWd3pr_8t7o_hbXO8ghR_kuxQsadwwDIUd4DilK2IZESkX3cDY5-DkaLfTIMR3WHPdOx3KIhErqLt13V7tAzrri9Yk7boKHSIjonsetredqp7kRz-IddhQNEYLJK4TpZWDCPRQjXicU6vbOMAQZIGICIcyVe-Xe5QI_0DsM6J1XOS7O88o';
+const heroSlides = [
+	{ image: '/img/hospital-care-1.png', alt: 'A doctor welcoming a patient in a bright hospital atrium', title: 'Care that starts with listening', description: 'Expert guidance in a welcoming space.' },
+	{ image: '/img/hospital-care-2.png', alt: 'Hospital clinicians working together to care for patients', title: 'One team, focused on you', description: 'Specialists working together at every step.' },
+	{ image: '/img/hospital-care-3.png', alt: 'A doctor speaking with a patient in a modern consultation room', title: 'Confidence in every conversation', description: 'Personal attention backed by modern medicine.' },
+];
 const DOCTOR_IMAGES = [
 	'https://lh3.googleusercontent.com/aida-public/AB6AXuDyGWUmFaFNNKb39AJE2xMhslQLzNLzJvaV_C_9Krb8blYzpIbKB7-spdN-HGAPziwGDPwyuwIiAb77hACMeb6AQ_wRu9qnvwdmeQs3D9TdWlhWn3f78PiYFMjxgTYn2FGg0f6xr_K1gLONVx6khPETq6iGluZx-MJAtu84nKKcG0pfq_jhGec8giKsl0oYuvkjrzm4Td0BY-QaSK8n90bSxiDDmECyQ69ZD9DAjNOaqrXouUgC9Zw',
 	'https://lh3.googleusercontent.com/aida-public/AB6AXuD6yiFf39ntPB3zOaXegzPZfEanLkr6CcEvLg8kQKR9WmxBrvu-_yz5Ko22NOqXOaquAZQui5_J6leE0Ae428cNUYCCSCCip7BE7HUbXkWxYOZt9vUC0JheTuVFm0jxg4CxuJhX1a8VUsk5yrqv9hSo7JutCqVtJt57toFqNis2Gtz71_4OwS2MwWuF-zVj6n7QlaqJhv0smjm_wc5ZBZxWpfIu6HxZ3KHfcgEoh58wsGcj8kFKcwQ',
@@ -46,6 +50,11 @@ const doctorRole = (specialty?: string) => {
 
 const ClinicalHome = () => {
 	const [notice, setNotice] = useState('');
+	const [activeSlide, setActiveSlide] = useState(0);
+	useEffect(() => {
+		const timer = window.setInterval(() => setActiveSlide((current) => (current + 1) % heroSlides.length), 3000);
+		return () => window.clearInterval(timer);
+	}, []);
 	const servicesQuery = useApolloQuery(GET_SERVICES, { variables: { input: { page: 1, limit: 6, sort: 'serviceViews', direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const doctorsQuery = useApolloQuery(GET_DOCTORS, { variables: { input: { page: 1, limit: 3, sort: DoctorSort.POINTS, direction: 'DESC', search: {} } }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const { data: hospitalStatus = defaultStatus } = useReactQuery<HospitalStatus>({
@@ -67,7 +76,7 @@ const ClinicalHome = () => {
 	return <div className="clinical-home"><div className="clinical-workspace" id="home">
 		<AdvertisementRail side="left" />
 		<div className="clinical-center-column">
-			<section className="clinical-hero-card"><div className="clinical-accreditation"><Icon name="verified" /> NABH &amp; JCI ACCREDITED EXCELLENCE</div><h1>Clinical Precision &amp; Empathetic Care</h1><p>MN Hospital combines advanced robotic surgery suites, AI-assisted diagnostic imaging, and world-renowned multidisciplinary specialists to deliver patient-centered healthcare designed for swift recovery.</p><div className="clinical-hero-actions"><Link className="clinical-primary-button" href="/appointment"><Icon name="calendar_month" /> Book an Appointment</Link><Link className="clinical-secondary-button" href="/service"><Icon name="medical_services" /> Explore Services</Link></div><div className="clinical-hero-visual"><Image src={HERO_IMAGE} alt="A clinician caring for a patient in the modern MN Hospital atrium" fill priority sizes="(max-width: 1120px) calc(100vw - 64px), 768px" /><div className="clinical-hero-image-overlay" /><div className="clinical-visual-copy"><span className="clinical-emergency-icon"><Icon name="e911_emergency" /></span><span><strong>Critical Trauma &amp; Emergency Wing</strong><small>Immediate triage access 24 hours a day, 7 days a week</small></span></div><span className="clinical-level-badge">Level 1 Trauma</span></div></section>
+			<section className="clinical-hero-card"><div className="clinical-accreditation"><Icon name="verified" /> NABH &amp; JCI ACCREDITED EXCELLENCE</div><h1>Clinical Precision &amp; Empathetic Care</h1><p>MN Hospital combines advanced robotic surgery suites, AI-assisted diagnostic imaging, and world-renowned multidisciplinary specialists to deliver patient-centered healthcare designed for swift recovery.</p><div className="clinical-hero-actions"><Link className="clinical-primary-button" href="/appointment"><Icon name="calendar_month" /> Book an Appointment</Link><Link className="clinical-secondary-button" href="/service"><Icon name="medical_services" /> Explore Services</Link></div><div className="clinical-hero-visual" role="region" aria-label="MN Hospital care highlights"><div className="clinical-hero-slides">{heroSlides.map((slide, index) => <div className={`clinical-hero-slide ${activeSlide === index ? 'is-active' : ''}`} aria-hidden={activeSlide !== index} key={slide.image}><Image src={slide.image} alt={slide.alt} fill priority={index === 0} sizes="(max-width: 1120px) calc(100vw - 64px), 768px" /></div>)}</div><div className="clinical-hero-image-overlay" /><div className="clinical-visual-copy"><span className="clinical-emergency-icon"><Icon name="favorite" /></span><span><strong>{heroSlides[activeSlide].title}</strong><small>{heroSlides[activeSlide].description}</small></span></div><div className="clinical-hero-dots" aria-label="Choose a hospital highlight">{heroSlides.map((slide, index) => <button type="button" className={activeSlide === index ? 'is-active' : ''} aria-label={`Show image ${index + 1}: ${slide.title}`} aria-current={activeSlide === index ? 'true' : undefined} onClick={() => setActiveSlide(index)} key={slide.image} />)}</div></div></section>
 
 			<section className="clinical-metrics"><Metric value={hospitalStatus.yearsExperience} label="Years Experience" note="Pioneering medicine" /><Metric value={hospitalStatus.expertDoctors} label="Expert Doctors" note="Board-certified specialists" /><Metric value={hospitalStatus.patientSatisfaction} label="Patient Satisfaction" note="Verified survey ratings" teal /><Metric value={hospitalStatus.emergencyCare} label="Emergency Care" note="Always available" /></section>
 

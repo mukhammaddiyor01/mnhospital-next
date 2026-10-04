@@ -95,6 +95,13 @@ $clinical-muted: #70869a;
 .clinical-light-button { color: $clinical-navy; background: #fff; }
 .clinical-hero-visual { position: relative; height: 256px; margin-top: 28px; overflow: hidden; border-radius: 10px; background: #dfe8ee; }
 .clinical-hero-visual > img { object-fit: cover; object-position: center; }
+.clinical-hero-slides, .clinical-hero-slide { position: absolute; inset: 0; }
+.clinical-hero-slide { opacity: 0; transition: opacity .7s ease; }
+.clinical-hero-slide.is-active { opacity: 1; }
+.clinical-hero-slide img { object-fit: cover; object-position: center 42%; }
+.clinical-hero-dots { position: absolute; z-index: 3; right: 18px; bottom: 20px; display: flex; gap: 6px; }
+.clinical-hero-dots button { width: 8px; height: 8px; padding: 0; border: 1px solid #fff; border-radius: 50%; background: rgba(255,255,255,.45); cursor: pointer; }
+.clinical-hero-dots button.is-active { width: 19px; border-radius: 8px; background: #fff; }
 .clinical-hero-image-overlay { position: absolute; z-index: 1; inset: 0; background: linear-gradient(0deg, rgba(16, 47, 70, .82), transparent 72%); }
 .clinical-visual-copy { position: absolute; z-index: 2; bottom: 17px; left: 18px; display: flex; align-items: center; gap: 10px; color: #fff; }
 .clinical-visual-copy > span:last-child, .clinical-visual-copy strong, .clinical-visual-copy small { display: block; }
