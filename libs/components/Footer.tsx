@@ -1,10 +1,31 @@
 import Link from 'next/link';
+import Icon from './common/Icon';
+import MnLogo from './common/MnLogo';
 
-const Footer = () => (
-	<footer className="clinical-footer">
-		<div className="clinical-footer-grid"><div><strong>▣ MN Hospital</strong><p>Providing compassionate, precision-driven healthcare with leading medical specialists and advanced clinical technology.</p><p>⌖ 742 Evergreen Medical Park, Sector 4<br />☎ +1 (800) 555-0199</p></div><div><strong>Quick Links</strong><Link href="/">Home</Link><Link href="/service">Medical Services</Link><Link href="/doctor">Find a Doctor</Link><Link href="/article">Articles</Link><Link href="/about">About MN Hospital</Link><Link href="/contact">Contact &amp; Support</Link><Link href="/appointment">Book an Appointment</Link></div><div><strong>Working Hours</strong><p>Emergency Care: <b>24/7 Available</b></p><p>Mon–Fri: 08:00 AM–08:00 PM<br />Saturday: 09:00 AM–05:00 PM<br />Sunday: 10:00 AM–02:00 PM</p><p>◉ NABH &amp; JCI Accredited Hospital</p></div></div>
-		<div className="clinical-copyright"><span>© 2026 MN Hospital. All rights reserved.</span><span>Privacy Policy&nbsp;&nbsp;&nbsp; Terms of Service</span></div>
-	</footer>
-);
+const Footer = () => <footer id="footer" className="clinical-footer">
+	<div className="clinical-footer-grid">
+		<nav className="clinical-footer-links" aria-label="Footer navigation">
+			<h2>Explore MN Hospital</h2>
+			<Link href="/about">About us</Link>
+			<Link href="/service">Medical services</Link>
+			<Link href="/doctor">Find a doctor</Link>
+			<Link href="/article">Health articles</Link>
+			<Link href="/appointment">Book an appointment</Link>
+			<Link href="/contact">Contact us</Link>
+		</nav>
+		<div className="clinical-footer-contact">
+			<h2>Get in touch</h2>
+			<div className="clinical-footer-contact-item"><span className="clinical-footer-contact-icon"><Icon name="location_on" /></span><div><small>VISIT US</small><p>Tashkent, Chilanzar district<br />MN Hospital building</p></div></div>
+			<div className="clinical-footer-contact-item"><span className="clinical-footer-contact-icon"><Icon name="call" /></span><div><small>CALL US</small><a href="tel:+998712000000">+998 71 200 00 00</a></div></div>
+			<div className="clinical-footer-contact-item"><span className="clinical-footer-contact-icon"><Icon name="schedule" /></span><div><small>OPEN HOURS</small><p>Emergency care 24/7<br />Mon–Fri 08:00–20:00</p></div></div>
+		</div>
+		<div className="clinical-footer-brand-card">
+			<MnLogo footer />
+			<p>Thoughtful care, skilled specialists, and clear guidance through every step of your health journey.</p>
+			<Link className="clinical-footer-cta" href="/appointment">Plan your visit <Icon name="arrow_forward" /></Link>
+		</div>
+	</div>
+	<div className="clinical-copyright"><span>© {new Date().getFullYear()} MN Hospital. All rights reserved.</span><a href="tel:103"><Icon name="emergency" /> Emergency: 103</a></div>
+</footer>;
 
 export default Footer;
