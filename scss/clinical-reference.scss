@@ -176,6 +176,21 @@ $clinical-muted: #70869a;
 .clinical-article-copy p:last-child { margin-bottom: 0; }
 .clinical-doctor-login-link { display: inline-block; margin-top: 12px; color: $clinical-primary; font-size: 11px; font-weight: 700; }
 .clinical-doctor-signin { display: grid; max-width: 420px; gap: 16px; margin: 0 auto; }
+.clinical-follow-control { display: inline-flex; flex-direction: column; gap: 4px; }
+.clinical-follow-control small { color: #b42318; font-size: 9px; }
+.clinical-follow-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.clinical-follow-grid > div { min-width: 0; padding: 20px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(23,51,75,.05); }
+.clinical-follow-grid h2 { margin: 0 0 12px; color: $clinical-navy; font: 700 16px 'Manrope', Arial, sans-serif; }
+.clinical-follow-grid ul { display: grid; gap: 9px; max-height: 250px; overflow: auto; margin: 0; padding: 0; list-style: none; }
+.clinical-follow-grid li a { display: block; padding: 8px 10px; color: $clinical-primary; border-radius: 6px; background: $clinical-low; font-size: 11px; font-weight: 700; }
+.clinical-follow-grid p { margin: 0; color: $clinical-muted; font-size: 11px; }
+.clinical-profile-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.clinical-profile-list a { display: flex; flex-direction: column; gap: 5px; padding: 17px; border-radius: 8px; background: #fff; box-shadow: 0 4px 16px rgba(23,51,75,.05); }
+.clinical-profile-list strong { color: $clinical-navy; font-size: 12px; }
+.clinical-profile-list span { color: $clinical-muted; font-size: 10px; }
+.clinical-public-profile { display: flex; align-items: center; gap: 20px; }
+.clinical-public-profile h2 { margin: 0 0 5px; color: $clinical-navy; }
+.clinical-public-profile p { margin: 0 0 12px; color: $clinical-muted; }
 @media (prefers-reduced-motion: reduce) { .clinical-hero-slide, .clinical-article-card, .clinical-article-image img { transition: none; } }
 .clinical-trust-section { padding: 32px; border-radius: 10px; background: $clinical-low; box-shadow: 0 2px 12px rgba(23, 51, 75, .04); }
 .clinical-trust-section > div:first-child { max-width: 620px; }
@@ -493,6 +508,7 @@ $clinical-muted: #70869a;
 	.clinical-article-image { height: 190px; }
 	.clinical-article-detail-image { height: 210px; }
 	.clinical-article-copy { padding: 20px; }
+	.clinical-follow-grid, .clinical-profile-list { grid-template-columns: 1fr; }
 	.clinical-profile-portrait { min-height: 280px; }
 	.clinical-profile-facts { grid-template-columns: 1fr; }
 	.clinical-profile-contact, .clinical-mypage-grid { grid-template-columns: 1fr; }

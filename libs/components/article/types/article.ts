@@ -21,5 +21,5 @@ export interface ArticlesInquiry {
 	limit: number;
 	sort?: string;
 	direction?: 'ASC' | 'DESC';
-	search: { articleCategoryList?: ArticleCategory[]; articleStatus?: ArticleStatus; text?: string };
+	search: { memberId?: string; articleCategoryList?: ArticleCategory[]; articleStatus?: ArticleStatus; text?: string };
 }

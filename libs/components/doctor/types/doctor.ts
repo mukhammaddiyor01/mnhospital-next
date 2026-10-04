@@ -14,6 +14,11 @@ export interface Doctor {
 	docRoom: string;
 	docPoints: number;
 	docPatients: number;
+	docServices?: number;
+	docArticles?: number;
+	docFollowers?: number;
+	docFollowings?: number;
+	meFollowed?: Array<{ myFollowing: boolean }>;
 	meLiked?: Array<{ memberId: string; likeRefId: string; myFavorite: boolean }>;
 	createdAt: string;
 	updatedAt: string;

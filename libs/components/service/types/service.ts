@@ -32,6 +32,7 @@ export interface ServicesInquiry {
 	sort?: string;
 	direction?: 'ASC' | 'DESC';
 	search: {
+		memberId?: string;
 	departmentId?: string;
 	serviceTypeList?: ServiceType[];
 	serviceStatusList?: ServiceStatus[];

@@ -24,7 +24,7 @@ export const GET_DOCTORS = gql`
 export const GET_DOCTOR = gql`
 	query GetDoctor($doctorId: String!) {
 		getDoctor(doctorId: $doctorId) {
-			_id docSpecialty docNick docFullName docImage docAddress docDesc docExperience docRoom docPoints docPatients
+			_id docSpecialty docNick docFullName docImage docAddress docDesc docExperience docRoom docPoints docPatients docServices docArticles docFollowers docFollowings meFollowed { myFollowing }
 		}
 	}
 `;
