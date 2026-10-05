@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { A11y, EffectCoverflow, Keyboard, Pagination } from 'swiper/modules';
+import { A11y, EffectCoverflow, Keyboard, Navigation, Pagination } from 'swiper/modules';
 import Icon from '../common/Icon';
 import { ClinicalServiceCard } from './types/clinical-home';
 
@@ -12,9 +12,10 @@ const fallbackStats = ['14 Surgeons • 98.6% Success', '11 Specialists • Rapi
 const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServiceCard[]; usingFallback: boolean }) => <div className={`clinical-department-swiper${services.length < 3 ? ' is-compact' : ''}${services.length === 1 ? ' is-single' : ''}`} aria-label="Explore MN Hospital services">
 	<Swiper
 		key={services.map((service) => service._id).join('|')}
-		modules={[EffectCoverflow, Pagination, A11y, Keyboard]}
+		modules={[EffectCoverflow, Pagination, A11y, Keyboard, Navigation]}
 		effect={services.length >= 3 ? 'coverflow' : 'slide'}
 		grabCursor
+		simulateTouch
 		centeredSlides={services.length >= 3}
 		loop={services.length >= 4}
 		initialSlide={services.length === 3 ? 1 : 0}
@@ -25,6 +26,7 @@ const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServi
 		breakpoints={{ 480: { slidesPerView: services.length === 1 ? 1 : 1.55 }, 700: { slidesPerView: services.length === 1 ? 1 : services.length === 2 ? 1.55 : 2.25 } }}
 		coverflowEffect={{ rotate: 10, stretch: 0, depth: 100, modifier: 2, slideShadows: false }}
 		pagination={{ clickable: true }}
+		navigation={services.length > 1}
 		keyboard={{ enabled: true, onlyInViewport: true }}
 		aria-label="Hospital services carousel"
 	>

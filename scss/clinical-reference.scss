@@ -146,13 +146,20 @@ $clinical-muted: #70869a;
 .clinical-section-heading > a .material-symbols-rounded, .clinical-dept-bottom a .material-symbols-rounded { font-size: 14px; }
 .clinical-department-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .clinical-department-swiper { overflow: hidden; margin: -8px -12px 0; padding: 0 12px; }
-.clinical-department-swiper .swiper { overflow: visible; padding: 12px 0 36px; }
+.clinical-department-swiper .swiper { overflow: visible; padding: 12px 0 44px; }
 .clinical-department-swiper.is-single .swiper { max-width: 400px; }
 .clinical-department-swiper .swiper-slide { height: auto; }
 .clinical-department-swiper .clinical-department { height: 100%; border: 1px solid $clinical-line; }
-.clinical-department-swiper .swiper-pagination { bottom: 1px; }
+.clinical-department-swiper .swiper-pagination { bottom: 9px; }
 .clinical-department-swiper .swiper-pagination-bullet { width: 8px; height: 8px; background: #8aa9bc; opacity: .55; }
 .clinical-department-swiper .swiper-pagination-bullet-active { width: 22px; border-radius: 9px; background: $clinical-primary; opacity: 1; }
+.clinical-department-swiper .swiper-button-prev, .clinical-department-swiper .swiper-button-next { position: absolute; z-index: 10; top: auto; bottom: 0; display: grid; width: 30px; height: 30px; margin: 0; place-items: center; color: $clinical-primary; border: 1px solid $clinical-line; border-radius: 50%; background: #fff; cursor: pointer; font-size: 18px; line-height: 1; box-shadow: 0 2px 8px rgba(23, 51, 75, .08); }
+.clinical-department-swiper .swiper-button-prev { left: calc(50% - 82px); }
+.clinical-department-swiper .swiper-button-next { right: calc(50% - 82px); }
+.clinical-department-swiper .swiper-button-prev::after { content: '←'; }
+.clinical-department-swiper .swiper-button-next::after { content: '→'; }
+.clinical-department-swiper .swiper-button-disabled { opacity: .4; cursor: default; }
+.clinical-department-swiper .swiper-button-lock { display: none; }
 .clinical-department { padding: 20px; border-radius: 10px; background: #fff; box-shadow: 0 4px 16px rgba(23, 51, 75, .05); transition: .2s; }
 .clinical-department:hover, .clinical-directory-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(23, 51, 75, .09); }
 .clinical-department-top { display: flex; align-items: center; justify-content: space-between; }
