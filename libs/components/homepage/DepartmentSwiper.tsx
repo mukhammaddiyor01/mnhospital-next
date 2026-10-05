@@ -13,10 +13,10 @@ const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServi
 	<Swiper
 		key={services.map((service) => service._id).join('|')}
 		modules={[EffectCoverflow, Pagination, A11y, Keyboard, Navigation]}
-		effect={services.length >= 3 ? 'coverflow' : 'slide'}
+		effect={services.length > 1 ? 'coverflow' : 'slide'}
 		grabCursor
 		simulateTouch
-		centeredSlides={services.length >= 3}
+		centeredSlides={services.length > 1}
 		loop={services.length >= 4}
 		initialSlide={services.length === 3 ? 1 : 0}
 		speed={600}
@@ -24,7 +24,7 @@ const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServi
 		spaceBetween={12}
 		breakpointsBase="container"
 		breakpoints={{ 480: { slidesPerView: services.length === 1 ? 1 : 1.55 }, 700: { slidesPerView: services.length === 1 ? 1 : services.length === 2 ? 1.55 : 2.25 } }}
-		coverflowEffect={{ rotate: 10, stretch: 0, depth: 100, modifier: 2, slideShadows: false }}
+		coverflowEffect={{ rotate: 8, stretch: 0, depth: 140, modifier: 1.8, slideShadows: false }}
 		pagination={{ clickable: true }}
 		navigation={services.length > 1}
 		keyboard={{ enabled: true, onlyInViewport: true }}

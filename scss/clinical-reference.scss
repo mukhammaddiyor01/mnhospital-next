@@ -149,7 +149,10 @@ $clinical-muted: #70869a;
 .clinical-department-swiper .swiper { overflow: visible; padding: 12px 0 44px; }
 .clinical-department-swiper.is-single .swiper { max-width: 400px; }
 .clinical-department-swiper .swiper-slide { height: auto; }
-.clinical-department-swiper .clinical-department { height: 100%; border: 1px solid $clinical-line; }
+.clinical-department-swiper .clinical-department { height: 100%; border: 1px solid $clinical-line; transform: scale(.9); opacity: .78; transition: transform .6s ease, opacity .6s ease, box-shadow .6s ease; }
+.clinical-department-swiper .swiper-slide-active .clinical-department { transform: scale(1); opacity: 1; box-shadow: 0 10px 28px rgba(23, 51, 75, .12); }
+.clinical-department-swiper .swiper-slide-active .clinical-department:hover { transform: translateY(-2px) scale(1); }
+.clinical-department-swiper .swiper-slide:not(.swiper-slide-active) .clinical-department:hover { transform: translateY(-2px) scale(.92); }
 .clinical-department-swiper .swiper-pagination { bottom: 9px; }
 .clinical-department-swiper .swiper-pagination-bullet { width: 8px; height: 8px; background: #8aa9bc; opacity: .55; }
 .clinical-department-swiper .swiper-pagination-bullet-active { width: 22px; border-radius: 9px; background: $clinical-primary; opacity: 1; }
