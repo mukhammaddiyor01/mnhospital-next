@@ -148,7 +148,7 @@ $clinical-muted: #70869a;
 .clinical-department-swiper { overflow: hidden; margin: -8px -12px 0; padding: 0 12px; }
 .clinical-department-swiper .swiper { overflow: visible; padding: 12px 0 44px; }
 .clinical-department-swiper.is-single .swiper { max-width: 400px; }
-.clinical-department-swiper .swiper-slide { height: auto; }
+.clinical-department-swiper .swiper-slide { height: auto; user-select: none; }
 .clinical-department-swiper .clinical-department { height: 100%; border: 1px solid $clinical-line; transform: scale(.9); opacity: .78; transition: transform .6s ease, opacity .6s ease, box-shadow .6s ease; }
 .clinical-department-swiper .swiper-slide-active .clinical-department { transform: scale(1); opacity: 1; box-shadow: 0 10px 28px rgba(23, 51, 75, .12); }
 .clinical-department-swiper .swiper-slide-active .clinical-department:hover { transform: translateY(-2px) scale(1); }
