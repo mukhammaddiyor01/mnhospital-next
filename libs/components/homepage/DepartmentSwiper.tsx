@@ -19,10 +19,10 @@ const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServi
 		loop={services.length >= 4}
 		initialSlide={services.length === 3 ? 1 : 0}
 		speed={600}
-		slidesPerView={1.12}
+		slidesPerView={services.length === 1 ? 1 : 1.12}
 		spaceBetween={12}
 		breakpointsBase="container"
-		breakpoints={{ 480: { slidesPerView: 1.55 }, 700: { slidesPerView: services.length >= 3 ? 2.25 : Math.min(services.length, 2) } }}
+		breakpoints={{ 480: { slidesPerView: services.length === 1 ? 1 : 1.55 }, 700: { slidesPerView: services.length === 1 ? 1 : services.length === 2 ? 1.55 : 2.25 } }}
 		coverflowEffect={{ rotate: 10, stretch: 0, depth: 100, modifier: 2, slideShadows: false }}
 		pagination={{ clickable: true }}
 		keyboard={{ enabled: true, onlyInViewport: true }}
