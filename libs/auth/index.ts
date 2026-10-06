@@ -3,6 +3,7 @@ import { initializeApollo } from '@/apollo/client';
 import { userVar } from '@/apollo/store';
 import { LOGIN, SIGN_UP, SOCIAL_AUTHENTICATE } from '@/apollo/member/mutation';
 import { LOGIN_DOCTOR } from '@/apollo/doctor/mutation';
+import { LOGIN_ADMIN, LOGIN_RECEPTIONIST } from '@/apollo/staff/mutation';
 import { MemberSession } from '@/libs/components/member/types/member';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { getJwtToken, removeJwtToken, setJwtToken } from './token';
@@ -154,6 +155,22 @@ export const logInDoctor = async (docNick: string, docPassword: string) => {
 	if (!doctor?.accessToken) throw new Error('The server did not return an access token.');
 	syncSession(doctor.accessToken, { _id: doctor._id, memberType: doctor.memberType, memberNick: doctor.docNick, memberFullName: doctor.docFullName, memberImage: doctor.docImage, accessToken: doctor.accessToken });
 	return doctor;
+};
+
+export const logInAdmin = async (adminNick: string, adminPassword: string) => {
+	const result = await initializeApollo().mutate({ mutation: LOGIN_ADMIN, variables: { input: { adminNick, adminPassword } }, fetchPolicy: 'network-only' });
+	const admin = result.data?.loginAdmin as { _id: string; memberType: MemberType; adminNick: string; adminImage: string; accessToken: string } | undefined;
+	if (!admin?.accessToken) throw new Error('The server did not return an access token.');
+	syncSession(admin.accessToken, { _id: admin._id, memberType: admin.memberType, memberNick: admin.adminNick, memberImage: admin.adminImage, accessToken: admin.accessToken });
+	return admin;
+};
+
+export const logInReceptionist = async (receptionistNick: string, receptionistPassword: string) => {
+	const result = await initializeApollo().mutate({ mutation: LOGIN_RECEPTIONIST, variables: { input: { receptionistNick, receptionistPassword } }, fetchPolicy: 'network-only' });
+	const receptionist = result.data?.loginReceptionist as { _id: string; memberType: MemberType; receptionistNick: string; receptionistFullName: string; receptionistImage: string; accessToken: string } | undefined;
+	if (!receptionist?.accessToken) throw new Error('The server did not return an access token.');
+	syncSession(receptionist.accessToken, { _id: receptionist._id, memberType: receptionist.memberType, memberNick: receptionist.receptionistNick, memberFullName: receptionist.receptionistFullName, memberImage: receptionist.receptionistImage, accessToken: receptionist.accessToken });
+	return receptionist;
 };
 
 const requestSignUp = async (memberNick: string, memberPassword: string, memberPhone: string, memberFullName?: string) => {
