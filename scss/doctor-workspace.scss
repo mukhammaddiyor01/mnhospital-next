@@ -143,8 +143,16 @@ html[data-theme='dark'] .clinical-doctor-detail-actions a + a { color: var(--doc
 .clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-error { position: absolute; z-index: 2; right: 0; top: 40px; width: 170px; padding: 7px; border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-low); }
 .clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-setting { position: relative; }
 @media (max-width: 760px) {
+  .clinical-staff-doctor .clinical-staff-sidebar-footer { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; padding-top: 9px; }
+  .clinical-staff-doctor .clinical-staff-sidebar-footer a,
+  .clinical-staff-doctor .clinical-staff-sidebar-footer button { min-height: 32px; padding: 0 9px; font-size: 11px; }
   .clinical-staff-doctor .clinical-doctor-preferences { margin-right: 3px; }
   .clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-control,
   .clinical-staff-doctor .clinical-doctor-preferences .clinical-language-control { width: 36px; }
   .clinical-staff-doctor .clinical-doctor-preferences select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
 }
+@media (max-width: 600px) {
+  .clinical-staff-doctor .clinical-staff-topbar > div:first-child span { display: none; }
+  .clinical-staff-doctor .clinical-staff-topbar > div:first-child strong { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 420px) { .clinical-staff-doctor .clinical-staff-top-actions .clinical-staff-avatar { display: none; } }
