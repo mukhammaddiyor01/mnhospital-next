@@ -36,6 +36,12 @@ export const UPDATE_RECEPTION_TASK = gql`
   }
 `;
 
+export const CREATE_RECEPTION_TASK = gql`
+  mutation CreateReceptionWorkspaceTask($input: ReceptionTaskInput!) {
+    createReceptionTask(input: $input) { _id appointmentId taskStatus }
+  }
+`;
+
 export const CHECK_IN_RECEPTIONIST_APPOINTMENT = gql`
   mutation CheckInReceptionistWorkspaceAppointment($input: ReceptionistCheckInInput!) {
     checkInReceptionistAppointment(input: $input) { _id appointmentStatus }
