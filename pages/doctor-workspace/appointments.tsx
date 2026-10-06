@@ -8,6 +8,8 @@ import AdminPagination from '@/libs/components/dashboard/AdminPagination';
 import { AppointmentStatus, StaffAppointment, StaffList } from '@/libs/components/dashboard/staffTypes';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { MessageKey } from '@/libs/i18n/messages';
 import Link from 'next/link';
 
 const LIMIT = 10;
@@ -17,9 +19,17 @@ const transitions: Record<AppointmentStatus, AppointmentStatus[]> = {
   IN_PROGRESS: ['ENDED', 'COMPLETED'],
   ENDED: ['COMPLETED'], COMPLETED: [], CANCELLED: [], NO_SHOW: [],
 };
+const statusKeys: Record<AppointmentStatus, MessageKey> = {
+  PENDING: 'dashboard.statusPending', CONFIRMED: 'dashboard.statusConfirmed',
+  IN_PROGRESS: 'dashboard.statusInProgress', ENDED: 'dashboard.statusEnded',
+  COMPLETED: 'dashboard.statusCompleted', CANCELLED: 'dashboard.statusCancelled',
+  NO_SHOW: 'dashboard.statusNoShow',
+};
 
 export default function DoctorAppointments() {
   const t = useTranslation();
+  const { language } = usePreferences();
+  const format = new Intl.DateTimeFormat({ KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' }[language], { dateStyle: 'medium', timeStyle: 'short' });
   const session = useReactiveVar(userVar);
   const [page, setPage] = useState(1);
   const [busyId, setBusyId] = useState('');
@@ -46,7 +56,7 @@ export default function DoctorAppointments() {
       {loading && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
       {error && <p className="clinical-staff-state clinical-form-error" role="alert">{t('dashboard.appointmentsError')}</p>}
       {!loading && !error && !list.length && <p className="clinical-staff-state">{t('dashboard.noAppointments')}</p>}
-      {!loading && !error && !!list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('dashboard.appointmentCode')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('staff.patientId')}</th><th>{t('dashboard.appointmentStatus')}</th><th>{t('staff.nextStatus')}</th></tr></thead><tbody>{list.map((appointment) => <tr key={appointment._id}><td><strong>{appointment.appointmentCode}</strong><small>{appointment.appointmentReason}</small>{['ENDED', 'COMPLETED'].includes(appointment.appointmentStatus) && <Link href={`/doctor-workspace/reports?appointmentId=${appointment._id}`}>{t('staff.createReport')}</Link>}</td><td>{new Date(appointment.startsAt).toLocaleString()}</td><td>{appointment.patientId}</td><td><span className="clinical-staff-status">{appointment.appointmentStatus.replaceAll('_', ' ')}</span></td><td>{transitions[appointment.appointmentStatus].length ? <select value="" aria-label={`${appointment.appointmentCode}: ${t('staff.nextStatus')}`} disabled={busyId === appointment._id} onChange={(event) => void change(appointment, event.target.value as AppointmentStatus)}><option value="" disabled>{t('staff.nextStatus')}</option>{transitions[appointment.appointmentStatus].map((status) => <option key={status} value={status}>{status.replaceAll('_', ' ')}</option>)}</select> : '—'}</td></tr>)}</tbody></table></div>}
+      {!loading && !error && !!list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('dashboard.appointmentCode')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('staff.patientId')}</th><th>{t('dashboard.appointmentStatus')}</th><th>{t('staff.nextStatus')}</th></tr></thead><tbody>{list.map((appointment) => <tr key={appointment._id}><td><strong>{appointment.appointmentCode}</strong><small>{appointment.appointmentReason}</small>{['ENDED', 'COMPLETED'].includes(appointment.appointmentStatus) && <Link href={`/doctor-workspace/reports?appointmentId=${appointment._id}`}>{t('staff.createReport')}</Link>}</td><td><time dateTime={appointment.startsAt}>{format.format(new Date(appointment.startsAt))}</time></td><td>{appointment.patientId}</td><td><span className={`clinical-staff-status status-${appointment.appointmentStatus.toLowerCase()}`}>{t(statusKeys[appointment.appointmentStatus])}</span></td><td>{transitions[appointment.appointmentStatus].length ? <select value="" aria-label={`${appointment.appointmentCode}: ${t('staff.nextStatus')}`} disabled={busyId === appointment._id} onChange={(event) => void change(appointment, event.target.value as AppointmentStatus)}><option value="" disabled>{t('staff.nextStatus')}</option>{transitions[appointment.appointmentStatus].map((status) => <option key={status} value={status}>{t(statusKeys[status])}</option>)}</select> : '—'}</td></tr>)}</tbody></table></div>}
       <AdminPagination page={page} total={total} limit={LIMIT} onChange={setPage} />
     </section>
   </StaffRolePage>;
