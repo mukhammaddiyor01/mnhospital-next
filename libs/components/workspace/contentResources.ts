@@ -1,15 +1,175 @@
 import { operation } from '@/apollo/workspace/operations';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { ResourceConfig, ResourceField } from './ResourcePanel';
-const published = ['DRAFT','PUBLISHED'];
-const advertisementFields: ResourceField[] = [{name:'advertisementTitle',label:'title',required:true,maxLength:150},{name:'advertisementContent',label:'content',type:'textarea',required:true,maxLength:10000},{name:'advertisementStatus',label:'status',options:published,defaultValue:'DRAFT'},{name:'advertisementImage',label:'image'},{name:'advertisementLink',label:'link',type:'url'}];
+const published = ['DRAFT', 'PUBLISHED'];
+const advertisementFields: ResourceField[] = [
+	{
+		name: 'advertisementTitle',
+		label: 'title',
+		required: true,
+		maxLength: 150,
+	},
+	{
+		name: 'advertisementContent',
+		label: 'content',
+		type: 'textarea',
+		required: true,
+		maxLength: 10000,
+	},
+	{
+		name: 'advertisementStatus',
+		label: 'status',
+		options: published,
+		defaultValue: 'DRAFT',
+	},
+	{ name: 'advertisementImage', label: 'image', imageTarget: 'advertisement' },
+	{ name: 'advertisementLink', label: 'link', type: 'url' },
+];
 export const advertisements: ResourceConfig = {
- role:MemberType.ADMIN,title:'advertisements',list:operation('query','getAdvertisementsByAdmin','AdvertisementsInquiry','list { _id advertisementTitle advertisementContent advertisementImage advertisementLink advertisementStatus } metaCounter { total }'),listKey:'getAdvertisementsByAdmin',columns:[advertisementFields[0],advertisementFields[2]],fields:advertisementFields,
- create:operation('mutation','createAdvertisement','AdvertisementInput','_id'),update:operation('mutation','updateAdvertisement','AdvertisementUpdate','_id'),remove:operation('mutation','removeAdvertisement','String','_id','advertisementId'),removeVariables:r=>({advertisementId:r._id}),canEdit:r=>r.advertisementStatus!=='ARCHIVED',canRemove:r=>r.advertisementStatus!=='ARCHIVED',search:true,
+	role: MemberType.ADMIN,
+	title: 'advertisements',
+	list: operation(
+		'query',
+		'getAdvertisementsByAdmin',
+		'AdvertisementsInquiry',
+		'list { _id advertisementTitle advertisementContent advertisementImage advertisementLink advertisementStatus } metaCounter { total }',
+	),
+	listKey: 'getAdvertisementsByAdmin',
+	columns: [advertisementFields[0], advertisementFields[2]],
+	fields: advertisementFields,
+	create: operation(
+		'mutation',
+		'createAdvertisement',
+		'AdvertisementInput',
+		'_id',
+	),
+	update: operation(
+		'mutation',
+		'updateAdvertisement',
+		'AdvertisementUpdate',
+		'_id',
+	),
+	remove: operation(
+		'mutation',
+		'removeAdvertisement',
+		'String',
+		'_id',
+		'advertisementId',
+	),
+	removeVariables: (r) => ({ advertisementId: r._id }),
+	canEdit: (r) => r.advertisementStatus !== 'ARCHIVED',
+	canRemove: (r) => r.advertisementStatus !== 'ARCHIVED',
+	search: true,
 };
-const articleFields:ResourceField[]=[{name:'articleTitle',label:'title',required:true,maxLength:150},{name:'articleCategory',label:'category',required:true,options:['HEALTH','NEWS','TIPS','RESEARCH','ANNOUNCEMENT']},{name:'articleContent',label:'content',type:'textarea',required:true,maxLength:10000},{name:'articleStatus',label:'status',options:published,defaultValue:'DRAFT'},{name:'articleImage',label:'image'}];
-const articleSelection='list { _id articleTitle articleCategory articleContent articleStatus articleImage memberId } metaCounter { total }';
-export const adminArticles:ResourceConfig={role:MemberType.ADMIN,title:'articles',list:operation('query','getAllArticlesByAdmin','ArticlesInquiry',articleSelection),listKey:'getAllArticlesByAdmin',variables:page=>({input:{page,limit:10,search:{}}}),columns:[articleFields[0],articleFields[1],articleFields[3]],fields:articleFields,update:operation('mutation','updateArticleByAdmin','ArticleUpdate','_id'),remove:operation('mutation','removeArticleByAdmin','String','_id','articleId'),removeVariables:r=>({articleId:r._id}),canEdit:r=>r.articleStatus!=='ARCHIVED',canRemove:r=>r.articleStatus!=='ARCHIVED',search:true};
-export const doctorArticles:ResourceConfig={...adminArticles,role:MemberType.DOCTOR,list:operation('query','getMyArticles','ArticlesInquiry',articleSelection),listKey:'getMyArticles',create:operation('mutation','createArticle','ArticleInput','_id'),update:operation('mutation','updateArticle','ArticleUpdate','_id'),remove:operation('mutation','updateArticle','ArticleUpdate','_id'),removeVariables:r=>({input:{_id:r._id,articleStatus:'ARCHIVED'}})};
-const noticeFields:ResourceField[]=[{name:'noticeTitle',label:'title',required:true,maxLength:150},{name:'noticeCategory',label:'category',required:true,options:['GENERAL','SYSTEM','HEALTH','EVENT']},{name:'noticeContent',label:'content',type:'textarea',required:true,maxLength:5000},{name:'noticeStatus',label:'status',options:published}];
-export const notices:ResourceConfig={role:MemberType.ADMIN,title:'notices',list:operation('query','getNoticesByAdmin','NoticeInquiry','list { _id noticeTitle noticeCategory noticeContent noticeStatus } metaCounter { total }'),listKey:'getNoticesByAdmin',columns:[noticeFields[0],noticeFields[1],noticeFields[3]],fields:noticeFields,create:operation('mutation','createNotice','NoticeInput','_id'),createVariables:input=>({input:{noticeTitle:input.noticeTitle,noticeCategory:input.noticeCategory,noticeContent:input.noticeContent}}),update:operation('mutation','updateNotice','NoticeUpdateInput','_id'),remove:operation('mutation','archiveNotice','String','_id','noticeId'),removeVariables:r=>({noticeId:r._id}),canEdit:r=>r.noticeStatus!=='ARCHIVED',canRemove:r=>r.noticeStatus!=='ARCHIVED',search:true};
+const articleFields: ResourceField[] = [
+	{ name: 'articleTitle', label: 'title', required: true, maxLength: 150 },
+	{
+		name: 'articleCategory',
+		label: 'category',
+		required: true,
+		options: ['HEALTH', 'NEWS', 'TIPS', 'RESEARCH', 'ANNOUNCEMENT'],
+	},
+	{
+		name: 'articleContent',
+		label: 'content',
+		type: 'textarea',
+		required: true,
+		maxLength: 10000,
+	},
+	{
+		name: 'articleStatus',
+		label: 'status',
+		options: published,
+		defaultValue: 'DRAFT',
+	},
+	{ name: 'articleImage', label: 'image', imageTarget: 'article' },
+];
+const articleSelection =
+	'list { _id articleTitle articleCategory articleContent articleStatus articleImage memberId } metaCounter { total }';
+export const adminArticles: ResourceConfig = {
+	role: MemberType.ADMIN,
+	title: 'articles',
+	list: operation(
+		'query',
+		'getAllArticlesByAdmin',
+		'ArticlesInquiry',
+		articleSelection,
+	),
+	listKey: 'getAllArticlesByAdmin',
+	variables: (page) => ({ input: { page, limit: 10, search: {} } }),
+	columns: [articleFields[0], articleFields[1], articleFields[3]],
+	fields: articleFields,
+	update: operation('mutation', 'updateArticleByAdmin', 'ArticleUpdate', '_id'),
+	remove: operation(
+		'mutation',
+		'removeArticleByAdmin',
+		'String',
+		'_id',
+		'articleId',
+	),
+	removeVariables: (r) => ({ articleId: r._id }),
+	canEdit: (r) => r.articleStatus !== 'ARCHIVED',
+	canRemove: (r) => r.articleStatus !== 'ARCHIVED',
+	search: true,
+};
+export const doctorArticles: ResourceConfig = {
+	...adminArticles,
+	role: MemberType.DOCTOR,
+	list: operation(
+		'query',
+		'getMyArticles',
+		'ArticlesInquiry',
+		articleSelection,
+	),
+	listKey: 'getMyArticles',
+	create: operation('mutation', 'createArticle', 'ArticleInput', '_id'),
+	update: operation('mutation', 'updateArticle', 'ArticleUpdate', '_id'),
+	remove: operation('mutation', 'updateArticle', 'ArticleUpdate', '_id'),
+	removeVariables: (r) => ({
+		input: { _id: r._id, articleStatus: 'ARCHIVED' },
+	}),
+};
+const noticeFields: ResourceField[] = [
+	{ name: 'noticeTitle', label: 'title', required: true, maxLength: 150 },
+	{
+		name: 'noticeCategory',
+		label: 'category',
+		required: true,
+		options: ['GENERAL', 'SYSTEM', 'HEALTH', 'EVENT'],
+	},
+	{
+		name: 'noticeContent',
+		label: 'content',
+		type: 'textarea',
+		required: true,
+		maxLength: 5000,
+	},
+	{ name: 'noticeStatus', label: 'status', options: published },
+];
+export const notices: ResourceConfig = {
+	role: MemberType.ADMIN,
+	title: 'notices',
+	list: operation(
+		'query',
+		'getNoticesByAdmin',
+		'NoticeInquiry',
+		'list { _id noticeTitle noticeCategory noticeContent noticeStatus } metaCounter { total }',
+	),
+	listKey: 'getNoticesByAdmin',
+	columns: [noticeFields[0], noticeFields[1], noticeFields[3]],
+	fields: noticeFields,
+	create: operation('mutation', 'createNotice', 'NoticeInput', '_id'),
+	createVariables: (input) => ({
+		input: {
+			noticeTitle: input.noticeTitle,
+			noticeCategory: input.noticeCategory,
+			noticeContent: input.noticeContent,
+		},
+	}),
+	update: operation('mutation', 'updateNotice', 'NoticeUpdateInput', '_id'),
+	remove: operation('mutation', 'archiveNotice', 'String', '_id', 'noticeId'),
+	removeVariables: (r) => ({ noticeId: r._id }),
+	canEdit: (r) => r.noticeStatus !== 'ARCHIVED',
+	canRemove: (r) => r.noticeStatus !== 'ARCHIVED',
+	search: true,
+};
