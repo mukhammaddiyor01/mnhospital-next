@@ -10,8 +10,12 @@ import CommentsSection from '@/libs/components/comment/CommentsSection';
 import { ReferenceGroup } from '@/libs/components/comment/enums/comment.enum';
 import FollowButton from '@/libs/components/follow/FollowButton';
 import DoctorProfileExtras from '@/libs/components/doctor/DoctorProfileExtras';
+import { useTranslation } from '@/libs/i18n/useTranslation';
+import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 
 const DoctorDetailPage = () => {
+	const t = useTranslation();
+	const specialtyLabel = useDoctorSpecialtyLabel();
 	const router = useRouter();
 	const [doctorId, setDoctorId] = useState('');
 	useEffect(() => {
@@ -26,15 +30,15 @@ const DoctorDetailPage = () => {
 	});
 	const doctor = data?.getDoctor;
 	const fallbackName = doctorId.replaceAll('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
-	const name = doctor?.docFullName ?? (fallbackName || 'MN Hospital specialist');
-	const specialty = String(doctor?.docSpecialty ?? 'Medical specialist').replaceAll('_', ' ');
+	const name = doctor?.docFullName ?? (fallbackName || t('doctors.nameFallback'));
+	const specialty = specialtyLabel(doctor?.docSpecialty);
 	const initials = name.split(' ').map((part: string) => part[0]).join('').slice(0, 2);
 
 	return <div className="clinical-inner-page">
-		<section className="clinical-inner-hero clinical-doctor-profile-hero"><div><div className="clinical-crumb"><Link href="/">Home</Link> / <Link href="/doctor">Doctors</Link> / Profile</div><span className="clinical-eyebrow">SPECIALIST PROFILE</span><h1>{loading ? 'Loading specialist…' : name}</h1><p>{doctor?.docDesc ?? 'Evidence-based care, clear communication, and a treatment plan built around the patient.'}</p></div></section>
+		<section className="clinical-inner-hero clinical-doctor-profile-hero"><div><div className="clinical-crumb"><Link href="/">{t('nav.home')}</Link> / <Link href="/doctor">{t('nav.doctors')}</Link> / {t('doctors.detail.profile')}</div><span className="clinical-eyebrow">{t('doctors.detail.kicker')}</span><h1>{loading ? t('doctors.detail.loading') : name}</h1><p>{doctor?.docDesc ?? t('doctors.detail.heroFallback')}</p></div></section>
 		<section className="clinical-inner-section clinical-doctor-profile">
 			<div className="clinical-profile-portrait" style={doctor?.docImage ? { backgroundImage: `linear-gradient(145deg, rgba(18, 48, 74, .05), rgba(18, 48, 74, .7)), url(${resolveApiAsset(doctor.docImage)})` } : undefined}><span>{initials}</span></div>
-			<div className="clinical-profile-copy"><span className="clinical-section-kicker">{specialty}</span><h2>{name}</h2><p>{doctor?.docDesc ?? 'This profile is shown in preview mode until a matching doctor record is available from the API.'}</p><div className="clinical-profile-facts"><span><Icon name="workspace_premium" /><b>{doctor?.docExperience ?? 10}+ years</b><small>Experience</small></span><span><Icon name="groups" /><b>{doctor?.docPatients ?? 0}</b><small>Patients</small></span><span><Icon name="star" /><b>{Number(doctor?.docPoints ?? 0).toFixed(1)}</b><small>Rating</small></span><span><Icon name="person_add" /><b>{doctor?.docFollowers ?? 0}</b><small>Followers</small></span><span><Icon name="group" /><b>{doctor?.docFollowings ?? 0}</b><small>Following</small></span></div>{error && <p className="clinical-form-error">The specialist profile could not be loaded. Please return to the directory and try again.</p>}<div className="clinical-profile-actions"><Link className="clinical-primary-button" href={`/appointment?doctor=${doctorId}`}>Book an appointment <Icon name="arrow_forward" /></Link>{doctor && <FollowButton targetId={doctor._id} kind="doctor" initialFollowing={Boolean(doctor.meFollowed?.[0]?.myFollowing)} onChanged={refetch} />}<Link className="clinical-secondary-button" href="/doctor">All doctors</Link></div></div>
+			<div className="clinical-profile-copy"><span className="clinical-section-kicker">{specialty}</span><h2>{name}</h2><p>{doctor?.docDesc ?? t('doctors.detail.preview')}</p><div className="clinical-profile-facts"><span><Icon name="workspace_premium" /><b>{t('doctors.detail.years').replace('{years}', String(doctor?.docExperience ?? 10))}</b><small>{t('doctors.detail.experience')}</small></span><span><Icon name="groups" /><b>{doctor?.docPatients ?? 0}</b><small>{t('doctors.detail.patients')}</small></span><span><Icon name="star" /><b>{Number(doctor?.docPoints ?? 0).toFixed(1)}</b><small>{t('doctors.detail.rating')}</small></span><span><Icon name="person_add" /><b>{doctor?.docFollowers ?? 0}</b><small>{t('follow.followers')}</small></span><span><Icon name="group" /><b>{doctor?.docFollowings ?? 0}</b><small>{t('follow.following')}</small></span></div>{error && <p className="clinical-form-error">{t('doctors.detail.error')}</p>}<div className="clinical-profile-actions"><Link className="clinical-primary-button" href={`/appointment?doctor=${doctorId}`}>{t('services.book')} <Icon name="arrow_forward" /></Link>{doctor && <FollowButton targetId={doctor._id} kind="doctor" initialFollowing={Boolean(doctor.meFollowed?.[0]?.myFollowing)} onChanged={refetch} />}<Link className="clinical-secondary-button" href="/doctor">{t('doctors.detail.all')}</Link></div></div>
 		</section>
 		{doctor && <DoctorProfileExtras doctorId={doctor._id} />}
 		{doctor && <CommentsSection targetId={doctor._id} group={ReferenceGroup.DOCTOR} />}
