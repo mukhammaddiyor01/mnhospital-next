@@ -226,7 +226,7 @@ const ClinicalHome = () => {
           <section className="clinical-next-step" id="booking">
             <div>
               <span className="clinical-section-kicker">{t('home.cta.kicker')}</span>
-              <h2>{t('home.cta.title1')} {t('home.cta.title2')}</h2>
+              <h2>{t('home.cta.title1')}{' '}{t('home.cta.title2')}</h2>
               <p>{t('home.cta.intro')}</p>
             </div>
             <Link className="clinical-primary-button" href="/appointment">{t('home.cta.schedule')} <Icon name="arrow_forward" /></Link>

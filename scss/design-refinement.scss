@@ -220,6 +220,9 @@ html[data-theme='dark'] .clinical-inner-hero {
 .clinical-inner-hero h1 { margin: 12px 0; font-size: clamp(32px, 3.5vw, 45px); letter-spacing: -.045em; }
 .clinical-inner-hero p,
 html[data-theme='dark'] .clinical-inner-hero p { color: var(--clinical-secondary); font-size: 16px; line-height: 1.6; }
+.clinical-eyebrow,
+html[data-theme='dark'] .clinical-eyebrow { padding: 0; color: var(--clinical-secondary); border-radius: 0; background: transparent; font-size: 12px; letter-spacing: .1em; }
+.clinical-inner-hero h1 em { color: var(--clinical-navy); }
 .clinical-inner-section,
 html[data-theme='dark'] .clinical-inner-section {
   margin-top: 24px;
@@ -287,7 +290,8 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
 @media (max-width: 1040px) {
   .clinical-header-inner { gap: 18px; }
   .clinical-desktop-navigation { gap: 13px; }
-  .clinical-hero-card { column-gap: 28px; padding: 36px; }
+  .clinical-hero-card,
+  html[data-theme='dark'] .clinical-hero-card { column-gap: 28px; padding: 36px; }
 }
 @media (max-width: 800px) {
   .clinical-hero-card,
@@ -304,7 +308,8 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
   .clinical-workspace, .clinical-inner-workspace { width: calc(100% - 32px); padding: 24px 0 90px; }
   .clinical-bottom-nav { display: flex; }
   .clinical-home .clinical-center-column { gap: 52px; }
-  .clinical-hero-card { padding: 24px; }
+  .clinical-hero-card,
+  html[data-theme='dark'] .clinical-hero-card { padding: 24px; }
   .clinical-hero-card h1 { margin: 20px 0 12px; font-size: 38px; }
   .clinical-hero-card > p { font-size: 15px; }
   .clinical-hero-visual { height: 245px; margin-top: 24px; }
