@@ -2,14 +2,16 @@ import Link from 'next/link';
 import { useQuery } from '@apollo/client';
 import { GET_FAVORITE_SERVICES, GET_VISITED_SERVICES } from '@/apollo/service/query';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
 
 type ActivityService = { _id: string; serviceTitle: string; serviceDesc?: string; serviceType?: string };
 
 const ActivityList = ({ title, items, loading, error }: { title: string; items: ActivityService[]; loading: boolean; error?: Error }) => {
 	const t = useTranslation();
+	const typeLabel = useServiceTypeLabel();
 	return <div>
 		<h2>{title}</h2>
-		{items.length ? <div className="clinical-profile-list">{items.map((service) => <Link key={service._id} href={`/service/${service._id}`}><strong>{service.serviceTitle}</strong><span>{service.serviceDesc || service.serviceType?.replaceAll('_', ' ') || t('activity.viewDetails')}</span></Link>)}</div> : <p className="clinical-query-status">{loading ? t('activity.loading') : error ? t('activity.unavailable') : t('activity.empty')}</p>}
+		{items.length ? <div className="clinical-profile-list">{items.map((service) => <Link key={service._id} href={`/service/${service._id}`}><strong>{service.serviceTitle}</strong><span>{service.serviceDesc || (service.serviceType ? typeLabel(service.serviceType) : t('activity.viewDetails'))}</span></Link>)}</div> : <p className="clinical-query-status">{loading ? t('activity.loading') : error ? t('activity.unavailable') : t('activity.empty')}</p>}
 	</div>;
 };
 

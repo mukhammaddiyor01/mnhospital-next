@@ -5,11 +5,13 @@ import Icon from '../common/Icon';
 import { ClinicalServiceCard } from './types/clinical-home';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '../preference/PreferenceProvider';
+import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
 
 const iconForService = (serviceType?: string) => ({ CARDIOLOGY: 'cardiology', NEUROLOGY: 'neurology', ORTHOPEDICS: 'orthopedics', PEDIATRICS: 'child_care' }[serviceType ?? ''] ?? 'medical_services');
 
 const DepartmentSwiper = ({ services }: { services: ClinicalServiceCard[] }) => {
   const t = useTranslation();
+  const typeLabel = useServiceTypeLabel();
   const { language } = usePreferences();
   const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
 
@@ -35,7 +37,7 @@ const DepartmentSwiper = ({ services }: { services: ClinicalServiceCard[] }) => 
       aria-label={t('home.department.carousel')}
     >
       {services.map((service) => <SwiperSlide key={service._id}><article className="clinical-department">
-        <div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{String(service.serviceType ?? '').replaceAll('_', ' ')}</span></div>
+        <div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{typeLabel(service.serviceType)}</span></div>
         <h3>{service.serviceTitle || t('home.department.fallback')}</h3>
         {service.serviceDesc && <p>{service.serviceDesc}</p>}
         <div className="clinical-dept-bottom"><span>{Number(service.serviceViews ?? 0).toLocaleString(locale)} {t('home.department.views')}</span><Link href={`/service/${service._id}`}>{t('home.department.explore')} <Icon name="chevron_right" /></Link></div>

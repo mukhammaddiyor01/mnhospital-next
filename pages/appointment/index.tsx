@@ -12,6 +12,7 @@ import { AppointmentDraft } from '@/libs/components/booking/types/booking';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 import { translate } from '@/libs/i18n/messages';
+import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 
 const mongoId = /^[a-f\d]{24}$/i;
 const demoServices = [
@@ -22,6 +23,7 @@ const demoServices = [
 
 const AppointmentPage = () => {
 	const t = useTranslation();
+	const specialtyLabel = useDoctorSpecialtyLabel();
 	const { language } = usePreferences();
 	const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
 	const steps = [t('booking.stepService'), t('booking.stepSpecialist'), t('booking.stepTime'), t('booking.stepReview')];
@@ -102,7 +104,7 @@ const AppointmentPage = () => {
 			{order ? <div className="clinical-booking-success"><Icon name="check_circle" /><span className="clinical-section-kicker">{t('booking.order')} {order.orderCode}</span><h2>{t('booking.success')}</h2><p>{t('booking.status')}: {order.bookingOrderStatus}. {t('booking.successIntro')}</p><Link className="clinical-primary-button" href="/doctor">{t('booking.exploreDoctors')}</Link></div> : <form className="booking-wizard" onSubmit={submitStep}>
 				<div className="wizard-steps">{steps.map((label, index) => <span className={step >= index + 1 ? 'active' : ''} key={label}><b>0{index + 1}</b>{label}</span>)}</div>
 				{step === 1 && <label>{t('booking.hospitalService')}<select value={form.serviceId} onChange={(event) => chooseService(event.target.value)} required><option value="">{t('booking.selectService')}</option>{services.map((service: any) => <option value={service._id} key={service._id}>{service.serviceTitle || service.serviceName}</option>)}</select>{servicesQuery.loading && <small>{t('booking.refreshing')}</small>}</label>}
-				{step === 2 && <div className="clinical-booking-review"><span className="clinical-service-detail-icon"><Icon name="stethoscope" /></span><div><small>{t('booking.assigned')}</small><h3>{selectedService?.memberData?.docFullName ?? t('booking.assignedFallback')}</h3><p>{String(selectedService?.memberData?.docSpecialty ?? t('booking.specialistFallback')).replaceAll('_', ' ')}</p></div><input type="hidden" value={form.doctorId} required readOnly /></div>}
+				{step === 2 && <div className="clinical-booking-review"><span className="clinical-service-detail-icon"><Icon name="stethoscope" /></span><div><small>{t('booking.assigned')}</small><h3>{selectedService?.memberData?.docFullName ?? t('booking.assignedFallback')}</h3><p>{selectedService?.memberData?.docSpecialty ? specialtyLabel(selectedService.memberData.docSpecialty) : t('booking.specialistFallback')}</p></div><input type="hidden" value={form.doctorId} required readOnly /></div>}
 				{step === 3 && <div className="booking-fields"><label>{t('booking.date')}<input type="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => updateForm('date', event.target.value)} required /></label><label>{t('booking.availableTime')}<select value={form.startsAt} onChange={(event) => updateForm('startsAt', event.target.value)} required disabled={!form.date || slotsQuery.loading}><option value="">{slotsQuery.loading ? t('booking.checking') : t('booking.selectTime')}</option>{slots.map((slot: any) => <option value={slot.startsAt} key={slot.startsAt}>{formatSlot(slot.startsAt)}</option>)}</select></label>{form.date && !slotsQuery.loading && slots.length === 0 && <p className="clinical-form-error wide-field">{t('booking.noSlots')}</p>}</div>}
 				{step === 4 && <div className="clinical-booking-review clinical-booking-review-final"><div><small>{t('booking.stepService')}</small><h3>{selectedService?.serviceTitle || selectedService?.serviceName}</h3><p>{selectedService?.memberData?.docFullName} · {form.startsAt ? new Date(form.startsAt).toLocaleString(locale) : ''}</p></div><strong>{Number(selectedService?.servicePrice ?? 0).toLocaleString(locale)} UZS</strong><label>{t('booking.note')}<textarea value={form.patientNote} onChange={(event) => updateForm('patientNote', event.target.value)} placeholder={t('booking.notePlaceholder')} /></label></div>}
 				{message && <div className="clinical-booking-message"><Icon name="info" /><span>{message} {!user._id && apiEnabled && <Link href="/account/signin">{t('patient.signin')}</Link>}</span></div>}
