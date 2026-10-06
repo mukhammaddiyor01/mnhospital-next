@@ -7,6 +7,7 @@ import { resolveApiAsset } from "@/libs/config";
 import { MemberType } from "./member/enums/member.enum";
 import MnLogo from "./common/MnLogo";
 import AnimatedWave from "./common/AnimatedWave";
+import ThemeControl from "./preference/ThemeControl";
 
 const Top = () => {
   const router = useRouter();
@@ -49,6 +50,7 @@ const Top = () => {
           </form>
         ) : null}
         <div className="clinical-header-actions">
+          <ThemeControl />
           <Link className="clinical-book-top" href="/appointment">
             Book an Appointment
           </Link>
