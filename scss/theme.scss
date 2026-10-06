@@ -53,7 +53,7 @@ html[data-theme='dark'] {
 	.clinical-shell .comment-form textarea,
 	.clinical-shell .service-search input { color: var(--clinical-text); border-color: var(--clinical-line); background: #203345; }
 	.clinical-shell .form-error { color: #ffc1c8 !important; background: #4a2735; }
-	.clinical-header { background: rgba(13, 23, 34, .95); }
+	.clinical-header { background: var(--clinical-surface); }
 	.mn-logo { color: var(--clinical-navy); }
 	.clinical-animated-wave--header .clinical-wave-layer--back { fill: #123c57; }
 	.clinical-animated-wave--header .clinical-wave-layer--middle { fill: #1b3445; }
@@ -91,9 +91,9 @@ html[data-theme='dark'] {
 	.clinical-rail .promo,
 	.clinical-rail .technology,
 	.clinical-rail .support-card,
-	.clinical-rail .emergency { background: linear-gradient(145deg, #1a3447, #172838); border-color: var(--clinical-line); }
+	.clinical-rail .emergency { background: #1a3041; border-color: var(--clinical-line); }
 	.clinical-hero-card,
-	.clinical-inner-hero { background: linear-gradient(135deg, #172838, #1c3446 72%, #24445d); }
+	.clinical-inner-hero { background: #1a3041; }
 	.clinical-accreditation,
 	.clinical-eyebrow { color: var(--clinical-navy); background: var(--clinical-primary-soft); }
 	.clinical-hero-card > p,
@@ -101,6 +101,7 @@ html[data-theme='dark'] {
 	.clinical-rail-card p,
 	.clinical-department p,
 	.clinical-article-body p,
+	.clinical-testimonial blockquote,
 	.clinical-service-detail p,
 	.clinical-contact-details > p,
 	.clinical-trust-section p,
@@ -122,7 +123,7 @@ html[data-theme='dark'] {
 	.clinical-patient-form input::placeholder,
 	.clinical-patient-form textarea::placeholder,
 	.clinical-auth-field input::placeholder { color: var(--clinical-muted); }
-	.clinical-bottom-nav { background: rgba(17, 31, 45, .96); }
+	.clinical-bottom-nav { background: #111f2d; }
 	.clinical-auth-field { background: var(--clinical-low); }
 	.clinical-article-image { background: var(--clinical-low); }
 	.clinical-rail .service-meta span:first-child { color: var(--clinical-navy); }
