@@ -4,10 +4,12 @@ import { useRouter } from "next/router";
 import { logIn, signUp } from "@/libs/auth";
 import Icon from "@/libs/components/common/Icon";
 import SocialAuthButtons from "./SocialAuthButtons";
+import { useTranslation } from "@/libs/i18n/useTranslation";
 
 type AuthMode = "login" | "register";
 
 const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
+  const t = useTranslation();
   const router = useRouter();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [transitionMode, setTransitionMode] = useState<AuthMode | null>(null);
@@ -56,7 +58,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Unable to sign in. Please check your details.",
+          : t('auth.loginError'),
       );
     } finally {
       setSubmitting(false);
@@ -106,17 +108,15 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             <span className="clinical-auth-shield">
               <Icon name="health_and_safety" />
             </span>
-            <span className="clinical-auth-kicker">ALREADY A PATIENT?</span>
-            <h2>Welcome back.</h2>
-            <p>
-              Sign in to review appointments and continue your care journey.
-            </p>
+            <span className="clinical-auth-kicker">{t('auth.returningKicker')}</span>
+            <h2>{t('auth.returningTitle')}</h2>
+            <p>{t('auth.returningIntro')}</p>
             <button
               type="button"
               tabIndex={mode === "register" ? 0 : -1}
               onClick={() => switchMode("login")}
             >
-              Sign In
+              {t('auth.signin')}
             </button>
           </div>
           <div
@@ -126,17 +126,15 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             <span className="clinical-auth-shield">
               <Icon name="favorite" />
             </span>
-            <span className="clinical-auth-kicker">NEW TO MN HOSPITAL?</span>
-            <h2>Hello there.</h2>
-            <p>
-              Create your secure patient account and manage care in one place.
-            </p>
+            <span className="clinical-auth-kicker">{t('auth.newKicker')}</span>
+            <h2>{t('auth.newTitle')}</h2>
+            <p>{t('auth.newIntro')}</p>
             <button
               type="button"
               tabIndex={mode === "login" ? 0 : -1}
               onClick={() => switchMode("register")}
             >
-              Create Account
+              {t('auth.createAccount')}
             </button>
           </div>
         </div>
@@ -152,11 +150,11 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             </span>
             <strong>MN Hospital</strong>
           </Link>
-          <span className="clinical-section-kicker">PATIENT PORTAL</span>
-          <h1>Sign in</h1>
-          <p>Use your patient username and password.</p>
+          <span className="clinical-section-kicker">{t('auth.portal')}</span>
+          <h1>{t('auth.signin')}</h1>
+          <p>{t('auth.loginIntro')}</p>
           <label>
-            Username
+            {t('auth.username')}
             <div className="clinical-auth-field">
               <Icon name="person" />
               <input
@@ -165,13 +163,13 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                 onChange={(event) =>
                   setLoginForm({ ...loginForm, memberNick: event.target.value })
                 }
-                placeholder="NickName"
+                placeholder={t('auth.usernamePlaceholder')}
                 required
               />
             </div>
           </label>
           <label>
-            Password
+            {t('auth.password')}
             <div className="clinical-auth-field">
               <Icon name="lock" />
               <input
@@ -191,7 +189,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                 type="button"
                 onClick={() => setShowLoginPassword((value) => !value)}
                 aria-label={
-                  showLoginPassword ? "Hide password" : "Show password"
+                  showLoginPassword ? t('auth.hidePassword') : t('auth.showPassword')
                 }
               >
                 <Icon
@@ -210,7 +208,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             type="submit"
             disabled={submitting}
           >
-            {submitting ? "Signing in…" : "Sign In"}{" "}
+            {submitting ? t('auth.signingIn') : t('auth.signin')}{" "}
             <Icon name="arrow_forward" />
           </button>
           <SocialAuthButtons
@@ -222,14 +220,14 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             className="clinical-doctor-login-link"
             href="/account/doctor-signin"
           >
-            Doctor sign in
+            {t('auth.doctorSignin')}
           </Link>
           <button
             className="clinical-auth-mobile-switch"
             type="button"
             onClick={() => switchMode("register")}
           >
-            New patient? <b>Create account</b>
+            {t('auth.newPatient')} <b>{t('auth.createAccount')}</b>
           </button>
         </form>
 
@@ -363,13 +361,13 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
       </div>
       <div className="clinical-auth-trust">
         <span>
-          <Icon name="lock" /> Secure patient access
+          <Icon name="lock" /> {t('auth.secureAccess')}
         </span>
         <span>
-          <Icon name="verified_user" /> Privacy-first records
+          <Icon name="verified_user" /> {t('auth.privateRecords')}
         </span>
         <span>
-          <Icon name="support_agent" /> 24/7 care support
+          <Icon name="support_agent" /> {t('auth.careSupport')}
         </span>
       </div>
     </div>
