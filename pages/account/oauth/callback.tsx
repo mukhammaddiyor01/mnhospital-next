@@ -4,11 +4,16 @@ import { useEffect, useRef, useState } from 'react';
 import { clearSocialAuthTransaction, completeSocialAuth, readSocialAuthTransaction } from '@/libs/auth';
 import Icon from '@/libs/components/common/Icon';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
+import { useTranslation } from '@/libs/i18n/useTranslation';
+
+type CallbackError = { code: 'expired' | 'unverified' | 'failed' } | { message: string };
 
 const SocialAuthCallbackPage = () => {
+	const t = useTranslation();
 	const router = useRouter();
 	const handled = useRef(false);
-	const [error, setError] = useState('');
+	const [error, setError] = useState<CallbackError | null>(null);
+	const errorMessage = error && ('message' in error ? error.message : error.code === 'expired' ? t('auth.oauthExpired') : error.code === 'unverified' ? t('auth.oauthUnverified') : t('auth.oauthFailed'));
 
 	useEffect(() => {
 		if (!router.isReady || handled.current) return;
@@ -20,16 +25,16 @@ const SocialAuthCallbackPage = () => {
 
 		const finish = async () => {
 			try {
-				if (providerError) throw new Error(providerError);
-				if (!transaction) throw new Error('This sign-in request expired. Please start again.');
-				if (!authorizationCode || !returnedState || returnedState !== transaction.state) throw new Error('The sign-in response could not be verified. Please start again.');
+				if (providerError) { setError({ message: providerError }); return; }
+				if (!transaction) { setError({ code: 'expired' }); return; }
+				if (!authorizationCode || !returnedState || returnedState !== transaction.state) { setError({ code: 'unverified' }); return; }
 				window.history.replaceState({}, document.title, '/account/oauth/callback');
 				await completeSocialAuth(transaction, authorizationCode);
-				clearSocialAuthTransaction();
 				await router.replace('/mypage');
 			} catch (authError: unknown) {
+				setError(authError instanceof Error ? { message: authError.message } : { code: 'failed' });
+			} finally {
 				clearSocialAuthTransaction();
-				setError(authError instanceof Error ? authError.message : 'Social authentication failed.');
 			}
 		};
 
@@ -38,10 +43,10 @@ const SocialAuthCallbackPage = () => {
 
 	return <section className="clinical-oauth-callback" aria-live="polite">
 		<span className={`clinical-oauth-status ${error ? 'is-error' : ''}`}><Icon name={error ? 'error' : 'verified_user'} /></span>
-		<span className="clinical-section-kicker">SECURE PATIENT ACCESS</span>
-		<h1>{error ? 'Sign-in was not completed' : 'Verifying your account…'}</h1>
-		<p>{error || 'MN Hospital is securely completing your provider sign-in.'}</p>
-		{error ? <Link className="clinical-primary-button" href="/account/signin">Back to sign in</Link> : <span className="clinical-oauth-loader" aria-hidden="true" />}
+		<span className="clinical-section-kicker">{t('auth.oauthKicker')}</span>
+		<h1>{error ? t('auth.oauthIncomplete') : t('auth.oauthVerifying')}</h1>
+		<p>{errorMessage || t('auth.oauthProgress')}</p>
+		{error ? <Link className="clinical-primary-button" href="/account/signin">{t('auth.oauthBack')}</Link> : <span className="clinical-oauth-loader" aria-hidden="true" />}
 	</section>;
 };
 
