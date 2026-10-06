@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import { userVar } from '@/apollo/store';
@@ -15,13 +16,16 @@ const filterLabels = { ALL: 'notifications.all', UNREAD: 'notifications.unread',
 
 export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslation();
+  const router = useRouter();
   const session = useReactiveVar(userVar);
+  const staffWorkspace = session.memberType === MemberType.ADMIN ? '/admin' : session.memberType === MemberType.DOCTOR ? '/doctor-workspace' : session.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace' : '';
+  useEffect(() => { if (staffWorkspace && !embedded) void router.replace(`${staffWorkspace}/notifications`); }, [router, staffWorkspace, embedded]);
   const [filter, setFilter] = useState<Filter>('ALL');
   const [page, setPage] = useState(1);
   const [actionError, setActionError] = useState('');
   const input = { page, limit: PAGE_SIZE, ...(filter === 'ALL' ? {} : { notificationStatus: filter }) };
   const { data, loading, error, refetch } = useQuery<{ getMyNotifications: { list: NotificationItem[]; metaCounter: { total?: number }[] } }>(GET_MY_NOTIFICATIONS, {
-    variables: { input }, skip: !session._id, fetchPolicy: 'cache-and-network', pollInterval: session._id ? 30000 : 0,
+    variables: { input }, skip: !session._id || (Boolean(staffWorkspace) && !embedded), fetchPolicy: 'cache-and-network', pollInterval: session._id && (embedded || !staffWorkspace) ? 30000 : 0,
   });
   const [markRead, readState] = useMutation(MARK_MY_NOTIFICATION_READ);
   const [markAllRead, allState] = useMutation(MARK_ALL_MY_NOTIFICATIONS_READ);
@@ -43,12 +47,13 @@ export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) 
   const destination = (item: NotificationItem) => {
     if (item.notificationGroup === 'CONVERSATION') {
       if (!embedded) return '/mypage/messages';
-      const workspace = session.memberType === MemberType.DOCTOR ? '/doctor-workspace' : session.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace' : '/admin';
-      return `${workspace}/messages`;
+      return `${staffWorkspace}/messages`;
     }
     if (embedded) return null;
     return item.notificationGroup === 'APPOINTMENT' || item.notificationGroup === 'BOOKING_ORDER' ? '/appointment' : '/mypage';
   };
+
+  if (staffWorkspace && !embedded) return null;
 
   return <div className="clinical-inner-page">
     {!embedded && <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('notifications.title')}</div><span className="clinical-eyebrow">{t('notifications.kicker')}</span><h1>{t('notifications.title')}</h1><p>{t('notifications.intro')}</p></div></section>}

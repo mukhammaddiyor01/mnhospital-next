@@ -60,7 +60,7 @@ const Top = () => {
           {user._id ? (
             <Link
               className="clinical-profile"
-              href={user.memberType === MemberType.ADMIN ? '/mypage/dashboard' : '/mypage'}
+              href={user.memberType === MemberType.ADMIN ? '/mypage/dashboard' : user.memberType === MemberType.DOCTOR ? '/doctor-workspace/profile' : user.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace/profile' : '/mypage'}
               aria-label={t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'nav.profile')}
               title={t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'page.profile')}
               style={
