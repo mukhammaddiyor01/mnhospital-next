@@ -34,8 +34,8 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
         <section className="clinical-admin-panel" id="admin-staff"><header><h3>{t('dashboard.adminStaff')}</h3></header><dl>
           <div><dt>{t('dashboard.activeDoctors')}</dt><dd>{stats.activeDoctors.toLocaleString()} / {stats.totalDoctors.toLocaleString()}</dd></div>
           <div><dt>{t('dashboard.activeReceptionists')}</dt><dd>{stats.activeReceptionists.toLocaleString()} / {stats.totalReceptionists.toLocaleString()}</dd></div>
-        </dl><Link className="clinical-admin-panel-link" href="/doctor">{t('nav.doctors')} <Icon name="arrow_forward" /></Link></section>
-        <section className="clinical-admin-panel clinical-admin-updates" id="admin-updates"><header><h3>{t('dashboard.adminRecent')}</h3><Link href="/mypage/notifications">{t('dashboard.adminViewAll')} <Icon name="arrow_forward" /></Link></header>
+        </dl><Link className="clinical-admin-panel-link" href="/admin/doctors">{t('nav.doctors')} <Icon name="arrow_forward" /></Link></section>
+        <section className="clinical-admin-panel clinical-admin-updates" id="admin-updates"><header><h3>{t('dashboard.adminRecent')}</h3><Link href="/admin/notifications">{t('dashboard.adminViewAll')} <Icon name="arrow_forward" /></Link></header>
           {updates.loading && <p className="clinical-query-status">{t('notifications.loading')}</p>}
           {updates.error && <p className="clinical-form-error" role="alert">{t('notifications.loadError')}</p>}
           {!updates.loading && !updates.error && !updates.data?.getMyNotifications.list.length && <p className="clinical-admin-empty">{t('dashboard.adminEmpty')}</p>}
