@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
@@ -9,6 +9,8 @@ import { GET_SERVICES } from '@/apollo/service/query';
 import { LIKE_TARGET_SERVICE } from '@/apollo/service/mutation';
 import { formatKrw } from '@/libs/components/common/currency';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { translate } from '@/libs/i18n/messages';
 
 const serviceList = [
 	{ id: 'general-medicine', title: 'General Medicine', type: ServiceType.CONSULTATION, icon: 'stethoscope', description: 'Preventive care, everyday health concerns, and personalized treatment plans.', price: 150000 },
@@ -23,13 +25,19 @@ const iconForType = (type?: string) => type === ServiceType.CARDIOLOGY ? 'favori
 
 const ServicesPage = () => {
 	const t = useTranslation();
+	const { language } = usePreferences();
+	const localizedFallback = useMemo(() => {
+		const titles = ['services.demoGeneral', 'services.demoCardiology', 'services.demoLaboratory', 'services.demoPediatrics', 'services.demoNeurology', 'services.demoDentistry'] as const;
+		const descriptions = ['services.demoGeneralDesc', 'services.demoCardiologyDesc', 'services.demoLaboratoryDesc', 'services.demoPediatricsDesc', 'services.demoNeurologyDesc', 'services.demoDentistryDesc'] as const;
+		return serviceList.map((service, index) => ({ ...service, title: translate(language, titles[index]), description: translate(language, descriptions[index]) }));
+	}, [language]);
 	const [search, setSearch] = useState('');
 	const [type, setType] = useState('');
 	const [page, setPage] = useState(1);
 	const inquiry = { page, limit: 6, sort: 'serviceRank', direction: 'DESC', search: { ...(search ? { text: search } : {}), ...(type ? { serviceTypeList: [type] } : {}) } };
 	const { data, loading } = useQuery(GET_SERVICES, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const usingFallback = !data?.getServices?.list?.length;
-	const services = usingFallback ? serviceList : data.getServices.list;
+	const services = usingFallback ? localizedFallback : data.getServices.list;
 	const totalCounter = data?.getServices?.metaCounter;
 	const total = Array.isArray(totalCounter) ? totalCounter[0]?.total ?? services.length : totalCounter?.total ?? services.length;
 	const submitHandler = (event: FormEvent) => { event.preventDefault(); setPage(1); };
