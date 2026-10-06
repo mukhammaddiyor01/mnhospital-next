@@ -216,12 +216,11 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             disabled={submitting}
             onError={setError}
           />
-          <Link
-            className="clinical-doctor-login-link"
-            href="/account/doctor-signin"
-          >
-            {t('auth.doctorSignin')}
-          </Link>
+          <div className="clinical-staff-login-links">
+            <Link href="/account/doctor-signin">{t('auth.doctorSignin')}</Link>
+            <Link href="/account/receptionist-signin">{t('dashboard.receptionistSignin')}</Link>
+            <Link href="/account/admin-signin">{t('dashboard.adminSignin')}</Link>
+          </div>
           <button
             className="clinical-auth-mobile-switch"
             type="button"
