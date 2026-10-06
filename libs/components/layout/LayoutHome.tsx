@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { ComponentType, ReactNode } from 'react';
+import { ComponentType, ReactNode, useState } from 'react';
 import Top from '../Top';
 import Footer from '../Footer';
 import { useEffect } from 'react';
@@ -15,6 +15,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 		const router = useRouter();
 		const t = useTranslation();
 		const isHome = router.pathname === '/';
+		const [chatOpen, setChatOpen] = useState(false);
 		useEffect(() => { const token = getJwtToken(); if (token) updateUserInfo(token); }, []);
 		return <>
 			<Head>
@@ -27,8 +28,8 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 				<Top />
 				<main id="main">{isHome ? <Component {...props} /> : <div className="clinical-workspace clinical-inner-workspace"><AdvertisementRail side="left" /><div className="clinical-center-column"><Component {...props} /></div><AdvertisementRail side="right" /></div>}</main>
 				<Footer />
-				<GeneralChat />
-				<MobileBottomNav />
+				<GeneralChat open={chatOpen} onClose={() => setChatOpen(false)} />
+				<MobileBottomNav chatOpen={chatOpen} onChatToggle={() => setChatOpen((value) => !value)} />
 			</div>
 		</>;
 	};

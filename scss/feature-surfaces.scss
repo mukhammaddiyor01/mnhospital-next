@@ -35,30 +35,14 @@ html[data-theme='dark'] .clinical-secondary-button:hover,
 html[data-theme='dark'] .clinical-signup-top:hover { background: #2b4a61; }
 .clinical-chat-widget {
   position: fixed;
-  z-index: 101;
+  z-index: 99;
   right: max(24px, calc((100vw - 820px) / 2 + 24px));
-  bottom: 128px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
+  bottom: 70px;
 }
-.clinical-chat-launcher {
-  display: inline-flex;
-  min-height: 52px;
-  align-items: center;
-  gap: 9px;
-  padding: 0 17px;
-  color: #fff;
-  border: 0;
-  border-radius: 26px;
-  background: var(--clinical-primary);
-  box-shadow: 0 7px 24px rgba(18, 48, 55, .2);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 700;
-}
-.clinical-chat-launcher .material-symbols-rounded { font-size: 21px; }
+.clinical-bottom-nav .clinical-bottom-chat { display: flex; flex: 1; flex-direction: column; align-items: center; gap: 1px; padding: 0; color: var(--clinical-muted); border: 0; background: transparent; cursor: pointer; font: inherit; font-size: 17px; }
+.clinical-bottom-nav .clinical-bottom-chat.active,
+.clinical-bottom-nav .clinical-bottom-chat:hover { color: var(--clinical-primary); }
+.clinical-bottom-nav .clinical-bottom-chat > span:last-child { font-size: 8px; font-weight: 700; }
 .clinical-chat-panel {
   display: grid;
   width: min(370px, calc(100vw - 32px));
@@ -88,7 +72,6 @@ html[data-theme='dark'] .clinical-signup-top:hover { background: #2b4a61; }
 .clinical-chat-panel form input { flex: 1; min-width: 0; height: 40px; padding: 0 11px; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 5px; background: var(--clinical-surface); font-size: 13px; }
 .clinical-chat-panel form button { width: 40px; color: #fff; border: 0; border-radius: 5px; background: var(--clinical-primary); cursor: pointer; }
 .clinical-chat-panel form button:disabled { cursor: not-allowed; opacity: .45; }
-html[data-theme='dark'] .clinical-chat-launcher,
 html[data-theme='dark'] .clinical-chat-panel form button { color: #10282e; background: var(--clinical-primary); }
 
 .clinical-messages-layout { display: grid; grid-template-columns: minmax(220px, 290px) minmax(0, 1fr); min-height: 550px; gap: 0; overflow: hidden; padding: 0; }
@@ -176,8 +159,6 @@ html[data-theme='dark'] .clinical-dashboard-group { background: #172838; }
   .clinical-messages-layout { grid-template-columns: 1fr; }
   .clinical-messages-list { max-height: 260px; overflow-y: auto; border-right: 0; border-bottom: 1px solid var(--clinical-line); }
   .clinical-messages-history { height: 350px; }
-  .clinical-chat-widget { right: 16px; bottom: 112px; }
-  .clinical-chat-launcher { width: 52px; justify-content: center; padding: 0; }
-  .clinical-chat-launcher span:last-child { display: none; }
-  .clinical-chat-panel { height: min(490px, calc(100vh - 160px)); }
+  .clinical-chat-widget { right: 16px; }
+  .clinical-chat-panel { height: min(490px, calc(100vh - 140px)); }
 }

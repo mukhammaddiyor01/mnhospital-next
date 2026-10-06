@@ -24,11 +24,10 @@ export const socketAddress = (token: string) => {
   return url.toString();
 };
 
-const GeneralChat = () => {
+const GeneralChat = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const t = useTranslation();
   const { language } = usePreferences();
   const session = useReactiveVar(userVar);
-  const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState('');
@@ -80,9 +79,11 @@ const GeneralChat = () => {
     setError('');
   };
 
+  if (!open) return null;
+
   return <div className="clinical-chat-widget">
     {open && <section className="clinical-chat-panel" id="general-chat" aria-label={t('chat.title')}>
-      <header><div><strong>{t('chat.title')}</strong><small>{status === 'connected' ? t('chat.connected') : status === 'connecting' ? t('chat.connecting') : t('chat.disconnected')}{online !== null ? ` · ${online} ${t('chat.online')}` : ''}</small></div><button type="button" onClick={() => setOpen(false)} aria-label={t('chat.close')}><Icon name="close" /></button></header>
+      <header><div><strong>{t('chat.title')}</strong><small>{status === 'connected' ? t('chat.connected') : status === 'connecting' ? t('chat.connecting') : t('chat.disconnected')}{online !== null ? ` · ${online} ${t('chat.online')}` : ''}</small></div><button type="button" onClick={onClose} aria-label={t('chat.close')}><Icon name="close" /></button></header>
       <div className="clinical-chat-history" role="log" aria-live="polite" aria-relevant="additions">
         {messages.length === 0 && <p className="clinical-chat-empty">{t('chat.empty')}</p>}
         {messages.map((message) => <article key={message.id}><div><strong>{message.role === 'GUEST' ? t('chat.guest') : message.name}</strong><time dateTime={message.createdAt}>{new Date(message.createdAt).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}</time></div><p>{message.text}</p></article>)}
@@ -91,7 +92,6 @@ const GeneralChat = () => {
       {error && <p className="clinical-chat-error" role="alert">{error}</p>}
       <form onSubmit={send}><input ref={input} value={text} onChange={(event) => setText(event.target.value)} maxLength={500} placeholder={t('chat.placeholder')} aria-label={t('chat.placeholder')} /><button type="submit" disabled={status !== 'connected' || !text.trim()} aria-label={t('chat.send')}><Icon name="send" /></button></form>
     </section>}
-    <button className="clinical-chat-launcher" type="button" aria-expanded={open} aria-controls="general-chat" aria-label={open ? t('chat.close') : t('chat.open')} onClick={() => setOpen((value) => !value)}><Icon name={open ? 'close' : 'chat_bubble'} /><span>{open ? t('chat.close') : t('chat.open')}</span></button>
   </div>;
 };
 
