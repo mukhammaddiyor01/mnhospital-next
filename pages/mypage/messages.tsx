@@ -96,7 +96,8 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
       if (!id) throw new Error(t('messages.startError'));
       await conversations.refetch();
       openConversation(id);
-      void router.replace(embedded ? '/admin/messages' : '/mypage/messages', undefined, { shallow: true });
+      const workspace = session.memberType === MemberType.DOCTOR ? '/doctor-workspace' : session.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace' : '/admin';
+      void router.replace(embedded ? `${workspace}/messages` : '/mypage/messages', undefined, { shallow: true });
     } catch (requestError: any) { setError(requestError?.message ?? t('messages.startError')); }
   };
 

@@ -7,6 +7,7 @@ import { GET_MY_NOTIFICATIONS } from '@/apollo/notification/query';
 import { ARCHIVE_MY_NOTIFICATION, MARK_ALL_MY_NOTIFICATIONS_READ, MARK_MY_NOTIFICATION_READ } from '@/apollo/notification/mutation';
 import { NotificationItem, NotificationStatus } from '@/libs/components/notification/types';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { MemberType } from '@/libs/components/member/enums/member.enum';
 
 type Filter = 'ALL' | NotificationStatus;
 const PAGE_SIZE = 10;
@@ -40,7 +41,11 @@ export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) 
   };
 
   const destination = (item: NotificationItem) => {
-    if (item.notificationGroup === 'CONVERSATION') return embedded ? '/admin/messages' : '/mypage/messages';
+    if (item.notificationGroup === 'CONVERSATION') {
+      if (!embedded) return '/mypage/messages';
+      const workspace = session.memberType === MemberType.DOCTOR ? '/doctor-workspace' : session.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace' : '/admin';
+      return `${workspace}/messages`;
+    }
     if (embedded) return null;
     return item.notificationGroup === 'APPOINTMENT' || item.notificationGroup === 'BOOKING_ORDER' ? '/appointment' : '/mypage';
   };
