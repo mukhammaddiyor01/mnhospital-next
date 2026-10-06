@@ -1,0 +1,89 @@
+html[data-theme='dark'] {
+	body { background: #080f17; }
+	.clinical-shell { background: var(--clinical-surface); }
+	.clinical-header { background: rgba(13, 23, 34, .95); }
+	.mn-logo { color: var(--clinical-navy); }
+	.clinical-animated-wave--header .clinical-wave-layer--back { fill: #123c57; }
+	.clinical-animated-wave--header .clinical-wave-layer--middle { fill: #1b3445; }
+	.clinical-animated-wave--header .clinical-wave-layer--front { fill: #0d1722; }
+
+	.clinical-rail-card,
+	.clinical-rail .community,
+	.clinical-metrics > div,
+	.clinical-department-swiper .swiper-button-prev,
+	.clinical-department-swiper .swiper-button-next,
+	.clinical-department,
+	.clinical-doctor-card,
+	.clinical-directory-card,
+	.clinical-article-card,
+	.clinical-article-copy,
+	.clinical-follow-grid > div,
+	.clinical-profile-list a,
+	.clinical-trust-grid article,
+	.clinical-testimonial,
+	.clinical-inner-section,
+	.clinical-service-detail,
+	.clinical-pagination button,
+	.clinical-mypage-grid > a,
+	.clinical-mypage-grid > button,
+	.clinical-auth-card,
+	.clinical-auth-form,
+	.clinical-social-button,
+	.clinical-oauth-callback,
+	.clinical-mobile-menu,
+	.clinical-mobile-navigation,
+	.clinical-signup-top,
+	.clinical-light-button { background: #172838; }
+
+	.clinical-rail .news-card,
+	.clinical-rail .promo,
+	.clinical-rail .technology,
+	.clinical-rail .support-card,
+	.clinical-rail .emergency { background: linear-gradient(145deg, #1a3447, #172838); border-color: var(--clinical-line); }
+	.clinical-hero-card,
+	.clinical-inner-hero { background: linear-gradient(135deg, #172838, #1c3446 72%, #24445d); }
+	.clinical-accreditation,
+	.clinical-eyebrow { color: var(--clinical-navy); background: var(--clinical-primary-soft); }
+	.clinical-hero-card > p,
+	.clinical-inner-hero p,
+	.clinical-rail-card p,
+	.clinical-department p,
+	.clinical-article-body p,
+	.clinical-service-detail p,
+	.clinical-contact-details > p,
+	.clinical-trust-section p,
+	.clinical-article-copy p,
+	.clinical-auth-form > p { color: var(--clinical-muted); }
+
+	.clinical-header-search input,
+	.clinical-filter-bar select,
+	.clinical-contact-form input,
+	.clinical-contact-form textarea,
+	.clinical-patient-form input,
+	.clinical-patient-form select,
+	.clinical-patient-form textarea,
+	.clinical-booking-review-final textarea,
+	.clinical-auth-field:focus-within { color: var(--clinical-text); background: #203345; }
+	.clinical-header-search input::placeholder,
+	.clinical-contact-form input::placeholder,
+	.clinical-contact-form textarea::placeholder,
+	.clinical-patient-form input::placeholder,
+	.clinical-patient-form textarea::placeholder,
+	.clinical-auth-field input::placeholder { color: var(--clinical-muted); }
+	.clinical-bottom-nav { background: rgba(17, 31, 45, .96); }
+	.clinical-auth-field { background: var(--clinical-low); }
+	.clinical-article-image { background: var(--clinical-low); }
+	.clinical-rail .service-meta span:first-child { color: var(--clinical-navy); }
+	.clinical-doctor-portrait .clinical-rating,
+	.clinical-directory-portrait b { background: #203345; }
+	.clinical-book-top,
+	.clinical-primary-button,
+	.clinical-doctor-book,
+	.clinical-auth-submit,
+	.clinical-rail-card > a,
+	.clinical-rail .community > a,
+	.clinical-pagination b { color: #fff; background: #206999; }
+	.clinical-social-button.is-google > span { background: #fff; }
+	.clinical-auth-error,
+	.clinical-oauth-status.is-error { color: #ffc1c8 !important; background: #4a2735; }
+}
