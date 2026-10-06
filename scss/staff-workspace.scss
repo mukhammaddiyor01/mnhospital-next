@@ -109,12 +109,6 @@
 .clinical-admin-price button { padding: 7px 9px; white-space: nowrap; }
 .clinical-admin-pagination { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 20px; color: var(--clinical-muted); border-top: 1px solid var(--clinical-line); font-size: 11px; }
 .clinical-admin-pagination > div { display: flex; align-items: center; gap: 10px; }
-.clinical-admin-detail-panel { max-width: 760px; }
-.clinical-admin-detail-panel dl { margin: 0; padding: 4px 22px; }
-.clinical-admin-detail-panel dl > div { display: grid; grid-template-columns: minmax(140px, .6fr) 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--clinical-line); }
-.clinical-admin-detail-panel dl > div:last-child { border-bottom: 0; }
-.clinical-admin-detail-panel dt { color: var(--clinical-muted); font-size: 12px; }
-.clinical-admin-detail-panel dd { margin: 0; color: var(--clinical-navy); font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
 .clinical-staff-content .clinical-messages-layout { margin-top: 0; border: 1px solid var(--clinical-line); border-radius: 10px; background: #fff; }
 .clinical-staff-content .clinical-notifications { margin-top: 0; border: 1px solid var(--clinical-line); border-radius: 10px; }
 .clinical-staff-content .clinical-messages-layout .clinical-messages-list { background: var(--clinical-surface); }

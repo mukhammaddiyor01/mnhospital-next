@@ -40,8 +40,8 @@ export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) 
   };
 
   const destination = (item: NotificationItem) => {
-    if (item.notificationGroup === 'CONVERSATION') return embedded ? '/admin/messages' : '/mypage/messages';
     if (embedded) return null;
+    if (item.notificationGroup === 'CONVERSATION') return '/mypage/messages';
     return item.notificationGroup === 'APPOINTMENT' || item.notificationGroup === 'BOOKING_ORDER' ? '/appointment' : '/mypage';
   };
 

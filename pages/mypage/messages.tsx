@@ -15,10 +15,11 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 const PAGE_SIZE = 20;
 const memberTypes = Object.values(MemberType);
 
-export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
+export const MessagesPage = () => {
   const t = useTranslation();
   const router = useRouter();
   const session = useReactiveVar(userVar);
+  useEffect(() => { if (session.memberType === MemberType.ADMIN) void router.replace('/mypage/dashboard'); }, [router, session.memberType]);
   const [selectedId, setSelectedId] = useState('');
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
@@ -31,10 +32,10 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
     ? router.query.targetType as MemberType : null;
 
   const conversations = useQuery<{ getMyConversations: { list: ChatConversation[]; total: number } }>(GET_MY_CONVERSATIONS, {
-    variables: { input: { page: 1, limit: PAGE_SIZE } }, skip: !session._id, fetchPolicy: 'cache-and-network',
+    variables: { input: { page: 1, limit: PAGE_SIZE } }, skip: !session._id || session.memberType === MemberType.ADMIN, fetchPolicy: 'cache-and-network',
   });
   const messages = useQuery<{ getMyMessages: { list: ChatMessage[]; total: number } }>(GET_MY_MESSAGES, {
-    variables: { conversationId: selectedId, input: { page: 1, limit: PAGE_SIZE } }, skip: !session._id || !selectedId, fetchPolicy: 'cache-and-network',
+    variables: { conversationId: selectedId, input: { page: 1, limit: PAGE_SIZE } }, skip: !session._id || session.memberType === MemberType.ADMIN || !selectedId, fetchPolicy: 'cache-and-network',
   });
   const [startConversation, startState] = useMutation(START_DIRECT_CONVERSATION);
   const [sendMessage, sendState] = useMutation(SEND_DIRECT_MESSAGE);
@@ -50,7 +51,7 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
   useEffect(() => { if (rows.length) bottom.current?.scrollIntoView({ block: 'nearest' }); }, [selectedId, rows.length]);
 
   useEffect(() => {
-    if (!session._id) return;
+    if (!session._id || session.memberType === MemberType.ADMIN) return;
     const token = getJwtToken();
     if (!token) return;
     let stopped = false;
@@ -77,7 +78,7 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
     return () => { stopped = true; clearTimeout(retry); socket?.close(); };
   // Reconnect on a conversation change so callbacks use its current GraphQL variables.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session._id, selectedId]);
+  }, [session._id, session.memberType, selectedId]);
 
   const openConversation = (id: string) => {
     setSelectedId(id);
@@ -95,7 +96,7 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
       if (!id) throw new Error(t('messages.startError'));
       await conversations.refetch();
       openConversation(id);
-      void router.replace(embedded ? '/admin/messages' : '/mypage/messages', undefined, { shallow: true });
+      void router.replace('/mypage/messages', undefined, { shallow: true });
     } catch (requestError: any) { setError(requestError?.message ?? t('messages.startError')); }
   };
 
@@ -131,8 +132,10 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
     } catch (requestError: any) { setError(requestError?.message ?? t('messages.loadError')); }
   };
 
+  if (session.memberType === MemberType.ADMIN) return null;
+
   return <div className="clinical-inner-page">
-    {!embedded && <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('messages.title')}</div><span className="clinical-eyebrow">{t('messages.kicker')}</span><h1>{t('messages.title')}</h1><p>{t('messages.intro')}</p></div></section>}
+    <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('messages.title')}</div><span className="clinical-eyebrow">{t('messages.kicker')}</span><h1>{t('messages.title')}</h1><p>{t('messages.intro')}</p></div></section>
     {!session._id ? <section className="clinical-inner-section clinical-auth-gate"><h2>{t('messages.signinTitle')}</h2><p>{t('messages.signinIntro')}</p><Link className="clinical-primary-button" href="/account/signin">{t('patient.signin')}</Link></section> :
       <section className="clinical-inner-section clinical-messages-layout">
         <aside className="clinical-messages-list"><div className="clinical-messages-heading"><h2>{t('messages.conversations')}</h2><small>{conversations.data?.getMyConversations.total ?? 0}</small></div>

@@ -1,11 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const GET_MY_ADMIN_PROFILE = gql`
-  query GetMyAdminWorkspaceProfile {
-    getMyAdminProfile { _id adminNick adminPhone adminMail adminImage adminDesc createdAt }
-  }
-`;
-
 export const GET_ADMIN_DOCTORS = gql`
   query GetAdminWorkspaceDoctors($input: AdminDoctorInquiry!) {
     getDoctorsByAdmin(input: $input) {
