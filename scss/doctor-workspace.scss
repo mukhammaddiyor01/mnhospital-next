@@ -1,0 +1,13 @@
+.clinical-doctor-preferences { display: flex; align-items: center; gap: 7px; margin-right: 10px; }
+.clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-control,
+.clinical-staff-doctor .clinical-doctor-preferences .clinical-language-control { height: 36px; border-color: var(--clinical-line); background: var(--clinical-low); color: var(--clinical-navy); }
+.clinical-staff-doctor .clinical-doctor-preferences .material-symbols-rounded { color: var(--staff-accent); }
+.clinical-staff-doctor .clinical-doctor-preferences select { width: 76px; }
+.clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-error { position: absolute; z-index: 2; right: 0; top: 40px; width: 170px; padding: 7px; border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-low); }
+.clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-setting { position: relative; }
+@media (max-width: 760px) {
+  .clinical-staff-doctor .clinical-doctor-preferences { margin-right: 3px; }
+  .clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-control,
+  .clinical-staff-doctor .clinical-doctor-preferences .clinical-language-control { width: 36px; }
+  .clinical-staff-doctor .clinical-doctor-preferences select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+}

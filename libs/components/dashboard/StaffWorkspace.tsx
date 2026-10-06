@@ -7,6 +7,8 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { MessageKey } from '@/libs/i18n/messages';
 import { useRouter } from 'next/router';
+import LanguageControl from '@/libs/components/preference/LanguageControl';
+import ThemeControl from '@/libs/components/preference/ThemeControl';
 
 type StaffRole = MemberType.ADMIN | MemberType.DOCTOR | MemberType.RECEPTIONIST;
 
@@ -56,7 +58,7 @@ const StaffWorkspace = ({ role, name, title, intro, children }: {
       <div className="clinical-staff-sidebar-footer"><Link href="/"><Icon name="open_in_new" />{t('dashboard.visitSite')}</Link><button type="button" onClick={() => void logOut()}><Icon name="logout" />{t('patient.signoutTitle')}</button></div>
     </aside>
     <div className="clinical-staff-column">
-      <header className="clinical-staff-topbar"><div><span>{t('dashboard.staffPortal')}</span><strong>{t(roleLabel)}</strong></div><div className="clinical-staff-top-actions"><button type="button" onClick={() => setChatOpen(true)} aria-label={t('chat.open')}><Icon name="chat_bubble" /></button><Link href={notificationHref} aria-label={t('notifications.title')}><Icon name="notifications" /></Link><Link className="clinical-staff-avatar" href={profileHref} aria-label={t(isAdmin ? 'dashboard.title' : 'dashboard.profileLink')}><Icon name="person" /></Link></div></header>
+      <header className="clinical-staff-topbar"><div><span>{t('dashboard.staffPortal')}</span><strong>{t(roleLabel)}</strong></div><div className="clinical-staff-top-actions">{role === MemberType.DOCTOR && <div className="clinical-doctor-preferences"><ThemeControl /><LanguageControl /></div>}<button type="button" onClick={() => setChatOpen(true)} aria-label={t('chat.open')}><Icon name="chat_bubble" /></button><Link href={notificationHref} aria-label={t('notifications.title')}><Icon name="notifications" /></Link><Link className="clinical-staff-avatar" href={profileHref} aria-label={t(isAdmin ? 'dashboard.title' : 'dashboard.profileLink')}><Icon name="person" /></Link></div></header>
       <main className="clinical-staff-content"><div className="clinical-staff-page-heading"><div><span>{t(roleLabel)}</span><h1>{title}</h1><p>{intro ?? t('dashboard.intro')}</p></div><Link href={profileHref}><Icon name="person" />{name}</Link></div>{children}</main>
     </div>
     <GeneralChat open={chatOpen} onClose={() => setChatOpen(false)} />
