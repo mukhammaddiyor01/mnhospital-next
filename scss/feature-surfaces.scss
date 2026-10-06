@@ -1,4 +1,4 @@
-// Keep the original clinical design system. These rules cover components added later.
+// Styles for chat, notifications, and button colors added after the original clinical design.
 .clinical-book-top,
 .clinical-primary-button,
 .clinical-doctor-book,
@@ -33,21 +33,6 @@ html[data-theme='dark'] .clinical-secondary-button,
 html[data-theme='dark'] .clinical-signup-top { color: #d6efff; border-color: #496579; background: #20384b; }
 html[data-theme='dark'] .clinical-secondary-button:hover,
 html[data-theme='dark'] .clinical-signup-top:hover { background: #2b4a61; }
-.clinical-home-label { display: inline-flex; padding: 5px 9px; color: var(--clinical-secondary); border-radius: 999px; background: var(--clinical-primary-soft); font-size: 8px; font-weight: 800; letter-spacing: .08em; }
-.clinical-empty-state { margin: 0; padding: 18px; color: var(--clinical-muted); border: 1px solid var(--clinical-line); border-radius: 10px; background: var(--clinical-surface); font-size: 11px; }
-.clinical-doctor-portrait.is-placeholder, .clinical-directory-portrait.is-placeholder { color: var(--clinical-primary); background: var(--clinical-primary-soft); }
-.clinical-next-step { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 32px; color: #fff; border-radius: 10px; background: linear-gradient(110deg, #17334b, #0d3d61); box-shadow: 0 8px 30px rgba(23, 51, 75, .18); }
-.clinical-next-step h2 { margin: 6px 0; color: #fff; font: 700 23px/1.2 'Manrope', Arial, sans-serif; }
-.clinical-next-step p { margin: 6px 0 0; color: #c7d7df; font-size: 10px; }
-.clinical-next-step .clinical-section-kicker { color: #cfe5ff; }
-.clinical-contact-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
-.clinical-contact-options > div { padding: 20px; border-radius: 10px; background: var(--clinical-surface); box-shadow: 0 4px 16px rgba(23, 51, 75, .05); }
-.clinical-contact-options h3 { margin: 0 0 8px; color: var(--clinical-navy); font-size: 15px; }
-.clinical-contact-options p { color: var(--clinical-secondary); font-size: 11px; line-height: 1.6; }
-.clinical-contact-options a { color: var(--clinical-primary); font-size: 11px; font-weight: 700; }
-.clinical-footer-contact > p { max-width: 250px; margin: 0; color: #e0e8ed; font-size: 10px; line-height: 1.6; }
-.clinical-footer-contact > a { display: inline-flex; align-items: center; gap: 5px; color: #d2efff; font-size: 10px; font-weight: 700; }
-
 .clinical-chat-widget {
   position: fixed;
   z-index: 101;
@@ -157,9 +142,6 @@ html[data-theme='dark'] .clinical-messages-history article.own time { color: #31
 html[data-theme='dark'] .clinical-notifications-filters button.active { color: #10282e; border-color: var(--clinical-primary); background: var(--clinical-primary); }
 
 @media (max-width: 680px) {
-  .clinical-next-step { display: block; padding: 19px; }
-  .clinical-next-step .clinical-primary-button { margin-top: 16px; }
-  .clinical-contact-options { grid-template-columns: 1fr; }
   .clinical-notifications-toolbar { align-items: flex-start; flex-direction: column; }
   .clinical-messages-layout { grid-template-columns: 1fr; }
   .clinical-messages-list { max-height: 260px; overflow-y: auto; border-right: 0; border-bottom: 1px solid var(--clinical-line); }
