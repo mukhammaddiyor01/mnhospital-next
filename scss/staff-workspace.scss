@@ -119,6 +119,7 @@
 .clinical-staff-inline-form input { max-width: 145px; }
 .clinical-staff-inline-form button, .clinical-staff-row-actions button { padding: 7px 9px; color: var(--staff-accent); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--staff-accent-soft); cursor: pointer; font: 700 11px 'DM Sans', Arial, sans-serif; }
 .clinical-staff-inline-form button:disabled, .clinical-staff-row-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.clinical-staff-table-action { padding: 7px 10px; color: var(--staff-accent); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--staff-accent-soft); cursor: pointer; font: 700 11px 'DM Sans', Arial, sans-serif; }
 .clinical-staff-profile-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; padding: 10px 20px; }
 .clinical-staff-profile-details > div { display: grid; gap: 3px; padding: 13px 0; border-bottom: 1px solid var(--clinical-line); }
 .clinical-staff-profile-details small { color: var(--clinical-muted); font-size: 11px; }

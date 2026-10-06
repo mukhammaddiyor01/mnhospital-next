@@ -18,6 +18,12 @@ export const CREATE_DOCTOR_REPORT = gql`
   }
 `;
 
+export const UPDATE_DOCTOR_REPORT = gql`
+  mutation UpdateDoctorWorkspaceReport($input: DoctorReportUpdateInput!) {
+    updateDoctorReport(input: $input) { _id updatedAt }
+  }
+`;
+
 export const UPDATE_RECEPTIONIST_PROFILE = gql`
   mutation UpdateReceptionistWorkspaceProfile($input: ReceptionistProfileUpdateInput!) {
     updateMyReceptionistProfile(input: $input) { _id receptionistFullName receptionistPhone receptionistMail receptionistAddress receptionistDesc }

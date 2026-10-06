@@ -14,7 +14,7 @@ export const GET_DOCTOR_SERVICES = gql`
 
 export const GET_DOCTOR_REPORTS = gql`
   query GetDoctorWorkspaceReports($input: DoctorReportInquiry!) {
-    getMyDoctorReports(input: $input) { list { _id appointmentId patientId docReportDiagnosis docReportSymptoms docReportMedication docReportFollowUp createdAt } metaCounter { total } }
+    getMyDoctorReports(input: $input) { list { _id appointmentId patientId docReportDiagnosis docReportSymptoms docReportMedication docReportFollowUp docReportFollowUpDate createdAt } metaCounter { total } }
   }
 `;
 
