@@ -7,7 +7,7 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 const DepartmentSwiper = ({ services }: { services: ClinicalServiceCard[] }) => {
   const t = useTranslation();
 
-  return <div className="clinical-department-list" aria-label={t('home.department.aria')}>
+  return <div className={`clinical-department-list${services.length === 1 ? ' is-single' : ''}`} aria-label={t('home.department.aria')}>
     {services.map((service) => <article className="clinical-department" key={service._id}>
       <span className="clinical-department-type">{String(service.serviceType ?? '').replaceAll('_', ' ')}</span>
       <h3>{service.serviceTitle || t('home.department.fallback')}</h3>

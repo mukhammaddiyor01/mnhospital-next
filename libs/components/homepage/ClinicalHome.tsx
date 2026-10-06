@@ -183,7 +183,7 @@ const ClinicalHome = () => {
               {doctors.map((doctor, index) => (
                 <article className="clinical-doctor-card" key={doctor._id}>
                   <div
-                    className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? "teal" : index === 2 ? "slate" : "blue"}`}
+                    className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? "teal" : index === 2 ? "slate" : "blue"}${doctor.docImage ? '' : ' is-placeholder'}`}
                   >
                     {doctor.docImage ? (
                       <span
