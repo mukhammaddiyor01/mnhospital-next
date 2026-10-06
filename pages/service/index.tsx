@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
@@ -9,37 +9,19 @@ import { GET_SERVICES } from '@/apollo/service/query';
 import { LIKE_TARGET_SERVICE } from '@/apollo/service/mutation';
 import { formatKrw } from '@/libs/components/common/currency';
 import { useTranslation } from '@/libs/i18n/useTranslation';
-import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
-import { translate } from '@/libs/i18n/messages';
 import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
-
-const serviceList = [
-	{ id: 'general-medicine', title: 'General Medicine', type: ServiceType.CONSULTATION, icon: 'stethoscope', description: 'Preventive care, everyday health concerns, and personalized treatment plans.', price: 150000 },
-	{ id: 'cardiology', title: 'Cardiology', type: ServiceType.CARDIOLOGY, icon: 'favorite', description: 'Heart health screenings, diagnostics, and long-term cardiovascular care.', price: 250000 },
-	{ id: 'laboratory', title: 'Laboratory', type: ServiceType.LABORATORY, icon: 'science', description: 'Accurate blood tests and diagnostics with fast, secure results.', price: 80000 },
-	{ id: 'pediatrics', title: 'Pediatrics', type: ServiceType.PEDIATRICS, icon: 'child_care', description: 'Gentle, thoughtful medical care for children and growing families.', price: 160000 },
-	{ id: 'neurology', title: 'Neurology', type: ServiceType.NEUROLOGY, icon: 'neurology', description: 'Diagnosis and treatment for brain and nervous system disorders.', price: 220000 },
-	{ id: 'dentistry', title: 'Dentistry', type: ServiceType.DENTISTRY, icon: 'dentistry', description: 'Modern preventive, restorative, and cosmetic dental treatment.', price: 200000 },
-];
 
 const iconForType = (type?: string) => type === ServiceType.CARDIOLOGY ? 'favorite' : type === ServiceType.LABORATORY ? 'science' : type === ServiceType.PEDIATRICS ? 'child_care' : type === ServiceType.NEUROLOGY ? 'neurology' : 'stethoscope';
 
 const ServicesPage = () => {
 	const t = useTranslation();
 	const typeLabel = useServiceTypeLabel();
-	const { language } = usePreferences();
-	const localizedFallback = useMemo(() => {
-		const titles = ['services.demoGeneral', 'services.demoCardiology', 'services.demoLaboratory', 'services.demoPediatrics', 'services.demoNeurology', 'services.demoDentistry'] as const;
-		const descriptions = ['services.demoGeneralDesc', 'services.demoCardiologyDesc', 'services.demoLaboratoryDesc', 'services.demoPediatricsDesc', 'services.demoNeurologyDesc', 'services.demoDentistryDesc'] as const;
-		return serviceList.map((service, index) => ({ ...service, title: translate(language, titles[index]), description: translate(language, descriptions[index]) }));
-	}, [language]);
 	const [search, setSearch] = useState('');
 	const [type, setType] = useState('');
 	const [page, setPage] = useState(1);
 	const inquiry = { page, limit: 6, sort: 'serviceRank', direction: 'DESC', search: { ...(search ? { text: search } : {}), ...(type ? { serviceTypeList: [type] } : {}) } };
 	const { data, loading } = useQuery(GET_SERVICES, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
-	const usingFallback = !data?.getServices?.list?.length;
-	const services = usingFallback ? localizedFallback : data.getServices.list;
+	const services = data?.getServices?.list ?? [];
 	const totalCounter = data?.getServices?.metaCounter;
 	const total = Array.isArray(totalCounter) ? totalCounter[0]?.total ?? services.length : totalCounter?.total ?? services.length;
 	const submitHandler = (event: FormEvent) => { event.preventDefault(); setPage(1); };
@@ -65,18 +47,18 @@ const ServicesPage = () => {
 				<button className="clinical-primary-button" type="submit">{t('services.search')}</button>
 			</form>
 			<div className="clinical-service-detail-grid">{services.map((service: any) => {
-				const id = service._id ?? service.id;
-				const title = service.serviceTitle ?? service.title;
-				const price = service.servicePrice ?? service.price;
+				const id = service._id;
+				const title = service.serviceTitle;
+				const price = service.servicePrice;
 				return <article className="clinical-service-detail" key={id}>
-					<div className="clinical-service-detail-top"><span className="clinical-service-detail-icon"><Icon name={service.icon ?? iconForType(service.serviceType ?? service.type)} /></span>{!usingFallback && <LikeButton mutation={LIKE_TARGET_SERVICE} id={id} variableName="serviceId" initialLiked={Boolean(service.meLiked?.[0]?.myFavorite)} />}</div>
-					<span className="clinical-section-kicker">{typeLabel(service.serviceType ?? service.type)}</span>
-					<h3>{title}</h3><p>{service.serviceDesc ?? service.description}</p>
-					<div className="clinical-service-detail-bottom"><span>{price ? t('services.from').replace('{price}', formatKrw(price)) : t('services.alwaysAvailable')}</span><Link href={`/service/${id}`}>{t('services.explore')}</Link></div>
+					<div className="clinical-service-detail-top"><span className="clinical-service-detail-icon"><Icon name={iconForType(service.serviceType)} /></span><LikeButton mutation={LIKE_TARGET_SERVICE} id={id} variableName="serviceId" initialLiked={Boolean(service.meLiked?.[0]?.myFavorite)} /></div>
+					<span className="clinical-section-kicker">{typeLabel(service.serviceType)}</span>
+					<h3>{title}</h3><p>{service.serviceDesc}</p>
+					<div className="clinical-service-detail-bottom"><span>{price ? t('services.from').replace('{price}', formatKrw(price)) : ''}</span><Link href={`/service/${id}`}>{t('services.explore')}</Link></div>
 				</article>;
 			})}</div>
-			{loading && <p className="clinical-query-status">{t('services.loading')}</p>}
-			<div className="clinical-pagination"><span>{t('services.showing').replace('{shown}', String(services.length)).replace('{total}', String(total))}</span><div><button disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>←</button><b>{page}</b><button disabled={services.length < 6} onClick={() => setPage((value) => value + 1)}>→</button></div></div>
+			{loading ? <p className="clinical-query-status">{t('services.loading')}</p> : !services.length && <p className="clinical-empty-state">{t('services.empty')}</p>}
+			{services.length > 0 && <div className="clinical-pagination"><span>{t('services.showing').replace('{shown}', String(services.length)).replace('{total}', String(total))}</span><div><button disabled={page === 1} onClick={() => setPage((value) => Math.max(1, value - 1))}>←</button><b>{page}</b><button disabled={services.length < 6} onClick={() => setPage((value) => value + 1)}>→</button></div></div>}
 			<Link className="clinical-primary-button clinical-inline-button" href="/appointment">{t('services.book')} <span>↗</span></Link>
 		</section>
 	</div>;

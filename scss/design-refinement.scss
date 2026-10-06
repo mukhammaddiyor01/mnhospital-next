@@ -241,6 +241,19 @@ html[data-theme='dark'] .clinical-directory-card { padding: 0; border: 1px solid
 .clinical-directory-bottom { gap: 12px; font-size: 12px; }
 .clinical-directory-bottom a { font-size: 12px; }
 .clinical-directory-card:hover { transform: none; box-shadow: none; }
+.clinical-service-detail-grid { gap: 18px; }
+.clinical-service-detail,
+html[data-theme='dark'] .clinical-service-detail {
+  padding: 26px;
+  border: 1px solid var(--clinical-line);
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+.clinical-service-detail h3 { font-size: 19px; }
+.clinical-service-detail p,
+html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secondary); font-size: 13px; line-height: 1.6; }
+.clinical-service-detail-icon { color: var(--clinical-primary); background: var(--clinical-primary-soft); }
 
 .clinical-footer {
   padding: 60px 0 24px;
