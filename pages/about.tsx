@@ -1,6 +1,32 @@
 import Link from 'next/link';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
+import { useTranslation } from '@/libs/i18n/useTranslation';
 
-const AboutPage = () => <div className="clinical-inner-page"><section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">Home</Link> / About us</div><span className="clinical-eyebrow">OUR STORY</span><h1>Healthcare should<br /><em>feel human.</em></h1><p>MN Hospital brings trusted medical expertise and a more thoughtful digital experience together.</p></div></section><section className="clinical-inner-section"><div className="clinical-about-grid"><div className="clinical-about-art"><div className="clinical-about-orbit">✚</div><span>Clinical care<br />with purpose</span></div><div><span className="clinical-eyebrow">CARE WITH PURPOSE</span><h2>Built around people, not paperwork.</h2><p>We started MN Hospital with one simple belief: getting good care should be easier. Our team combines experienced specialists, clear communication, and technology that gives patients more control over their health journey.</p><ul className="clinical-check-list"><li>Experienced, compassionate specialists</li><li>Clear prices and easy online booking</li><li>Connected care from appointment to follow-up</li><li>A safe, respectful environment for every patient</li></ul><Link className="clinical-primary-button clinical-inline-button" href="/service">Explore our services <span>↗</span></Link></div></div></section><section className="clinical-about-values"><div><span className="clinical-section-kicker">THE MN HOSPITAL STANDARD</span><h2>Precision in every detail.</h2></div><div className="clinical-value-grid"><article><strong>01</strong><h3>Listen first</h3><p>Every care plan starts with understanding the person, not just the symptoms.</p></article><article><strong>02</strong><h3>Coordinate clearly</h3><p>Specialists, diagnostics, and follow-up care stay connected throughout the journey.</p></article><article><strong>03</strong><h3>Keep improving</h3><p>Modern technology supports the human expertise behind every decision.</p></article></div></section></div>;
+const AboutPage = () => {
+	const t = useTranslation();
+	return <div className="clinical-inner-page">
+		<section className="clinical-inner-hero"><div>
+			<div className="clinical-crumb"><Link href="/">{t('nav.home')}</Link> / {t('footer.about')}</div>
+			<span className="clinical-eyebrow">{t('about.story')}</span>
+			<h1>{t('about.hero1')}<br /><em>{t('about.hero2')}</em></h1>
+			<p>{t('about.intro')}</p>
+		</div></section>
+		<section className="clinical-inner-section"><div className="clinical-about-grid">
+			<div className="clinical-about-art"><div className="clinical-about-orbit">✚</div><span>{t('about.art')}</span></div>
+			<div><span className="clinical-eyebrow">{t('about.purpose')}</span><h2>{t('about.title')}</h2>
+				<p>{t('about.description')}</p>
+				<ul className="clinical-check-list"><li>{t('about.point1')}</li><li>{t('about.point2')}</li><li>{t('about.point3')}</li><li>{t('about.point4')}</li></ul>
+				<Link className="clinical-primary-button clinical-inline-button" href="/service">{t('about.explore')} <span>↗</span></Link>
+			</div>
+		</div></section>
+		<section className="clinical-about-values"><div><span className="clinical-section-kicker">{t('about.standard')}</span><h2>{t('about.standardTitle')}</h2></div>
+			<div className="clinical-value-grid">
+				<article><strong>01</strong><h3>{t('about.value1')}</h3><p>{t('about.value1Text')}</p></article>
+				<article><strong>02</strong><h3>{t('about.value2')}</h3><p>{t('about.value2Text')}</p></article>
+				<article><strong>03</strong><h3>{t('about.value3')}</h3><p>{t('about.value3Text')}</p></article>
+			</div>
+		</section>
+	</div>;
+};
 
 export default withLayoutMain(AboutPage);
