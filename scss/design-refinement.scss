@@ -65,16 +65,28 @@ html[data-theme='dark'] .clinical-animated-wave--header .clinical-wave-layer--fr
 .clinical-book-top, .clinical-signup-top { min-height: 40px; padding: 0 16px; border-radius: 5px; font-size: 12px; }
 .clinical-book-top { background: #145b72; }
 .clinical-bottom-nav { border-top-color: var(--clinical-line); background: var(--clinical-surface); }
-.clinical-workspace { background: var(--clinical-surface); }
+.clinical-workspace { background: #f6fafd; }
+.clinical-center-column {
+  --clinical-surface: #fff;
+  --clinical-low: #f0f4f7;
+  --clinical-line: #dfeaf1;
+}
+html[data-theme='dark'] .clinical-workspace { background: #101e22; }
+html[data-theme='dark'] .clinical-center-column {
+  --clinical-surface: #172838;
+  --clinical-low: #1a3035;
+  --clinical-line: #395459;
+}
 .clinical-rail-card { border-color: var(--clinical-line); background: var(--clinical-surface); box-shadow: none; }
 .clinical-rail-card h3 { color: var(--clinical-navy); }
 .clinical-rail-card p { color: var(--clinical-secondary); }
 .clinical-hero-card,
 html[data-theme='dark'] .clinical-hero-card {
   border: 1px solid var(--clinical-line);
-  background: var(--clinical-low);
+  background: linear-gradient(135deg, #fff 0%, #f4f8fb 70%, #dceaff 100%);
   box-shadow: none;
 }
+html[data-theme='dark'] .clinical-hero-card { background: linear-gradient(135deg, #172838, #1c3446 72%, #24445d); }
 .clinical-home-label,
 .clinical-section-kicker {
   color: var(--clinical-secondary);
@@ -165,9 +177,10 @@ html[data-theme='dark'] .clinical-doctor-book { color: var(--clinical-primary); 
 .clinical-inner-hero,
 html[data-theme='dark'] .clinical-inner-hero {
   border: 1px solid var(--clinical-line);
-  background: var(--clinical-low);
+  background: linear-gradient(135deg, #fff 0%, #f4f8fb 70%, #dceaff 100%);
   box-shadow: none;
 }
+html[data-theme='dark'] .clinical-inner-hero { background: linear-gradient(135deg, #172838, #1c3446 72%, #24445d); }
 .clinical-inner-hero h1 { letter-spacing: -.045em; }
 .clinical-inner-hero p,
 html[data-theme='dark'] .clinical-inner-hero p { color: var(--clinical-secondary); font-size: 16px; line-height: 1.6; }
