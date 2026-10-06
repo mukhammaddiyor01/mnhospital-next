@@ -36,7 +36,7 @@ const StaffWorkspace = ({ role, name, title, intro, children, doctorId }: {
     ] : role === MemberType.DOCTOR && doctorId ? [
       { href: `/doctor/${doctorId}`, icon: 'stethoscope', label: 'patient.openDoctor' as MessageKey },
     ] : []),
-    ...(!isAdmin ? [{ href: '/mypage/messages', icon: 'mail', label: 'messages.title' as MessageKey }] : []),
+    { href: isAdmin ? '/admin/messages' : '/mypage/messages', icon: 'mail', label: 'messages.title' },
     { href: notificationHref, icon: 'notifications', label: 'notifications.title' },
   ];
 
