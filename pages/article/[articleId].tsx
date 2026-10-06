@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import { GET_ARTICLE } from '@/apollo/article/query';
 import { Article } from '@/libs/components/article/types/article';
-import { articleImage, fallbackArticles, useArticleCategoryLabel } from '@/libs/components/article/ArticleCard';
+import { articleImage, useFallbackArticles, useArticleCategoryLabel } from '@/libs/components/article/ArticleCard';
 import Icon from '@/libs/components/common/Icon';
 import CommentsSection from '@/libs/components/comment/CommentsSection';
 import { ReferenceGroup } from '@/libs/components/comment/enums/comment.enum';
@@ -16,6 +16,7 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 const ArticleDetailPage = () => {
 	const t = useTranslation();
 	const categoryLabel = useArticleCategoryLabel();
+	const fallbackArticles = useFallbackArticles();
 	const router = useRouter();
 	const articleId = typeof router.query.articleId === 'string' ? router.query.articleId : '';
 	const localArticle = fallbackArticles.find((article) => article._id === articleId);

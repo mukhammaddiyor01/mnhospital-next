@@ -10,7 +10,7 @@ import { GET_ARTICLES } from "@/apollo/article/query";
 import { ArticleStatus } from "@/libs/components/article/enums/article.enum";
 import { Article } from "@/libs/components/article/types/article";
 import {
-  fallbackArticles,
+  useFallbackArticles,
   ArticleCard,
 } from "@/libs/components/article/ArticleCard";
 import type { HospitalStatus } from "@/pages/api/hospital-status";
@@ -139,6 +139,7 @@ const doctorRole = (specialty: string | undefined, t: ReturnType<typeof useTrans
 
 const ClinicalHome = () => {
   const t = useTranslation();
+  const fallbackArticles = useFallbackArticles();
   const [notice, setNotice] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
   useEffect(() => {
