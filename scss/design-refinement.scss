@@ -177,7 +177,7 @@ html[data-theme='dark'] .clinical-hero-card > p {
   box-shadow: none;
   transition: none;
 }
-.clinical-doctor-portrait { height: 280px; border-radius: 3px 3px 0 0; background: var(--clinical-low); }
+.clinical-doctor-portrait { height: 280px; color: var(--clinical-primary); border-radius: 3px 3px 0 0; background: var(--clinical-low); }
 .clinical-doctor-card h3 { margin: 20px 20px 4px; font-size: 18px; }
 .clinical-doctor-card > b { display: block; margin: 0 20px; color: var(--clinical-secondary); font-size: 13px; font-weight: 500; }
 .clinical-doctor-card p { margin: 6px 20px 16px; color: var(--clinical-muted); font-size: 12px; }
@@ -237,7 +237,7 @@ html[data-theme='dark'] .clinical-inner-section {
 .clinical-directory-grid { gap: 20px; }
 .clinical-directory-card,
 html[data-theme='dark'] .clinical-directory-card { padding: 0; border: 1px solid var(--clinical-line); border-radius: 4px; background: transparent; box-shadow: none; }
-.clinical-directory-portrait { height: 240px; border-radius: 3px 3px 0 0; background: var(--clinical-low); }
+.clinical-directory-portrait { height: 240px; color: var(--clinical-primary); border-radius: 3px 3px 0 0; background: var(--clinical-low); }
 .clinical-directory-info { padding: 18px 20px 20px; }
 .clinical-directory-info h3 { margin-top: 0; font-size: 18px; }
 .clinical-directory-info p { font-size: 13px; }

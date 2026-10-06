@@ -79,7 +79,10 @@ const ClinicalHome = () => {
     skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
     fetchPolicy: "cache-and-network",
   });
-  const services: ClinicalServiceCard[] = servicesQuery.data?.getServices?.list ?? [];
+  const services: ClinicalServiceCard[] = (servicesQuery.data?.getServices?.list ?? []).filter(
+    (service: ClinicalServiceCard, index: number, list: ClinicalServiceCard[]) =>
+      list.findIndex((item) => `${item.serviceTitle}|${item.serviceDesc}`.trim().toLowerCase() === `${service.serviceTitle}|${service.serviceDesc}`.trim().toLowerCase()) === index,
+  );
   const doctors: ClinicalDoctorCard[] = doctorsQuery.data?.getDoctors?.list ?? [];
   const articles: Article[] = articlesQuery.data?.getArticles?.list ?? [];
   const initials = (name?: string) =>
@@ -187,13 +190,13 @@ const ClinicalHome = () => {
                         className="clinical-api-doctor-image"
                         style={{ backgroundImage: `url(${resolveApiAsset(doctor.docImage)})` }}
                         role="img"
-                        aria-label={doctor.docFullName}
+                        aria-label={doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}
                       />
                     ) : (
-                      initials(doctor.docFullName)
+                      initials(doctor.docFullName || doctor.docNick)
                     )}
                   </div>
-                  <h3>{doctor.docFullName}</h3>
+                  <h3>{doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}</h3>
                   <b>{specialtyLabel(doctor.docSpecialty)}</b>
                   {Number(doctor.docExperience) > 0 && <p>{doctor.docExperience} {t('home.doctor.years')}</p>}
                   <Link
