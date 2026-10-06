@@ -2,8 +2,10 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import withLayoutMain from "@/libs/components/layout/LayoutHome";
 import Icon from "@/libs/components/common/Icon";
+import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const ContactPage = () => {
+  const t = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const submitHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -15,39 +17,33 @@ const ContactPage = () => {
       <section className="clinical-inner-hero">
         <div>
           <div className="clinical-crumb">
-            <Link href="/">Home</Link> / Contact
+            <Link href="/">{t('nav.home')}</Link> / {t('nav.contact')}
           </div>
-          <span className="clinical-eyebrow">GET IN TOUCH</span>
+          <span className="clinical-eyebrow">{t('contact.eyebrow')}</span>
           <h1>
-            Let’s talk about
+            {t('contact.title1')}
             <br />
-            <em>your care.</em>
+            <em>{t('contact.title2')}</em>
           </h1>
-          <p>
-            Have a question about an appointment or our services? Our support
-            team is ready to help.
-          </p>
+          <p>{t('contact.intro')}</p>
         </div>
       </section>
       <section className="clinical-inner-section">
         <div className="clinical-contact-grid">
           <div className="clinical-contact-details">
             <span className="clinical-section-kicker">MN HOSPITAL</span>
-            <h2>We’re here when you need us.</h2>
-            <p>
-              Reach out to our patient support team for guidance, appointments,
-              and service information.
-            </p>
+            <h2>{t('contact.title')}</h2>
+            <p>{t('contact.description')}</p>
             <div className="clinical-contact-item">
               <span className="clinical-contact-icon">
                 <Icon name="location_on" />
               </span>
               <div>
-                <strong>Visit us</strong>
+                <strong>{t('contact.visit')}</strong>
                 <small>
-                  Tashkent, Chilanzar district
+                  {t('footer.address')}
                   <br />
-                  MN Hospital building
+                  {t('footer.building')}
                 </small>
               </div>
             </div>
@@ -56,11 +52,11 @@ const ContactPage = () => {
                 <Icon name="call" />
               </span>
               <div>
-                <strong>Call us</strong>
+                <strong>{t('contact.call')}</strong>
                 <small>
                   <a href="tel:+821077777777">+821077777777</a>
                   <br />
-                  <a href="tel:103">Emergency line: 119</a>
+                  <a href="tel:119">{t('contact.emergency')}: 119</a>
                 </small>
               </div>
             </div>
@@ -69,40 +65,40 @@ const ContactPage = () => {
                 <Icon name="schedule" />
               </span>
               <div>
-                <strong>Working hours</strong>
+                <strong>{t('contact.hours')}</strong>
                 <small>
-                  Emergency care: 24/7
+                  {t('contact.emergencyHours')}
                   <br />
-                  Mon–Fri: 08:00–20:00
+                  {t('contact.weekdayHours')}
                 </small>
               </div>
             </div>
           </div>
           <form className="clinical-contact-form" onSubmit={submitHandler}>
-            <span className="clinical-section-kicker">SEND A MESSAGE</span>
-            <h2>How can we help?</h2>
+            <span className="clinical-section-kicker">{t('contact.messageKicker')}</span>
+            <h2>{t('contact.messageTitle')}</h2>
             <label>
-              Name
-              <input required placeholder="Your full name" />
+              {t('contact.name')}
+              <input required placeholder={t('contact.namePlaceholder')} />
             </label>
             <label>
-              Email
+              {t('contact.email')}
               <input required type="email" placeholder="you@example.com" />
             </label>
             <label>
-              Message
+              {t('contact.message')}
               <textarea
                 required
                 rows={5}
-                placeholder="Tell us how we can support you..."
+                placeholder={t('contact.messagePlaceholder')}
               />
             </label>
             <button className="clinical-primary-button" type="submit">
-              {submitted ? "Message received ✓" : "Send message →"}
+              {submitted ? t('contact.received') : t('contact.send')}
             </button>
             {submitted && (
               <p className="clinical-form-success">
-                Thank you. Our care coordinator will contact you shortly.
+                {t('contact.thanks')}
               </p>
             )}
           </form>
