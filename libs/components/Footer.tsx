@@ -22,8 +22,41 @@ const Footer = () => {
       </nav>
       <div className="clinical-footer-contact">
         <h2>{t('footer.getInTouch')}</h2>
-        <p>{t('footer.contactIntro')}</p>
-        <Link href="/contact">{t('footer.contact')} <Icon name="arrow_forward" /></Link>
+        <div className="clinical-footer-contact-item">
+          <span className="clinical-footer-contact-icon">
+            <Icon name="location_on" />
+          </span>
+          <div>
+            <small>{t('footer.visit')}</small>
+            <p>
+              {t('footer.address')}
+              <br />
+              {t('footer.building')}
+            </p>
+          </div>
+        </div>
+        <div className="clinical-footer-contact-item">
+          <span className="clinical-footer-contact-icon">
+            <Icon name="call" />
+          </span>
+          <div>
+            <small>{t('footer.call')}</small>
+            <a href="tel:+821077777777">+821077777777</a>
+          </div>
+        </div>
+        <div className="clinical-footer-contact-item">
+          <span className="clinical-footer-contact-icon">
+            <Icon name="schedule" />
+          </span>
+          <div>
+            <small>{t('footer.hours')}</small>
+            <p>
+              {t('footer.emergencyCare')}
+              <br />
+              {t('footer.weekdays')}
+            </p>
+          </div>
+        </div>
       </div>
       <div className="clinical-footer-brand-card">
         <MnLogo footer />
@@ -39,7 +72,7 @@ const Footer = () => {
       <span>
         © {new Date().getFullYear()} {t('footer.rights')}
       </span>
-      <a href="tel:119">
+      <a href="tel:103">
         <Icon name="emergency" /> {t('footer.emergency')}
       </a>
       <SocialLinks />
