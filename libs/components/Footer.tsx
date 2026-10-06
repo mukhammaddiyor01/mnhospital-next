@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Icon from "./common/Icon";
 import MnLogo from "./common/MnLogo";
+import SocialLinks from "./common/SocialLinks";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const Footer = () => {
@@ -39,6 +40,7 @@ const Footer = () => {
       <a href="tel:119">
         <Icon name="emergency" /> {t('footer.emergency')}
       </a>
+      <SocialLinks />
     </div>
   </footer>
   );
