@@ -25,12 +25,12 @@ const Dashboard = () => {
     skip: !session._id || role !== MemberType.RECEPTIONIST, fetchPolicy: 'cache-and-network',
   });
   const request = role === MemberType.ADMIN ? admin : role === MemberType.DOCTOR ? doctor : receptionist;
-  const titleKey: MessageKey = role === MemberType.ADMIN ? 'dashboard.adminTitle' : role === MemberType.DOCTOR ? 'dashboard.doctorTitle' : 'dashboard.receptionistTitle';
+  const titleKey: MessageKey = role === MemberType.ADMIN ? 'dashboard.adminTitle' : role === MemberType.DOCTOR ? 'dashboard.doctorTitle' : role === MemberType.RECEPTIONIST ? 'dashboard.receptionistTitle' : 'dashboard.title';
   const retry = () => { void request.refetch(); };
 
   return <div className="clinical-inner-page">
     <section className="clinical-inner-hero"><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('dashboard.title')}</div><span className="clinical-eyebrow">{t('dashboard.kicker')}</span><h1>{t(titleKey)}</h1><p>{t('dashboard.intro')}</p></section>
-    {!session._id || role === MemberType.PATIENT || !role ? <section className="clinical-inner-section clinical-auth-gate"><h2>{t('dashboard.restricted')}</h2><p>{t('dashboard.restrictedIntro')}</p><Link className="clinical-secondary-button" href="/mypage">{t('page.profile')}</Link></section> : <>
+    {!session._id || role === MemberType.PATIENT || !role ? <section className="clinical-inner-section clinical-auth-gate"><h2>{t('dashboard.restricted')}</h2><p>{t('dashboard.restrictedIntro')}</p><div className="clinical-dashboard-links">{!session._id && <><Link href="/account/doctor-signin">{t('auth.doctorSignin')}</Link><Link href="/account/receptionist-signin">{t('dashboard.receptionistSignin')}</Link><Link href="/account/admin-signin">{t('dashboard.adminSignin')}</Link></>}<Link href="/mypage">{t('page.profile')}</Link></div></section> : <>
       {request.loading && !request.data && <section className="clinical-inner-section"><p className="clinical-query-status">{t('dashboard.loading')}</p></section>}
       {request.error && !request.data && <section className="clinical-inner-section"><p className="clinical-form-error" role="alert">{t('dashboard.loadError')}</p><button type="button" className="clinical-secondary-button" onClick={retry}>{t('patient.retry')}</button></section>}
       {role === MemberType.ADMIN && admin.data && <div className="clinical-dashboard clinical-dashboard-admin">
