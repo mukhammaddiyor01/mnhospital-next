@@ -1,3 +1,59 @@
+.clinical-staff-doctor {
+  --doctor-bg: #f1f6f5;
+  --doctor-sidebar: #f8fbfa;
+  --doctor-panel: #ffffff;
+  --doctor-panel-alt: #eaf3f1;
+  --doctor-line: #d7e5e2;
+  --doctor-text: #19312f;
+  --doctor-muted: #58716d;
+  --doctor-accent: #087967;
+  --staff-accent: #087967;
+  --staff-accent-soft: #dcefeb;
+  background: var(--doctor-bg);
+}
+.clinical-staff-doctor .clinical-staff-sidebar { background: var(--doctor-sidebar); border-color: var(--doctor-line); }
+.clinical-staff-doctor .clinical-staff-brand > span { background: var(--doctor-accent); }
+.clinical-staff-doctor .clinical-staff-brand strong,
+.clinical-staff-doctor .clinical-staff-topbar > div:first-child strong,
+.clinical-staff-doctor .clinical-staff-page-heading h1 { color: var(--doctor-text); }
+.clinical-staff-doctor .clinical-staff-role { padding: 9px 11px; border-left: 3px solid var(--doctor-accent); background: var(--doctor-panel-alt); color: var(--doctor-accent); }
+.clinical-staff-doctor .clinical-staff-sidebar nav a { min-height: 43px; }
+.clinical-staff-doctor .clinical-staff-sidebar nav a.active { box-shadow: inset 3px 0 var(--doctor-accent); }
+.clinical-staff-doctor .clinical-staff-topbar { background: var(--doctor-panel); border-color: var(--doctor-line); }
+.clinical-staff-doctor .clinical-staff-content { max-width: 1480px; }
+.clinical-staff-doctor .clinical-staff-page-heading > a { background: var(--doctor-panel); border-color: var(--doctor-line); }
+.clinical-staff-doctor .clinical-staff-top-actions > a,
+.clinical-staff-doctor .clinical-staff-top-actions > button { color: var(--doctor-accent); }
+.clinical-staff-doctor .clinical-staff-top-actions .clinical-staff-avatar { border-color: var(--doctor-line); }
+.clinical-staff-doctor .clinical-staff-panel,
+.clinical-staff-doctor .clinical-staff-metric,
+.clinical-staff-doctor .clinical-messages-layout,
+.clinical-staff-doctor .clinical-notifications,
+html[data-theme='dark'] .clinical-staff-doctor .clinical-staff-panel,
+html[data-theme='dark'] .clinical-staff-doctor .clinical-staff-metric,
+html[data-theme='dark'] .clinical-staff-doctor .clinical-messages-layout,
+html[data-theme='dark'] .clinical-staff-doctor .clinical-notifications { background: var(--doctor-panel); border-color: var(--doctor-line); }
+.clinical-staff-doctor .clinical-staff-table-scroll th { background: var(--doctor-panel-alt); }
+.clinical-staff-doctor .clinical-staff-metric strong,
+.clinical-staff-doctor .clinical-staff-panel h2,
+.clinical-staff-doctor .clinical-staff-table-scroll td strong { color: var(--doctor-text); }
+html[data-theme='dark'] .clinical-staff-doctor {
+  --doctor-bg: #0b171b;
+  --doctor-sidebar: #0d1c20;
+  --doctor-panel: #14272c;
+  --doctor-panel-alt: #1b3438;
+  --doctor-line: #305057;
+  --doctor-text: #e6f3ef;
+  --doctor-muted: #a7c4bd;
+  --doctor-accent: #75dfc6;
+  --staff-accent: #75dfc6;
+  --staff-accent-soft: #164036;
+  background: var(--doctor-bg);
+}
+html[data-theme='dark'] .clinical-staff-doctor .clinical-staff-sidebar { background: var(--doctor-sidebar); }
+html[data-theme='dark'] .clinical-staff-doctor .clinical-staff-topbar,
+html[data-theme='dark'] .clinical-staff-doctor .clinical-staff-page-heading > a { background: var(--doctor-panel); }
+html[data-theme='dark'] .clinical-staff-doctor .clinical-staff-brand > span { color: #0b171b; }
 .clinical-doctor-preferences { display: flex; align-items: center; gap: 7px; margin-right: 10px; }
 .clinical-staff-doctor .clinical-doctor-preferences .clinical-theme-control,
 .clinical-staff-doctor .clinical-doctor-preferences .clinical-language-control { height: 36px; border-color: var(--clinical-line); background: var(--clinical-low); color: var(--clinical-navy); }
