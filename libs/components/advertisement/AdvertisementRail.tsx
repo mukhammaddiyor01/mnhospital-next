@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ADVERTISEMENTS } from '@/apollo/advertisement/query';
 import { formatKrw } from '../common/currency';
@@ -8,6 +9,7 @@ import Icon from '../common/Icon';
 import { resolveApiAsset } from '@/libs/config';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { MessageKey, translate } from '@/libs/i18n/messages';
 
 type AdvertisementRailSide = 'left' | 'right';
 
@@ -31,6 +33,17 @@ const fallbackAdvertisements: AdvertisementPreview[] = [
 	{ _id: 'hospital-update', advertisementTitle: 'Hospital Announcement', advertisementContent: 'New Advanced Da Vinci Xi Robotic Suite now operational for urological and spinal surgeries.', advertisementLink: '/article', previewLabel: 'ANNOUNCEMENT' },
 	{ _id: 'accreditation', advertisementTitle: 'JCI & NABH Gold', advertisementContent: 'Global safety standard.', advertisementLink: '/about', previewLabel: 'ACCREDITED' },
 ];
+
+const fallbackKeys: Record<string, { title: MessageKey; content: MessageKey; label: MessageKey; rank?: MessageKey; action?: MessageKey; discount?: MessageKey }> = {
+	ambulance: { title: 'ads.ambulance.title', content: 'ads.ambulance.content', label: 'ads.ambulance.label' },
+	'robotic-suite': { title: 'ads.robotic.title', content: 'ads.robotic.content', label: 'ads.robotic.label', action: 'ads.robotic.action' },
+	'rapid-care': { title: 'ads.rapid.title', content: 'ads.rapid.content', label: 'ads.rapid.label', rank: 'ads.rapid.rank', action: 'ads.rapid.action' },
+	'cardiac-camp': { title: 'ads.cardiac.title', content: 'ads.cardiac.content', label: 'ads.cardiac.label', rank: 'ads.cardiac.rank', action: 'ads.cardiac.action' },
+	'clinical-promo': { title: 'ads.promo.title', content: 'ads.promo.content', label: 'ads.promo.label', discount: 'ads.promo.discount', action: 'ads.promo.action' },
+	telehealth: { title: 'ads.telehealth.title', content: 'ads.telehealth.content', label: 'ads.telehealth.label', rank: 'ads.telehealth.rank', action: 'ads.telehealth.action' },
+	'hospital-update': { title: 'ads.update.title', content: 'ads.update.content', label: 'ads.update.label' },
+	accreditation: { title: 'ads.accreditation.title', content: 'ads.accreditation.content', label: 'ads.accreditation.label' },
+};
 
 const advertisementVariants: Record<AdvertisementRailSide, AdvertisementCardVariant[]> = {
 	left: [AdvertisementCardVariant.SUPPORT, AdvertisementCardVariant.SERVICE, AdvertisementCardVariant.PROMO, AdvertisementCardVariant.NEWS],
@@ -70,12 +83,25 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 
 const AdvertisementRail = ({ side }: AdvertisementRailProps) => {
 	const t = useTranslation();
+	const { language } = usePreferences();
+	const localizedFallback = useMemo(() => fallbackAdvertisements.map((advertisement) => {
+		const keys = fallbackKeys[advertisement._id];
+		return {
+			...advertisement,
+			advertisementTitle: translate(language, keys.title),
+			advertisementContent: translate(language, keys.content),
+			previewLabel: translate(language, keys.label),
+			previewRank: keys.rank ? translate(language, keys.rank) : advertisement.previewRank,
+			previewAction: keys.action ? translate(language, keys.action) : advertisement.previewAction,
+			previewDiscount: keys.discount ? translate(language, keys.discount) : advertisement.previewDiscount,
+		};
+	}), [language]);
 	const { data } = useQuery<{ getAdvertisements: { list: Advertisement[] } }>(GET_ADVERTISEMENTS, {
 		variables: { input: { page: 1, limit: 8 } },
 		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-first',
 	});
-	const advertisements: AdvertisementPreview[] = data?.getAdvertisements?.list?.length ? data.getAdvertisements.list : fallbackAdvertisements;
+	const advertisements: AdvertisementPreview[] = data?.getAdvertisements?.list?.length ? data.getAdvertisements.list : localizedFallback;
 	const sideAdvertisements = advertisements.filter((_, index) => index % 2 === (side === 'left' ? 0 : 1));
 	const visibleAdvertisements = sideAdvertisements.length ? sideAdvertisements : advertisements.slice(0, 2);
 
