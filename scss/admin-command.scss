@@ -1,0 +1,63 @@
+.clinical-staff-admin {
+  --clinical-surface: #0a141f;
+  --clinical-low: #111e2a;
+  --clinical-line: #2b3947;
+  --clinical-text: #d9e3f3;
+  --clinical-secondary: #aab9ca;
+  --clinical-muted: #8e9dad;
+  --clinical-navy: #f2f6fb;
+  --staff-accent: #82c9ff;
+  --staff-accent-soft: #19394f;
+  grid-template-columns: 248px minmax(0, 1fr);
+  background: #0a141f;
+}
+.clinical-staff-admin .clinical-staff-sidebar { padding: 29px 17px 20px; background: #07111c; }
+.clinical-staff-admin .clinical-staff-brand { padding-bottom: 32px; }
+.clinical-staff-admin .clinical-staff-brand > span { border-radius: 11px; background: #82c9ff; color: #0a141f; }
+.clinical-staff-admin .clinical-staff-brand strong { color: #f2f6fb; letter-spacing: -.02em; }
+.clinical-staff-admin .clinical-staff-brand small { color: #82c9ff; letter-spacing: .14em; text-transform: uppercase; }
+.clinical-staff-admin .clinical-staff-role { padding: 10px 12px; border: 1px solid #26465a; border-radius: 7px; background: #102636; color: #6fd9c0; }
+.clinical-staff-admin .clinical-staff-sidebar nav { gap: 6px; }
+.clinical-staff-admin .clinical-staff-sidebar nav a { min-height: 43px; border-radius: 8px; color: #aab9ca; font-size: 12px; }
+.clinical-staff-admin .clinical-staff-sidebar nav a:hover,
+.clinical-staff-admin .clinical-staff-sidebar nav a.active { background: #19394f; color: #c4e5ff; }
+.clinical-staff-admin .clinical-staff-sidebar nav a.active { box-shadow: inset 3px 0 #82c9ff; }
+.clinical-staff-admin .clinical-staff-sidebar-footer a,
+.clinical-staff-admin .clinical-staff-sidebar-footer button { color: #aab9ca; }
+.clinical-staff-admin .clinical-staff-topbar { height: 70px; background: #0e1b28; }
+.clinical-staff-admin .clinical-staff-topbar > div:first-child strong { color: #e9f2fc; }
+.clinical-staff-admin .clinical-staff-top-actions > a,
+.clinical-staff-admin .clinical-staff-top-actions > button { color: #b9c9d9; border: 1px solid #2b3947; background: #172633; }
+.clinical-staff-admin .clinical-staff-top-actions > a:hover,
+.clinical-staff-admin .clinical-staff-top-actions > button:hover { color: #82c9ff; border-color: #82c9ff; }
+.clinical-staff-admin .clinical-staff-top-actions .clinical-staff-avatar { color: #82c9ff; background: #19394f; }
+.clinical-staff-admin .clinical-staff-content { max-width: 1500px; padding: 34px clamp(22px, 3vw, 50px) 60px; }
+.clinical-staff-admin .clinical-staff-page-heading { align-items: center; margin-bottom: 25px; }
+.clinical-staff-admin .clinical-staff-page-heading h1 { font-size: clamp(26px, 2.3vw, 36px); }
+.clinical-staff-admin .clinical-staff-page-heading > a { color: #b9c9d9; background: #172633; }
+.clinical-staff-admin .clinical-staff-panel,
+.clinical-staff-admin .clinical-admin-panel,
+.clinical-staff-admin .clinical-admin-summary-card,
+html[data-theme='dark'] .clinical-staff-admin .clinical-staff-panel,
+html[data-theme='dark'] .clinical-staff-admin .clinical-admin-panel,
+html[data-theme='dark'] .clinical-staff-admin .clinical-admin-summary-card { background: #17232f; border-color: #2b3947; box-shadow: none; }
+.clinical-staff-admin .clinical-admin-resource,
+html[data-theme='dark'] .clinical-staff-admin .clinical-admin-resource,
+.clinical-staff-admin .clinical-messages-layout,
+html[data-theme='dark'] .clinical-staff-admin .clinical-messages-layout,
+.clinical-staff-admin .clinical-notifications,
+html[data-theme='dark'] .clinical-staff-admin .clinical-notifications { background: #17232f; }
+.clinical-staff-admin .clinical-staff-table-scroll th { background: #101d29; }
+.clinical-staff-admin .clinical-admin-create-form { background: #111e2a; }
+.clinical-staff-admin .clinical-admin-create-form input,
+.clinical-staff-admin .clinical-admin-filter input,
+.clinical-staff-admin .clinical-admin-resource select,
+.clinical-staff-admin .clinical-admin-price input { background: #101d29; }
+@media (max-width: 1100px) { .clinical-staff-admin { grid-template-columns: 196px minmax(0, 1fr); } }
+@media (max-width: 760px) {
+  .clinical-staff-admin { grid-template-columns: 1fr; }
+  .clinical-staff-admin .clinical-staff-sidebar { padding: 13px 16px; }
+  .clinical-staff-admin .clinical-staff-brand { padding-bottom: 12px; }
+  .clinical-staff-admin .clinical-staff-content { padding: 22px 18px 44px; }
+  .clinical-staff-admin .clinical-staff-page-heading { align-items: flex-start; }
+}
