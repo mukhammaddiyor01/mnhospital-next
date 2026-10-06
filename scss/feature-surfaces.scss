@@ -141,7 +141,31 @@ html[data-theme='dark'] .clinical-messages-history article.own time { color: #31
 .clinical-notifications-pagination button:disabled { cursor: not-allowed; opacity: .45; }
 html[data-theme='dark'] .clinical-notifications-filters button.active { color: #10282e; border-color: var(--clinical-primary); background: var(--clinical-primary); }
 
+.clinical-dashboard { display: grid; gap: 16px; margin-top: 16px; }
+.clinical-dashboard-group { overflow: hidden; border: 1px solid var(--clinical-line); border-radius: 10px; background: #fff; }
+.clinical-dashboard-group > header { display: grid; gap: 4px; padding: 18px 22px; border-bottom: 1px solid var(--clinical-line); }
+.clinical-dashboard-group > header span { color: var(--clinical-secondary); font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+.clinical-dashboard-group > header strong { color: var(--clinical-navy); font: 700 18px 'Manrope', Arial, sans-serif; }
+.clinical-dashboard-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.clinical-dashboard-metric { display: grid; gap: 6px; min-width: 0; padding: 20px 22px; border-right: 1px solid var(--clinical-line); border-bottom: 1px solid var(--clinical-line); }
+.clinical-dashboard-metric span { color: var(--clinical-secondary); font-size: 11px; }
+.clinical-dashboard-metric strong { color: var(--clinical-navy); font: 800 25px 'Manrope', Arial, sans-serif; }
+.clinical-dashboard-admin .clinical-dashboard-group:first-child { border-top: 3px solid var(--clinical-primary); }
+.clinical-dashboard-admin .clinical-dashboard-group:last-child .clinical-dashboard-metric strong { color: var(--clinical-primary); }
+.clinical-dashboard-doctor .clinical-dashboard-group { border-top: 3px solid var(--clinical-teal); }
+.clinical-dashboard-doctor .clinical-dashboard-metric:first-child { grid-column: span 2; background: var(--clinical-teal-soft); }
+.clinical-dashboard-doctor .clinical-dashboard-metric:first-child strong { color: var(--clinical-teal); }
+.clinical-dashboard-receptionist .clinical-dashboard-group { border-top: 3px solid var(--clinical-secondary); }
+.clinical-dashboard-receptionist .clinical-dashboard-metric:nth-child(2),
+.clinical-dashboard-receptionist .clinical-dashboard-metric:nth-child(4) { background: var(--clinical-low); }
+.clinical-dashboard-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.clinical-dashboard-links a { padding: 10px 14px; color: var(--clinical-primary); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-surface); font-size: 11px; font-weight: 800; }
+.clinical-dashboard-links a:hover { background: var(--clinical-primary-soft); }
+html[data-theme='dark'] .clinical-dashboard-group { background: #172838; }
+
 @media (max-width: 680px) {
+  .clinical-dashboard-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-dashboard-metric { padding: 16px; }
   .clinical-notifications-toolbar { align-items: flex-start; flex-direction: column; }
   .clinical-messages-layout { grid-template-columns: 1fr; }
   .clinical-messages-list { max-height: 260px; overflow-y: auto; border-right: 0; border-bottom: 1px solid var(--clinical-line); }
