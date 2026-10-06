@@ -171,3 +171,16 @@ html[data-theme='dark'] .clinical-staff-content .clinical-messages-layout, html[
   .clinical-admin-create-form { grid-template-columns: 1fr; }
   .clinical-admin-pagination { flex-direction: column; align-items: flex-start; }
 }
+
+.clinical-resource-panel > header > div, .clinical-resource-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.clinical-resource-form { margin: 18px; padding: 18px; border: 1px solid var(--clinical-line); border-radius: 8px; }
+.clinical-resource-form fieldset { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; padding: 0; border: 0; margin: 16px 0; }
+.clinical-resource-form label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.clinical-resource-form input, .clinical-resource-form textarea, .clinical-resource-form select, .clinical-resource-search { min-width: 0; width: 100%; padding: 9px 11px; color: inherit; background: var(--clinical-surface); border: 1px solid var(--clinical-line); border-radius: 6px; }
+.clinical-resource-form textarea { min-height: 120px; resize: vertical; }
+.clinical-resource-panel button { cursor: pointer; padding: 7px 10px; border: 1px solid var(--clinical-line); border-radius: 5px; background: var(--clinical-surface); color: inherit; font: inherit; font-size: 12px; }
+.clinical-resource-panel button:disabled { opacity: .5; cursor: not-allowed; }
+.clinical-resource-panel td { max-width: 320px; overflow-wrap: anywhere; }
+.clinical-resource-search { margin: 12px 18px; width: calc(100% - 36px); }
+.clinical-staff-admin .clinical-resource-panel input, .clinical-staff-admin .clinical-resource-panel select, .clinical-staff-admin .clinical-resource-panel textarea, .clinical-staff-admin .clinical-resource-panel button { background: #172437; border-color: #344257; color: #e8eef6; }
+@media (max-width: 600px) { .clinical-resource-form fieldset { grid-template-columns: 1fr; } }
