@@ -11,7 +11,6 @@ export interface ClinicalServiceCard extends Pick<Service, '_id' | 'serviceTitle
 
 export interface ClinicalDoctorCard extends Pick<Doctor, '_id' | 'docFullName' | 'docSpecialty' | 'docExperience' | 'docPoints'> {
 	docImage?: string;
-	docNick?: string;
 }
 
 export interface ClinicalArticle {

@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useQuery as useApolloQuery } from "@apollo/client";
+import { useQuery as useReactQuery } from "@tanstack/react-query";
 import { GET_DOCTORS } from "@/apollo/doctor/query";
 import { DoctorSort } from "@/libs/components/doctor/enums/doctor.enum";
 import { GET_SERVICES } from "@/apollo/service/query";
 import { GET_ARTICLES } from "@/apollo/article/query";
 import { ArticleStatus } from "@/libs/components/article/enums/article.enum";
 import { Article } from "@/libs/components/article/types/article";
-import { ArticleCard } from "@/libs/components/article/ArticleCard";
+import {
+  useFallbackArticles,
+  ArticleCard,
+} from "@/libs/components/article/ArticleCard";
+import type { HospitalStatus } from "@/pages/api/hospital-status";
 import Icon from "../common/Icon";
 import { resolveApiAsset } from "@/libs/config";
-import { ClinicalDoctorCard, ClinicalServiceCard } from "./types/clinical-home";
-import DepartmentSwiper from "./DepartmentSwiper";
 import AdvertisementRail from "../advertisement/AdvertisementRail";
+import { ClinicalDoctorCard, ClinicalServiceCard } from "./types/clinical-home";
+import { DoctorSpecialty } from "../doctor/enums/doctor.enum";
+import DepartmentSwiper from "./DepartmentSwiper";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 import { useDoctorSpecialtyLabel } from "@/libs/i18n/useDoctorSpecialtyLabel";
 
@@ -37,10 +43,110 @@ const heroSlides = [
     description: "home.slide3.description",
   },
 ] as const;
+const DOCTOR_IMAGES = [
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDyGWUmFaFNNKb39AJE2xMhslQLzNLzJvaV_C_9Krb8blYzpIbKB7-spdN-HGAPziwGDPwyuwIiAb77hACMeb6AQ_wRu9qnvwdmeQs3D9TdWlhWn3f78PiYFMjxgTYn2FGg0f6xr_K1gLONVx6khPETq6iGluZx-MJAtu84nKKcG0pfq_jhGec8giKsl0oYuvkjrzm4Td0BY-QaSK8n90bSxiDDmECyQ69ZD9DAjNOaqrXouUgC9Zw",
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuD6yiFf39ntPB3zOaXegzPZfEanLkr6CcEvLg8kQKR9WmxBrvu-_yz5Ko22NOqXOaquAZQui5_J6leE0Ae428cNUYCCSCCip7BE7HUbXkWxYOZt9vUC0JheTuVFm0jxg4CxuJhX1a8VUsk5yrqv9hSo7JutCqVtJt57toFqNis2Gtz71_4OwS2MwWuF-zVj6n7QlaqJhv0smjm_wc5ZBZxWpfIu6HxZ3KHfcgEoh58wsGcj8kFKcwQ",
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuB-mbDyUuqUDcqyZuuhM1q7mFK-kJcQXKCHL8T20_8rGXJXjnrUtO9fZT3TC8RDiWXHZXARLNduo4IVHidgnoFGeOkDJs5uc1Sx_67db8cGVIgf-4za0rnCla_tMMnO7Dx1WG5CXtdlZ1Qy6go7V6UELLYXNygWUzwvHVAs8DjNIEZ9cJ1GUc_02SJkbzOHhwvx1ApHldVPoPSpGjwBdir4_9p6veXvsFFapywtvqo_sE0l5RBr6cU",
+];
+const defaultStatus: HospitalStatus = {
+  yearsExperience: "25+",
+  expertDoctors: "150+",
+  patientSatisfaction: "99%",
+  emergencyCare: "24/7",
+};
+
+const fallbackServices: ClinicalServiceCard[] = [
+  {
+    _id: "cardiology",
+    serviceTitle: "Cardiology & Vascular",
+    serviceDesc:
+      "Comprehensive interventional cardiology, electrophysiology, cardiac rehabilitation, and minimally invasive bypass procedures.",
+    servicePrice: 250000,
+    serviceViews: 856,
+    serviceType: "CARDIOLOGY",
+    serviceRank: 1,
+  },
+  {
+    _id: "neurology",
+    serviceTitle: "Neurology & Brain Sciences",
+    serviceDesc:
+      "Advanced stroke intervention, neuro-oncology, spinal cord reconstruction, and computerized functional neuroimaging.",
+    servicePrice: 220000,
+    serviceViews: 642,
+    serviceType: "NEUROLOGY",
+    serviceRank: 2,
+  },
+  {
+    _id: "orthopedics",
+    serviceTitle: "Orthopedics & Sports Rehab",
+    serviceDesc:
+      "Precision robotic joint replacement, sports injury arthroscopy, pediatric spine stabilization, and kinematic recovery.",
+    servicePrice: 180000,
+    serviceViews: 512,
+    serviceType: "ORTHOPEDICS",
+    serviceRank: 3,
+  },
+  {
+    _id: "pediatrics",
+    serviceTitle: "Pediatrics & Child Health",
+    serviceDesc:
+      "Child-centered neonatal intensive care, developmental neurology, pediatric cardiology, and adolescent psychological support.",
+    servicePrice: 180000,
+    serviceViews: 512,
+    serviceType: "PEDIATRICS",
+    serviceRank: 4,
+  },
+];
+
+const fallbackDoctors: ClinicalDoctorCard[] = [
+  {
+    _id: "eleanor-vance",
+    docFullName: "Dr. Eleanor Vance",
+    docSpecialty: DoctorSpecialty.CARDIOLOGIST,
+    docExperience: 18,
+    docPoints: 4.9,
+    docImage: DOCTOR_IMAGES[0],
+  },
+  {
+    _id: "marcus-chen",
+    docFullName: "Dr. Marcus Chen",
+    docSpecialty: DoctorSpecialty.NEUROLOGIST,
+    docExperience: 15,
+    docPoints: 5,
+    docImage: DOCTOR_IMAGES[1],
+  },
+  {
+    _id: "sarah-jenkins",
+    docFullName: "Dr. Sarah Jenkins",
+    docSpecialty: DoctorSpecialty.PEDIATRICIAN,
+    docExperience: 12,
+    docPoints: 4.9,
+    docImage: DOCTOR_IMAGES[2],
+  },
+];
+
+const doctorRole = (specialty: string | undefined, t: ReturnType<typeof useTranslation>, specialtyLabel: ReturnType<typeof useDoctorSpecialtyLabel>) => {
+  if (specialty === DoctorSpecialty.CARDIOLOGIST)
+    return t('home.doctor.cardio');
+  if (specialty === DoctorSpecialty.NEUROLOGIST) return t('home.doctor.neuro');
+  if (specialty === DoctorSpecialty.PEDIATRICIAN)
+    return t('home.doctor.pediatric');
+  return specialtyLabel(specialty);
+};
+
 const ClinicalHome = () => {
   const t = useTranslation();
   const specialtyLabel = useDoctorSpecialtyLabel();
+  const fallbackArticles = useFallbackArticles();
+  const [notice, setNotice] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
+  useEffect(() => {
+    const timer = window.setInterval(
+      () => setActiveSlide((current) => (current + 1) % heroSlides.length),
+      3000,
+    );
+    return () => window.clearInterval(timer);
+  }, []);
   const servicesQuery = useApolloQuery(GET_SERVICES, {
     variables: {
       input: {
@@ -80,12 +186,35 @@ const ClinicalHome = () => {
     skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
     fetchPolicy: "cache-and-network",
   });
-  const services: ClinicalServiceCard[] = (servicesQuery.data?.getServices?.list ?? []).filter(
-    (service: ClinicalServiceCard, index: number, list: ClinicalServiceCard[]) =>
-      list.findIndex((item) => `${item.serviceTitle}|${item.serviceDesc}`.trim().toLowerCase() === `${service.serviceTitle}|${service.serviceDesc}`.trim().toLowerCase()) === index,
-  );
-  const doctors: ClinicalDoctorCard[] = doctorsQuery.data?.getDoctors?.list ?? [];
-  const articles: Article[] = articlesQuery.data?.getArticles?.list ?? [];
+  const { data: hospitalStatus = defaultStatus } =
+    useReactQuery<HospitalStatus>({
+      queryKey: ["hospital-status"],
+      queryFn: async () => {
+        const response = await fetch("/api/hospital-status");
+        if (!response.ok) throw new Error("Hospital status is unavailable");
+        return response.json();
+      },
+      initialData: defaultStatus,
+    });
+
+  const usingFallbackServices = !servicesQuery.data?.getServices?.list?.length;
+  const usingFallbackDoctors = !doctorsQuery.data?.getDoctors?.list?.length;
+  const services: ClinicalServiceCard[] = usingFallbackServices
+    ? fallbackServices
+    : servicesQuery.data.getServices.list.map(
+        (service: ClinicalServiceCard) => ({
+          ...service,
+          serviceTitle: service.serviceTitle ?? t('home.department.fallback'),
+          serviceDesc:
+            service.serviceDesc ?? t('home.department.careFallback'),
+        }),
+      );
+  const doctors: ClinicalDoctorCard[] = usingFallbackDoctors
+    ? fallbackDoctors
+    : doctorsQuery.data.getDoctors.list;
+  const articles: Article[] = articlesQuery.data?.getArticles?.list?.length
+    ? articlesQuery.data.getArticles.list
+    : fallbackArticles;
   const initials = (name?: string) =>
     name
       ?.replace(/^Dr\.\s*/i, "")
@@ -100,7 +229,9 @@ const ClinicalHome = () => {
         <AdvertisementRail side="left" />
         <div className="clinical-center-column">
           <section className="clinical-hero-card">
-            <span className="clinical-home-label">{t('home.accreditation')}</span>
+            <div className="clinical-accreditation">
+              <Icon name="verified" /> {t('home.accreditation')}
+            </div>
             <h1>{t('home.title')}</h1>
             <p>{t('home.intro')}</p>
             <div className="clinical-hero-actions">
@@ -161,6 +292,30 @@ const ClinicalHome = () => {
             </div>
           </section>
 
+          <section className="clinical-metrics">
+            <Metric
+              value={hospitalStatus.yearsExperience}
+              label={t('home.metric.years')}
+              note={t('home.metric.yearsNote')}
+            />
+            <Metric
+              value={hospitalStatus.expertDoctors}
+              label={t('home.metric.doctors')}
+              note={t('home.metric.doctorsNote')}
+            />
+            <Metric
+              value={hospitalStatus.patientSatisfaction}
+              label={t('home.metric.satisfaction')}
+              note={t('home.metric.satisfactionNote')}
+              teal
+            />
+            <Metric
+              value={hospitalStatus.emergencyCare}
+              label={t('home.metric.emergency')}
+              note={t('home.metric.emergencyNote')}
+            />
+          </section>
+
           <section className="clinical-content-section" id="departments">
             <SectionHeading
               kicker={t('home.departments.kicker')}
@@ -168,7 +323,10 @@ const ClinicalHome = () => {
               linkLabel={t('home.departments.link')}
               linkHref="/service"
             />
-            {services.length ? <DepartmentSwiper services={services} /> : <p className="clinical-empty-state">{t('home.emptyServices')}</p>}
+            <DepartmentSwiper
+              services={services}
+              usingFallback={usingFallbackServices}
+            />
           </section>
 
           <section
@@ -181,26 +339,47 @@ const ClinicalHome = () => {
               linkLabel={t('home.doctors.link')}
               linkHref="/doctor"
             />
-            {doctors.length ? <div className="clinical-doctor-grid">
+            <div className="clinical-doctor-grid">
               {doctors.map((doctor, index) => (
                 <article className="clinical-doctor-card" key={doctor._id}>
                   <div
-                    className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? "teal" : index === 2 ? "slate" : "blue"}${doctor.docImage ? '' : ' is-placeholder'}`}
+                    className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? "teal" : index === 2 ? "slate" : "blue"}`}
                   >
                     {doctor.docImage ? (
-                      <span
-                        className="clinical-api-doctor-image"
-                        style={{ backgroundImage: `url(${resolveApiAsset(doctor.docImage)})` }}
-                        role="img"
-                        aria-label={doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}
-                      />
+                      usingFallbackDoctors ? (
+                        <Image
+                          src={doctor.docImage}
+                          alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty, t, specialtyLabel)}`}
+                          fill
+                          sizes="(max-width: 680px) calc(100vw - 64px), 245px"
+                        />
+                      ) : (
+                        <span
+                          className="clinical-api-doctor-image"
+                          style={{
+                            backgroundImage: `url(${resolveApiAsset(doctor.docImage)})`,
+                          }}
+                        />
+                      )
                     ) : (
-                      initials(doctor.docFullName || doctor.docNick)
+                      initials(doctor.docFullName)
                     )}
+                    <span className="clinical-rating">
+                      <Icon name="star" />{" "}
+                      {Number(doctor.docPoints ?? 0).toFixed(1)} (
+                      {[320, 275, 410][index] ?? 120}+ {t('home.doctor.reviews')})
+                    </span>
                   </div>
-                  <h3>{doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}</h3>
-                  <b>{specialtyLabel(doctor.docSpecialty)}</b>
-                  {Number(doctor.docExperience) > 0 && <p>{doctor.docExperience} {t('home.doctor.years')}</p>}
+                  <h3>{doctor.docFullName}</h3>
+                  <b>{doctorRole(doctor.docSpecialty, t, specialtyLabel)}</b>
+                  <p>
+                    {index === 0
+                      ? "MD, FACC"
+                      : index === 1
+                        ? "MD, PhD"
+                        : "MBBS, FAAP"}{" "}
+                    • {Number(doctor.docExperience ?? 0)} {t('home.doctor.years')}
+                  </p>
                   <Link
                     className="clinical-doctor-book"
                     href={`/appointment?doctor=${doctor._id}`}
@@ -209,7 +388,7 @@ const ClinicalHome = () => {
                   </Link>
                 </article>
               ))}
-            </div> : <p className="clinical-empty-state">{t('home.emptyDoctors')}</p>}
+            </div>
           </section>
           <section
             className="clinical-content-section clinical-articles"
@@ -221,21 +400,90 @@ const ClinicalHome = () => {
               linkLabel={t('home.articles.link')}
               linkHref="/article"
             />
-            {articles.length ? <div className="clinical-article-grid">
+            <div className="clinical-article-grid">
               {articles.slice(0, 3).map((article) => (
                 <ArticleCard article={article} key={article._id} />
               ))}
-            </div> : <p className="clinical-empty-state">{t('home.emptyArticles')}</p>}
+            </div>
           </section>
 
-          <section className="clinical-next-step" id="booking">
+          <section className="clinical-trust-section">
             <div>
-              <span className="clinical-section-kicker">{t('home.cta.kicker')}</span>
-              <h2>{t('home.cta.title1')}{' '}{t('home.cta.title2')}</h2>
+              <span className="clinical-section-kicker">
+                {t('home.trust.kicker')}
+              </span>
+              <h2>{t('home.trust.title')}</h2>
+              <p>{t('home.trust.intro')}</p>
+            </div>
+            <div className="clinical-trust-grid">
+              <TrustItem
+                icon="verified_user"
+                title={t('home.trust.accredited')}
+                text={t('home.trust.accreditedText')}
+              />
+              <TrustItem
+                icon="biotech"
+                title={t('home.trust.labs')}
+                text={t('home.trust.labsText')}
+              />
+              <TrustItem
+                icon="favorite"
+                title={t('home.trust.personal')}
+                text={t('home.trust.personalText')}
+              />
+            </div>
+          </section>
+
+          <section className="clinical-testimonials" id="journal">
+            <div className="clinical-testimonials-heading">
+              <span className="clinical-section-kicker">{t('home.testimonial.kicker')}</span>
+              <h2>{t('home.testimonial.title')}</h2>
+            </div>
+            <div className="clinical-testimonial-grid">
+              <Testimonial
+                initials="RH"
+                name="Rebecca Henderson"
+                role={t('home.testimonial.role1')}
+              >
+                {t('home.testimonial.quote1')}
+              </Testimonial>
+              <Testimonial
+                initials="DL"
+                name="David Lockwood"
+                role={t('home.testimonial.role2')}
+              >
+                {t('home.testimonial.quote2')}
+              </Testimonial>
+            </div>
+          </section>
+
+          <section className="clinical-cta-card" id="booking">
+            <div>
+              <span className="clinical-cta-kicker">
+                <Icon name="access_alarm" /> {t('home.cta.kicker')}
+              </span>
+              <h2>
+                {t('home.cta.title1')}
+                <br />
+                {t('home.cta.title2')}
+              </h2>
               <p>{t('home.cta.intro')}</p>
             </div>
-            <Link className="clinical-primary-button" href="/appointment">{t('home.cta.schedule')} <Icon name="arrow_forward" /></Link>
+            <div className="clinical-cta-actions">
+              <button
+                className="clinical-light-button"
+                onClick={() => setNotice(t('home.cta.notice'))}
+              >
+                <Icon name="edit_calendar" /> {t('home.cta.schedule')}
+              </button>
+              <a href="tel:+821000000077">
+                <Icon name="call" /> {t('home.cta.helpline')}: +82 10 0000-0077
+              </a>
+            </div>
           </section>
+          <p className="clinical-notice" aria-live="polite">
+            {notice}
+          </p>
         </div>
         <AdvertisementRail side="right" />
       </div>
@@ -264,4 +512,62 @@ const SectionHeading = ({
     </Link>
   </div>
 );
+const Metric = ({
+  value,
+  label,
+  note,
+  teal,
+}: {
+  value: string;
+  label: string;
+  note: string;
+  teal?: boolean;
+}) => (
+  <div className={teal ? "teal" : ""}>
+    <strong>{value}</strong>
+    <span>{label}</span>
+    <small>{note}</small>
+  </div>
+);
+const TrustItem = ({
+  icon,
+  title,
+  text,
+}: {
+  icon: string;
+  title: string;
+  text: string;
+}) => (
+  <article>
+    <span>
+      <Icon name={icon} />
+    </span>
+    <h3>{title}</h3>
+    <p>{text}</p>
+  </article>
+);
+const Testimonial = ({
+  initials,
+  name,
+  role,
+  children,
+}: {
+  initials: string;
+  name: string;
+  role: string;
+  children: string;
+}) => (
+  <article className="clinical-testimonial">
+    <div className="clinical-stars">★★★★★</div>
+    <blockquote>{children}</blockquote>
+    <div className="clinical-patient">
+      <span>{initials}</span>
+      <div>
+        <strong>{name}</strong>
+        <small>{role}</small>
+      </div>
+    </div>
+  </article>
+);
+
 export default ClinicalHome;
