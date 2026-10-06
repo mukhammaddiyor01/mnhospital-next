@@ -13,6 +13,7 @@ import Icon from '@/libs/components/common/Icon';
 import FollowLists from '@/libs/components/follow/FollowLists';
 import PatientActivity from './PatientActivity';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
+import { useTranslation } from '@/libs/i18n/useTranslation';
 
 interface PatientFormState {
 	patientBloodType: PatientBloodType | '';
@@ -47,6 +48,7 @@ const toDateInput = (value?: string) => {
 };
 
 const PatientProfile = () => {
+	const t = useTranslation();
 	const session = useReactiveVar(userVar);
 	const [editing, setEditing] = useState(false);
 	const [form, setForm] = useState<PatientFormState>(emptyForm);
@@ -191,14 +193,14 @@ const PatientProfile = () => {
 		setFormError('');
 		setEditing(true);
 	};
-	const displayName = patient?.patientFullName || session.memberFullName || session.memberNick || 'MN Hospital patient';
+	const displayName = patient?.patientFullName || session.memberFullName || session.memberNick || t('patient.nameFallback');
 	const initials = displayName.split(' ').map((part: string) => part[0]).join('').slice(0, 2).toUpperCase();
 	const saving = createState.loading || updateState.loading || uploadState.loading;
 
-	if (!session._id) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-profile-large"><Icon name="lock" /></span><span className="clinical-section-kicker">PATIENT PORTAL</span><h2>Sign in to view your care profile.</h2><p>Your appointments, account details, and hospital activity are protected.</p><div><Link className="clinical-primary-button" href="/account/signin">Sign In</Link><Link className="clinical-secondary-button" href="/account/join">Create account</Link></div></section>;
-	if (session.memberType === MemberType.DOCTOR) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-section-kicker">DOCTOR PROFILE</span><h2>Your doctor profile</h2><p>View your followers, services, and articles.</p><Link className="clinical-primary-button" href={`/doctor/${session._id}`}>Open profile</Link></section>;
-	if (loading && !patient) return <section className="clinical-inner-section"><p className="clinical-query-status">Loading your patient profile…</p></section>;
-	if (error && !profileMissing && !patient) return <section className="clinical-inner-section"><p className="clinical-form-error">Patient profile is temporarily unavailable.</p><button className="clinical-secondary-button" type="button" onClick={() => void refetch()}>Retry</button></section>;
+	if (!session._id) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-profile-large"><Icon name="lock" /></span><span className="clinical-section-kicker">{t('page.patientPortal')}</span><h2>{t('patient.signinTitle')}</h2><p>{t('patient.signinIntro')}</p><div><Link className="clinical-primary-button" href="/account/signin">{t('patient.signin')}</Link><Link className="clinical-secondary-button" href="/account/join">{t('patient.join')}</Link></div></section>;
+	if (session.memberType === MemberType.DOCTOR) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-section-kicker">{t('patient.doctorKicker')}</span><h2>{t('patient.doctorTitle')}</h2><p>{t('patient.doctorIntro')}</p><Link className="clinical-primary-button" href={`/doctor/${session._id}`}>{t('patient.openDoctor')}</Link></section>;
+	if (loading && !patient) return <section className="clinical-inner-section"><p className="clinical-query-status">{t('patient.loading')}</p></section>;
+	if (error && !profileMissing && !patient) return <section className="clinical-inner-section"><p className="clinical-form-error">{t('patient.unavailable')}</p><button className="clinical-secondary-button" type="button" onClick={() => void refetch()}>{t('patient.retry')}</button></section>;
 
 	return <>
 		<section className="clinical-inner-section clinical-patient-profile">
