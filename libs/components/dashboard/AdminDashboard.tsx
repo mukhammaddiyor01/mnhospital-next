@@ -27,7 +27,7 @@ const AdminDashboard = ({ stats, adminName }: { stats: AdminDashboardStats; admi
       <Link className="clinical-admin-profile-link" href="/mypage"><Icon name="person" /><span>{adminName}</span></Link>
     </aside>
     <div className="clinical-admin-main">
-      <div className="clinical-admin-heading"><div><span className="clinical-section-kicker">{t('dashboard.kicker')}</span><h2>{t('dashboard.adminTitle')}</h2><p>{t('dashboard.intro')}</p></div><Link href="/mypage/notifications" aria-label={t('notifications.title')}><Icon name="notifications" /></Link></div>
+      <div className="clinical-admin-heading"><div><span className="clinical-section-kicker">{t('dashboard.kicker')}</span><h1>{t('dashboard.adminTitle')}</h1><p>{t('dashboard.intro')}</p></div><Link href="/mypage/notifications" aria-label={t('notifications.title')}><Icon name="notifications" /></Link></div>
       <div className="clinical-admin-summary">
         <SummaryCard icon="groups" label={t('dashboard.patients')} value={stats.totalPatients} />
         <SummaryCard icon="event" label={t('dashboard.appointments')} value={stats.totalAppointments} />

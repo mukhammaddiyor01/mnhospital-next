@@ -168,7 +168,7 @@ html[data-theme='dark'] .clinical-dashboard-group { background: #172838; }
 .clinical-admin-profile-link { margin-top: auto; overflow-wrap: anywhere; border-top: 1px solid var(--clinical-line); border-radius: 0; }
 .clinical-admin-main { min-width: 0; padding: 22px; }
 .clinical-admin-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 19px; }
-.clinical-admin-heading h2 { margin: 6px 0; color: var(--clinical-navy); font: 800 24px/1.2 'Manrope', Arial, sans-serif; letter-spacing: -.035em; }
+.clinical-admin-heading h1 { margin: 6px 0; color: var(--clinical-navy); font: 800 24px/1.2 'Manrope', Arial, sans-serif; letter-spacing: -.035em; }
 .clinical-admin-heading p { margin: 0; color: var(--clinical-muted); font-size: 11px; line-height: 1.5; }
 .clinical-admin-heading > a { display: grid; width: 33px; height: 33px; flex: none; place-items: center; color: var(--clinical-primary); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-surface); }
 .clinical-admin-heading > a:hover { background: var(--clinical-primary-soft); }
@@ -215,7 +215,7 @@ html[data-theme='dark'] .clinical-dashboard-group { background: #172838; }
   .clinical-admin-main { padding: 16px; }
   .clinical-admin-summary, .clinical-admin-panels { grid-template-columns: 1fr; }
   .clinical-admin-updates { grid-column: auto; }
-  .clinical-admin-heading h2 { font-size: 21px; }
+  .clinical-admin-heading h1 { font-size: 21px; }
 }
 
 @media (max-width: 680px) {
