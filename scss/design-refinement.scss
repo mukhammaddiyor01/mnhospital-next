@@ -42,7 +42,7 @@ html[data-theme='dark'] .clinical-header {
   border-bottom: 0;
 }
 .clinical-search-mark {
-  top: 10px;
+  top: 8px;
   left: 13px;
   width: auto;
   height: auto;
@@ -51,7 +51,7 @@ html[data-theme='dark'] .clinical-header {
   animation: none !important;
   filter: none !important;
 }
-.clinical-header-search input { height: 42px; padding-left: 40px; border-radius: 6px; background: transparent; font-size: 13px; }
+.clinical-header-search input { border-radius: 6px; background: transparent; }
 .clinical-header-actions { gap: 12px; }
 .clinical-book-top, .clinical-signup-top { min-height: 40px; padding: 0 16px; border-radius: 5px; font-size: 12px; }
 .clinical-book-top { background: #145b72; }
