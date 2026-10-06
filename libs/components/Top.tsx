@@ -39,17 +39,6 @@ const Top = () => {
     <header className={`clinical-header ${isHome ? "has-search" : ""}`}>
       <div className="clinical-header-inner">
         <MnLogo />
-        <nav className="clinical-desktop-navigation" aria-label={t('nav.primary')}>
-          {([
-            ['/', 'nav.home'],
-            ['/service', 'nav.services'],
-            ['/doctor', 'nav.doctors'],
-            ['/article', 'nav.articles'],
-          ] as const).map(([href, label]) => {
-            const active = href === '/' ? isHome : router.pathname.startsWith(href);
-            return <Link key={href} href={href} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined}>{t(label)}</Link>;
-          })}
-        </nav>
         {isHome ? (
           <form className="clinical-header-search" onSubmit={searchHandler}>
             <span className="clinical-search-mark material-symbols-rounded" aria-hidden="true">search</span>

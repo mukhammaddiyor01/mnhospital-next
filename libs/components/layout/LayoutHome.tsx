@@ -5,6 +5,7 @@ import Footer from '../Footer';
 import { useEffect } from 'react';
 import { getJwtToken, updateUserInfo } from '@/libs/auth';
 import MobileBottomNav from '../common/MobileBottomNav';
+import AdvertisementRail from '../advertisement/AdvertisementRail';
 import GeneralChat from '../chat/GeneralChat';
 import { useRouter } from 'next/router';
 
@@ -22,7 +23,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 			</Head>
 			<div id="pc-wrap" className="clinical-shell app-frame">
 				<Top />
-				<main id="main">{isHome ? <Component {...props} /> : <div className="clinical-workspace clinical-inner-workspace"><div className="clinical-center-column"><Component {...props} /></div></div>}</main>
+				<main id="main">{isHome ? <Component {...props} /> : <div className="clinical-workspace clinical-inner-workspace"><AdvertisementRail side="left" /><div className="clinical-center-column"><Component {...props} /></div><AdvertisementRail side="right" /></div>}</main>
 				<Footer />
 				<GeneralChat />
 				<MobileBottomNav />

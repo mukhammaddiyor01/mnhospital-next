@@ -13,6 +13,7 @@ import Icon from "../common/Icon";
 import { resolveApiAsset } from "@/libs/config";
 import { ClinicalDoctorCard, ClinicalServiceCard } from "./types/clinical-home";
 import DepartmentSwiper from "./DepartmentSwiper";
+import AdvertisementRail from "../advertisement/AdvertisementRail";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 import { useDoctorSpecialtyLabel } from "@/libs/i18n/useDoctorSpecialtyLabel";
 
@@ -96,6 +97,7 @@ const ClinicalHome = () => {
   return (
     <div className="clinical-home">
       <div className="clinical-workspace" id="home">
+        <AdvertisementRail side="left" />
         <div className="clinical-center-column">
           <section className="clinical-hero-card">
             <span className="clinical-home-label">{t('home.accreditation')}</span>
@@ -235,6 +237,7 @@ const ClinicalHome = () => {
             <Link className="clinical-primary-button" href="/appointment">{t('home.cta.schedule')} <Icon name="arrow_forward" /></Link>
           </section>
         </div>
+        <AdvertisementRail side="right" />
       </div>
     </div>
   );
