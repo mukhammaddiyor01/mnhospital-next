@@ -80,7 +80,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
       setError(
         err instanceof Error
           ? err.message
-          : "Unable to create your patient account.",
+          : t('auth.registerError'),
       );
     } finally {
       setSubmitting(false);
@@ -242,12 +242,12 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             </span>
             <strong>MN Hospital</strong>
           </Link>
-          <span className="clinical-section-kicker">SECURE REGISTRATION</span>
-          <h1>Create account</h1>
-          <p>Register once to book and manage your care.</p>
+          <span className="clinical-section-kicker">{t('auth.registerKicker')}</span>
+          <h1>{t('auth.createAccount')}</h1>
+          <p>{t('auth.registerIntro')}</p>
           <div className="clinical-auth-form-grid">
             <label>
-              Full name
+              {t('auth.fullName')}
               <div className="clinical-auth-field">
                 <Icon name="badge" />
                 <input
@@ -259,13 +259,13 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                       memberFullName: event.target.value,
                     })
                   }
-                  placeholder="Full Name"
+                  placeholder={t('auth.fullNamePlaceholder')}
                   required
                 />
               </div>
             </label>
             <label>
-              Phone number
+              {t('auth.phoneNumber')}
               <div className="clinical-auth-field">
                 <Icon name="call" />
                 <input
@@ -284,7 +284,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             </label>
           </div>
           <label>
-            Username
+            {t('auth.username')}
             <div className="clinical-auth-field">
               <Icon name="person" />
               <input
@@ -296,13 +296,13 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                     memberNick: event.target.value,
                   })
                 }
-                placeholder="NickName"
+                placeholder={t('auth.usernamePlaceholder')}
                 required
               />
             </div>
           </label>
           <label>
-            Password
+            {t('auth.password')}
             <div className="clinical-auth-field">
               <Icon name="lock" />
               <input
@@ -323,7 +323,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                 type="button"
                 onClick={() => setShowRegisterPassword((value) => !value)}
                 aria-label={
-                  showRegisterPassword ? "Hide password" : "Show password"
+                  showRegisterPassword ? t('auth.hidePassword') : t('auth.showPassword')
                 }
               >
                 <Icon
@@ -342,7 +342,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             type="submit"
             disabled={submitting}
           >
-            {submitting ? "Creating account…" : "Create Account"}{" "}
+            {submitting ? t('auth.creating') : t('auth.createAccount')}{" "}
             <Icon name="arrow_forward" />
           </button>
           <SocialAuthButtons
@@ -355,7 +355,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
             type="button"
             onClick={() => switchMode("login")}
           >
-            Already registered? <b>Sign in</b>
+            {t('auth.registered')} <b>{t('auth.signin')}</b>
           </button>
         </form>
       </div>
