@@ -5,6 +5,7 @@ import { useReactiveVar } from "@apollo/client";
 import { userVar } from "@/apollo/store";
 import { resolveApiAsset } from "@/libs/config";
 import MnLogo from "./common/MnLogo";
+import AnimatedWave from "./common/AnimatedWave";
 import ThemeControl from "./preference/ThemeControl";
 import LanguageControl from "./preference/LanguageControl";
 import { useTranslation } from "@/libs/i18n/useTranslation";
@@ -79,6 +80,7 @@ const Top = () => {
           )}
         </div>
       </div>
+      <AnimatedWave variant="header" />
     </header>
   );
 };

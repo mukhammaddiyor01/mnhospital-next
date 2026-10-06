@@ -38,6 +38,15 @@ html[data-theme='dark'] .clinical-header {
   background: var(--clinical-surface);
   backdrop-filter: none;
 }
+.clinical-animated-wave--header .clinical-wave-layer--back { fill: #a9cbd0; }
+.clinical-animated-wave--header .clinical-wave-layer--middle { fill: #d6e6e5; }
+.clinical-animated-wave--header .clinical-wave-layer--front { fill: #f8f9f7; }
+.clinical-animated-wave--footer .clinical-wave-layer--back { fill: #3c6770; }
+.clinical-animated-wave--footer .clinical-wave-layer--middle { fill: #2b4a54; }
+.clinical-animated-wave--footer .clinical-wave-layer--front { fill: #18343d; }
+html[data-theme='dark'] .clinical-animated-wave--header .clinical-wave-layer--back { fill: #2d545b; }
+html[data-theme='dark'] .clinical-animated-wave--header .clinical-wave-layer--middle { fill: #1d3d43; }
+html[data-theme='dark'] .clinical-animated-wave--header .clinical-wave-layer--front { fill: #101e22; }
 .clinical-header-inner {
   border-bottom: 0;
 }

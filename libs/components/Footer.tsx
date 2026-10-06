@@ -2,12 +2,14 @@ import Link from "next/link";
 import Icon from "./common/Icon";
 import MnLogo from "./common/MnLogo";
 import SocialLinks from "./common/SocialLinks";
+import AnimatedWave from "./common/AnimatedWave";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const Footer = () => {
   const t = useTranslation();
   return (
   <footer id="footer" className="clinical-footer">
+    <AnimatedWave variant="footer" />
     <div className="clinical-footer-grid">
       <nav className="clinical-footer-links" aria-label={t('footer.navigation')}>
         <h2>{t('footer.explore')}</h2>
