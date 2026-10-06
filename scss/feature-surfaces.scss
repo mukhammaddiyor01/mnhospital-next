@@ -228,3 +228,13 @@ html[data-theme='dark'] .clinical-dashboard-group { background: #172838; }
   .clinical-chat-widget { right: 16px; }
   .clinical-chat-panel { height: min(490px, calc(100vh - 140px)); }
 }
+
+.clinical-assistant-panel .clinical-assistant-question { align-self: flex-end; background: var(--clinical-surface); }
+.clinical-assistant-panel .clinical-chat-history article p { white-space: pre-wrap; }
+.clinical-assistant-help { padding: 0 12px 10px; }
+.clinical-assistant-help > p { margin: 6px 0; color: var(--clinical-muted); font-size: 11px; line-height: 1.5; }
+.clinical-assistant-help .clinical-chat-error { padding: 0; color: #a02636; }
+html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #ffb4b4; }
+.clinical-assistant-help nav { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.clinical-assistant-help nav a { color: var(--clinical-primary); font-size: 11px; text-decoration: underline; }
+.clinical-bottom-nav .clinical-bottom-chat:focus-visible { outline: 2px solid var(--clinical-primary); outline-offset: 3px; border-radius: 4px; }
