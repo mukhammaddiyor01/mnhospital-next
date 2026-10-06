@@ -89,6 +89,35 @@
 .clinical-staff-gate p { margin: 0 0 22px; color: var(--clinical-secondary); }
 .clinical-staff-gate nav { display: flex; flex-wrap: wrap; gap: 8px; }
 .clinical-staff-gate nav a { padding: 9px 12px; color: var(--clinical-primary); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-low); font-size: 12px; font-weight: 700; text-decoration: none; }
+.clinical-admin-resource > header .clinical-primary-button { min-height: 34px; padding: 0 14px; }
+.clinical-admin-filter { display: flex; gap: 8px; padding: 16px 20px; border-bottom: 1px solid var(--clinical-line); }
+.clinical-admin-filter input { width: min(340px, 100%); min-width: 0; flex: 1; padding: 9px 11px; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-surface); font: inherit; font-size: 12px; }
+.clinical-admin-filter button, .clinical-admin-price button, .clinical-admin-pagination button { padding: 8px 12px; color: var(--staff-accent); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--staff-accent-soft); cursor: pointer; font-size: 11px; font-weight: 800; }
+.clinical-admin-filter button:hover, .clinical-admin-price button:hover, .clinical-admin-pagination button:hover:not(:disabled) { border-color: var(--staff-accent); }
+.clinical-admin-create-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; padding: 20px; border-bottom: 1px solid var(--clinical-line); background: var(--clinical-low); }
+.clinical-admin-create-form label { display: grid; gap: 5px; color: var(--clinical-secondary); font-size: 11px; font-weight: 700; }
+.clinical-admin-create-form input { width: 100%; min-width: 0; height: 37px; padding: 0 10px; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-surface); font: inherit; font-size: 12px; }
+.clinical-admin-create-form button { align-self: end; min-height: 37px; }
+.clinical-admin-feedback { margin: 0; padding: 11px 20px; color: var(--clinical-navy); background: var(--staff-accent-soft); font-size: 12px; }
+.clinical-admin-resource .clinical-staff-table-scroll table { min-width: 700px; }
+.clinical-admin-resource td a { color: var(--staff-accent); text-decoration: none; }
+.clinical-admin-resource td a:hover { text-decoration: underline; }
+.clinical-admin-resource select { max-width: 160px; padding: 7px 9px; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-surface); cursor: pointer; font: inherit; font-size: 11px; }
+.clinical-admin-resource select:disabled, .clinical-admin-price button:disabled, .clinical-admin-pagination button:disabled { cursor: not-allowed; opacity: .55; }
+.clinical-admin-price { display: flex; align-items: center; gap: 6px; }
+.clinical-admin-price input { width: 88px; padding: 7px 8px; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-surface); font: inherit; font-size: 11px; }
+.clinical-admin-price button { padding: 7px 9px; white-space: nowrap; }
+.clinical-admin-pagination { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 20px; color: var(--clinical-muted); border-top: 1px solid var(--clinical-line); font-size: 11px; }
+.clinical-admin-pagination > div { display: flex; align-items: center; gap: 10px; }
+.clinical-admin-detail-panel { max-width: 760px; }
+.clinical-admin-detail-panel dl { margin: 0; padding: 4px 22px; }
+.clinical-admin-detail-panel dl > div { display: grid; grid-template-columns: minmax(140px, .6fr) 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--clinical-line); }
+.clinical-admin-detail-panel dl > div:last-child { border-bottom: 0; }
+.clinical-admin-detail-panel dt { color: var(--clinical-muted); font-size: 12px; }
+.clinical-admin-detail-panel dd { margin: 0; color: var(--clinical-navy); font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+.clinical-staff-content .clinical-messages-layout { margin-top: 0; border: 1px solid var(--clinical-line); border-radius: 10px; background: #fff; }
+.clinical-staff-content .clinical-notifications { margin-top: 0; border: 1px solid var(--clinical-line); border-radius: 10px; }
+.clinical-staff-content .clinical-messages-layout .clinical-messages-list { background: var(--clinical-surface); }
 .clinical-staff-shell a:focus-visible, .clinical-staff-shell button:focus-visible, .clinical-staff-gate a:focus-visible { outline: 2px solid var(--staff-accent, var(--clinical-primary)); outline-offset: 2px; }
 
 html[data-theme='dark'] .clinical-staff-shell { background: var(--clinical-surface); }
@@ -98,6 +127,7 @@ html[data-theme='dark'] .clinical-staff-receptionist { --staff-accent: #f2c27a; 
 html[data-theme='dark'] .clinical-staff-admin { --staff-accent: #82c9ff; --staff-accent-soft: #19394f; }
 html[data-theme='dark'] .clinical-staff-status.status-cancelled, html[data-theme='dark'] .clinical-staff-status.status-no_show { color: #ffc0c6; background: #4b262e; }
 html[data-theme='dark'] .clinical-staff-status.status-completed, html[data-theme='dark'] .clinical-staff-status.status-ended { color: #75dfc6; background: #164036; }
+html[data-theme='dark'] .clinical-staff-content .clinical-messages-layout, html[data-theme='dark'] .clinical-staff-content .clinical-notifications, html[data-theme='dark'] .clinical-admin-resource { background: #172838; }
 
 @media (max-width: 1100px) {
   .clinical-staff-shell { grid-template-columns: 196px minmax(0, 1fr); }
@@ -116,6 +146,7 @@ html[data-theme='dark'] .clinical-staff-status.status-completed, html[data-theme
   .clinical-staff-sidebar nav a .material-symbols-rounded { font-size: 16px; }
   .clinical-staff-topbar { height: 54px; padding: 0 18px; }
   .clinical-staff-content { padding: 22px 18px; }
+  .clinical-admin-create-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 540px) {
   .clinical-staff-page-heading { flex-direction: column; gap: 12px; }
@@ -126,4 +157,6 @@ html[data-theme='dark'] .clinical-staff-status.status-completed, html[data-theme
   .clinical-staff-metric span, .clinical-staff-admin-content .clinical-admin-summary-card small { font-size: 11px; }
   .clinical-staff-admin-content .clinical-admin-panels { grid-template-columns: 1fr; }
   .clinical-staff-admin-content .clinical-admin-updates { grid-column: auto; }
+  .clinical-admin-create-form { grid-template-columns: 1fr; }
+  .clinical-admin-pagination { flex-direction: column; align-items: flex-start; }
 }
