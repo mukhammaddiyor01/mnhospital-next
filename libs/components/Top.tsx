@@ -9,6 +9,7 @@ import AnimatedWave from "./common/AnimatedWave";
 import ThemeControl from "./preference/ThemeControl";
 import LanguageControl from "./preference/LanguageControl";
 import { useTranslation } from "@/libs/i18n/useTranslation";
+import { MemberType } from "@/libs/components/member/enums/member.enum";
 
 const Top = () => {
   const router = useRouter();
@@ -59,9 +60,9 @@ const Top = () => {
           {user._id ? (
             <Link
               className="clinical-profile"
-              href="/mypage"
-              aria-label={t('nav.profile')}
-              title={t('page.profile')}
+              href={user.memberType === MemberType.ADMIN ? '/mypage/dashboard' : '/mypage'}
+              aria-label={t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'nav.profile')}
+              title={t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'page.profile')}
               style={
                 user.memberImage
                   ? {

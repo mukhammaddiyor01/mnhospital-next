@@ -23,12 +23,12 @@ const StaffWorkspace = ({ role, name, title, intro, children, doctorId }: {
   const [chatOpen, setChatOpen] = useState(false);
   const isAdmin = role === MemberType.ADMIN;
   const dashboardHref = '/mypage/dashboard';
-  const profileHref = isAdmin ? '/admin/profile' : '/mypage';
+  const profileHref = isAdmin ? dashboardHref : '/mypage';
   const notificationHref = isAdmin ? '/admin/notifications' : '/mypage/notifications';
   const roleLabel: MessageKey = role === MemberType.ADMIN ? 'dashboard.adminWorkspace' : role === MemberType.DOCTOR ? 'dashboard.doctorTitle' : 'dashboard.receptionistTitle';
   const nav: { href: string; icon: string; label: MessageKey }[] = [
     { href: dashboardHref, icon: 'dashboard', label: 'dashboard.title' },
-    { href: profileHref, icon: 'account_circle', label: 'dashboard.profileLink' },
+    ...(!isAdmin ? [{ href: profileHref, icon: 'account_circle', label: 'dashboard.profileLink' as MessageKey }] : []),
     ...(role === MemberType.ADMIN ? [
       { href: '/admin/doctors', icon: 'stethoscope', label: 'nav.doctors' as MessageKey },
       { href: '/admin/services', icon: 'medical_services', label: 'nav.services' as MessageKey },
@@ -36,7 +36,7 @@ const StaffWorkspace = ({ role, name, title, intro, children, doctorId }: {
     ] : role === MemberType.DOCTOR && doctorId ? [
       { href: `/doctor/${doctorId}`, icon: 'stethoscope', label: 'patient.openDoctor' as MessageKey },
     ] : []),
-    { href: isAdmin ? '/admin/messages' : '/mypage/messages', icon: 'mail', label: 'messages.title' },
+    ...(!isAdmin ? [{ href: '/mypage/messages', icon: 'mail', label: 'messages.title' as MessageKey }] : []),
     { href: notificationHref, icon: 'notifications', label: 'notifications.title' },
   ];
 
@@ -50,7 +50,7 @@ const StaffWorkspace = ({ role, name, title, intro, children, doctorId }: {
       <div className="clinical-staff-sidebar-footer"><Link href="/"><Icon name="open_in_new" />{t('dashboard.visitSite')}</Link><button type="button" onClick={() => void logOut()}><Icon name="logout" />{t('patient.signoutTitle')}</button></div>
     </aside>
     <div className="clinical-staff-column">
-      <header className="clinical-staff-topbar"><div><span>{t('dashboard.staffPortal')}</span><strong>{t(roleLabel)}</strong></div><div className="clinical-staff-top-actions"><button type="button" onClick={() => setChatOpen(true)} aria-label={t('chat.open')}><Icon name="chat_bubble" /></button><Link href={notificationHref} aria-label={t('notifications.title')}><Icon name="notifications" /></Link><Link className="clinical-staff-avatar" href={profileHref} aria-label={t('dashboard.profileLink')}><Icon name="person" /></Link></div></header>
+      <header className="clinical-staff-topbar"><div><span>{t('dashboard.staffPortal')}</span><strong>{t(roleLabel)}</strong></div><div className="clinical-staff-top-actions"><button type="button" onClick={() => setChatOpen(true)} aria-label={t('chat.open')}><Icon name="chat_bubble" /></button><Link href={notificationHref} aria-label={t('notifications.title')}><Icon name="notifications" /></Link><Link className="clinical-staff-avatar" href={profileHref} aria-label={t(isAdmin ? 'dashboard.title' : 'dashboard.profileLink')}><Icon name="person" /></Link></div></header>
       <main className="clinical-staff-content"><div className="clinical-staff-page-heading"><div><span>{t(roleLabel)}</span><h1>{title}</h1><p>{intro ?? t('dashboard.intro')}</p></div><Link href={profileHref}><Icon name="person" />{name}</Link></div>{children}</main>
     </div>
     <GeneralChat open={chatOpen} onClose={() => setChatOpen(false)} />
