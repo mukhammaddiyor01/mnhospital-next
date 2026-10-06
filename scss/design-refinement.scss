@@ -209,16 +209,70 @@ html[data-theme='dark'] .clinical-primary-button,
 html[data-theme='dark'] .clinical-book-top { color: #10282e; background: #8bcfda; }
 html[data-theme='dark'] .clinical-doctor-book { color: var(--clinical-primary); background: transparent; }
 
+.clinical-inner-hero,
+html[data-theme='dark'] .clinical-inner-hero {
+  padding: 36px 42px;
+  border: 1px solid var(--clinical-line);
+  border-radius: 4px;
+  background: var(--clinical-low);
+  box-shadow: none;
+}
+.clinical-inner-hero h1 { margin: 12px 0; font-size: clamp(32px, 3.5vw, 45px); letter-spacing: -.045em; }
+.clinical-inner-hero p,
+html[data-theme='dark'] .clinical-inner-hero p { color: var(--clinical-secondary); font-size: 16px; line-height: 1.6; }
+.clinical-inner-section,
+html[data-theme='dark'] .clinical-inner-section {
+  margin-top: 24px;
+  padding: 32px;
+  border: 1px solid var(--clinical-line);
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+.clinical-inner-section > h2 { font-size: 26px; }
+.clinical-inner-section > p { color: var(--clinical-secondary); font-size: 14px; line-height: 1.6; }
+
+.clinical-footer {
+  padding: 60px 0 24px;
+  color: #e6efec;
+  background: #18343d;
+}
+.clinical-footer-grid, .clinical-copyright { width: min(1160px, calc(100% - 48px)); }
+.clinical-footer-grid { gap: 64px; grid-template-columns: 1fr 1fr 1.1fr; }
+.clinical-footer h2 { margin-bottom: 22px; font-size: 16px; }
+.clinical-footer h2::after { display: none; }
+.clinical-footer-links a { margin: 12px 0; color: #d2e1df; font-size: 13px; }
+.clinical-footer-contact { display: block; }
+.clinical-footer-contact p { max-width: 280px; margin: 0 0 20px; color: #d2e1df; font-size: 14px; line-height: 1.6; }
+.clinical-footer-contact > a { display: inline-flex; align-items: center; gap: 8px; color: #bde6e0; font-size: 13px; font-weight: 700; }
+.clinical-footer-brand-card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.clinical-footer-brand-card .mn-logo__mark { width: 130px; height: 70px; }
+.clinical-footer-brand-card p { max-width: 300px; margin: 14px 0 20px; color: #d2e1df; font-size: 14px; }
+.clinical-footer-cta { padding: 0 0 5px; color: #bde6e0; border: 0; border-bottom: 1px solid currentColor; border-radius: 0; font-size: 13px; }
+.clinical-copyright { margin-top: 46px; padding-top: 20px; border-top: 1px solid #4a6469; color: #d2e1df; font-size: 12px; }
+.clinical-copyright a { color: #fff; }
+
+@media (max-width: 1300px) {
+  .clinical-header-search { display: none; }
+}
 @media (max-width: 1040px) {
   .clinical-header-inner { gap: 18px; }
   .clinical-desktop-navigation { gap: 13px; }
-  .clinical-header-search { display: none; }
   .clinical-hero-card { column-gap: 28px; padding: 36px; }
 }
 @media (max-width: 800px) {
-  .clinical-hero-card { display: block; min-height: 0; }
+  .clinical-hero-card,
+  html[data-theme='dark'] .clinical-hero-card { display: block; min-height: 0; }
   .clinical-hero-visual { height: 330px; margin-top: 32px; }
   .clinical-doctor-grid, .clinical-article-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-footer-grid { gap: 30px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-footer-brand-card { grid-column: 1 / -1; }
 }
 @media (max-width: 680px) {
   .clinical-header, .clinical-header.has-search { height: 68px; }
@@ -231,10 +285,15 @@ html[data-theme='dark'] .clinical-doctor-book { color: var(--clinical-primary); 
   .clinical-hero-card h1 { margin: 20px 0 12px; font-size: 38px; }
   .clinical-hero-card > p { font-size: 15px; }
   .clinical-hero-visual { height: 245px; margin-top: 24px; }
-  .clinical-section-heading { display: flex; align-items: start; }
+  .clinical-section-heading { display: flex; align-items: flex-start; }
   .clinical-section-heading > a { white-space: normal; }
   .clinical-department-list { grid-template-columns: 1fr; }
   .clinical-doctor-grid, .clinical-article-grid { grid-template-columns: 1fr; }
   .clinical-next-step { display: block; padding: 28px 24px; }
   .clinical-next-step .clinical-primary-button { margin-top: 22px; }
+  .clinical-inner-hero { padding: 24px; }
+  .clinical-inner-section { padding: 22px; }
+  .clinical-footer-grid, .clinical-copyright { width: calc(100% - 32px); }
+  .clinical-footer-grid { grid-template-columns: 1fr; }
+  .clinical-footer-brand-card { grid-column: auto; }
 }

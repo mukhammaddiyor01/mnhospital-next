@@ -1,15 +1,12 @@
 import Link from "next/link";
 import Icon from "./common/Icon";
 import MnLogo from "./common/MnLogo";
-import SocialLinks from "./common/SocialLinks";
-import AnimatedWave from "./common/AnimatedWave";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const Footer = () => {
   const t = useTranslation();
   return (
   <footer id="footer" className="clinical-footer">
-    <AnimatedWave variant="footer" />
     <div className="clinical-footer-grid">
       <nav className="clinical-footer-links" aria-label={t('footer.navigation')}>
         <h2>{t('footer.explore')}</h2>
@@ -22,41 +19,8 @@ const Footer = () => {
       </nav>
       <div className="clinical-footer-contact">
         <h2>{t('footer.getInTouch')}</h2>
-        <div className="clinical-footer-contact-item">
-          <span className="clinical-footer-contact-icon">
-            <Icon name="location_on" />
-          </span>
-          <div>
-            <small>{t('footer.visit')}</small>
-            <p>
-              {t('footer.address')}
-              <br />
-              {t('footer.building')}
-            </p>
-          </div>
-        </div>
-        <div className="clinical-footer-contact-item">
-          <span className="clinical-footer-contact-icon">
-            <Icon name="call" />
-          </span>
-          <div>
-            <small>{t('footer.call')}</small>
-            <a href="tel:+821077777777">+821077777777</a>
-          </div>
-        </div>
-        <div className="clinical-footer-contact-item">
-          <span className="clinical-footer-contact-icon">
-            <Icon name="schedule" />
-          </span>
-          <div>
-            <small>{t('footer.hours')}</small>
-            <p>
-              {t('footer.emergencyCare')}
-              <br />
-              {t('footer.weekdays')}
-            </p>
-          </div>
-        </div>
+        <p>{t('footer.contactIntro')}</p>
+        <Link href="/contact">{t('footer.contact')} <Icon name="arrow_forward" /></Link>
       </div>
       <div className="clinical-footer-brand-card">
         <MnLogo footer />
@@ -72,10 +36,9 @@ const Footer = () => {
       <span>
         © {new Date().getFullYear()} {t('footer.rights')}
       </span>
-      <a href="tel:103">
+      <a href="tel:119">
         <Icon name="emergency" /> {t('footer.emergency')}
       </a>
-      <SocialLinks />
     </div>
   </footer>
   );
