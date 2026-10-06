@@ -6,18 +6,23 @@ import { CREATE_COMMENT } from '@/apollo/comment/mutation';
 import { userVar } from '@/apollo/store';
 import { Comment, CommentsInquiry, CreateCommentInput } from './types/comment';
 import { ReferenceGroup } from './enums/comment.enum';
+import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 
 interface CommentsSectionProps {
 	targetId: string;
 	group: ReferenceGroup.SERVICE | ReferenceGroup.ARTICLE | ReferenceGroup.DOCTOR;
 }
 
-const formatCommentDate = (value: string) => {
+const formatCommentDate = (value: string, locale: string, recent: string) => {
 	const date = new Date(value);
-	return Number.isNaN(date.getTime()) ? 'Recently' : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+	return Number.isNaN(date.getTime()) ? recent : date.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
 };
 
 const CommentsSection = ({ targetId, group }: CommentsSectionProps) => {
+	const t = useTranslation();
+	const { language } = usePreferences();
+	const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [commentContent, setCommentContent] = useState('');
@@ -38,7 +43,7 @@ const CommentsSection = ({ targetId, group }: CommentsSectionProps) => {
 			return;
 		}
 		if (!commentContent.trim()) {
-			setFormError('Please write a question or experience first.');
+			setFormError(t('comments.required'));
 			return;
 		}
 		try {
@@ -47,17 +52,17 @@ const CommentsSection = ({ targetId, group }: CommentsSectionProps) => {
 			setCommentContent('');
 			setFormError('');
 		} catch (error) {
-			setFormError('Your comment could not be published. Please try again.');
+			setFormError(t('comments.publishError'));
 		}
 	};
 
 	return <section className="comments-section">
-		<div className="section-heading"><div><span className="eyebrow">Community discussion</span><h2>{group === ReferenceGroup.DOCTOR ? 'Questions for this doctor' : group === ReferenceGroup.ARTICLE ? 'Article discussion' : 'Service questions and experiences'}</h2></div><span className="comment-count">{data?.getComments?.metaCounter?.[0]?.total ?? comments.length} comments</span></div>
-		<form className="comment-form" onSubmit={handleCreateComment}><label htmlFor={`${group}-comment`}>Share a question or experience</label><textarea id={`${group}-comment`} value={commentContent} onChange={(event) => setCommentContent(event.target.value)} maxLength={100} placeholder="Write your comment" rows={4} /><div className="comment-form-footer">{formError && <span className="form-error">{formError}</span>}<button className="button button-primary button-small" type="submit" disabled={creating}>{creating ? 'Publishing…' : user._id ? 'Publish comment' : 'Sign in to comment'}</button></div></form>
-		{loading && <span className="query-status">Loading patient comments…</span>}
-		{error && <span className="query-status">Comments are temporarily unavailable.</span>}
-		{!loading && !error && comments.length === 0 && <p className="comments-empty">Be the first to comment.</p>}
-		{comments.length > 0 && <div className="comment-list">{comments.map((comment) => <article className="comment-card" key={comment._id}><div className="comment-card-header"><strong>{comment.doctorData?.docFullName ?? comment.memberData?.memberFullName ?? comment.memberData?.memberNick ?? 'MN Hospital member'}</strong><time>{formatCommentDate(comment.createdAt)}</time></div><p>{comment.commentContent}</p></article>)}</div>}
+		<div className="section-heading"><div><span className="eyebrow">{t('comments.kicker')}</span><h2>{group === ReferenceGroup.DOCTOR ? t('comments.doctorTitle') : group === ReferenceGroup.ARTICLE ? t('comments.articleTitle') : t('comments.serviceTitle')}</h2></div><span className="comment-count">{t('comments.count').replace('{count}', String(data?.getComments?.metaCounter?.[0]?.total ?? comments.length))}</span></div>
+		<form className="comment-form" onSubmit={handleCreateComment}><label htmlFor={`${group}-comment`}>{t('comments.formLabel')}</label><textarea id={`${group}-comment`} value={commentContent} onChange={(event) => setCommentContent(event.target.value)} maxLength={100} placeholder={t('comments.placeholder')} rows={4} /><div className="comment-form-footer">{formError && <span className="form-error">{formError}</span>}<button className="button button-primary button-small" type="submit" disabled={creating}>{creating ? t('comments.publishing') : user._id ? t('comments.publish') : t('comments.signin')}</button></div></form>
+		{loading && <span className="query-status">{t('comments.loading')}</span>}
+		{error && <span className="query-status">{t('comments.unavailable')}</span>}
+		{!loading && !error && comments.length === 0 && <p className="comments-empty">{t('comments.empty')}</p>}
+		{comments.length > 0 && <div className="comment-list">{comments.map((comment) => <article className="comment-card" key={comment._id}><div className="comment-card-header"><strong>{comment.doctorData?.docFullName ?? comment.memberData?.memberFullName ?? comment.memberData?.memberNick ?? t('comments.memberFallback')}</strong><time>{formatCommentDate(comment.createdAt, locale, t('comments.recently'))}</time></div><p>{comment.commentContent}</p></article>)}</div>}
 	</section>;
 };
 
