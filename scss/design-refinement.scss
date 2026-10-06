@@ -288,6 +288,42 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
 .clinical-value-grid h3 { margin: 0; color: var(--clinical-navy); font-size: 16px; }
 .clinical-value-grid p { margin: 0; color: var(--clinical-secondary); font-size: 13px; line-height: 1.55; }
 
+.wizard-steps span { color: var(--clinical-secondary); font-size: 13px; }
+.wizard-steps b { width: 32px; height: 32px; font-size: 12px; }
+.booking-wizard > label,
+.booking-fields label { font-size: 14px; }
+.booking-wizard select,
+.booking-wizard input,
+.booking-wizard textarea { min-height: 46px; border-color: var(--clinical-line); border-radius: 5px; font-size: 14px; }
+.clinical-booking-message { color: var(--clinical-secondary); font-size: 13px; }
+
+.clinical-auth-card { border-radius: 4px; box-shadow: none; }
+.clinical-auth-card-bg,
+.clinical-auth-visual-content { background: #25454d; }
+.clinical-auth-card-bg-1,
+.clinical-auth-card-bg-2 { animation: none !important; }
+.clinical-auth-card .clinical-auth-visual-content,
+.clinical-auth-card .clinical-auth-form { transition: none !important; }
+.clinical-auth-visual-content p { color: #e3efec; font-size: 14px; }
+.clinical-auth-shield { display: none; }
+.clinical-auth-visual-content button { min-height: 42px; border-radius: 5px; background: transparent; backdrop-filter: none; font-size: 13px; }
+.clinical-auth-form { transition: none; }
+.clinical-auth-form h1 { font-size: 32px; }
+.clinical-auth-form > p { color: var(--clinical-secondary); font-size: 14px; }
+.clinical-auth-form label { font-size: 13px; }
+.clinical-auth-field { height: 46px; border-radius: 5px; }
+.clinical-auth-field input { font-size: 14px; }
+.clinical-auth-submit { min-height: 46px; border-radius: 5px; box-shadow: none; font-size: 14px; }
+.clinical-auth-divider { font-size: 11px; }
+.clinical-patient-identity p,
+.clinical-auth-gate p { color: var(--clinical-secondary); font-size: 14px; }
+.clinical-mypage-grid > a,
+.clinical-mypage-grid > button { border-radius: 4px; box-shadow: none; transition: none; }
+.clinical-mypage-grid > a:hover,
+.clinical-mypage-grid > button:hover { transform: none; box-shadow: none; }
+.clinical-mypage-grid h3 { font-size: 16px; }
+.clinical-mypage-grid p { color: var(--clinical-secondary); font-size: 13px; }
+
 .clinical-footer {
   padding: 60px 0 24px;
   color: #e6efec;
