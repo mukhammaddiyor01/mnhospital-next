@@ -1,5 +1,5 @@
 import { ChangeEvent } from 'react';
-import { useTheme } from './ThemeProvider';
+import { usePreferences } from './PreferenceProvider';
 import { PreferenceTheme } from './types/preference';
 
 const iconByTheme: Record<PreferenceTheme, string> = {
@@ -9,7 +9,7 @@ const iconByTheme: Record<PreferenceTheme, string> = {
 };
 
 const ThemeControl = () => {
-	const { theme, setTheme, error, saving } = useTheme();
+	const { theme, setTheme, error, saving } = usePreferences();
 	const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
 		void setTheme(event.target.value as PreferenceTheme);
 	};

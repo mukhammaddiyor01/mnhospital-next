@@ -4,7 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useApollo } from '@/apollo/client';
 import { createQueryClient } from '@/libs/query/query-client';
-import { ThemeProvider } from '@/libs/components/preference/ThemeProvider';
+import { PreferenceProvider } from '@/libs/components/preference/PreferenceProvider';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<ApolloProvider client={apolloClient}>
 			<QueryClientProvider client={queryClient}>
-				<ThemeProvider><Component {...pageProps} /></ThemeProvider>
+				<PreferenceProvider><Component {...pageProps} /></PreferenceProvider>
 			</QueryClientProvider>
 		</ApolloProvider>
 	);
