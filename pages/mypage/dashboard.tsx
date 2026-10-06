@@ -1,21 +1,22 @@
 import Link from 'next/link';
 import { useQuery, useReactiveVar } from '@apollo/client';
-import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import { userVar } from '@/apollo/store';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
-import { GET_ADMIN_DASHBOARD_STATS, GET_MY_DOCTOR_DASHBOARD_STATS, GET_MY_RECEPTIONIST_DASHBOARD_STATS } from '@/apollo/dashboard/query';
-import { AdminDashboardStats, DoctorDashboardStats, ReceptionistDashboardStats } from '@/libs/components/dashboard/types';
+import { GET_ADMIN_DASHBOARD_STATS, GET_MY_DOCTOR_APPOINTMENTS, GET_MY_DOCTOR_DASHBOARD_STATS, GET_MY_RECEPTIONIST_APPOINTMENT_QUEUE, GET_MY_RECEPTIONIST_DASHBOARD_STATS } from '@/apollo/dashboard/query';
+import { AdminDashboardStats, DoctorDashboardStats, ReceptionistDashboardStats, WorkspaceAppointment } from '@/libs/components/dashboard/types';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { MessageKey } from '@/libs/i18n/messages';
+import StaffLayout from '@/libs/components/layout/StaffLayout';
+import StaffWorkspace from '@/libs/components/dashboard/StaffWorkspace';
 import AdminDashboard from '@/libs/components/dashboard/AdminDashboard';
-
-const Metric = ({ label, value }: { label: string; value: number }) =>
-  <div className="clinical-dashboard-metric"><span>{label}</span><strong>{value.toLocaleString()}</strong></div>;
+import DoctorDashboard from '@/libs/components/dashboard/DoctorDashboard';
+import ReceptionistDashboard from '@/libs/components/dashboard/ReceptionistDashboard';
 
 const Dashboard = () => {
   const t = useTranslation();
   const session = useReactiveVar(userVar);
   const role = session.memberType;
+  const staffRole = role === MemberType.ADMIN || role === MemberType.DOCTOR || role === MemberType.RECEPTIONIST ? role : null;
   const admin = useQuery<{ getAdminDashboardStats: AdminDashboardStats }>(GET_ADMIN_DASHBOARD_STATS, {
     skip: !session._id || role !== MemberType.ADMIN, fetchPolicy: 'no-cache',
   });
@@ -25,27 +26,26 @@ const Dashboard = () => {
   const receptionist = useQuery<{ getMyReceptionistDashboardStats: ReceptionistDashboardStats }>(GET_MY_RECEPTIONIST_DASHBOARD_STATS, {
     skip: !session._id || role !== MemberType.RECEPTIONIST, fetchPolicy: 'no-cache',
   });
+  const doctorAppointments = useQuery<{ getAppointments: { list: WorkspaceAppointment[] } }>(GET_MY_DOCTOR_APPOINTMENTS, {
+    skip: !session._id || role !== MemberType.DOCTOR, fetchPolicy: 'no-cache',
+  });
+  const receptionistQueue = useQuery<{ getMyReceptionistAppointmentQueue: { list: WorkspaceAppointment[] } }>(GET_MY_RECEPTIONIST_APPOINTMENT_QUEUE, {
+    skip: !session._id || role !== MemberType.RECEPTIONIST, fetchPolicy: 'no-cache',
+  });
   const request = role === MemberType.ADMIN ? admin : role === MemberType.DOCTOR ? doctor : receptionist;
-  const authorizedRole = role === MemberType.ADMIN || role === MemberType.DOCTOR || role === MemberType.RECEPTIONIST;
   const titleKey: MessageKey = role === MemberType.ADMIN ? 'dashboard.adminTitle' : role === MemberType.DOCTOR ? 'dashboard.doctorTitle' : role === MemberType.RECEPTIONIST ? 'dashboard.receptionistTitle' : 'dashboard.title';
   const retry = () => { void request.refetch(); };
 
-  return <div className="clinical-inner-page">
-    {role !== MemberType.ADMIN && <section className="clinical-inner-hero"><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('dashboard.title')}</div><span className="clinical-eyebrow">{t('dashboard.kicker')}</span><h1>{t(titleKey)}</h1><p>{t('dashboard.intro')}</p></section>}
-    {!session._id || !authorizedRole ? <section className="clinical-inner-section clinical-auth-gate"><h2>{t('dashboard.restricted')}</h2><p>{t('dashboard.restrictedIntro')}</p><div className="clinical-dashboard-links">{!session._id && <><Link href="/account/doctor-signin">{t('auth.doctorSignin')}</Link><Link href="/account/receptionist-signin">{t('dashboard.receptionistSignin')}</Link><Link href="/account/admin-signin">{t('dashboard.adminSignin')}</Link></>}<Link href="/mypage">{t('page.profile')}</Link></div></section> : <>
-      {request.loading && !request.data && <section className="clinical-inner-section"><p className="clinical-query-status">{t('dashboard.loading')}</p></section>}
-      {request.error && !request.data && <section className="clinical-inner-section"><p className="clinical-form-error" role="alert">{t('dashboard.loadError')}</p><button type="button" className="clinical-secondary-button" onClick={retry}>{t('patient.retry')}</button></section>}
-      {role === MemberType.ADMIN && admin.data && <AdminDashboard stats={admin.data.getAdminDashboardStats} adminName={session.memberFullName || session.memberNick} />}
-      {role === MemberType.DOCTOR && doctor.data && <div className="clinical-dashboard clinical-dashboard-doctor">
-        <section className="clinical-dashboard-group"><header><span>{t('dashboard.doctorCare')}</span><strong>{session.memberFullName || session.memberNick}</strong></header><div className="clinical-dashboard-metrics"><Metric label={t('dashboard.myServices')} value={doctor.data.getMyDoctorDashboardStats.serviceCount} /><Metric label={t('dashboard.myPatients')} value={doctor.data.getMyDoctorDashboardStats.patientCount} /><Metric label={t('dashboard.myAppointments')} value={doctor.data.getMyDoctorDashboardStats.appointmentCount} /><Metric label={t('dashboard.completedAppointments')} value={doctor.data.getMyDoctorDashboardStats.completedAppointmentCount} /><Metric label={t('dashboard.myReports')} value={doctor.data.getMyDoctorDashboardStats.reportCount} /></div></section>
-        <section className="clinical-dashboard-links"><Link href={`/doctor/${session._id}`}>{t('patient.openDoctor')}</Link><Link href="/mypage/messages">{t('messages.title')}</Link><Link href="/mypage/notifications">{t('notifications.title')}</Link></section>
-      </div>}
-      {role === MemberType.RECEPTIONIST && receptionist.data && <div className="clinical-dashboard clinical-dashboard-receptionist">
-        <section className="clinical-dashboard-group"><header><span>{t('dashboard.receptionistQueue')}</span><strong>{t('dashboard.receptionistTasks')}</strong></header><div className="clinical-dashboard-metrics"><Metric label={t('dashboard.allTasks')} value={receptionist.data.getMyReceptionistDashboardStats.taskCount} /><Metric label={t('dashboard.pendingTasks')} value={receptionist.data.getMyReceptionistDashboardStats.pendingTaskCount} /><Metric label={t('dashboard.acceptedTasks')} value={receptionist.data.getMyReceptionistDashboardStats.acceptedTaskCount} /><Metric label={t('dashboard.inProgressTasks')} value={receptionist.data.getMyReceptionistDashboardStats.inProgressTaskCount} /><Metric label={t('dashboard.completedTasks')} value={receptionist.data.getMyReceptionistDashboardStats.completedTaskCount} /><Metric label={t('dashboard.cancelledTasks')} value={receptionist.data.getMyReceptionistDashboardStats.cancelledTaskCount} /></div></section>
-        <section className="clinical-dashboard-links"><Link href="/mypage/messages">{t('messages.title')}</Link><Link href="/mypage/notifications">{t('notifications.title')}</Link></section>
-      </div>}
-    </>}
-  </div>;
+  return <StaffLayout>
+    {!session._id || !staffRole ? <main className="clinical-staff-gate"><div><span>{t('dashboard.staffPortal')}</span><h1>{t('dashboard.restricted')}</h1><p>{t('dashboard.restrictedIntro')}</p><nav><Link href="/account/admin-signin">{t('dashboard.adminSignin')}</Link><Link href="/account/doctor-signin">{t('auth.doctorSignin')}</Link><Link href="/account/receptionist-signin">{t('dashboard.receptionistSignin')}</Link><Link href="/">{t('dashboard.visitSite')}</Link></nav></div></main> :
+      <StaffWorkspace role={staffRole} name={session.memberFullName || session.memberNick} title={t(titleKey)} doctorId={role === MemberType.DOCTOR ? session._id : undefined}>
+        {request.loading && !request.data && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
+        {request.error && !request.data && <div className="clinical-staff-state"><p className="clinical-form-error" role="alert">{t('dashboard.loadError')}</p><button type="button" className="clinical-secondary-button" onClick={retry}>{t('patient.retry')}</button></div>}
+        {role === MemberType.ADMIN && admin.data && <AdminDashboard stats={admin.data.getAdminDashboardStats} />}
+        {role === MemberType.DOCTOR && doctor.data && <DoctorDashboard stats={doctor.data.getMyDoctorDashboardStats} doctorId={session._id} appointments={doctorAppointments.data?.getAppointments.list} loading={doctorAppointments.loading} error={Boolean(doctorAppointments.error)} />}
+        {role === MemberType.RECEPTIONIST && receptionist.data && <ReceptionistDashboard stats={receptionist.data.getMyReceptionistDashboardStats} appointments={receptionistQueue.data?.getMyReceptionistAppointmentQueue.list} loading={receptionistQueue.loading} error={Boolean(receptionistQueue.error)} />}
+      </StaffWorkspace>}
+  </StaffLayout>;
 };
 
-export default withLayoutMain(Dashboard);
+export default Dashboard;

@@ -9,25 +9,12 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 const SummaryCard = ({ icon, label, value, detail }: { icon: string; label: string; value: number; detail?: string }) =>
   <article className="clinical-admin-summary-card"><span className="clinical-admin-summary-icon"><Icon name={icon} /></span><div><small>{label}</small><strong>{value.toLocaleString()}{detail && <em>{detail}</em>}</strong></div></article>;
 
-const AdminDashboard = ({ stats, adminName }: { stats: AdminDashboardStats; adminName: string }) => {
+const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
   const t = useTranslation();
   const updates = useQuery<{ getMyNotifications: { list: NotificationItem[] } }>(GET_MY_NOTIFICATIONS, {
     variables: { input: { page: 1, limit: 4 } }, fetchPolicy: 'no-cache',
   });
-  return <div className="clinical-admin-board" id="admin-overview">
-    <aside className="clinical-admin-sidebar">
-      <div className="clinical-admin-brand"><span><Icon name="local_hospital" /></span><div><strong>MN Hospital</strong><small>{t('dashboard.adminWorkspace')}</small></div></div>
-      <nav aria-label={t('dashboard.adminNavigation')}>
-        <a className="active" href="#admin-overview" aria-current="page"><Icon name="dashboard" />{t('dashboard.title')}</a>
-        <Link href="/doctor"><Icon name="stethoscope" />{t('nav.doctors')}</Link>
-        <Link href="/service"><Icon name="medical_services" />{t('nav.services')}</Link>
-        <Link href="/mypage/messages"><Icon name="mail" />{t('messages.title')}</Link>
-        <Link href="/mypage/notifications"><Icon name="notifications" />{t('notifications.title')}</Link>
-      </nav>
-      <Link className="clinical-admin-profile-link" href="/mypage"><Icon name="person" /><span>{adminName}</span></Link>
-    </aside>
-    <div className="clinical-admin-main">
-      <div className="clinical-admin-heading"><div><span className="clinical-section-kicker">{t('dashboard.kicker')}</span><h1>{t('dashboard.adminTitle')}</h1><p>{t('dashboard.intro')}</p></div><Link href="/mypage/notifications" aria-label={t('notifications.title')}><Icon name="notifications" /></Link></div>
+  return <div className="clinical-staff-admin-content">
       <div className="clinical-admin-summary">
         <SummaryCard icon="groups" label={t('dashboard.patients')} value={stats.totalPatients} />
         <SummaryCard icon="event" label={t('dashboard.appointments')} value={stats.totalAppointments} />
@@ -52,7 +39,6 @@ const AdminDashboard = ({ stats, adminName }: { stats: AdminDashboardStats; admi
           <ol>{updates.data?.getMyNotifications.list.map((item) => <li key={item._id}><span className={item.notificationStatus === 'UNREAD' ? 'unread' : ''} /><div><strong>{item.notificationTitle}</strong><p>{item.notificationDesc}</p><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time></div></li>)}</ol>
         </section>
       </div>
-    </div>
   </div>;
 };
 
