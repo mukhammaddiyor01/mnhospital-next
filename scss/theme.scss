@@ -11,6 +11,38 @@
 html[data-theme='dark'] {
 	body { background: #080f17; }
 	.clinical-shell { background: var(--clinical-surface); }
+	.clinical-shell .inner-page { color: var(--clinical-text); background: var(--clinical-surface); }
+	.clinical-shell .inner-page h1,
+	.clinical-shell .detail-panel h1,
+	.clinical-shell .related-card strong,
+	.clinical-shell .comment-form label { color: var(--clinical-navy); }
+	.clinical-shell .inner-page .page-intro p,
+	.clinical-shell .detail-panel > p,
+	.clinical-shell .related-card span,
+	.clinical-shell .comment-card p,
+	.clinical-shell .detail-meta span { color: var(--clinical-muted); }
+	.clinical-shell .detail-panel,
+	.clinical-shell .related-card,
+	.clinical-shell .comment-form,
+	.clinical-shell .comment-card,
+	.clinical-shell .service-loading,
+	.clinical-shell .service-search,
+	.clinical-shell .list-toolbar select,
+	.clinical-shell .pagination-row button,
+	.clinical-shell .detail-header .like-button { color: var(--clinical-text); border-color: var(--clinical-line); background: #172838; }
+	.clinical-shell .detail-aside { color: #fff; background: #1b3c54; }
+	.clinical-shell .booking-wizard > label,
+	.clinical-shell .booking-fields label,
+	.clinical-shell .wizard-steps span { color: var(--clinical-muted); }
+	.clinical-shell .wizard-steps b { color: var(--clinical-muted); background: var(--clinical-low); }
+	.clinical-shell .wizard-steps span.active,
+	.clinical-shell .service-search .material-symbols-rounded { color: var(--clinical-primary); }
+	.clinical-shell .booking-wizard select,
+	.clinical-shell .booking-wizard input,
+	.clinical-shell .booking-wizard textarea,
+	.clinical-shell .comment-form textarea,
+	.clinical-shell .service-search input { color: var(--clinical-text); border-color: var(--clinical-line); background: #203345; }
+	.clinical-shell .form-error { color: #ffc1c8 !important; background: #4a2735; }
 	.clinical-header { background: rgba(13, 23, 34, .95); }
 	.mn-logo { color: var(--clinical-navy); }
 	.clinical-animated-wave--header .clinical-wave-layer--back { fill: #123c57; }
