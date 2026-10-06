@@ -10,13 +10,13 @@ const iconByTheme: Record<PreferenceTheme, string> = {
 };
 
 const ThemeControl = () => {
-	const { theme, setTheme, error, saving } = usePreferences();
+	const { theme, setTheme, error, saving, ready } = usePreferences();
 	const t = useTranslation();
 	const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
 		void setTheme(event.target.value as PreferenceTheme);
 	};
 
-	return <div className="clinical-theme-setting">
+	return <div className={`clinical-theme-setting${ready ? ' is-ready' : ''}`}>
 		<label className="clinical-theme-control">
 			<span className="material-symbols-rounded" aria-hidden="true">{iconByTheme[theme]}</span>
 			<span className="sr-only">{t('nav.theme')}</span>

@@ -14,6 +14,7 @@ const defaultPreference: UserPreference = { theme: 'LIGHT', language: 'EN' };
 const htmlLanguage: Record<PreferenceLanguage, string> = { KR: 'ko', UZ: 'uz', EN: 'en' };
 
 interface PreferenceContextValue extends UserPreference {
+	ready: boolean;
 	setTheme: (theme: PreferenceTheme) => Promise<void>;
 	setLanguage: (language: PreferenceLanguage) => Promise<void>;
 	error: 'load' | 'save' | '';
@@ -106,7 +107,7 @@ export const PreferenceProvider = ({ children }: { children: ReactNode }) => {
 	const setTheme = async (theme: PreferenceTheme) => { if (themes.includes(theme)) await updatePreference('theme', theme); };
 	const setLanguage = async (language: PreferenceLanguage) => { if (languages.includes(language)) await updatePreference('language', language); };
 
-	return <PreferenceContext.Provider value={{ ...preference, setTheme, setLanguage, error, saving }}>{children}</PreferenceContext.Provider>;
+	return <PreferenceContext.Provider value={{ ...preference, ready: hydrated, setTheme, setLanguage, error, saving }}>{children}</PreferenceContext.Provider>;
 };
 
 export const usePreferences = () => {

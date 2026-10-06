@@ -5,12 +5,12 @@ import { PreferenceLanguage } from './types/preference';
 
 const LanguageControl = () => {
 	const t = useTranslation();
-	const { language, setLanguage, saving } = usePreferences();
+	const { language, setLanguage, saving, ready } = usePreferences();
 	const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
 		void setLanguage(event.target.value as PreferenceLanguage);
 	};
 
-	return <label className="clinical-language-control">
+	return <label className={`clinical-language-control${ready ? ' is-ready' : ''}`}>
 		<span className="material-symbols-rounded" aria-hidden="true">language</span>
 		<span className="sr-only">{t('nav.language')}</span>
 		<select aria-label={t('nav.language')} value={language} onChange={onChange} disabled={saving}>

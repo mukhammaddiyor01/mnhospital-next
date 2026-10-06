@@ -1,6 +1,7 @@
 // Compact in the existing clinical header, including its mobile layout.
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .clinical-theme-setting { position: relative; flex: none; }
+.clinical-theme-setting:not(.is-ready), .clinical-language-control:not(.is-ready) { visibility: hidden; }
 .clinical-theme-control, .clinical-language-control { position: relative; display: flex; height: 36px; align-items: center; gap: 3px; padding: 0 6px; color: var(--clinical-navy); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-low); }
 .clinical-theme-control .material-symbols-rounded, .clinical-language-control .material-symbols-rounded { color: var(--clinical-primary); font-size: 17px; }
 .clinical-theme-control select, .clinical-language-control select { width: 70px; color: inherit; border: 0; outline: 0; background: transparent; font-size: 10px; font-weight: 700; }
