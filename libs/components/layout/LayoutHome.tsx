@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import { ComponentType, ReactNode, useState } from 'react';
 import Top from '../Top';
 import Footer from '../Footer';
@@ -10,12 +11,15 @@ import GeneralChat from '../chat/GeneralChat';
 import { useRouter } from 'next/router';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 
+const HospitalAssistant = dynamic(() => import('../chat/HospitalAssistant'), { ssr: false });
+
 const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 	const Layout = (props: P & { children?: ReactNode }) => {
 		const router = useRouter();
 		const t = useTranslation();
 		const isHome = router.pathname === '/';
 		const [chatOpen, setChatOpen] = useState(false);
+		const [assistantOpen, setAssistantOpen] = useState(false);
 		useEffect(() => { const token = getJwtToken(); if (token) updateUserInfo(token); }, []);
 		return <>
 			<Head>
@@ -29,7 +33,8 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 				<main id="main">{isHome ? <Component {...props} /> : <div className="clinical-workspace clinical-inner-workspace"><AdvertisementRail side="left" /><div className="clinical-center-column"><Component {...props} /></div><AdvertisementRail side="right" /></div>}</main>
 				<Footer />
 				<GeneralChat open={chatOpen} onClose={() => setChatOpen(false)} />
-				<MobileBottomNav chatOpen={chatOpen} onChatToggle={() => setChatOpen((value) => !value)} />
+				<HospitalAssistant open={isHome && assistantOpen} onClose={() => setAssistantOpen(false)} />
+				<MobileBottomNav chatOpen={chatOpen} onChatToggle={() => { setAssistantOpen(false); setChatOpen((value) => !value); }} assistantOpen={isHome && assistantOpen} onAssistantToggle={isHome ? () => { setChatOpen(false); setAssistantOpen((value) => !value); } : undefined} />
 			</div>
 		</>;
 	};
