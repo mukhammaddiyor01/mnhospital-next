@@ -36,6 +36,7 @@ export default function DoctorServices() {
   };
   const pause = async (service: DoctorService, status: 'INACTIVE' | 'UNAVAILABLE') => {
     if (service.serviceStatus !== 'ACTIVE') return;
+    if (!window.confirm(t('staff.pauseWarning'))) return;
     setBusyId(service._id); setFeedback('');
     try {
       await updateService({ variables: { input: { _id: service._id, serviceStatus: status } } });
