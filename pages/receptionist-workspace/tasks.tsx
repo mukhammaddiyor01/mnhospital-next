@@ -12,6 +12,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const LIMIT = 10;
+const taskTypes = [
+  { value: 'CHECK_IN', label: 'staff.taskCheckIn' }, { value: 'PREPARE_ROOM', label: 'staff.taskPrepareRoom' },
+  { value: 'CALL_PATIENT', label: 'staff.taskCallPatient' }, { value: 'ASSIST', label: 'staff.taskAssist' },
+  { value: 'OTHER', label: 'staff.taskOther' },
+] as const;
+const priorities = [
+  { value: 'LOW', label: 'staff.priorityLow' }, { value: 'MEDIUM', label: 'staff.priorityMedium' },
+  { value: 'HIGH', label: 'staff.priorityHigh' }, { value: 'URGENT', label: 'staff.priorityUrgent' },
+] as const;
 export default function ReceptionistTasks() {
   const t = useTranslation();
   const router = useRouter();
@@ -69,8 +78,8 @@ export default function ReceptionistTasks() {
     <section className="clinical-staff-panel clinical-admin-resource"><header><h2>{t('staff.createTask')}</h2></header>
       <form className="clinical-staff-form" onSubmit={(event) => void create(event)} key={appointmentId || 'new'}>
         <label>{t('staff.appointmentId')}<input name="appointmentId" defaultValue={appointmentId} required /></label>
-        <label>{t('admin.serviceType')}<select name="taskType" required defaultValue="CHECK_IN"><option value="CHECK_IN">CHECK IN</option><option value="PREPARE_ROOM">PREPARE ROOM</option><option value="CALL_PATIENT">CALL PATIENT</option><option value="ASSIST">ASSIST</option><option value="OTHER">OTHER</option></select></label>
-        <label>{t('staff.priority')}<select name="taskPriority" required defaultValue="MEDIUM"><option value="LOW">LOW</option><option value="MEDIUM">MEDIUM</option><option value="HIGH">HIGH</option><option value="URGENT">URGENT</option></select></label>
+        <label>{t('admin.serviceType')}<select name="taskType" required defaultValue="CHECK_IN">{taskTypes.map((type) => <option key={type.value} value={type.value}>{t(type.label)}</option>)}</select></label>
+        <label>{t('staff.priority')}<select name="taskPriority" required defaultValue="MEDIUM">{priorities.map((priority) => <option key={priority.value} value={priority.value}>{t(priority.label)}</option>)}</select></label>
         <label>{t('staff.instruction')}<textarea name="taskInstruction" minLength={1} maxLength={2000} required /></label>
         <button type="submit" disabled={createState.loading}>{t('staff.createTask')}</button>
       </form>
