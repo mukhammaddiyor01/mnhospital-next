@@ -1,4 +1,38 @@
 // Keep the original clinical design system. These rules cover components added later.
+.clinical-book-top,
+.clinical-primary-button,
+.clinical-doctor-book,
+.clinical-auth-submit {
+  color: #fff;
+  border-radius: 8px;
+  background: #0877b9;
+  box-shadow: 0 3px 10px rgba(0, 75, 125, .14);
+  transition: background-color .18s ease, box-shadow .18s ease;
+}
+.clinical-book-top:hover,
+.clinical-primary-button:hover,
+.clinical-doctor-book:hover,
+.clinical-auth-submit:hover:not(:disabled) {
+  background: #075e92;
+  box-shadow: 0 5px 14px rgba(0, 75, 125, .2);
+}
+.clinical-signup-top,
+.clinical-secondary-button {
+  color: #0b5988;
+  border: 1px solid #b7d7e8;
+  border-radius: 8px;
+  background: #eef7fc;
+  transition: background-color .18s ease, border-color .18s ease;
+}
+.clinical-signup-top:hover,
+.clinical-secondary-button:hover {
+  border-color: #8dbdd7;
+  background: #ddecf6;
+}
+html[data-theme='dark'] .clinical-secondary-button,
+html[data-theme='dark'] .clinical-signup-top { color: #d6efff; border-color: #496579; background: #20384b; }
+html[data-theme='dark'] .clinical-secondary-button:hover,
+html[data-theme='dark'] .clinical-signup-top:hover { background: #2b4a61; }
 .clinical-home-label { display: inline-flex; padding: 5px 9px; color: var(--clinical-secondary); border-radius: 999px; background: var(--clinical-primary-soft); font-size: 8px; font-weight: 800; letter-spacing: .08em; }
 .clinical-empty-state { margin: 0; padding: 18px; color: var(--clinical-muted); border: 1px solid var(--clinical-line); border-radius: 10px; background: var(--clinical-surface); font-size: 11px; }
 .clinical-doctor-portrait.is-placeholder, .clinical-directory-portrait.is-placeholder { color: var(--clinical-primary); background: var(--clinical-primary-soft); }
