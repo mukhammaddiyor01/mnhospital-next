@@ -16,7 +16,7 @@ const StaffProfileCard = ({ name, nickname, image, facts, children }: {
       <h2>{name}</h2><p>@{nickname}</p>
       <div className="clinical-staff-profile-actions">{children}</div>
     </div>
-    <dl className="clinical-staff-profile-facts">{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value || '—'}</dd></div>)}</dl>
+    <dl className="clinical-staff-profile-facts">{facts.map((fact) => <div key={fact.label}><dt>{fact.label}</dt><dd>{fact.value ?? '—'}</dd></div>)}</dl>
   </section>;
 };
 
