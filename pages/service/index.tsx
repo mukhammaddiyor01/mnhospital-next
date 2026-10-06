@@ -25,6 +25,18 @@ const iconForType = (type?: string) => type === ServiceType.CARDIOLOGY ? 'favori
 
 const ServicesPage = () => {
 	const t = useTranslation();
+	const typeLabels: Record<string, string> = {
+		[ServiceType.CONSULTATION]: t('services.consultation'),
+		[ServiceType.DIAGNOSTIC]: t('services.diagnostic'),
+		[ServiceType.PROCEDURE]: t('services.procedure'),
+		[ServiceType.THERAPY]: t('services.therapy'),
+		[ServiceType.LABORATORY]: t('services.laboratory'),
+		[ServiceType.DENTISTRY]: t('services.dentistry'),
+		[ServiceType.PEDIATRICS]: t('services.pediatrics'),
+		[ServiceType.NEUROLOGY]: t('services.neurology'),
+		[ServiceType.CARDIOLOGY]: t('services.cardiology'),
+		[ServiceType.DERMATOLOGY]: t('services.dermatology'),
+	};
 	const { language } = usePreferences();
 	const localizedFallback = useMemo(() => {
 		const titles = ['services.demoGeneral', 'services.demoCardiology', 'services.demoLaboratory', 'services.demoPediatrics', 'services.demoNeurology', 'services.demoDentistry'] as const;
@@ -68,7 +80,7 @@ const ServicesPage = () => {
 				const price = service.servicePrice ?? service.price;
 				return <article className="clinical-service-detail" key={id}>
 					<div className="clinical-service-detail-top"><span className="clinical-service-detail-icon"><Icon name={service.icon ?? iconForType(service.serviceType ?? service.type)} /></span>{!usingFallback && <LikeButton mutation={LIKE_TARGET_SERVICE} id={id} variableName="serviceId" initialLiked={Boolean(service.meLiked?.[0]?.myFavorite)} />}</div>
-					<span className="clinical-section-kicker">{String(service.serviceType ?? service.type ?? t('services.clinicalCare')).replaceAll('_', ' ')}</span>
+					<span className="clinical-section-kicker">{typeLabels[service.serviceType ?? service.type] ?? String(service.serviceType ?? service.type ?? t('services.clinicalCare')).replaceAll('_', ' ')}</span>
 					<h3>{title}</h3><p>{service.serviceDesc ?? service.description}</p>
 					<div className="clinical-service-detail-bottom"><span>{price ? t('services.from').replace('{price}', formatKrw(price)) : t('services.alwaysAvailable')}</span><Link href={`/service/${id}`}>{t('services.explore')}</Link></div>
 				</article>;
