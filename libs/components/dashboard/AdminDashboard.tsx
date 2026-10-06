@@ -54,7 +54,7 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
           {updates.loading && <p className="clinical-query-status">{t('notifications.loading')}</p>}
           {updates.error && <p className="clinical-form-error" role="alert">{t('notifications.loadError')}</p>}
           {!updates.loading && !updates.error && !updates.data?.getMyNotifications.list.length && <p className="clinical-admin-empty">{t('dashboard.adminEmpty')}</p>}
-          {!updates.loading && !updates.error && !!updates.data?.getMyNotifications.list.length && <ul>{updates.data.getMyNotifications.list.map((item) => <li key={item._id}><span className={`clinical-admin-update-dot ${item.notificationStatus === 'UNREAD' ? 'unread' : ''}`} /><div><strong>{item.notificationTitle}</strong><p>{item.notificationDesc}</p><time dateTime={item.createdAt}>{format.format(new Date(item.createdAt))}</time></div></li>)}</ul>}
+          {!updates.loading && !updates.error && !!updates.data?.getMyNotifications.list.length && <ul>{updates.data.getMyNotifications.list.map((item) => <li key={item._id}><span className={`clinical-admin-update-dot ${item.notificationStatus === 'UNREAD' ? 'unread' : ''}`} /><div><strong>{item.notificationTitle}</strong><p>{item.notificationDesc}</p><time dateTime={item.createdAt}>{format.format(new Date(item.createdAt))}</time><span className="clinical-admin-update-status">{t(item.notificationStatus === 'UNREAD' ? 'notifications.unread' : item.notificationStatus === 'ARCHIVED' ? 'notifications.archived' : 'notifications.read')}</span></div></li>)}</ul>}
           <Link className="clinical-admin-directives-all" href="/admin/notifications">{t('dashboard.adminViewAll')} <Icon name="arrow_forward" /></Link>
         </section>
       </div>
