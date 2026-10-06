@@ -1,6 +1,18 @@
 import { PreferenceLanguage } from '@/libs/components/preference/types/preference';
 
 const en = {
+	'assistant.open': 'AI assistant',
+	'assistant.title': 'MN assistant',
+	'assistant.subtitle': 'Services and appointment guidance',
+	'assistant.welcome': 'Ask about hospital services or doctors. Each question is answered independently.',
+	'assistant.you': 'You',
+	'assistant.thinking': 'Thinking…',
+	'assistant.placeholder': 'Ask about services or doctors…',
+	'assistant.notConfigured': 'The AI assistant is not available yet. Use the links below to contact the hospital.',
+	'assistant.rateLimited': 'Please wait a minute before asking again.',
+	'assistant.unavailable': 'The assistant could not answer. Your question is kept; try again or contact the hospital.',
+	'assistant.notice': 'AI answers may be incorrect. Do not share private medical details. This conversation is not saved after leaving the page.',
+	'assistant.shortcuts': 'Hospital shortcuts',
 	'site.title': 'MN Hospital | Care and appointments',
 	'site.description': 'Explore MN Hospital services, find a doctor and request an appointment.',
 	'site.homeLink': 'MN Hospital home',
@@ -765,6 +777,18 @@ const en = {
 export type MessageKey = keyof typeof en;
 
 const kr: Record<MessageKey, string> = {
+	'assistant.open': 'AI 도우미',
+	'assistant.title': 'MN 도우미',
+	'assistant.subtitle': '진료 서비스 및 예약 안내',
+	'assistant.welcome': '병원 서비스나 의사에 대해 질문하세요. 각 질문은 개별적으로 답변됩니다.',
+	'assistant.you': '나',
+	'assistant.thinking': '답변 준비 중…',
+	'assistant.placeholder': '서비스나 의사에 대해 질문하세요…',
+	'assistant.notConfigured': 'AI 도우미는 아직 이용할 수 없습니다. 아래 링크로 병원에 문의하세요.',
+	'assistant.rateLimited': '잠시 후 다시 질문해주세요.',
+	'assistant.unavailable': '답변을 받지 못했습니다. 질문은 유지됩니다. 다시 시도하거나 병원에 문의하세요.',
+	'assistant.notice': 'AI 답변은 부정확할 수 있습니다. 개인 의료 정보를 공유하지 마세요. 페이지를 떠나면 대화는 저장되지 않습니다.',
+	'assistant.shortcuts': '병원 바로가기',
 	'site.title': 'MN Hospital | 진료와 예약',
 	'site.description': 'MN Hospital의 진료 서비스와 의료진을 살펴보고 예약을 요청하세요.',
 	'site.homeLink': 'MN Hospital 홈',
@@ -1527,6 +1551,18 @@ const kr: Record<MessageKey, string> = {
 };
 
 const uz: Record<MessageKey, string> = {
+	'assistant.open': 'AI yordamchi',
+	'assistant.title': 'MN yordamchi',
+	'assistant.subtitle': 'Xizmat va qabul bo‘yicha yordam',
+	'assistant.welcome': 'Hospital xizmatlari yoki shifokorlar haqida so‘rang. Har bir savolga alohida javob beriladi.',
+	'assistant.you': 'Siz',
+	'assistant.thinking': 'Javob tayyorlanmoqda…',
+	'assistant.placeholder': 'Xizmat yoki shifokor haqida so‘rang…',
+	'assistant.notConfigured': 'AI yordamchi hali mavjud emas. Quyidagi havolalar orqali hospitalga murojaat qiling.',
+	'assistant.rateLimited': 'Yana so‘rashdan oldin bir daqiqa kuting.',
+	'assistant.unavailable': 'Javob olinmadi. Savolingiz saqlandi; qayta urinib ko‘ring yoki hospitalga murojaat qiling.',
+	'assistant.notice': 'AI javobi xato bo‘lishi mumkin. Shaxsiy tibbiy ma’lumot yozmang. Sahifadan chiqqach, suhbat saqlanmaydi.',
+	'assistant.shortcuts': 'Hospital havolalari',
 	'site.title': 'MN Hospital | Tibbiy xizmatlar va qabul',
 	'site.description': 'MN Hospital xizmatlari va shifokorlarini ko‘rib, qabulga so‘rov yuboring.',
 	'site.homeLink': 'MN Hospital bosh sahifasi',
