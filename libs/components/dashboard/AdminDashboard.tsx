@@ -1,5 +1,8 @@
 import Link from 'next/link';
+import { useQuery } from '@apollo/client';
 import Icon from '@/libs/components/common/Icon';
+import { GET_MY_NOTIFICATIONS } from '@/apollo/notification/query';
+import { NotificationItem } from '@/libs/components/notification/types';
 import { AdminDashboardStats } from './types';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 
@@ -8,6 +11,9 @@ const SummaryCard = ({ icon, label, value, detail }: { icon: string; label: stri
 
 const AdminDashboard = ({ stats, adminName }: { stats: AdminDashboardStats; adminName: string }) => {
   const t = useTranslation();
+  const updates = useQuery<{ getMyNotifications: { list: NotificationItem[] } }>(GET_MY_NOTIFICATIONS, {
+    variables: { input: { page: 1, limit: 4 } }, fetchPolicy: 'no-cache',
+  });
   return <div className="clinical-admin-board" id="admin-overview">
     <aside className="clinical-admin-sidebar">
       <div className="clinical-admin-brand"><span><Icon name="local_hospital" /></span><div><strong>MN Hospital</strong><small>{t('dashboard.adminWorkspace')}</small></div></div>
@@ -39,6 +45,12 @@ const AdminDashboard = ({ stats, adminName }: { stats: AdminDashboardStats; admi
           <div><dt>{t('dashboard.activeDoctors')}</dt><dd>{stats.activeDoctors.toLocaleString()} / {stats.totalDoctors.toLocaleString()}</dd></div>
           <div><dt>{t('dashboard.activeReceptionists')}</dt><dd>{stats.activeReceptionists.toLocaleString()} / {stats.totalReceptionists.toLocaleString()}</dd></div>
         </dl><Link className="clinical-admin-panel-link" href="/doctor">{t('nav.doctors')} <Icon name="arrow_forward" /></Link></section>
+        <section className="clinical-admin-panel clinical-admin-updates" id="admin-updates"><header><h3>{t('dashboard.adminRecent')}</h3><Link href="/mypage/notifications">{t('dashboard.adminViewAll')} <Icon name="arrow_forward" /></Link></header>
+          {updates.loading && <p className="clinical-query-status">{t('notifications.loading')}</p>}
+          {updates.error && <p className="clinical-form-error" role="alert">{t('notifications.loadError')}</p>}
+          {!updates.loading && !updates.error && !updates.data?.getMyNotifications.list.length && <p className="clinical-admin-empty">{t('dashboard.adminEmpty')}</p>}
+          <ol>{updates.data?.getMyNotifications.list.map((item) => <li key={item._id}><span className={item.notificationStatus === 'UNREAD' ? 'unread' : ''} /><div><strong>{item.notificationTitle}</strong><p>{item.notificationDesc}</p><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time></div></li>)}</ol>
+        </section>
       </div>
     </div>
   </div>;
