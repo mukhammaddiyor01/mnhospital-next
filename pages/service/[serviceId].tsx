@@ -12,6 +12,17 @@ import { GET_RECOMMENDED_SERVICES, GET_SERVICE } from '@/apollo/service/query';
 import { LIKE_TARGET_SERVICE } from '@/apollo/service/mutation';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
+import { MessageKey } from '@/libs/i18n/messages';
+import { ServiceType } from '@/libs/components/service/enums/service.enum';
+
+const previewServices: Record<string, { title: MessageKey; description: MessageKey; type: ServiceType }> = {
+	'general-medicine': { title: 'services.demoGeneral', description: 'services.demoGeneralDesc', type: ServiceType.CONSULTATION },
+	cardiology: { title: 'services.demoCardiology', description: 'services.demoCardiologyDesc', type: ServiceType.CARDIOLOGY },
+	laboratory: { title: 'services.demoLaboratory', description: 'services.demoLaboratoryDesc', type: ServiceType.LABORATORY },
+	pediatrics: { title: 'services.demoPediatrics', description: 'services.demoPediatricsDesc', type: ServiceType.PEDIATRICS },
+	neurology: { title: 'services.demoNeurology', description: 'services.demoNeurologyDesc', type: ServiceType.NEUROLOGY },
+	dentistry: { title: 'services.demoDentistry', description: 'services.demoDentistryDesc', type: ServiceType.DENTISTRY },
+};
 
 const ServiceDetailPage = () => {
 	const t = useTranslation();
@@ -19,7 +30,8 @@ const ServiceDetailPage = () => {
 	const router = useRouter();
 	const serviceId = String(router.query.serviceId ?? '');
 	const isApiService = /^[a-f\d]{24}$/i.test(serviceId);
-	const fallbackTitle = serviceId.replaceAll('-', ' ');
+	const previewService = previewServices[serviceId];
+	const fallbackTitle = previewService ? t(previewService.title) : serviceId.replaceAll('-', ' ');
 	const { data, loading, error } = useQuery(GET_SERVICE, { variables: { serviceId }, skip: !isApiService || !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
 	const { data: relatedData } = useQuery(GET_RECOMMENDED_SERVICES, { variables: { serviceId, limit: 3 }, skip: !isApiService || !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-first' });
 	const service = data?.getService;
@@ -30,9 +42,9 @@ const ServiceDetailPage = () => {
 		<div className="detail-layout">
 			<article className="detail-panel">
 				<div className="detail-header"><div className="detail-icon"><Icon name="medical_services" /></div>{service && <LikeButton mutation={LIKE_TARGET_SERVICE} id={service._id} variableName="serviceId" initialLiked={Boolean(service.meLiked?.[0]?.myFavorite)} />}</div>
-				<span className="eyebrow">{typeLabel(service?.serviceType)}</span>
+				<span className="eyebrow">{typeLabel(service?.serviceType ?? previewService?.type)}</span>
 				<h1>{title.charAt(0).toUpperCase() + title.slice(1)}</h1>
-				<p>{service?.serviceDesc ?? t('serviceDetail.summaryFallback')}</p>
+				<p>{service?.serviceDesc ?? (previewService ? t(previewService.description) : t('serviceDetail.summaryFallback'))}</p>
 				<div className="detail-meta"><span><Icon name="schedule" /> {service?.serviceDuration ?? t('serviceDetail.available')}</span><span><Icon name="payments" /> {service?.servicePrice ? formatKrw(service.servicePrice) : t('serviceDetail.priceRequest')}</span><span><Icon name="location_on" /> {service?.serviceRoom ?? 'MN Hospital'}</span></div>
 				<Link className="button button-primary" href={`/appointment?service=${service?._id ?? serviceId}`}>{t('serviceDetail.book')} <span>→</span></Link>
 			</article>
