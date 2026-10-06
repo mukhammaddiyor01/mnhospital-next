@@ -20,27 +20,28 @@ import AdvertisementRail from "../advertisement/AdvertisementRail";
 import { ClinicalDoctorCard, ClinicalServiceCard } from "./types/clinical-home";
 import { DoctorSpecialty } from "../doctor/enums/doctor.enum";
 import DepartmentSwiper from "./DepartmentSwiper";
+import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const heroSlides = [
   {
     image: "/img/hospital-care-1.png",
-    alt: "A doctor welcoming a patient in a bright hospital atrium",
-    title: "Care that starts with listening",
-    description: "Expert guidance in a welcoming space.",
+    alt: "home.slide1.alt",
+    title: "home.slide1.title",
+    description: "home.slide1.description",
   },
   {
     image: "/img/hospital-care-2.png",
-    alt: "Hospital clinicians working together to care for patients",
-    title: "One team, focused on you",
-    description: "Specialists working together at every step.",
+    alt: "home.slide2.alt",
+    title: "home.slide2.title",
+    description: "home.slide2.description",
   },
   {
     image: "/img/hospital-care-3.png",
-    alt: "A doctor speaking with a patient in a modern consultation room",
-    title: "Confidence in every conversation",
-    description: "Personal attention backed by modern medicine.",
+    alt: "home.slide3.alt",
+    title: "home.slide3.title",
+    description: "home.slide3.description",
   },
-];
+] as const;
 const DOCTOR_IMAGES = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDyGWUmFaFNNKb39AJE2xMhslQLzNLzJvaV_C_9Krb8blYzpIbKB7-spdN-HGAPziwGDPwyuwIiAb77hACMeb6AQ_wRu9qnvwdmeQs3D9TdWlhWn3f78PiYFMjxgTYn2FGg0f6xr_K1gLONVx6khPETq6iGluZx-MJAtu84nKKcG0pfq_jhGec8giKsl0oYuvkjrzm4Td0BY-QaSK8n90bSxiDDmECyQ69ZD9DAjNOaqrXouUgC9Zw",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuD6yiFf39ntPB3zOaXegzPZfEanLkr6CcEvLg8kQKR9WmxBrvu-_yz5Ko22NOqXOaquAZQui5_J6leE0Ae428cNUYCCSCCip7BE7HUbXkWxYOZt9vUC0JheTuVFm0jxg4CxuJhX1a8VUsk5yrqv9hSo7JutCqVtJt57toFqNis2Gtz71_4OwS2MwWuF-zVj6n7QlaqJhv0smjm_wc5ZBZxWpfIu6HxZ3KHfcgEoh58wsGcj8kFKcwQ",
@@ -137,6 +138,7 @@ const doctorRole = (specialty?: string) => {
 };
 
 const ClinicalHome = () => {
+  const t = useTranslation();
   const [notice, setNotice] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
   useEffect(() => {
@@ -229,27 +231,22 @@ const ClinicalHome = () => {
         <div className="clinical-center-column">
           <section className="clinical-hero-card">
             <div className="clinical-accreditation">
-              <Icon name="verified" /> NABH &amp; JCI ACCREDITED EXCELLENCE
+              <Icon name="verified" /> {t('home.accreditation')}
             </div>
-            <h1>Clinical Precision &amp; Empathetic Care</h1>
-            <p>
-              MN Hospital combines advanced robotic surgery suites, AI-assisted
-              diagnostic imaging, and world-renowned multidisciplinary
-              specialists to deliver patient-centered healthcare designed for
-              swift recovery.
-            </p>
+            <h1>{t('home.title')}</h1>
+            <p>{t('home.intro')}</p>
             <div className="clinical-hero-actions">
               <Link className="clinical-primary-button" href="/appointment">
-                <Icon name="calendar_month" /> Book an Appointment
+                <Icon name="calendar_month" /> {t('nav.book')}
               </Link>
               <Link className="clinical-secondary-button" href="/service">
-                <Icon name="medical_services" /> Explore Services
+                <Icon name="medical_services" /> {t('home.exploreServices')}
               </Link>
             </div>
             <div
               className="clinical-hero-visual"
               role="region"
-              aria-label="MN Hospital care highlights"
+              aria-label={t('home.highlights')}
             >
               <div className="clinical-hero-slides">
                 {heroSlides.map((slide, index) => (
@@ -260,7 +257,7 @@ const ClinicalHome = () => {
                   >
                     <Image
                       src={slide.image}
-                      alt={slide.alt}
+                      alt={t(slide.alt)}
                       fill
                       priority={index === 0}
                       sizes="(max-width: 1120px) calc(100vw - 64px), 768px"
@@ -274,19 +271,19 @@ const ClinicalHome = () => {
                   <Icon name="favorite" />
                 </span>
                 <span>
-                  <strong>{heroSlides[activeSlide].title}</strong>
-                  <small>{heroSlides[activeSlide].description}</small>
+                  <strong>{t(heroSlides[activeSlide].title)}</strong>
+                  <small>{t(heroSlides[activeSlide].description)}</small>
                 </span>
               </div>
               <div
                 className="clinical-hero-dots"
-                aria-label="Choose a hospital highlight"
+                aria-label={t('home.chooseHighlight')}
               >
                 {heroSlides.map((slide, index) => (
                   <button
                     type="button"
                     className={activeSlide === index ? "is-active" : ""}
-                    aria-label={`Show image ${index + 1}: ${slide.title}`}
+                    aria-label={`${t('home.showImage')} ${index + 1}: ${t(slide.title)}`}
                     aria-current={activeSlide === index ? "true" : undefined}
                     onClick={() => setActiveSlide(index)}
                     key={slide.image}
