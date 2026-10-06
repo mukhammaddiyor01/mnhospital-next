@@ -7,9 +7,6 @@ import { AdminDashboardStats } from './types';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 
-const SummaryCard = ({ icon, label, value, detail }: { icon: string; label: string; value: number; detail?: string }) =>
-  <article className="clinical-admin-summary-card"><span className="clinical-admin-summary-icon"><Icon name={icon} /></span><div><small>{label}</small><strong>{value.toLocaleString()}{detail && <em>{detail}</em>}</strong></div></article>;
-
 const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
   const t = useTranslation();
   const { language } = usePreferences();
@@ -17,31 +14,55 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
   const updates = useQuery<{ getMyNotifications: { list: NotificationItem[] } }>(GET_MY_NOTIFICATIONS, {
     variables: { input: { page: 1, limit: 4 } }, fetchPolicy: 'no-cache',
   });
-  return <div className="clinical-staff-admin-content">
-      <div className="clinical-admin-summary">
-        <SummaryCard icon="groups" label={t('dashboard.patients')} value={stats.totalPatients} />
-        <SummaryCard icon="event" label={t('dashboard.appointments')} value={stats.totalAppointments} />
-        <SummaryCard icon="stethoscope" label={t('dashboard.activeDoctors')} value={stats.activeDoctors} detail={` / ${stats.totalDoctors}`} />
-        <SummaryCard icon="receipt_long" label={t('dashboard.bookings')} value={stats.totalBookings} />
-      </div>
-      <div className="clinical-admin-panels">
-        <section className="clinical-admin-panel" id="admin-operations"><header><h3>{t('dashboard.adminOperations')}</h3></header><dl>
-          <div><dt>{t('dashboard.activePatients')}</dt><dd>{stats.activePatients.toLocaleString()}</dd></div>
-          <div><dt>{t('dashboard.patients')}</dt><dd>{stats.totalPatients.toLocaleString()}</dd></div>
-          <div><dt>{t('dashboard.bookings')}</dt><dd>{stats.totalBookings.toLocaleString()}</dd></div>
-          <div><dt>{t('dashboard.appointments')}</dt><dd>{stats.totalAppointments.toLocaleString()}</dd></div>
-        </dl></section>
-        <section className="clinical-admin-panel" id="admin-staff"><header><h3>{t('dashboard.adminStaff')}</h3></header><dl>
-          <div><dt>{t('dashboard.activeDoctors')}</dt><dd>{stats.activeDoctors.toLocaleString()} / {stats.totalDoctors.toLocaleString()}</dd></div>
-          <div><dt>{t('dashboard.activeReceptionists')}</dt><dd>{stats.activeReceptionists.toLocaleString()} / {stats.totalReceptionists.toLocaleString()}</dd></div>
-        </dl><Link className="clinical-admin-panel-link" href="/admin/doctors">{t('nav.doctors')} <Icon name="arrow_forward" /></Link></section>
-        <section className="clinical-admin-panel clinical-admin-updates" id="admin-updates"><header><h3>{t('dashboard.adminRecent')}</h3><Link href="/admin/notifications">{t('dashboard.adminViewAll')} <Icon name="arrow_forward" /></Link></header>
+  const metrics = [
+    { key: 'patients', icon: 'groups', label: t('dashboard.patients'), value: stats.totalPatients, detail: `${stats.activePatients.toLocaleString()} ${t('dashboard.activePatients')}` },
+    { key: 'doctors', icon: 'stethoscope', label: t('dashboard.doctors'), value: stats.totalDoctors, detail: `${stats.activeDoctors.toLocaleString()} ${t('dashboard.activeDoctors')}`, href: '/admin/doctors' },
+    { key: 'bookings', icon: 'receipt_long', label: t('dashboard.bookings'), value: stats.totalBookings },
+    { key: 'receptionists', icon: 'support_agent', label: t('dashboard.receptionists'), value: stats.totalReceptionists, detail: `${stats.activeReceptionists.toLocaleString()} ${t('dashboard.activeReceptionists')}`, href: '/admin/receptionists' },
+    { key: 'appointments', icon: 'event', label: t('dashboard.appointments'), value: stats.totalAppointments },
+  ];
+  const shortcuts = [
+    { href: '/admin/doctors', icon: 'stethoscope', label: t('nav.doctors') },
+    { href: '/admin/receptionists', icon: 'support_agent', label: t('dashboard.receptionists') },
+    { href: '/admin/services', icon: 'medical_services', label: t('nav.services') },
+    { href: '/admin/messages', icon: 'mail', label: t('messages.title') },
+  ];
+
+  return <div className="clinical-staff-admin-content clinical-admin-command">
+    <div className="clinical-admin-command-strip" aria-label={t('dashboard.adminActivity')}>
+      <div><span className="clinical-admin-signal" /><strong>MN Hospital</strong><span>{t('dashboard.adminOperations')}</span></div>
+      <div><Icon name="groups" /><span>{t('dashboard.activePatients')}</span><strong>{stats.activePatients.toLocaleString()}</strong></div>
+      <div><Icon name="stethoscope" /><span>{t('dashboard.activeDoctors')}</span><strong>{stats.activeDoctors.toLocaleString()}</strong></div>
+      <div><Icon name="support_agent" /><span>{t('dashboard.activeReceptionists')}</span><strong>{stats.activeReceptionists.toLocaleString()}</strong></div>
+    </div>
+    <div className="clinical-admin-command-grid">
+      <section className="clinical-admin-constellation" aria-labelledby="admin-overview-heading">
+        <header><div><small>{t('dashboard.adminOverview')}</small><h2 id="admin-overview-heading">MN Hospital</h2></div><span>{t('dashboard.adminPeople')}</span></header>
+        <div className="clinical-admin-constellation-map">
+          <svg className="clinical-admin-constellation-lines" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true"><path d="M500 260 L215 115 M500 260 L785 115 M500 260 L175 385 M500 260 L825 385 M500 260 L500 490" /></svg>
+          <div className="clinical-admin-core"><span>MN</span><small>HOSPITAL</small></div>
+          {metrics.map((metric) => {
+            const content = <><span className="clinical-admin-node-icon"><Icon name={metric.icon} /></span><span className="clinical-admin-node-copy"><small>{metric.label}</small><strong>{metric.value.toLocaleString()}</strong>{metric.detail && <em>{metric.detail}</em>}</span></>;
+            return metric.href ? <Link key={metric.key} href={metric.href} className={`clinical-admin-node clinical-admin-node-${metric.key}`}>{content}</Link> : <div key={metric.key} className={`clinical-admin-node clinical-admin-node-${metric.key}`}>{content}</div>;
+          })}
+        </div>
+        <p className="clinical-admin-constellation-note"><Icon name="info" />{t('dashboard.intro')}</p>
+      </section>
+      <div className="clinical-admin-command-side">
+        <section className="clinical-admin-command-panel" aria-labelledby="admin-shortcuts-heading"><header><Icon name="bolt" /><h2 id="admin-shortcuts-heading">{t('dashboard.adminOperations')}</h2></header><div className="clinical-admin-shortcuts">{shortcuts.map((item) => <Link key={item.href} href={item.href}><Icon name={item.icon} /><span>{item.label}</span><Icon name="arrow_forward" /></Link>)}</div></section>
+        <section className="clinical-admin-command-panel clinical-admin-directives" aria-labelledby="admin-updates-heading"><header><Icon name="notifications_active" /><h2 id="admin-updates-heading">{t('dashboard.adminRecent')}</h2><Link href="/admin/notifications" aria-label={t('dashboard.adminViewAll')}><Icon name="arrow_forward" /></Link></header>
           {updates.loading && <p className="clinical-query-status">{t('notifications.loading')}</p>}
           {updates.error && <p className="clinical-form-error" role="alert">{t('notifications.loadError')}</p>}
           {!updates.loading && !updates.error && !updates.data?.getMyNotifications.list.length && <p className="clinical-admin-empty">{t('dashboard.adminEmpty')}</p>}
-          {!updates.loading && !updates.error && !!updates.data?.getMyNotifications.list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('notifications.title')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('dashboard.appointmentStatus')}</th></tr></thead><tbody>{updates.data.getMyNotifications.list.map((item) => <tr key={item._id}><td><strong>{item.notificationTitle}</strong><small>{item.notificationDesc}</small></td><td><time dateTime={item.createdAt}>{format.format(new Date(item.createdAt))}</time></td><td><span className={`clinical-staff-status ${item.notificationStatus === 'UNREAD' ? '' : 'status-completed'}`}>{t(item.notificationStatus === 'UNREAD' ? 'notifications.unread' : item.notificationStatus === 'ARCHIVED' ? 'notifications.archived' : 'notifications.read')}</span></td></tr>)}</tbody></table></div>}
+          {!updates.loading && !updates.error && !!updates.data?.getMyNotifications.list.length && <ul>{updates.data.getMyNotifications.list.map((item) => <li key={item._id}><span className={`clinical-admin-update-dot ${item.notificationStatus === 'UNREAD' ? 'unread' : ''}`} /><div><strong>{item.notificationTitle}</strong><p>{item.notificationDesc}</p><time dateTime={item.createdAt}>{format.format(new Date(item.createdAt))}</time></div></li>)}</ul>}
+          <Link className="clinical-admin-directives-all" href="/admin/notifications">{t('dashboard.adminViewAll')} <Icon name="arrow_forward" /></Link>
         </section>
       </div>
+    </div>
+    <div className="clinical-admin-command-bottom">
+      <section className="clinical-admin-command-panel" id="admin-operations"><header><Icon name="monitoring" /><h2>{t('dashboard.adminActivity')}</h2></header><dl><div><dt>{t('dashboard.bookings')}</dt><dd>{stats.totalBookings.toLocaleString()}</dd></div><div><dt>{t('dashboard.appointments')}</dt><dd>{stats.totalAppointments.toLocaleString()}</dd></div><div><dt>{t('dashboard.patients')}</dt><dd>{stats.totalPatients.toLocaleString()}</dd></div></dl></section>
+      <section className="clinical-admin-command-panel" id="admin-staff"><header><Icon name="badge" /><h2>{t('dashboard.adminStaff')}</h2></header><dl><div><dt>{t('dashboard.activeDoctors')}</dt><dd>{stats.activeDoctors.toLocaleString()} / {stats.totalDoctors.toLocaleString()}</dd></div><div><dt>{t('dashboard.activeReceptionists')}</dt><dd>{stats.activeReceptionists.toLocaleString()} / {stats.totalReceptionists.toLocaleString()}</dd></div></dl></section>
+    </div>
   </div>;
 };
 
