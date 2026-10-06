@@ -11,6 +11,8 @@ const iconForService = (serviceType?: string) => ({ CARDIOLOGY: 'cardiology', NE
 const labelForService = (serviceType?: string) => String(serviceType ?? 'Clinical service').replaceAll('_', ' ');
 const fallbackHighlights: MessageKey[] = ['home.department.highlight1', 'home.department.highlight2', 'home.department.highlight3', 'home.department.highlight4'];
 const fallbackStats: MessageKey[] = ['home.department.stat1', 'home.department.stat2', 'home.department.stat3', 'home.department.stat4'];
+const fallbackTitles: MessageKey[] = ['home.department.title1', 'home.department.title2', 'home.department.title3', 'home.department.title4'];
+const fallbackDescriptions: MessageKey[] = ['home.department.desc1', 'home.department.desc2', 'home.department.desc3', 'home.department.desc4'];
 
 const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServiceCard[]; usingFallback: boolean }) => {
 	const t = useTranslation();
@@ -36,7 +38,7 @@ const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServi
 		keyboard={{ enabled: true, onlyInViewport: true }}
 		aria-label={t('home.department.carousel')}
 	>
-		{services.map((service, index) => <SwiperSlide key={service._id}><article className="clinical-department"><div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{usingFallback ? t(fallbackHighlights[index]) : labelForService(service.serviceType)}</span></div><h3>{service.serviceTitle || t('home.department.fallback')}</h3><p>{service.serviceDesc}</p><div className="clinical-dept-bottom"><span>{usingFallback ? t(fallbackStats[index]) : `${Number(service.serviceViews ?? 0).toLocaleString(language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US')} ${t('home.department.views')}`}</span><Link href={usingFallback ? '/service' : `/service/${service._id}`}>{t('home.department.explore')} <Icon name="chevron_right" /></Link></div></article></SwiperSlide>)}
+		{services.map((service, index) => <SwiperSlide key={service._id}><article className="clinical-department"><div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{usingFallback ? t(fallbackHighlights[index]) : labelForService(service.serviceType)}</span></div><h3>{usingFallback ? t(fallbackTitles[index]) : service.serviceTitle || t('home.department.fallback')}</h3><p>{usingFallback ? t(fallbackDescriptions[index]) : service.serviceDesc}</p><div className="clinical-dept-bottom"><span>{usingFallback ? t(fallbackStats[index]) : `${Number(service.serviceViews ?? 0).toLocaleString(language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US')} ${t('home.department.views')}`}</span><Link href={usingFallback ? '/service' : `/service/${service._id}`}>{t('home.department.explore')} <Icon name="chevron_right" /></Link></div></article></SwiperSlide>)}
 	</Swiper>
 </div>;
 };
