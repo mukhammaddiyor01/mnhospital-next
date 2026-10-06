@@ -52,7 +52,7 @@ html[data-theme='dark'] .clinical-signup-top:hover { background: #2b4a61; }
   position: fixed;
   z-index: 101;
   right: max(24px, calc((100vw - 820px) / 2 + 24px));
-  bottom: 76px;
+  bottom: 128px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -164,7 +164,7 @@ html[data-theme='dark'] .clinical-notifications-filters button.active { color: #
   .clinical-messages-layout { grid-template-columns: 1fr; }
   .clinical-messages-list { max-height: 260px; overflow-y: auto; border-right: 0; border-bottom: 1px solid var(--clinical-line); }
   .clinical-messages-history { height: 350px; }
-  .clinical-chat-widget { right: 16px; bottom: 74px; }
+  .clinical-chat-widget { right: 16px; bottom: 112px; }
   .clinical-chat-launcher { width: 52px; justify-content: center; padding: 0; }
   .clinical-chat-launcher span:last-child { display: none; }
   .clinical-chat-panel { height: min(490px, calc(100vh - 160px)); }
