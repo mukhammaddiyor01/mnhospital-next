@@ -8,10 +8,13 @@ import { MemberType } from "./member/enums/member.enum";
 import MnLogo from "./common/MnLogo";
 import AnimatedWave from "./common/AnimatedWave";
 import ThemeControl from "./preference/ThemeControl";
+import LanguageControl from "./preference/LanguageControl";
+import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const Top = () => {
   const router = useRouter();
   const user = useReactiveVar(userVar);
+  const t = useTranslation();
   const isHome = router.pathname === "/";
 
   const searchHandler = (event: FormEvent<HTMLFormElement>) => {
@@ -44,15 +47,16 @@ const Top = () => {
             <img className="clinical-search-mark" src="/img/mn-logo-mark.png" alt="" width={24} height={20} />
             <input
               name="globalSearch"
-              placeholder="Search doctors, treatments, services..."
-              aria-label="Search doctors, treatments, services"
+              placeholder={t('nav.searchPlaceholder')}
+              aria-label={t('nav.searchPlaceholder')}
             />
           </form>
         ) : null}
         <div className="clinical-header-actions">
           <ThemeControl />
+          <LanguageControl />
           <Link className="clinical-book-top" href="/appointment">
-            Book an Appointment
+            {t('nav.book')}
           </Link>
           {user._id ? (
             <Link
@@ -62,8 +66,8 @@ const Top = () => {
                   ? `/doctor/${user._id}`
                   : "/mypage"
               }
-              aria-label="Open my profile"
-              title="My profile"
+              aria-label={t('nav.profile')}
+              title={t('page.profile')}
               style={
                 user.memberImage
                   ? {
@@ -75,8 +79,9 @@ const Top = () => {
               <span>{initials}</span>
             </Link>
           ) : (
-            <Link className="clinical-signup-top" href="/account/join">
-              Sign Up
+            <Link className="clinical-signup-top" href="/account/join" aria-label={t('nav.signup')}>
+              <span className="clinical-signup-top-text">{t('nav.signup')}</span>
+              <span className="clinical-signup-top-icon material-symbols-rounded" aria-hidden="true">person_add</span>
             </Link>
           )}
         </div>

@@ -1,16 +1,20 @@
 // Compact in the existing clinical header, including its mobile layout.
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .clinical-theme-setting { position: relative; flex: none; }
-.clinical-theme-control { display: flex; height: 36px; align-items: center; gap: 3px; padding: 0 6px; color: var(--clinical-navy); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-low); }
-.clinical-theme-control .material-symbols-rounded { color: var(--clinical-primary); font-size: 17px; }
-.clinical-theme-control select { width: 70px; color: inherit; border: 0; outline: 0; background: transparent; font-size: 10px; font-weight: 700; }
-.clinical-theme-control:focus-within { outline: 2px solid var(--clinical-primary); outline-offset: 2px; }
+.clinical-theme-control, .clinical-language-control { position: relative; display: flex; height: 36px; align-items: center; gap: 3px; padding: 0 6px; color: var(--clinical-navy); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-low); }
+.clinical-theme-control .material-symbols-rounded, .clinical-language-control .material-symbols-rounded { color: var(--clinical-primary); font-size: 17px; }
+.clinical-theme-control select, .clinical-language-control select { width: 70px; color: inherit; border: 0; outline: 0; background: transparent; font-size: 10px; font-weight: 700; }
+.clinical-theme-control:focus-within, .clinical-language-control:focus-within { outline: 2px solid var(--clinical-primary); outline-offset: 2px; }
 .clinical-theme-error { position: absolute; z-index: 5; top: 42px; right: 0; width: 190px; padding: 7px 9px; color: #fff; border-radius: 6px; background: #8f3444; font-size: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, .18); }
+.clinical-signup-top-icon { display: none; }
 @media (max-width: 680px) {
 	.clinical-header-inner .mn-logo__mark { width: 48px; height: 32px; }
 	.clinical-header-inner .mn-logo__name { font-size: 16px; }
-	.clinical-theme-control { width: 34px; height: 34px; justify-content: center; padding: 0; }
-	.clinical-theme-control select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+	.clinical-theme-control, .clinical-language-control { width: 34px; height: 34px; justify-content: center; padding: 0; }
+	.clinical-theme-control select, .clinical-language-control select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+	.clinical-signup-top { width: 34px; padding: 0; }
+	.clinical-signup-top-text { display: none; }
+	.clinical-signup-top-icon { display: inline; }
 }
 
 html[data-theme='dark'] {

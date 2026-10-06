@@ -16,7 +16,7 @@ const htmlLanguage: Record<PreferenceLanguage, string> = { KR: 'ko', UZ: 'uz', E
 interface PreferenceContextValue extends UserPreference {
 	setTheme: (theme: PreferenceTheme) => Promise<void>;
 	setLanguage: (language: PreferenceLanguage) => Promise<void>;
-	error: string;
+	error: 'load' | 'save' | '';
 	saving: boolean;
 }
 
@@ -32,7 +32,7 @@ export const PreferenceProvider = ({ children }: { children: ReactNode }) => {
 	const selectionVersion = useRef(0);
 	const [preference, setPreference] = useState<UserPreference>(defaultPreference);
 	const [hydrated, setHydrated] = useState(false);
-	const [error, setError] = useState('');
+	const [error, setError] = useState<'load' | 'save' | ''>('');
 	const [saving, setSaving] = useState(false);
 
 	useEffect(() => {
@@ -77,7 +77,7 @@ export const PreferenceProvider = ({ children }: { children: ReactNode }) => {
 				storePreference(LANGUAGE_KEY, saved.language);
 				setError('');
 			})
-			.catch(() => { if (!cancelled && version === selectionVersion.current) setError('Preferences could not be loaded.'); });
+			.catch(() => { if (!cancelled && version === selectionVersion.current) setError('load'); });
 		return () => { cancelled = true; };
 	}, [client, session._id, session.memberType]);
 
@@ -97,7 +97,7 @@ export const PreferenceProvider = ({ children }: { children: ReactNode }) => {
 			if (userVar()._id !== session._id || version !== selectionVersion.current) return;
 			setPreference((current) => ({ ...current, [key]: previous }));
 			storePreference(storageKey, previous);
-			setError('Preferences could not be saved.');
+			setError('save');
 		} finally {
 			setSaving(false);
 		}
