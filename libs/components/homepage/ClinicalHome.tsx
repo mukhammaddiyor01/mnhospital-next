@@ -411,59 +411,49 @@ const ClinicalHome = () => {
           <section className="clinical-trust-section">
             <div>
               <span className="clinical-section-kicker">
-                THE STANDARD OF HEALING
+                {t('home.trust.kicker')}
               </span>
-              <h2>Why Patients Choose MN Hospital</h2>
-              <p>
-                We integrate compassionate clinical empathy with world-class
-                tertiary healthcare standards to ensure optimal clinical
-                outcomes and swift patient recuperation.
-              </p>
+              <h2>{t('home.trust.title')}</h2>
+              <p>{t('home.trust.intro')}</p>
             </div>
             <div className="clinical-trust-grid">
               <TrustItem
                 icon="verified_user"
-                title="Accredited Excellence"
-                text="Fully certified by international Joint Commission International (JCI) and national healthcare audit boards for zero-compromise safety."
+                title={t('home.trust.accredited')}
+                text={t('home.trust.accreditedText')}
               />
               <TrustItem
                 icon="biotech"
-                title="Modern Diagnostic Labs"
-                text="In-house 3T MRI, 128-slice dual source CT scanners, automated pathology, and same-day electronic test result delivery."
+                title={t('home.trust.labs')}
+                text={t('home.trust.labsText')}
               />
               <TrustItem
                 icon="favorite"
-                title="Personalized Care"
-                text="Dedicated patient coordinators, transparent billing plans, bedside telemetry, and post-discharge recovery monitoring."
+                title={t('home.trust.personal')}
+                text={t('home.trust.personalText')}
               />
             </div>
           </section>
 
           <section className="clinical-testimonials" id="journal">
             <div className="clinical-testimonials-heading">
-              <span className="clinical-section-kicker">VOICES OF HEALING</span>
-              <h2>What Our Patients Say</h2>
+              <span className="clinical-section-kicker">{t('home.testimonial.kicker')}</span>
+              <h2>{t('home.testimonial.title')}</h2>
             </div>
             <div className="clinical-testimonial-grid">
               <Testimonial
                 initials="RH"
                 name="Rebecca Henderson"
-                role="Cardiac Recovery Patient"
+                role={t('home.testimonial.role1')}
               >
-                “The cardiology wing treated my husband with exceptional
-                urgency. Dr. Vance took the time to explain every detail before
-                the angioplasty. We felt safe, respected, and thoroughly cared
-                for.”
+                {t('home.testimonial.quote1')}
               </Testimonial>
               <Testimonial
                 initials="DL"
                 name="David Lockwood"
-                role="Parent of Orthopedic Patient"
+                role={t('home.testimonial.role2')}
               >
-                “My daughter required specialized orthopedic surgery following a
-                gymnastics fracture. The pediatric orthopedic staff was
-                empathetic, gentle, and the robotic precision made recovery
-                shockingly fast.”
+                {t('home.testimonial.quote2')}
               </Testimonial>
             </div>
           </section>
@@ -471,32 +461,24 @@ const ClinicalHome = () => {
           <section className="clinical-cta-card" id="booking">
             <div>
               <span className="clinical-cta-kicker">
-                <Icon name="access_alarm" /> Same-Day Consultation Slots
-                Available
+                <Icon name="access_alarm" /> {t('home.cta.kicker')}
               </span>
               <h2>
-                Ready to Experience
+                {t('home.cta.title1')}
                 <br />
-                World-Class Clinical Care?
+                {t('home.cta.title2')}
               </h2>
-              <p>
-                Book with our top consultants online in less than 2 minutes or
-                reach out directly to our 24/7 care concierge.
-              </p>
+              <p>{t('home.cta.intro')}</p>
             </div>
             <div className="clinical-cta-actions">
               <button
                 className="clinical-light-button"
-                onClick={() =>
-                  setNotice(
-                    "Appointment scheduling is ready — choose a doctor and preferred time.",
-                  )
-                }
+                onClick={() => setNotice(t('home.cta.notice'))}
               >
-                <Icon name="edit_calendar" /> Schedule an Appointment
+                <Icon name="edit_calendar" /> {t('home.cta.schedule')}
               </button>
               <a href="tel:+821000000077">
-                <Icon name="call" /> Urgent Helpline: +82 10 0000-0077
+                <Icon name="call" /> {t('home.cta.helpline')}: +82 10 0000-0077
               </a>
             </div>
           </section>
