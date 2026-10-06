@@ -359,17 +359,6 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
           </button>
         </form>
       </div>
-      <div className="clinical-auth-trust">
-        <span>
-          <Icon name="lock" /> {t('auth.secureAccess')}
-        </span>
-        <span>
-          <Icon name="verified_user" /> {t('auth.privateRecords')}
-        </span>
-        <span>
-          <Icon name="support_agent" /> {t('auth.careSupport')}
-        </span>
-      </div>
     </div>
   );
 };
