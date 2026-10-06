@@ -42,7 +42,7 @@ const Top = () => {
         <MnLogo />
         {isHome ? (
           <form className="clinical-header-search" onSubmit={searchHandler}>
-            <span className="clinical-search-mark material-symbols-rounded" aria-hidden="true">search</span>
+            <img className="clinical-search-mark" src="/img/mn-logo-mark.png" alt="" width={24} height={20} />
             <input
               name="globalSearch"
               placeholder={t('nav.searchPlaceholder')}
