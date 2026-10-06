@@ -9,8 +9,9 @@ import { userVar } from '@/apollo/store';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
 import { AppointmentDraft } from '@/libs/components/booking/types/booking';
+import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 
-const steps = ['Service', 'Specialist', 'Time', 'Review'];
 const mongoId = /^[a-f\d]{24}$/i;
 const demoServices = [
 	{ _id: 'cardiology', memberId: 'azizbek-rahimov', serviceTitle: 'Cardiology consultation', serviceName: 'Cardiology', serviceDuration: '30', servicePrice: 250000, memberData: { _id: 'azizbek-rahimov', docFullName: 'Dr. Azizbek Rahimov', docSpecialty: 'CARDIOLOGIST' } },
@@ -19,6 +20,10 @@ const demoServices = [
 ];
 
 const AppointmentPage = () => {
+	const t = useTranslation();
+	const { language } = usePreferences();
+	const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
+	const steps = [t('booking.stepService'), t('booking.stepSpecialist'), t('booking.stepTime'), t('booking.stepReview')];
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const apiEnabled = Boolean(process.env.NEXT_PUBLIC_API_GRAPHQL_URL);
@@ -63,33 +68,33 @@ const AppointmentPage = () => {
 		event.preventDefault();
 		setMessage('');
 		if (step < steps.length) return setStep((current) => current + 1);
-		if (!apiEnabled) return setMessage('Preview mode is active. Connect NEXT_PUBLIC_API_GRAPHQL_URL to place this booking order.');
-		if (!user._id) return setMessage('Please sign in as a patient before placing the booking order.');
+		if (!apiEnabled) return setMessage(t('booking.previewError'));
+		if (!user._id) return setMessage(t('booking.signinError'));
 		try {
 			await addCartItem({ variables: { input: { serviceId: form.serviceId, doctorId: form.doctorId, patientNote: form.patientNote || undefined, requestedStartAt: form.startsAt } } });
 			const result = await createBookingOrder();
 			setOrder(result.data?.createBookingOrder ?? null);
 		} catch (error: any) {
-			setMessage(error.message ?? 'The booking order could not be created. Please try another time.');
+			setMessage(error.message ?? t('booking.orderError'));
 		}
 	};
 	const formatSlot = (value: string) => {
 		const date = new Date(value);
-		return Number.isNaN(date.getTime()) ? 'Unavailable' : new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(date);
+		return Number.isNaN(date.getTime()) ? t('booking.unavailable') : new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(date);
 	};
 	const busy = addState.loading || orderState.loading;
 
 	return <div className="clinical-inner-page">
-		<section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">Home</Link> / Appointments</div><span className="clinical-eyebrow">APPOINTMENT BOOKING</span><h1>Let’s find a time<br /><em>for your care.</em></h1><p>Select a live hospital service and an available specialist slot. Your booking order will be secured through the MN Hospital patient workflow.</p></div></section>
+		<section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('nav.home')}</Link> / {t('nav.appointments')}</div><span className="clinical-eyebrow">{t('booking.eyebrow')}</span><h1>{t('booking.hero1')}<br /><em>{t('booking.hero2')}</em></h1><p>{t('booking.intro')}</p></div></section>
 		<section className="clinical-inner-section clinical-appointment-section">
-			{order ? <div className="clinical-booking-success"><Icon name="check_circle" /><span className="clinical-section-kicker">ORDER {order.orderCode}</span><h2>Your booking order is ready.</h2><p>Status: {order.bookingOrderStatus}. The appointment becomes confirmed after the required payment or reception approval.</p><Link className="clinical-primary-button" href="/doctor">Explore doctors</Link></div> : <form className="booking-wizard" onSubmit={submitStep}>
+			{order ? <div className="clinical-booking-success"><Icon name="check_circle" /><span className="clinical-section-kicker">{t('booking.order')} {order.orderCode}</span><h2>{t('booking.success')}</h2><p>{t('booking.status')}: {order.bookingOrderStatus}. {t('booking.successIntro')}</p><Link className="clinical-primary-button" href="/doctor">{t('booking.exploreDoctors')}</Link></div> : <form className="booking-wizard" onSubmit={submitStep}>
 				<div className="wizard-steps">{steps.map((label, index) => <span className={step >= index + 1 ? 'active' : ''} key={label}><b>0{index + 1}</b>{label}</span>)}</div>
-				{step === 1 && <label>Hospital service<select value={form.serviceId} onChange={(event) => chooseService(event.target.value)} required><option value="">Select a service</option>{services.map((service: any) => <option value={service._id} key={service._id}>{service.serviceTitle || service.serviceName}</option>)}</select>{servicesQuery.loading && <small>Refreshing services from the hospital API…</small>}</label>}
-				{step === 2 && <div className="clinical-booking-review"><span className="clinical-service-detail-icon"><Icon name="stethoscope" /></span><div><small>Assigned specialist</small><h3>{selectedService?.memberData?.docFullName ?? 'Specialist assigned by service'}</h3><p>{String(selectedService?.memberData?.docSpecialty ?? 'Medical specialist').replaceAll('_', ' ')}</p></div><input type="hidden" value={form.doctorId} required readOnly /></div>}
-				{step === 3 && <div className="booking-fields"><label>Date<input type="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => updateForm('date', event.target.value)} required /></label><label>Available time<select value={form.startsAt} onChange={(event) => updateForm('startsAt', event.target.value)} required disabled={!form.date || slotsQuery.loading}><option value="">{slotsQuery.loading ? 'Checking availability…' : 'Select time'}</option>{slots.map((slot: any) => <option value={slot.startsAt} key={slot.startsAt}>{formatSlot(slot.startsAt)}</option>)}</select></label>{form.date && !slotsQuery.loading && slots.length === 0 && <p className="clinical-form-error wide-field">No available slots on this date. Please choose another day.</p>}</div>}
-				{step === 4 && <div className="clinical-booking-review clinical-booking-review-final"><div><small>Service</small><h3>{selectedService?.serviceTitle || selectedService?.serviceName}</h3><p>{selectedService?.memberData?.docFullName} · {form.startsAt ? new Date(form.startsAt).toLocaleString() : ''}</p></div><strong>{Number(selectedService?.servicePrice ?? 0).toLocaleString('uz-UZ')} UZS</strong><label>Note for the care team (optional)<textarea value={form.patientNote} onChange={(event) => updateForm('patientNote', event.target.value)} placeholder="Briefly describe the reason for your visit…" /></label></div>}
-				{message && <div className="clinical-booking-message"><Icon name="info" /><span>{message} {!user._id && apiEnabled && <Link href="/account/signin">Sign in</Link>}</span></div>}
-				<div className="clinical-booking-actions">{step > 1 && <button className="clinical-secondary-button" type="button" onClick={() => setStep((current) => current - 1)}>Back</button>}<button className="clinical-primary-button" type="submit" disabled={busy}>{busy ? 'Creating order…' : step === 4 ? 'Place booking order' : 'Next step'} <Icon name="arrow_forward" /></button></div>
+				{step === 1 && <label>{t('booking.hospitalService')}<select value={form.serviceId} onChange={(event) => chooseService(event.target.value)} required><option value="">{t('booking.selectService')}</option>{services.map((service: any) => <option value={service._id} key={service._id}>{service.serviceTitle || service.serviceName}</option>)}</select>{servicesQuery.loading && <small>{t('booking.refreshing')}</small>}</label>}
+				{step === 2 && <div className="clinical-booking-review"><span className="clinical-service-detail-icon"><Icon name="stethoscope" /></span><div><small>{t('booking.assigned')}</small><h3>{selectedService?.memberData?.docFullName ?? t('booking.assignedFallback')}</h3><p>{String(selectedService?.memberData?.docSpecialty ?? t('booking.specialistFallback')).replaceAll('_', ' ')}</p></div><input type="hidden" value={form.doctorId} required readOnly /></div>}
+				{step === 3 && <div className="booking-fields"><label>{t('booking.date')}<input type="date" min={new Date().toISOString().slice(0, 10)} value={form.date} onChange={(event) => updateForm('date', event.target.value)} required /></label><label>{t('booking.availableTime')}<select value={form.startsAt} onChange={(event) => updateForm('startsAt', event.target.value)} required disabled={!form.date || slotsQuery.loading}><option value="">{slotsQuery.loading ? t('booking.checking') : t('booking.selectTime')}</option>{slots.map((slot: any) => <option value={slot.startsAt} key={slot.startsAt}>{formatSlot(slot.startsAt)}</option>)}</select></label>{form.date && !slotsQuery.loading && slots.length === 0 && <p className="clinical-form-error wide-field">{t('booking.noSlots')}</p>}</div>}
+				{step === 4 && <div className="clinical-booking-review clinical-booking-review-final"><div><small>{t('booking.stepService')}</small><h3>{selectedService?.serviceTitle || selectedService?.serviceName}</h3><p>{selectedService?.memberData?.docFullName} · {form.startsAt ? new Date(form.startsAt).toLocaleString(locale) : ''}</p></div><strong>{Number(selectedService?.servicePrice ?? 0).toLocaleString(locale)} UZS</strong><label>{t('booking.note')}<textarea value={form.patientNote} onChange={(event) => updateForm('patientNote', event.target.value)} placeholder={t('booking.notePlaceholder')} /></label></div>}
+				{message && <div className="clinical-booking-message"><Icon name="info" /><span>{message} {!user._id && apiEnabled && <Link href="/account/signin">{t('patient.signin')}</Link>}</span></div>}
+				<div className="clinical-booking-actions">{step > 1 && <button className="clinical-secondary-button" type="button" onClick={() => setStep((current) => current - 1)}>{t('booking.back')}</button>}<button className="clinical-primary-button" type="submit" disabled={busy}>{busy ? t('booking.creating') : step === 4 ? t('booking.place') : t('booking.next')} <Icon name="arrow_forward" /></button></div>
 			</form>}
 		</section>
 	</div>;
