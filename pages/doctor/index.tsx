@@ -10,6 +10,12 @@ import { resolveApiAsset } from '@/libs/config';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 
+const fallbackDoctors = [
+	{ _id: 'azizbek-rahimov', docFullName: 'Dr. Azizbek Rahimov', docSpecialty: DoctorSpecialty.CARDIOLOGIST, docExperience: 15, docPoints: 4.9 },
+	{ _id: 'madina-karimova', docFullName: 'Dr. Madina Karimova', docSpecialty: DoctorSpecialty.GENERAL_PRACTITIONER, docExperience: 12, docPoints: 4.8 },
+	{ _id: 'sardor-ergashev', docFullName: 'Dr. Sardor Ergashev', docSpecialty: DoctorSpecialty.DENTIST, docExperience: 10, docPoints: 5 },
+];
+
 const DoctorsPage = () => {
 	const t = useTranslation();
 	const specialtyLabel = useDoctorSpecialtyLabel();
@@ -19,7 +25,7 @@ const DoctorsPage = () => {
 	useEffect(() => { if (router.isReady && typeof router.query.search === 'string') setSearch(router.query.search); }, [router.isReady, router.query.search]);
 	const inquiry = { page: 1, limit: 12, sort: DoctorSort.POINTS, direction: 'DESC', ...(specialty ? { docSpecialty: specialty } : {}), search: { ...(search ? { text: search } : {}) } };
 	const { data, loading } = useQuery(GET_DOCTORS, { variables: { input: inquiry }, skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
-	const doctors = data?.getDoctors?.list ?? [];
+	const doctors = data?.getDoctors?.list?.length ? data.getDoctors.list : fallbackDoctors;
 	const submitHandler = (event: FormEvent) => { event.preventDefault(); };
 	const initials = (name?: string) => name?.split(' ').map((part) => part[0]).join('').slice(0, 2) || 'MN';
 	const portraitClass = (index: number) => index === 1 ? 'teal' : index === 2 ? 'slate' : 'blue';
@@ -42,13 +48,14 @@ const DoctorsPage = () => {
 					<option value={DoctorSpecialty.DENTIST}>{t('doctors.dentistry')}</option>
 					<option value={DoctorSpecialty.PEDIATRICIAN}>{t('doctors.pediatrics')}</option>
 				</select>
+				<select aria-label={t('doctors.filterAvailability')}><option>{t('doctors.anyAvailability')}</option><option>{t('doctors.today')}</option><option>{t('doctors.week')}</option></select>
 				<button className="clinical-primary-button" type="submit">{t('doctors.search')}</button>
 			</form>
 			<div className="clinical-directory-grid">{doctors.map((doctor: any, index: number) => <article className="clinical-directory-card" key={doctor._id}>
-				<Link aria-label={`${t('doctors.viewProfile')} ${doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}`} href={`/doctor/${doctor._id}`}><div className={`clinical-directory-portrait clinical-portrait-${portraitClass(index)}${doctor.docImage ? '' : ' is-placeholder'}`} style={doctor.docImage ? { backgroundImage: `url(${resolveApiAsset(doctor.docImage)})` } : undefined}>{!doctor.docImage && <span>{initials(doctor.docFullName || doctor.docNick)}</span>}</div></Link>
-				<div className="clinical-directory-info"><div><h3><Link href={`/doctor/${doctor._id}`}>{doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}</Link></h3><p>{specialtyLabel(doctor.docSpecialty)}</p></div><div className="clinical-directory-bottom"><span>{Number(doctor.docExperience) > 0 ? `${doctor.docExperience} ${t('doctors.experience')}` : ''}</span><Link href={`/appointment?doctor=${doctor._id}`}>{t('doctors.book')}</Link></div></div>
+				<Link aria-label={`${t('doctors.viewProfile')} ${doctor.docFullName ?? t('doctors.nameFallback')}`} href={`/doctor/${doctor._id}`}><div className={`clinical-directory-portrait clinical-portrait-${portraitClass(index)}`} style={doctor.docImage ? { backgroundImage: `linear-gradient(145deg, rgba(18, 48, 74, .1), rgba(18, 48, 74, .75)), url(${resolveApiAsset(doctor.docImage)})` } : undefined}><span>{initials(doctor.docFullName)}</span><b>★ {Number(doctor.docPoints ?? 0).toFixed(1)}</b></div></Link>
+				<div className="clinical-directory-info"><div><h3><Link href={`/doctor/${doctor._id}`}>{doctor.docFullName ?? t('doctors.nameFallback')}</Link></h3><p>{specialtyLabel(doctor.docSpecialty)}</p></div><div className="clinical-directory-bottom"><span>{Number(doctor.docExperience ?? 0)} {t('doctors.experience')}</span><Link href={`/appointment?doctor=${doctor._id}`}>{t('doctors.book')}</Link></div></div>
 			</article>)}</div>
-			{loading ? <p className="clinical-query-status">{t('doctors.loading')}</p> : !doctors.length && <p className="clinical-empty-state">{t('doctors.empty')}</p>}
+			{loading && <p className="clinical-query-status">{t('doctors.loading')}</p>}
 		</section>
 	</div>;
 };

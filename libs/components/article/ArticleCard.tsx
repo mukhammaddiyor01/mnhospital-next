@@ -1,13 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useMemo } from 'react';
 import { Article } from './types/article';
-import { ArticleCategory } from './enums/article.enum';
+import { ArticleCategory, ArticleStatus } from './enums/article.enum';
 import { resolveApiAsset } from '@/libs/config';
 import Icon from '../common/Icon';
 import LikeButton from '../common/LikeButton';
 import { LIKE_TARGET_ARTICLE } from '@/apollo/article/mutation';
 import { useTranslation } from '@/libs/i18n/useTranslation';
-import { MessageKey } from '@/libs/i18n/messages';
+import { MessageKey, translate } from '@/libs/i18n/messages';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 
 const categoryKeys: Record<ArticleCategory, MessageKey> = {
 	[ArticleCategory.HEALTH]: 'articles.categoryHealth',
@@ -20,6 +22,25 @@ const categoryKeys: Record<ArticleCategory, MessageKey> = {
 export const useArticleCategoryLabel = () => {
 	const t = useTranslation();
 	return (category: ArticleCategory) => categoryKeys[category] ? t(categoryKeys[category]) : String(category).replaceAll('_', ' ');
+};
+
+export const fallbackArticles: Article[] = [
+	{ _id: 'heart-health-basics', memberId: '', articleCategory: ArticleCategory.HEALTH, articleStatus: ArticleStatus.PUBLISHED, articleTitle: 'Small Steps for a Healthier Heart', articleContent: 'Heart health is built through everyday choices. A regular walking routine, balanced meals, enough sleep, and routine blood pressure checks can help you understand and support your cardiovascular health. Start with a pace you can maintain and speak with a clinician about changes that fit your needs.', articleImage: '/img/hospital-care-2.png', articleLikes: 0, articleViews: 0, articleComments: 0, createdAt: '', updatedAt: '' },
+	{ _id: 'prepare-for-your-visit', memberId: '', articleCategory: ArticleCategory.TIPS, articleStatus: ArticleStatus.PUBLISHED, articleTitle: 'How to Prepare for Your Appointment', articleContent: 'A little preparation can make your appointment more useful. Bring a list of medications, previous test results, and the questions you want to ask. Share when your symptoms began and what makes them better or worse. Before leaving, make sure you understand the next steps and who to contact if questions come up.', articleImage: '/img/hospital-care-3.png', articleLikes: 0, articleViews: 0, articleComments: 0, createdAt: '', updatedAt: '' },
+	{ _id: 'working-together-for-care', memberId: '', articleCategory: ArticleCategory.NEWS, articleStatus: ArticleStatus.PUBLISHED, articleTitle: 'Why Team-Based Care Matters', articleContent: 'Good care often takes more than one specialty. Doctors, nurses, therapists, and support teams share information and coordinate a plan around each patient. This approach can make complex decisions clearer and help patients feel supported throughout treatment and recovery.', articleImage: '/img/hospital-care-1.png', articleLikes: 0, articleViews: 0, articleComments: 0, createdAt: '', updatedAt: '' },
+];
+
+export const useFallbackArticles = () => {
+	const { language } = usePreferences();
+	return useMemo(() => {
+		const titles = ['articles.demoHeartTitle', 'articles.demoVisitTitle', 'articles.demoTeamTitle'] as const;
+		const contents = ['articles.demoHeartContent', 'articles.demoVisitContent', 'articles.demoTeamContent'] as const;
+		return fallbackArticles.map((article, index) => ({
+			...article,
+			articleTitle: translate(language, titles[index]),
+			articleContent: translate(language, contents[index]),
+		}));
+	}, [language]);
 };
 
 export const articleImage = (article: Article) => article.articleImage?.startsWith('/img/') ? article.articleImage : article.articleImage ? resolveApiAsset(article.articleImage) : '/img/hero-medical.svg';
