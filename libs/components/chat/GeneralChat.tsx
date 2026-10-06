@@ -53,12 +53,13 @@ const GeneralChat = ({ open, onClose }: { open: boolean; onClose: () => void }) 
       const arrivedDuringHistory: GeneralChatMessage[] = [];
       let historyLoaded = false;
       socket.current = client;
-      client.onopen = () => { if (!stopped) { setStatus('connected'); setError((current) => current === translate(language, 'chat.sendUnconfirmed') ? current : ''); } };
+      client.onopen = () => { if (!stopped) setError((current) => current === translate(language, 'chat.sendUnconfirmed') ? current : ''); };
       client.onmessage = ({ data }) => {
         if (stopped) return;
         try {
           const packet = JSON.parse(String(data)) as ChatEvent;
           if (packet.event === 'getMessages') {
+            setStatus('connected');
             setMessages(mergeGeneralChatMessages(packet.list, arrivedDuringHistory));
             historyLoaded = true;
             arrivedDuringHistory.length = 0;
@@ -75,7 +76,7 @@ const GeneralChat = ({ open, onClose }: { open: boolean; onClose: () => void }) 
             if (ackTimer.current) clearTimeout(ackTimer.current);
             setSending(false); setText(''); setError('');
           }
-          if (packet.event === 'info') setOnline(packet.totalClients);
+          if (packet.event === 'info') { setOnline(packet.totalClients); setStatus('connected'); }
           if (packet.event === 'error') {
             const errorKey = packet.code === 'GENERAL_HISTORY_UNAVAILABLE' ? 'chat.historyError'
               : packet.code === 'GENERAL_SEND_FAILED' ? 'chat.sendError'
