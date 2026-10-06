@@ -152,6 +152,72 @@ html[data-theme='dark'] .clinical-notifications-filters button.active { color: #
 .clinical-staff-login-links a:hover { text-decoration: underline; }
 html[data-theme='dark'] .clinical-dashboard-group { background: #172838; }
 
+.clinical-admin-board { display: grid; grid-template-columns: 156px minmax(0, 1fr); min-width: 0; margin-top: 16px; overflow: hidden; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 10px; background: var(--clinical-surface); }
+.clinical-admin-sidebar { display: flex; min-width: 0; flex-direction: column; padding: 18px 10px 14px; border-right: 1px solid var(--clinical-line); background: var(--clinical-low); }
+.clinical-admin-brand { display: flex; align-items: center; gap: 8px; padding: 0 6px 19px; border-bottom: 1px solid var(--clinical-line); }
+.clinical-admin-brand > span { display: grid; width: 30px; height: 30px; flex: none; place-items: center; color: #fff; border-radius: 7px; background: var(--clinical-primary); }
+.clinical-admin-brand .material-symbols-rounded { font-size: 18px; }
+.clinical-admin-brand strong, .clinical-admin-brand small { display: block; }
+.clinical-admin-brand strong { color: var(--clinical-navy); font-size: 11px; line-height: 1.2; }
+.clinical-admin-brand small { margin-top: 3px; color: var(--clinical-muted); font-size: 9px; line-height: 1.25; }
+.clinical-admin-sidebar nav { display: grid; gap: 3px; padding: 18px 0; }
+.clinical-admin-sidebar nav a, .clinical-admin-profile-link { display: flex; min-width: 0; align-items: center; gap: 8px; padding: 9px 8px; color: var(--clinical-secondary); border-radius: 6px; font-size: 10px; font-weight: 700; line-height: 1.35; text-decoration: none; }
+.clinical-admin-sidebar nav a .material-symbols-rounded, .clinical-admin-profile-link .material-symbols-rounded { flex: none; font-size: 16px; }
+.clinical-admin-sidebar nav a:hover, .clinical-admin-profile-link:hover { color: var(--clinical-navy); background: var(--clinical-primary-soft); }
+.clinical-admin-sidebar nav a.active { color: var(--clinical-primary); background: var(--clinical-primary-soft); }
+.clinical-admin-profile-link { margin-top: auto; overflow-wrap: anywhere; border-top: 1px solid var(--clinical-line); border-radius: 0; }
+.clinical-admin-main { min-width: 0; padding: 22px; }
+.clinical-admin-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 19px; }
+.clinical-admin-heading h2 { margin: 6px 0; color: var(--clinical-navy); font: 800 24px/1.2 'Manrope', Arial, sans-serif; letter-spacing: -.035em; }
+.clinical-admin-heading p { margin: 0; color: var(--clinical-muted); font-size: 11px; line-height: 1.5; }
+.clinical-admin-heading > a { display: grid; width: 33px; height: 33px; flex: none; place-items: center; color: var(--clinical-primary); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-surface); }
+.clinical-admin-heading > a:hover { background: var(--clinical-primary-soft); }
+.clinical-admin-heading > a .material-symbols-rounded { font-size: 18px; }
+.clinical-admin-summary, .clinical-admin-panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.clinical-admin-summary-card, .clinical-admin-panel { min-width: 0; border: 1px solid var(--clinical-line); border-radius: 8px; background: var(--clinical-surface); }
+.clinical-admin-summary-card { display: flex; align-items: flex-start; gap: 11px; min-height: 95px; padding: 15px; }
+.clinical-admin-summary-icon { display: grid; width: 32px; height: 32px; flex: none; place-items: center; color: var(--clinical-primary); border-radius: 6px; background: var(--clinical-primary-soft); }
+.clinical-admin-summary-icon .material-symbols-rounded { font-size: 18px; }
+.clinical-admin-summary-card small, .clinical-admin-summary-card strong { display: block; }
+.clinical-admin-summary-card small { color: var(--clinical-secondary); font-size: 10px; line-height: 1.3; }
+.clinical-admin-summary-card strong { margin-top: 9px; color: var(--clinical-navy); font: 800 23px/1.1 'Manrope', Arial, sans-serif; }
+.clinical-admin-summary-card em { color: var(--clinical-muted); font-size: 11px; font-style: normal; font-weight: 600; }
+.clinical-admin-panels { margin-top: 12px; }
+.clinical-admin-panel { padding: 16px; }
+.clinical-admin-panel > header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+.clinical-admin-panel h3 { margin: 0; color: var(--clinical-navy); font: 800 13px/1.3 'Manrope', Arial, sans-serif; }
+.clinical-admin-panel dl { margin: 0; }
+.clinical-admin-panel dl > div { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-top: 1px solid var(--clinical-line); }
+.clinical-admin-panel dt { color: var(--clinical-secondary); font-size: 10px; line-height: 1.35; }
+.clinical-admin-panel dd { margin: 0; color: var(--clinical-navy); font-size: 11px; font-weight: 800; white-space: nowrap; }
+.clinical-admin-panel-link, .clinical-admin-updates header a { display: inline-flex; align-items: center; gap: 4px; color: var(--clinical-primary); font-size: 10px; font-weight: 800; text-decoration: none; }
+.clinical-admin-panel-link { margin-top: 15px; }
+.clinical-admin-panel-link .material-symbols-rounded, .clinical-admin-updates header a .material-symbols-rounded { font-size: 14px; }
+.clinical-admin-updates { grid-column: 1 / -1; }
+.clinical-admin-updates ol { margin: 0; padding: 0; list-style: none; }
+.clinical-admin-updates li { display: flex; align-items: flex-start; gap: 10px; padding: 12px 0; border-top: 1px solid var(--clinical-line); }
+.clinical-admin-updates li > span { width: 7px; height: 7px; flex: none; margin-top: 5px; border-radius: 50%; background: var(--clinical-line); }
+.clinical-admin-updates li > span.unread { background: var(--clinical-primary); }
+.clinical-admin-updates li > div { min-width: 0; }
+.clinical-admin-updates li strong { display: block; color: var(--clinical-navy); font-size: 11px; }
+.clinical-admin-updates li p { margin: 3px 0 5px; color: var(--clinical-secondary); font-size: 10px; line-height: 1.45; overflow-wrap: anywhere; }
+.clinical-admin-updates li time { color: var(--clinical-muted); font-size: 9px; }
+.clinical-admin-empty { margin: 0; padding: 13px 0 3px; color: var(--clinical-muted); border-top: 1px solid var(--clinical-line); font-size: 11px; }
+
+@media (max-width: 1000px) {
+  .clinical-admin-board { grid-template-columns: 1fr; }
+  .clinical-admin-sidebar { padding: 12px; border-right: 0; border-bottom: 1px solid var(--clinical-line); }
+  .clinical-admin-brand, .clinical-admin-profile-link { display: none; }
+  .clinical-admin-sidebar nav { display: flex; gap: 3px; overflow-x: auto; padding: 0; }
+  .clinical-admin-sidebar nav a { flex: none; white-space: nowrap; }
+}
+@media (max-width: 520px) {
+  .clinical-admin-main { padding: 16px; }
+  .clinical-admin-summary, .clinical-admin-panels { grid-template-columns: 1fr; }
+  .clinical-admin-updates { grid-column: auto; }
+  .clinical-admin-heading h2 { font-size: 21px; }
+}
+
 @media (max-width: 680px) {
   .clinical-dashboard-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .clinical-dashboard-metric { padding: 16px; }
