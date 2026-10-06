@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 
@@ -13,7 +12,7 @@ const AboutPage = () => {
 			<p>{t('about.intro')}</p>
 		</div></section>
 		<section className="clinical-inner-section"><div className="clinical-about-grid">
-			<div className="clinical-about-art"><Image src="/img/hospital-care-3.png" alt={t('about.imageAlt')} fill sizes="(max-width: 680px) calc(100vw - 64px), 520px" /></div>
+			<div className="clinical-about-art"><div className="clinical-about-orbit">✚</div><span>{t('about.art')}</span></div>
 			<div><span className="clinical-eyebrow">{t('about.purpose')}</span><h2>{t('about.title')}</h2>
 				<p>{t('about.description')}</p>
 				<ul className="clinical-check-list"><li>{t('about.point1')}</li><li>{t('about.point2')}</li><li>{t('about.point3')}</li><li>{t('about.point4')}</li></ul>
