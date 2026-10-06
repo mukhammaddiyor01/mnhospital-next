@@ -24,7 +24,7 @@ const AppointmentList = ({ appointments, loading, error }: { appointments?: Work
     {loading && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
     {error && <p className="clinical-staff-state clinical-form-error" role="alert">{t('dashboard.appointmentsError')}</p>}
     {!loading && !error && !appointments?.length && <p className="clinical-staff-state">{t('dashboard.noAppointments')}</p>}
-    {!!appointments?.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('dashboard.appointmentCode')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('dashboard.appointmentStatus')}</th></tr></thead><tbody>{appointments.map((item) => <tr key={item._id}><td><strong>{item.appointmentCode}</strong><small>{item.appointmentReason}</small></td><td><time dateTime={item.startsAt}>{format.format(new Date(item.startsAt))}</time></td><td><span className={`clinical-staff-status status-${item.appointmentStatus.toLowerCase()}`}>{t(statusKeys[item.appointmentStatus])}</span></td></tr>)}</tbody></table></div>}
+    {!loading && !error && !!appointments?.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('dashboard.appointmentCode')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('dashboard.appointmentStatus')}</th></tr></thead><tbody>{appointments.map((item) => <tr key={item._id}><td><strong>{item.appointmentCode}</strong><small>{item.appointmentReason}</small></td><td><time dateTime={item.startsAt}>{format.format(new Date(item.startsAt))}</time></td><td><span className={`clinical-staff-status status-${item.appointmentStatus.toLowerCase()}`}>{t(statusKeys[item.appointmentStatus])}</span></td></tr>)}</tbody></table></div>}
   </section>;
 };
 

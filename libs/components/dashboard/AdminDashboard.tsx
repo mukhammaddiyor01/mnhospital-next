@@ -5,12 +5,15 @@ import { GET_MY_NOTIFICATIONS } from '@/apollo/notification/query';
 import { NotificationItem } from '@/libs/components/notification/types';
 import { AdminDashboardStats } from './types';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 
 const SummaryCard = ({ icon, label, value, detail }: { icon: string; label: string; value: number; detail?: string }) =>
   <article className="clinical-admin-summary-card"><span className="clinical-admin-summary-icon"><Icon name={icon} /></span><div><small>{label}</small><strong>{value.toLocaleString()}{detail && <em>{detail}</em>}</strong></div></article>;
 
 const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
   const t = useTranslation();
+  const { language } = usePreferences();
+  const format = new Intl.DateTimeFormat({ KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' }[language], { dateStyle: 'medium', timeStyle: 'short' });
   const updates = useQuery<{ getMyNotifications: { list: NotificationItem[] } }>(GET_MY_NOTIFICATIONS, {
     variables: { input: { page: 1, limit: 4 } }, fetchPolicy: 'no-cache',
   });
@@ -36,7 +39,7 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
           {updates.loading && <p className="clinical-query-status">{t('notifications.loading')}</p>}
           {updates.error && <p className="clinical-form-error" role="alert">{t('notifications.loadError')}</p>}
           {!updates.loading && !updates.error && !updates.data?.getMyNotifications.list.length && <p className="clinical-admin-empty">{t('dashboard.adminEmpty')}</p>}
-          <ol>{updates.data?.getMyNotifications.list.map((item) => <li key={item._id}><span className={item.notificationStatus === 'UNREAD' ? 'unread' : ''} /><div><strong>{item.notificationTitle}</strong><p>{item.notificationDesc}</p><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time></div></li>)}</ol>
+          {!updates.loading && !updates.error && !!updates.data?.getMyNotifications.list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('notifications.title')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('dashboard.appointmentStatus')}</th></tr></thead><tbody>{updates.data.getMyNotifications.list.map((item) => <tr key={item._id}><td><strong>{item.notificationTitle}</strong><small>{item.notificationDesc}</small></td><td><time dateTime={item.createdAt}>{format.format(new Date(item.createdAt))}</time></td><td><span className={`clinical-staff-status ${item.notificationStatus === 'UNREAD' ? '' : 'status-completed'}`}>{t(item.notificationStatus === 'UNREAD' ? 'notifications.unread' : item.notificationStatus === 'ARCHIVED' ? 'notifications.archived' : 'notifications.read')}</span></td></tr>)}</tbody></table></div>}
         </section>
       </div>
   </div>;
