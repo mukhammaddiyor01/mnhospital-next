@@ -21,6 +21,7 @@ import { ClinicalDoctorCard, ClinicalServiceCard } from "./types/clinical-home";
 import { DoctorSpecialty } from "../doctor/enums/doctor.enum";
 import DepartmentSwiper from "./DepartmentSwiper";
 import { useTranslation } from "@/libs/i18n/useTranslation";
+import { useDoctorSpecialtyLabel } from "@/libs/i18n/useDoctorSpecialtyLabel";
 
 const heroSlides = [
   {
@@ -124,21 +125,18 @@ const fallbackDoctors: ClinicalDoctorCard[] = [
   },
 ];
 
-const labelForService = (serviceType?: string) =>
-  String(serviceType ?? "Clinical service").replaceAll("_", " ");
-const doctorRole = (specialty: string | undefined, t: ReturnType<typeof useTranslation>) => {
+const doctorRole = (specialty: string | undefined, t: ReturnType<typeof useTranslation>, specialtyLabel: ReturnType<typeof useDoctorSpecialtyLabel>) => {
   if (specialty === DoctorSpecialty.CARDIOLOGIST)
     return t('home.doctor.cardio');
   if (specialty === DoctorSpecialty.NEUROLOGIST) return t('home.doctor.neuro');
   if (specialty === DoctorSpecialty.PEDIATRICIAN)
     return t('home.doctor.pediatric');
-  return labelForService(specialty)
-    .toLowerCase()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+  return specialtyLabel(specialty);
 };
 
 const ClinicalHome = () => {
   const t = useTranslation();
+  const specialtyLabel = useDoctorSpecialtyLabel();
   const fallbackArticles = useFallbackArticles();
   const [notice, setNotice] = useState("");
   const [activeSlide, setActiveSlide] = useState(0);
@@ -206,9 +204,9 @@ const ClinicalHome = () => {
     : servicesQuery.data.getServices.list.map(
         (service: ClinicalServiceCard) => ({
           ...service,
-          serviceTitle: service.serviceTitle ?? "Clinical service",
+          serviceTitle: service.serviceTitle ?? t('home.department.fallback'),
           serviceDesc:
-            service.serviceDesc ?? "Care from the MN Hospital clinical team.",
+            service.serviceDesc ?? t('home.department.careFallback'),
         }),
       );
   const doctors: ClinicalDoctorCard[] = usingFallbackDoctors
@@ -351,7 +349,7 @@ const ClinicalHome = () => {
                       usingFallbackDoctors ? (
                         <Image
                           src={doctor.docImage}
-                          alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty, t)}`}
+                          alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty, t, specialtyLabel)}`}
                           fill
                           sizes="(max-width: 680px) calc(100vw - 64px), 245px"
                         />
@@ -373,7 +371,7 @@ const ClinicalHome = () => {
                     </span>
                   </div>
                   <h3>{doctor.docFullName}</h3>
-                  <b>{doctorRole(doctor.docSpecialty, t)}</b>
+                  <b>{doctorRole(doctor.docSpecialty, t, specialtyLabel)}</b>
                   <p>
                     {index === 0
                       ? "MD, FACC"
