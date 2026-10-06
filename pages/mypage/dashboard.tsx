@@ -38,7 +38,7 @@ const Dashboard = () => {
 
   return <StaffLayout>
     {!session._id || !staffRole ? <main className="clinical-staff-gate"><div><span>{t('dashboard.staffPortal')}</span><h1>{t('dashboard.restricted')}</h1><p>{t('dashboard.restrictedIntro')}</p><nav><Link href="/account/admin-signin">{t('dashboard.adminSignin')}</Link><Link href="/account/doctor-signin">{t('auth.doctorSignin')}</Link><Link href="/account/receptionist-signin">{t('dashboard.receptionistSignin')}</Link><Link href="/">{t('dashboard.visitSite')}</Link></nav></div></main> :
-      <StaffWorkspace role={staffRole} name={session.memberFullName || session.memberNick} title={t(titleKey)} doctorId={role === MemberType.DOCTOR ? session._id : undefined}>
+      <StaffWorkspace role={staffRole} name={session.memberFullName || session.memberNick} title={t(titleKey)}>
         {request.loading && !request.data && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
         {request.error && !request.data && <div className="clinical-staff-state"><p className="clinical-form-error" role="alert">{t('dashboard.loadError')}</p><button type="button" className="clinical-secondary-button" onClick={retry}>{t('patient.retry')}</button></div>}
         {role === MemberType.ADMIN && admin.data && <AdminDashboard stats={admin.data.getAdminDashboardStats} />}

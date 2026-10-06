@@ -10,21 +10,21 @@ import { useRouter } from 'next/router';
 
 type StaffRole = MemberType.ADMIN | MemberType.DOCTOR | MemberType.RECEPTIONIST;
 
-const StaffWorkspace = ({ role, name, title, intro, children, doctorId }: {
+const StaffWorkspace = ({ role, name, title, intro, children }: {
   role: StaffRole;
   name: string;
   title: string;
   intro?: string;
   children: ReactNode;
-  doctorId?: string;
 }) => {
   const t = useTranslation();
   const router = useRouter();
   const [chatOpen, setChatOpen] = useState(false);
   const isAdmin = role === MemberType.ADMIN;
   const dashboardHref = '/mypage/dashboard';
-  const profileHref = isAdmin ? dashboardHref : '/mypage';
-  const notificationHref = isAdmin ? '/admin/notifications' : '/mypage/notifications';
+  const workspaceRoot = isAdmin ? '/admin' : role === MemberType.DOCTOR ? '/doctor-workspace' : '/receptionist-workspace';
+  const profileHref = isAdmin ? dashboardHref : `${workspaceRoot}/profile`;
+  const notificationHref = `${workspaceRoot}/notifications`;
   const roleLabel: MessageKey = role === MemberType.ADMIN ? 'dashboard.adminWorkspace' : role === MemberType.DOCTOR ? 'dashboard.doctorTitle' : 'dashboard.receptionistTitle';
   const nav: { href: string; icon: string; label: MessageKey }[] = [
     { href: dashboardHref, icon: 'dashboard', label: 'dashboard.title' },
@@ -33,10 +33,16 @@ const StaffWorkspace = ({ role, name, title, intro, children, doctorId }: {
       { href: '/admin/doctors', icon: 'stethoscope', label: 'nav.doctors' as MessageKey },
       { href: '/admin/services', icon: 'medical_services', label: 'nav.services' as MessageKey },
       { href: '/admin/receptionists', icon: 'support_agent', label: 'dashboard.receptionists' as MessageKey },
-    ] : role === MemberType.DOCTOR && doctorId ? [
-      { href: `/doctor/${doctorId}`, icon: 'stethoscope', label: 'patient.openDoctor' as MessageKey },
-    ] : []),
-    { href: isAdmin ? '/admin/messages' : '/mypage/messages', icon: 'mail', label: 'messages.title' },
+    ] : role === MemberType.DOCTOR ? [
+      { href: `${workspaceRoot}/appointments`, icon: 'event', label: 'dashboard.myAppointments' as MessageKey },
+      { href: `${workspaceRoot}/services`, icon: 'medical_services', label: 'dashboard.myServices' as MessageKey },
+      { href: `${workspaceRoot}/reports`, icon: 'description', label: 'dashboard.myReports' as MessageKey },
+    ] : [
+      { href: `${workspaceRoot}/appointments`, icon: 'event', label: 'dashboard.myAppointments' as MessageKey },
+      { href: `${workspaceRoot}/tasks`, icon: 'assignment', label: 'dashboard.pendingWork' as MessageKey },
+      { href: `${workspaceRoot}/reports`, icon: 'description', label: 'dashboard.myReports' as MessageKey },
+    ]),
+    { href: `${workspaceRoot}/messages`, icon: 'mail', label: 'messages.title' },
     { href: notificationHref, icon: 'notifications', label: 'notifications.title' },
   ];
 
