@@ -1,0 +1,70 @@
+.clinical-staff-receptionist {
+  --reception-bg: #f4f6f9;
+  --reception-sidebar: #edf1f6;
+  --reception-panel: #ffffff;
+  --reception-alt: #edf2f7;
+  --reception-line: #d7e1eb;
+  --reception-text: #1b3045;
+  --reception-muted: #566b80;
+  --reception-accent: #246787;
+  --reception-warm: #8a5a18;
+  --staff-accent: #246787;
+  --staff-accent-soft: #dfedf5;
+  background: var(--reception-bg);
+}
+html[data-theme='dark'] .clinical-staff-receptionist {
+  --reception-bg: #0a141f;
+  --reception-sidebar: #101b28;
+  --reception-panel: #172432;
+  --reception-alt: #203243;
+  --reception-line: #35495c;
+  --reception-text: #e4edf7;
+  --reception-muted: #aec0d1;
+  --reception-accent: #82c9ff;
+  --reception-warm: #f1c27b;
+  --staff-accent: #82c9ff;
+  --staff-accent-soft: #193d56;
+  background: var(--reception-bg);
+}
+.clinical-staff-receptionist .clinical-staff-sidebar,
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-staff-sidebar { background: var(--reception-sidebar); border-color: var(--reception-line); }
+.clinical-staff-receptionist .clinical-staff-topbar,
+.clinical-staff-receptionist .clinical-staff-page-heading > a,
+.clinical-staff-receptionist .clinical-staff-panel,
+.clinical-staff-receptionist .clinical-messages-layout,
+.clinical-staff-receptionist .clinical-notifications,
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-staff-topbar,
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-staff-page-heading > a,
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-staff-panel,
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-messages-layout,
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-notifications { background: var(--reception-panel); border-color: var(--reception-line); }
+.clinical-staff-receptionist .clinical-staff-brand > span { background: var(--reception-accent); }
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-staff-brand > span { color: #0a141f; }
+.clinical-staff-receptionist .clinical-staff-brand strong,
+.clinical-staff-receptionist .clinical-staff-page-heading h1,
+.clinical-staff-receptionist .clinical-staff-topbar > div:first-child strong { color: var(--reception-text); }
+.clinical-staff-receptionist .clinical-staff-role { padding: 9px 11px; border-left: 3px solid var(--reception-warm); background: var(--reception-alt); color: var(--reception-warm); }
+.clinical-staff-receptionist .clinical-staff-sidebar nav a { min-height: 43px; }
+.clinical-staff-receptionist .clinical-staff-sidebar nav a.active { box-shadow: inset 3px 0 var(--reception-accent); }
+.clinical-staff-receptionist .clinical-staff-content { max-width: 1500px; }
+.clinical-staff-receptionist .clinical-staff-table-scroll th { background: var(--reception-alt); }
+.clinical-reception-preferences { display: flex; align-items: center; gap: 7px; margin-right: 10px; }
+.clinical-reception-preferences .clinical-theme-setting { position: relative; }
+.clinical-reception-preferences .clinical-theme-control,
+.clinical-reception-preferences .clinical-language-control { color: var(--reception-text); background: var(--reception-alt); border-color: var(--reception-line); }
+.clinical-reception-preferences select { width: 76px; }
+.clinical-reception-preferences .clinical-theme-error { position: absolute; z-index: 2; top: 40px; right: 0; width: 180px; padding: 7px; border: 1px solid var(--reception-line); border-radius: 6px; background: var(--reception-panel); }
+@media (max-width: 760px) {
+  .clinical-staff-receptionist .clinical-staff-sidebar-footer { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; padding-top: 9px; }
+  .clinical-staff-receptionist .clinical-staff-sidebar-footer a,
+  .clinical-staff-receptionist .clinical-staff-sidebar-footer button { min-height: 32px; padding: 0 9px; font-size: 11px; }
+  .clinical-reception-preferences { margin-right: 3px; }
+  .clinical-reception-preferences .clinical-theme-control,
+  .clinical-reception-preferences .clinical-language-control { width: 36px; height: 36px; justify-content: center; padding: 0; }
+  .clinical-reception-preferences select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+}
+@media (max-width: 600px) {
+  .clinical-staff-receptionist .clinical-staff-topbar > div:first-child span { display: none; }
+  .clinical-staff-receptionist .clinical-staff-topbar > div:first-child strong { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 420px) { .clinical-staff-receptionist .clinical-staff-top-actions .clinical-staff-avatar { display: none; } }
