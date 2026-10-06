@@ -106,12 +106,12 @@ const PatientProfile = () => {
 		if (!file) return;
 		if (!PATIENT_IMAGE_TYPES.includes(file.type)) {
 			setPhotoFile(null);
-			setFormError('Please choose a PNG or JPEG photo.');
+			setFormError(t('patient.photoTypeError'));
 			return;
 		}
 		if (file.size > MAX_IMAGE_BYTES) {
 			setPhotoFile(null);
-			setFormError('The photo must be 5 MB or smaller.');
+			setFormError(t('patient.photoSizeError'));
 			return;
 		}
 		setPhotoFile(file);
@@ -122,7 +122,7 @@ const PatientProfile = () => {
 		event.preventDefault();
 		setFormError('');
 		if (!form.patientBloodType || !form.patientGender || !form.patientBirthDate || !form.patientIdNumber.trim()) {
-			setFormError('Blood type, gender, birth date, and identity number are required.');
+			setFormError(t('patient.requiredError'));
 			return;
 		}
 
@@ -141,7 +141,7 @@ const PatientProfile = () => {
 			if (photoFile) {
 				const uploaded = await uploadImage({ variables: { file: photoFile } });
 				const imagePath = uploaded.data?.uploadMyPatientImage;
-				if (!imagePath) throw new Error('Patient photo could not be uploaded.');
+				if (!imagePath) throw new Error(t('patient.uploadError'));
 				input.patientImage = imagePath;
 				setForm((current) => ({ ...current, patientImage: imagePath }));
 				setPhotoFile(null);
@@ -152,7 +152,7 @@ const PatientProfile = () => {
 			setPhotoFile(null);
 			setEditing(false);
 		} catch (requestError: any) {
-			setFormError(requestError?.message ?? 'Patient profile could not be saved.');
+			setFormError(requestError?.message ?? t('patient.saveError'));
 		}
 	};
 
@@ -196,6 +196,16 @@ const PatientProfile = () => {
 	const displayName = patient?.patientFullName || session.memberFullName || session.memberNick || t('patient.nameFallback');
 	const initials = displayName.split(' ').map((part: string) => part[0]).join('').slice(0, 2).toUpperCase();
 	const saving = createState.loading || updateState.loading || uploadState.loading;
+	const genderLabels = {
+		[PatientGender.MALE]: t('patient.genderMale'),
+		[PatientGender.FEMALE]: t('patient.genderFemale'),
+		[PatientGender.OTHER]: t('patient.genderOther'),
+	};
+	const statusLabels: Record<string, string> = {
+		ACTIVE: t('patient.statusActive'),
+		BLOCK: t('patient.statusBlock'),
+		DELETE: t('patient.statusDelete'),
+	};
 
 	if (!session._id) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-profile-large"><Icon name="lock" /></span><span className="clinical-section-kicker">{t('page.patientPortal')}</span><h2>{t('patient.signinTitle')}</h2><p>{t('patient.signinIntro')}</p><div><Link className="clinical-primary-button" href="/account/signin">{t('patient.signin')}</Link><Link className="clinical-secondary-button" href="/account/join">{t('patient.join')}</Link></div></section>;
 	if (session.memberType === MemberType.DOCTOR) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-section-kicker">{t('patient.doctorKicker')}</span><h2>{t('patient.doctorTitle')}</h2><p>{t('patient.doctorIntro')}</p><Link className="clinical-primary-button" href={`/doctor/${session._id}`}>{t('patient.openDoctor')}</Link></section>;
@@ -205,31 +215,31 @@ const PatientProfile = () => {
 	return <>
 		<section className="clinical-inner-section clinical-patient-profile">
 			{patient && <>
-				<div className="clinical-patient-identity"><span className="clinical-profile-large" style={patient.patientImage ? { backgroundImage: `url(${resolveApiAsset(patient.patientImage)})` } : undefined}>{patient.patientImage ? null : initials}</span><div><span className="clinical-section-kicker">PATIENT PROFILE</span><h2>{displayName}</h2><p>Patient ID: {patient.patientIdNumber} · {String(patient.memberStatus).toLowerCase()}</p></div></div>
-				{!editing && <div className="clinical-profile-actions"><button className="clinical-primary-button" type="button" onClick={startEditing}>Update patient profile <Icon name="edit" /></button></div>}
+				<div className="clinical-patient-identity"><span className="clinical-profile-large" style={patient.patientImage ? { backgroundImage: `url(${resolveApiAsset(patient.patientImage)})` } : undefined}>{patient.patientImage ? null : initials}</span><div><span className="clinical-section-kicker">{t('patient.profileKicker')}</span><h2>{displayName}</h2><p>{t('patient.patientId')}: {patient.patientIdNumber} · {statusLabels[String(patient.memberStatus)] ?? String(patient.memberStatus)}</p></div></div>
+				{!editing && <div className="clinical-profile-actions"><button className="clinical-primary-button" type="button" onClick={startEditing}>{t('patient.updateButton')} <Icon name="edit" /></button></div>}
 			</>}
-			{profileMissing && <div><span className="clinical-section-kicker">PATIENT PROFILE SETUP</span><h2>Complete your patient profile.</h2><p className="clinical-query-status">Your account is ready. Add the required medical details to continue booking care.</p></div>}
-			<div className="clinical-profile-contact"><span><Icon name="call" /><small>Phone</small><b>{session.memberPhone || 'Not provided'}</b></span><span><Icon name="mail" /><small>Email</small><b>{session.memberMail || 'Not provided'}</b></span>{patient && <span><Icon name="favorite" /><small>Blood type</small><b>{patient.patientBloodType.replace('_', ' ')}</b></span>}</div>
+			{profileMissing && <div><span className="clinical-section-kicker">{t('patient.setupKicker')}</span><h2>{t('patient.setupTitle')}</h2><p className="clinical-query-status">{t('patient.setupIntro')}</p></div>}
+			<div className="clinical-profile-contact"><span><Icon name="call" /><small>{t('patient.phone')}</small><b>{session.memberPhone || t('patient.notProvided')}</b></span><span><Icon name="mail" /><small>{t('patient.email')}</small><b>{session.memberMail || t('patient.notProvided')}</b></span>{patient && <span><Icon name="favorite" /><small>{t('patient.bloodType')}</small><b>{patient.patientBloodType.replace('_', ' ')}</b></span>}</div>
 			{(profileMissing || editing) && <form className="clinical-contact-form clinical-patient-form" onSubmit={submitProfile}>
-				<span className="clinical-section-kicker">SECURE PATIENT DATA</span>
-				<h2>{patient ? 'Update your profile' : 'Create your profile'}</h2>
-				<label className="clinical-photo-field">Profile photo
+				<span className="clinical-section-kicker">{t('patient.secureData')}</span>
+				<h2>{patient ? t('patient.updateTitle') : t('patient.createTitle')}</h2>
+				<label className="clinical-photo-field">{t('patient.photo')}
 					<span className="clinical-photo-row">
 						<span className="clinical-profile-large" style={photoPreview || form.patientImage ? { backgroundImage: `url(${photoPreview || resolveApiAsset(form.patientImage)})` } : undefined}>{photoPreview || form.patientImage ? null : initials}</span>
-						<span><input type="file" accept="image/png,image/jpeg" onChange={(event) => selectPhoto(event.target.files?.[0])} /><small>PNG or JPEG, up to 5 MB</small></span>
+						<span><input type="file" accept="image/png,image/jpeg" onChange={(event) => selectPhoto(event.target.files?.[0])} /><small>{t('patient.photoHint')}</small></span>
 					</span>
 				</label>
 				<div className="clinical-patient-form-grid">
-					<label>Full name<input value={form.patientFullName} onChange={(event) => updateField('patientFullName', event.target.value)} placeholder="Your full name" /></label>
-					<label>Identity number<input value={form.patientIdNumber} onChange={(event) => updateField('patientIdNumber', event.target.value)} placeholder="Passport or ID number" required /></label>
-					<label>Blood type<select value={form.patientBloodType} onChange={(event) => updateField('patientBloodType', event.target.value)} required><option value="">Select blood type</option>{Object.values(PatientBloodType).map((value) => <option key={value} value={value}>{value.replace('_', ' ')}</option>)}</select></label>
-					<label>Gender<select value={form.patientGender} onChange={(event) => updateField('patientGender', event.target.value)} required><option value="">Select gender</option>{Object.values(PatientGender).map((value) => <option key={value} value={value}>{value}</option>)}</select></label>
-					<label>Birth date<input type="date" value={form.patientBirthDate} onChange={(event) => updateField('patientBirthDate', event.target.value)} required /></label>
-					<label>Address<input value={form.patientAddress} onChange={(event) => updateField('patientAddress', event.target.value)} placeholder="Home address" /></label>
+					<label>{t('patient.fullName')}<input value={form.patientFullName} onChange={(event) => updateField('patientFullName', event.target.value)} placeholder={t('patient.fullNamePlaceholder')} /></label>
+					<label>{t('patient.identityNumber')}<input value={form.patientIdNumber} onChange={(event) => updateField('patientIdNumber', event.target.value)} placeholder={t('patient.identityPlaceholder')} required /></label>
+					<label>{t('patient.bloodType')}<select value={form.patientBloodType} onChange={(event) => updateField('patientBloodType', event.target.value)} required><option value="">{t('patient.selectBlood')}</option>{Object.values(PatientBloodType).map((value) => <option key={value} value={value}>{value.replace('_', ' ')}</option>)}</select></label>
+					<label>{t('patient.gender')}<select value={form.patientGender} onChange={(event) => updateField('patientGender', event.target.value)} required><option value="">{t('patient.selectGender')}</option>{Object.values(PatientGender).map((value) => <option key={value} value={value}>{genderLabels[value]}</option>)}</select></label>
+					<label>{t('patient.birthDate')}<input type="date" value={form.patientBirthDate} onChange={(event) => updateField('patientBirthDate', event.target.value)} required /></label>
+					<label>{t('patient.address')}<input value={form.patientAddress} onChange={(event) => updateField('patientAddress', event.target.value)} placeholder={t('patient.addressPlaceholder')} /></label>
 				</div>
-				<label>About you<textarea rows={4} value={form.patientDesc} onChange={(event) => updateField('patientDesc', event.target.value)} placeholder="Optional care notes" /></label>
+				<label>{t('patient.aboutYou')}<textarea rows={4} value={form.patientDesc} onChange={(event) => updateField('patientDesc', event.target.value)} placeholder={t('patient.notesPlaceholder')} /></label>
 				{formError && <p className="clinical-form-error">{formError}</p>}
-				<div className="clinical-profile-actions"><button className="clinical-primary-button" type="submit" disabled={saving}>{saving ? 'Saving…' : patient ? 'Save changes' : 'Create profile'}</button>{patient && <button className="clinical-secondary-button" type="button" onClick={() => { setEditing(false); setFormError(''); setPhotoFile(null); }}>Cancel</button>}</div>
+				<div className="clinical-profile-actions"><button className="clinical-primary-button" type="submit" disabled={saving}>{saving ? t('patient.saving') : patient ? t('patient.saveChanges') : t('patient.createProfile')}</button>{patient && <button className="clinical-secondary-button" type="button" onClick={() => { setEditing(false); setFormError(''); setPhotoFile(null); }}>{t('patient.cancel')}</button>}</div>
 			</form>}
 			<div className="clinical-account-contact">
 				<div><span className="clinical-section-kicker">ACCOUNT CONTACT</span><h2>Phone and email</h2><p>These details belong to your account and are used to reach you about your care.</p></div>
