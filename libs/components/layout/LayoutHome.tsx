@@ -8,16 +8,18 @@ import MobileBottomNav from '../common/MobileBottomNav';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
 import GeneralChat from '../chat/GeneralChat';
 import { useRouter } from 'next/router';
+import { useTranslation } from '@/libs/i18n/useTranslation';
 
 const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 	const Layout = (props: P & { children?: ReactNode }) => {
 		const router = useRouter();
+		const t = useTranslation();
 		const isHome = router.pathname === '/';
 		useEffect(() => { const token = getJwtToken(); if (token) updateUserInfo(token); }, []);
 		return <>
 			<Head>
-				<title>MN Hospital | Care and appointments</title>
-				<meta name="description" content="Explore MN Hospital services, find a doctor and request an appointment." />
+				<title>{t('site.title')}</title>
+				<meta name="description" content={t('site.description')} />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" type="image/png" href="/favicon.png" />
 			</Head>

@@ -1,6 +1,9 @@
 import { PreferenceLanguage } from '@/libs/components/preference/types/preference';
 
 const en = {
+	'site.title': 'MN Hospital | Care and appointments',
+	'site.description': 'Explore MN Hospital services, find a doctor and request an appointment.',
+	'site.homeLink': 'MN Hospital home',
 	'nav.home': 'Home',
 	'nav.services': 'Services',
 	'nav.doctors': 'Doctors',
@@ -625,6 +628,9 @@ const en = {
 export type MessageKey = keyof typeof en;
 
 const kr: Record<MessageKey, string> = {
+	'site.title': 'MN Hospital | 진료와 예약',
+	'site.description': 'MN Hospital의 진료 서비스와 의료진을 살펴보고 예약을 요청하세요.',
+	'site.homeLink': 'MN Hospital 홈',
 	'nav.home': '홈',
 	'nav.services': '진료 서비스',
 	'nav.doctors': '의료진',
@@ -634,7 +640,7 @@ const kr: Record<MessageKey, string> = {
 	'nav.primary': '주 메뉴',
 	'chat.open': '라이브 채팅',
 	'chat.close': '채팅 닫기',
-	'chat.title': 'Umumiy jonli chat',
+	'chat.title': '공용 라이브 채팅',
 	'chat.connected': '연결됨',
 	'chat.connecting': '연결 중…',
 	'chat.disconnected': '연결 끊김',
@@ -1247,6 +1253,9 @@ const kr: Record<MessageKey, string> = {
 };
 
 const uz: Record<MessageKey, string> = {
+	'site.title': 'MN Hospital | Tibbiy xizmatlar va qabul',
+	'site.description': 'MN Hospital xizmatlari va shifokorlarini ko‘rib, qabulga so‘rov yuboring.',
+	'site.homeLink': 'MN Hospital bosh sahifasi',
 	'nav.home': 'Bosh sahifa',
 	'nav.services': 'Xizmatlar',
 	'nav.doctors': 'Shifokorlar',
