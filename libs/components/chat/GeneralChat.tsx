@@ -14,7 +14,7 @@ type ChatEvent =
   | { event: 'info'; totalClients: number }
   | { event: 'error'; message: string };
 
-const socketAddress = (token: string) => {
+export const socketAddress = (token: string) => {
   const source = process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_GRAPHQL_URL ?? 'http://localhost:2001';
   const url = new URL(source);
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
