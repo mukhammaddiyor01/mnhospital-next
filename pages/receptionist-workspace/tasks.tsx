@@ -8,6 +8,7 @@ import AdminPagination from '@/libs/components/dashboard/AdminPagination';
 import { ReceptionTask, ReceptionTaskStatus, StaffList } from '@/libs/components/dashboard/staffTypes';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import Link from 'next/link';
 
 const LIMIT = 10;
 export default function ReceptionistTasks() {
@@ -24,7 +25,7 @@ export default function ReceptionistTasks() {
   const total = data?.getReceptionTasks.metaCounter?.[0]?.total ?? 0;
   const transitions = (task: ReceptionTask): ReceptionTaskStatus[] => {
     if (task.taskStatus === 'PENDING') return task.receptionistId ? ['ACCEPTED', 'CANCELLED'] : ['ACCEPTED'];
-    if (task.taskStatus === 'ACCEPTED') return ['IN_PROGRESS', 'CANCELLED'];
+    if (task.taskStatus === 'ACCEPTED') return task.taskType === 'CHECK_IN' ? ['CANCELLED'] : ['IN_PROGRESS', 'CANCELLED'];
     if (task.taskStatus === 'IN_PROGRESS') return ['COMPLETED', 'CANCELLED'];
     return [];
   };
@@ -49,7 +50,7 @@ export default function ReceptionistTasks() {
       {loading && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
       {error && <p className="clinical-staff-state clinical-form-error" role="alert">{t('admin.loadError')}</p>}
       {!loading && !error && !list.length && <p className="clinical-staff-state">{t('admin.noResults')}</p>}
-      {!loading && !error && !!list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('staff.appointmentId')}</th><th>{t('staff.instruction')}</th><th>{t('staff.priority')}</th><th>{t('admin.status')}</th><th>{t('staff.update')}</th></tr></thead><tbody>{list.map((task) => <tr key={task._id}><td>{task.appointmentId}</td><td><strong>{task.taskType.replaceAll('_', ' ')}</strong><small>{task.taskInstruction}</small></td><td>{task.taskPriority}</td><td><span className="clinical-staff-status">{task.taskStatus.replaceAll('_', ' ')}</span></td><td>{transitions(task).length ? <form className="clinical-staff-inline-form" onSubmit={(event) => void submit(event, task)}><select name="status" aria-label={`${task.taskType}: ${t('staff.nextStatus')}`} required defaultValue=""><option value="" disabled>{t('staff.nextStatus')}</option>{transitions(task).map((status) => <option value={status} key={status}>{status.replaceAll('_', ' ')}</option>)}</select>{task.taskStatus === 'IN_PROGRESS' && <input name="result" placeholder={t('staff.result')} aria-label={t('staff.result')} maxLength={2000} />}<button type="submit" disabled={busyId === task._id}>{t('staff.update')}</button></form> : '—'}</td></tr>)}</tbody></table></div>}
+      {!loading && !error && !!list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('staff.appointmentId')}</th><th>{t('staff.instruction')}</th><th>{t('staff.priority')}</th><th>{t('admin.status')}</th><th>{t('staff.update')}</th></tr></thead><tbody>{list.map((task) => <tr key={task._id}><td>{task.appointmentId}</td><td><strong>{task.taskType.replaceAll('_', ' ')}</strong><small>{task.taskInstruction}</small></td><td>{task.taskPriority}</td><td><span className="clinical-staff-status">{task.taskStatus.replaceAll('_', ' ')}</span></td><td><div className="clinical-staff-row-actions">{task.taskType === 'CHECK_IN' && task.taskStatus === 'ACCEPTED' && <Link href="/receptionist-workspace/appointments">{t('staff.checkIn')}</Link>}{transitions(task).length ? <form className="clinical-staff-inline-form" onSubmit={(event) => void submit(event, task)}><select name="status" aria-label={`${task.taskType}: ${t('staff.nextStatus')}`} required defaultValue=""><option value="" disabled>{t('staff.nextStatus')}</option>{transitions(task).map((status) => <option value={status} key={status}>{status.replaceAll('_', ' ')}</option>)}</select>{task.taskStatus === 'IN_PROGRESS' && <input name="result" placeholder={t('staff.result')} aria-label={t('staff.result')} maxLength={2000} />}<button type="submit" disabled={busyId === task._id}>{t('staff.update')}</button></form> : '—'}</div></td></tr>)}</tbody></table></div>}
       <AdminPagination page={page} total={total} limit={LIMIT} onChange={setPage} />
     </section>
   </StaffRolePage>;
