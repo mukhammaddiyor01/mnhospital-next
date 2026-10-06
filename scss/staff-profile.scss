@@ -1,0 +1,36 @@
+.clinical-staff-doctor {
+  --profile-panel: var(--doctor-panel);
+  --profile-alt: var(--doctor-panel-alt);
+  --profile-line: var(--doctor-line);
+  --profile-text: var(--doctor-text);
+  --profile-muted: var(--doctor-muted);
+}
+.clinical-staff-receptionist {
+  --profile-panel: var(--reception-panel);
+  --profile-alt: var(--reception-alt);
+  --profile-line: var(--reception-line);
+  --profile-text: var(--reception-text);
+  --profile-muted: var(--reception-muted);
+}
+.clinical-staff-profile-card { display: grid; grid-template-columns: minmax(210px, .8fr) minmax(0, 1.7fr); margin-bottom: 20px; overflow: hidden; border: 1px solid var(--profile-line); border-radius: 12px; background: var(--profile-panel); }
+.clinical-staff-profile-identity { display: flex; align-items: center; flex-direction: column; padding: 32px 22px; border-right: 1px solid var(--profile-line); background: var(--profile-alt); text-align: center; }
+.clinical-staff-profile-photo { display: grid; width: 92px; height: 92px; flex: none; place-items: center; border: 1px solid var(--profile-line); border-radius: 22px; background-color: var(--profile-panel); background-size: cover; background-position: center; color: var(--staff-accent); font: 800 27px 'Manrope', Arial, sans-serif; }
+.clinical-staff-profile-identity h2 { margin: 17px 0 4px; color: var(--profile-text); font: 800 19px 'Manrope', Arial, sans-serif; overflow-wrap: anywhere; }
+.clinical-staff-profile-identity p { margin: 0; color: var(--profile-muted); font-size: 12px; overflow-wrap: anywhere; }
+.clinical-staff-profile-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.clinical-staff-profile-actions button,
+.clinical-staff-profile-actions a { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 8px 12px; border: 1px solid var(--profile-line); border-radius: 6px; background: var(--profile-panel); color: var(--staff-accent); cursor: pointer; font: 700 11px 'DM Sans', Arial, sans-serif; text-decoration: none; }
+.clinical-staff-profile-actions .material-symbols-rounded { font-size: 17px; }
+.clinical-staff-profile-actions button:disabled { cursor: not-allowed; opacity: .6; }
+.clinical-staff-profile-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 0 25px; margin: 0; padding: 16px 26px 26px; }
+.clinical-staff-profile-facts > div { min-width: 0; padding: 15px 0; border-bottom: 1px solid var(--profile-line); }
+.clinical-staff-profile-facts dt { color: var(--profile-muted); font-size: 11px; }
+.clinical-staff-profile-facts dd { margin: 4px 0 0; color: var(--profile-text); font-size: 13px; font-weight: 700; overflow-wrap: anywhere; white-space: pre-wrap; }
+.clinical-staff-profile-form input,
+.clinical-staff-profile-form textarea { color: var(--profile-text); border-color: var(--profile-line); background: var(--profile-alt); }
+.clinical-staff-profile-form input:disabled { opacity: .65; }
+.clinical-staff-profile-form .clinical-staff-profile-buttons { display: flex; flex-wrap: wrap; gap: 8px; grid-column: 1 / -1; }
+.clinical-staff-profile-buttons button:last-child { color: var(--staff-accent); border: 1px solid var(--profile-line); background: var(--profile-alt); }
+html[data-theme='dark'] .clinical-staff-profile-buttons button:first-child { color: #0a141f; }
+@media (max-width: 900px) { .clinical-staff-profile-card { grid-template-columns: 1fr; } .clinical-staff-profile-identity { border-right: 0; border-bottom: 1px solid var(--profile-line); } }
+@media (max-width: 600px) { .clinical-staff-profile-facts { grid-template-columns: 1fr; padding: 6px 20px 20px; } .clinical-staff-profile-form { grid-template-columns: 1fr; } }
