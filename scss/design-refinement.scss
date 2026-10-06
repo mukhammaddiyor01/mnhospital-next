@@ -257,6 +257,11 @@ html[data-theme='dark'] .clinical-service-detail {
 .clinical-service-detail p,
 html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secondary); font-size: 13px; line-height: 1.6; }
 .clinical-service-detail-icon { color: var(--clinical-primary); background: var(--clinical-primary-soft); }
+.clinical-contact-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 28px; }
+.clinical-contact-options > div { padding: 26px; border-top: 2px solid var(--clinical-primary); background: var(--clinical-low); }
+.clinical-contact-options h3 { margin: 0 0 10px; color: var(--clinical-navy); font-size: 20px; }
+.clinical-contact-options p { margin: 0 0 24px; color: var(--clinical-secondary); font-size: 14px; line-height: 1.6; }
+.clinical-contact-options a { display: inline-flex; align-items: center; gap: 8px; color: var(--clinical-primary); font-size: 14px; font-weight: 700; }
 
 .clinical-footer {
   padding: 60px 0 24px;
@@ -300,6 +305,7 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
   .clinical-doctor-grid, .clinical-article-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .clinical-footer-grid { gap: 30px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .clinical-footer-brand-card { grid-column: 1 / -1; }
+  .clinical-contact-options { grid-template-columns: 1fr; }
 }
 @media (max-width: 680px) {
   .clinical-header, .clinical-header.has-search { height: 68px; }
