@@ -31,3 +31,11 @@ export interface ReceptionistDashboardStats {
   completedTaskCount: number;
   cancelledTaskCount: number;
 }
+
+export interface WorkspaceAppointment {
+  _id: string;
+  appointmentCode: string;
+  appointmentStatus: 'PENDING' | 'CONFIRMED' | 'IN_PROGRESS' | 'ENDED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
+  startsAt: string;
+  appointmentReason: string;
+}

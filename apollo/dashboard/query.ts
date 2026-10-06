@@ -26,3 +26,19 @@ export const GET_MY_RECEPTIONIST_DASHBOARD_STATS = gql`
     }
   }
 `;
+
+export const GET_MY_DOCTOR_APPOINTMENTS = gql`
+  query GetMyDoctorWorkspaceAppointments {
+    getAppointments(input: { page: 1, limit: 6 }) {
+      list { _id appointmentCode appointmentStatus startsAt appointmentReason }
+    }
+  }
+`;
+
+export const GET_MY_RECEPTIONIST_APPOINTMENT_QUEUE = gql`
+  query GetMyReceptionistWorkspaceQueue {
+    getMyReceptionistAppointmentQueue(input: { page: 1, limit: 6 }) {
+      list { _id appointmentCode appointmentStatus startsAt appointmentReason }
+    }
+  }
+`;
