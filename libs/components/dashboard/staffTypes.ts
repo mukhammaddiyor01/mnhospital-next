@@ -1,3 +1,5 @@
+import { MemberType } from '@/libs/components/member/enums/member.enum';
+
 export interface StaffList<T> { list: T[]; metaCounter?: { total: number }[] }
 
 export type AppointmentStatus = 'PENDING' | 'CONFIRMED' | 'IN_PROGRESS' | 'ENDED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
@@ -8,4 +10,5 @@ export interface DoctorReport { _id: string; appointmentId: string; patientId: s
 
 export type ReceptionTaskStatus = 'PENDING' | 'ACCEPTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 export interface ReceptionTask { _id: string; appointmentId: string; receptionistId?: string; taskType: string; taskPriority: string; taskStatus: ReceptionTaskStatus; taskInstruction: string; taskResult?: string; dueAt?: string }
-export interface ReceptionistProfile { _id: string; receptionistNick: string; receptionistFullName: string; receptionistPhone: string; receptionistMail: string; receptionistAddress?: string; receptionistDesc?: string; memberStatus: string }
+export interface ReceptionistProfile { _id: string; memberType: MemberType; receptionistNick: string; receptionistFullName: string; receptionistPhone: string; receptionistMail: string; receptionistImage?: string; receptionistAddress?: string; receptionistDesc?: string; memberStatus: string; accessToken?: string }
+export interface DoctorProfile { _id: string; memberType: MemberType; memberStatus: string; docNick: string; docFullName: string; docPhone: string; docMail?: string; docImage?: string; docAddress?: string; docDesc?: string; docSpecialty?: string; docRoom: string; docExperience: number; accessToken?: string }

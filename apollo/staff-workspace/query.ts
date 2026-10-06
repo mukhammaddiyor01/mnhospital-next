@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
 
+export const GET_DOCTOR_PROFILE = gql`
+  query GetDoctorWorkspaceProfile {
+    getMyDoctorProfile { _id memberType memberStatus docNick docFullName docPhone docMail docImage docAddress docDesc docSpecialty docRoom docExperience }
+  }
+`;
+
 export const GET_STAFF_APPOINTMENTS = gql`
   query GetStaffWorkspaceAppointments($input: StaffAppointmentInquiry!) {
     getAppointments(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt } metaCounter { total } }
@@ -20,7 +26,7 @@ export const GET_DOCTOR_REPORTS = gql`
 
 export const GET_RECEPTIONIST_PROFILE = gql`
   query GetReceptionistWorkspaceProfile {
-    getMyReceptionistProfile { _id receptionistNick receptionistFullName receptionistPhone receptionistMail receptionistAddress receptionistDesc memberStatus }
+    getMyReceptionistProfile { _id memberType receptionistNick receptionistFullName receptionistPhone receptionistMail receptionistImage receptionistAddress receptionistDesc memberStatus }
   }
 `;
 

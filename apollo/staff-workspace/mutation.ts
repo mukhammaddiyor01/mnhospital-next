@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
 
+export const UPDATE_DOCTOR_PROFILE = gql`
+  mutation UpdateDoctorWorkspaceProfile($input: DoctorProfileUpdateInput!) {
+    updateMyDoctorProfile(input: $input) { _id memberType memberStatus docNick docFullName docPhone docMail docImage docAddress docDesc docSpecialty docRoom docExperience accessToken }
+  }
+`;
+
 export const UPDATE_APPOINTMENT_STATUS = gql`
   mutation UpdateStaffAppointmentStatus($input: AppointmentStatusInput!) {
     updateAppointmentStatus(input: $input) { _id appointmentStatus }
@@ -26,7 +32,7 @@ export const UPDATE_DOCTOR_REPORT = gql`
 
 export const UPDATE_RECEPTIONIST_PROFILE = gql`
   mutation UpdateReceptionistWorkspaceProfile($input: ReceptionistProfileUpdateInput!) {
-    updateMyReceptionistProfile(input: $input) { _id receptionistFullName receptionistPhone receptionistMail receptionistAddress receptionistDesc }
+    updateMyReceptionistProfile(input: $input) { _id memberType memberStatus receptionistNick receptionistFullName receptionistPhone receptionistMail receptionistImage receptionistAddress receptionistDesc accessToken }
   }
 `;
 
