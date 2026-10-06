@@ -6,7 +6,6 @@ import { userVar } from "@/apollo/store";
 import { resolveApiAsset } from "@/libs/config";
 import { MemberType } from "./member/enums/member.enum";
 import MnLogo from "./common/MnLogo";
-import AnimatedWave from "./common/AnimatedWave";
 import ThemeControl from "./preference/ThemeControl";
 import LanguageControl from "./preference/LanguageControl";
 import { useTranslation } from "@/libs/i18n/useTranslation";
@@ -41,10 +40,20 @@ const Top = () => {
     <header className={`clinical-header ${isHome ? "has-search" : ""}`}>
       <div className="clinical-header-inner">
         <MnLogo />
-        {/* <nav className="clinical-desktop-navigation" aria-label="Main navigation"><Link className={router.pathname.startsWith('/article') ? 'active' : ''} href="/article">Articles</Link></nav> */}
+        <nav className="clinical-desktop-navigation" aria-label={t('nav.primary')}>
+          {([
+            ['/', 'nav.home'],
+            ['/service', 'nav.services'],
+            ['/doctor', 'nav.doctors'],
+            ['/article', 'nav.articles'],
+          ] as const).map(([href, label]) => {
+            const active = href === '/' ? isHome : router.pathname.startsWith(href);
+            return <Link key={href} href={href} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined}>{t(label)}</Link>;
+          })}
+        </nav>
         {isHome ? (
           <form className="clinical-header-search" onSubmit={searchHandler}>
-            <img className="clinical-search-mark" src="/img/mn-logo-mark.png" alt="" width={24} height={20} />
+            <span className="clinical-search-mark material-symbols-rounded" aria-hidden="true">search</span>
             <input
               name="globalSearch"
               placeholder={t('nav.searchPlaceholder')}
@@ -86,7 +95,6 @@ const Top = () => {
           )}
         </div>
       </div>
-      <AnimatedWave variant="header" />
     </header>
   );
 };
