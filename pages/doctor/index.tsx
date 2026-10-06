@@ -17,6 +17,15 @@ const fallbackDoctors = [
 
 const DoctorsPage = () => {
 	const t = useTranslation();
+	const specialtyLabels: Record<string, string> = {
+		[DoctorSpecialty.GENERAL_PRACTITIONER]: t('doctors.general'),
+		[DoctorSpecialty.CARDIOLOGIST]: t('doctors.cardiology'),
+		[DoctorSpecialty.DENTIST]: t('doctors.dentistry'),
+		[DoctorSpecialty.PEDIATRICIAN]: t('doctors.pediatrics'),
+		[DoctorSpecialty.DERMATOLOGIST]: t('doctors.dermatology'),
+		[DoctorSpecialty.NEUROLOGIST]: t('doctors.neurology'),
+		[DoctorSpecialty.SURGEON]: t('doctors.surgery'),
+	};
 	const router = useRouter();
 	const [search, setSearch] = useState('');
 	const [specialty, setSpecialty] = useState('');
@@ -51,7 +60,7 @@ const DoctorsPage = () => {
 			</form>
 			<div className="clinical-directory-grid">{doctors.map((doctor: any, index: number) => <article className="clinical-directory-card" key={doctor._id}>
 				<Link aria-label={`${t('doctors.viewProfile')} ${doctor.docFullName ?? t('doctors.nameFallback')}`} href={`/doctor/${doctor._id}`}><div className={`clinical-directory-portrait clinical-portrait-${portraitClass(index)}`} style={doctor.docImage ? { backgroundImage: `linear-gradient(145deg, rgba(18, 48, 74, .1), rgba(18, 48, 74, .75)), url(${resolveApiAsset(doctor.docImage)})` } : undefined}><span>{initials(doctor.docFullName)}</span><b>★ {Number(doctor.docPoints ?? 0).toFixed(1)}</b></div></Link>
-				<div className="clinical-directory-info"><div><h3><Link href={`/doctor/${doctor._id}`}>{doctor.docFullName ?? t('doctors.nameFallback')}</Link></h3><p>{String(doctor.docSpecialty ?? t('doctors.specialtyFallback')).replaceAll('_', ' ')}</p></div><div className="clinical-directory-bottom"><span>{Number(doctor.docExperience ?? 0)} {t('doctors.experience')}</span><Link href={`/appointment?doctor=${doctor._id}`}>{t('doctors.book')}</Link></div></div>
+				<div className="clinical-directory-info"><div><h3><Link href={`/doctor/${doctor._id}`}>{doctor.docFullName ?? t('doctors.nameFallback')}</Link></h3><p>{specialtyLabels[doctor.docSpecialty] ?? String(doctor.docSpecialty ?? t('doctors.specialtyFallback')).replaceAll('_', ' ')}</p></div><div className="clinical-directory-bottom"><span>{Number(doctor.docExperience ?? 0)} {t('doctors.experience')}</span><Link href={`/appointment?doctor=${doctor._id}`}>{t('doctors.book')}</Link></div></div>
 			</article>)}</div>
 			{loading && <p className="clinical-query-status">{t('doctors.loading')}</p>}
 		</section>
