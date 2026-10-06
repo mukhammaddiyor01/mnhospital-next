@@ -53,7 +53,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 	}, [theme, hydrated]);
 
 	useEffect(() => {
-		if (!session._id || !getJwtToken()) return;
+		if (!session._id || !getJwtToken()) {
+			setError('');
+			return;
+		}
 		let cancelled = false;
 		const version = selectionVersion.current;
 		void client.query<{ getMyPreferences: UserPreference }>({ query: GET_MY_PREFERENCES, fetchPolicy: 'network-only' })
