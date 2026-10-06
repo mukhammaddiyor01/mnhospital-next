@@ -16,3 +16,9 @@ export const UPDATE_MY_PATIENT_PROFILE = gql`
 		updateMyPatientProfile(input: $input) { ${PATIENT_FIELDS} }
 	}
 `;
+
+export const UPLOAD_MY_PATIENT_IMAGE = gql`
+	mutation UploadMyPatientImage($file: Upload!) {
+		uploadMyPatientImage(file: $file)
+	}
+`;

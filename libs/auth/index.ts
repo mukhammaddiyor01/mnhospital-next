@@ -28,6 +28,11 @@ const syncSession = (token: string, member?: MemberSession) => {
 	userVar({ ...claims, ...member, _id: String(member?._id ?? claims._id ?? ''), memberNick: member?.memberNick ?? claims.memberNick ?? doctorClaims.docNick ?? '', memberFullName: member?.memberFullName ?? claims.memberFullName ?? doctorClaims.docFullName, memberImage: member?.memberImage ?? claims.memberImage ?? doctorClaims.docImage ?? '' });
 };
 
+export const refreshMemberSession = (member: MemberSession) => {
+	if (!member.accessToken) throw new Error('The server did not return an access token.');
+	syncSession(member.accessToken, member);
+};
+
 export type SocialProvider = 'GOOGLE' | 'NAVER' | 'KAKAO';
 export type SocialAuthMode = 'login' | 'register';
 

@@ -344,6 +344,14 @@ $clinical-muted: #70869a;
 .clinical-patient-form input, .clinical-patient-form select { height: 38px; }
 .clinical-patient-form input:focus, .clinical-patient-form select:focus, .clinical-patient-form textarea:focus { border-color: $clinical-primary; }
 .clinical-patient-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.clinical-photo-field { margin: 14px 0; }
+.clinical-photo-row { display: flex; align-items: center; gap: 16px; }
+.clinical-photo-row > span:last-child { flex: 1; min-width: 0; }
+.clinical-photo-row input[type='file'] { height: auto; padding: 8px; }
+.clinical-photo-row small { color: $clinical-muted; font-size: 9px; font-weight: 500; }
+.clinical-account-contact { max-width: 720px; margin-top: 24px; padding-top: 20px; border-top: 1px solid $clinical-line; }
+.clinical-account-contact h2 { margin: 5px 0; color: $clinical-navy; font: 700 20px 'Manrope', Arial, sans-serif; }
+.clinical-account-contact p { margin: 0 0 12px; color: $clinical-muted; font-size: 10px; }
 .clinical-appointment-section { max-width: 820px; }
 .clinical-appointment-section .booking-wizard { max-width: none; }
 .clinical-appointment-section .wizard-steps { margin-bottom: 28px; }
@@ -578,6 +586,7 @@ $clinical-muted: #70869a;
 	.clinical-profile-portrait { min-height: 280px; }
 	.clinical-profile-facts { grid-template-columns: 1fr; }
 	.clinical-profile-contact, .clinical-mypage-grid { grid-template-columns: 1fr; }
+	.clinical-patient-form-grid { grid-template-columns: 1fr; }
 	.clinical-auth-page { padding-top: 0; }
 	.clinical-auth-card { min-height: 690px; transition: min-height .4s ease; }
 	.clinical-auth-card.is-register { min-height: 760px; }
