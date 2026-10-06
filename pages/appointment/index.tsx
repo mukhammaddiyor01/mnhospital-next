@@ -11,6 +11,7 @@ import Icon from '@/libs/components/common/Icon';
 import { AppointmentDraft } from '@/libs/components/booking/types/booking';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { translate } from '@/libs/i18n/messages';
 
 const mongoId = /^[a-f\d]{24}$/i;
 const demoServices = [
@@ -24,6 +25,17 @@ const AppointmentPage = () => {
 	const { language } = usePreferences();
 	const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
 	const steps = [t('booking.stepService'), t('booking.stepSpecialist'), t('booking.stepTime'), t('booking.stepReview')];
+	const localizedDemoServices = useMemo(() => {
+		const titles = ['booking.demoCardiology', 'booking.demoGeneral', 'booking.demoPediatrics'] as const;
+		const names = ['booking.demoCardiologyName', 'booking.demoGeneralName', 'booking.demoPediatricsName'] as const;
+		const specialties = ['booking.demoCardiologyDoctor', 'booking.demoGeneralDoctor', 'booking.demoPediatricsDoctor'] as const;
+		return demoServices.map((service, index) => ({
+			...service,
+			serviceTitle: translate(language, titles[index]),
+			serviceName: translate(language, names[index]),
+			memberData: { ...service.memberData, docSpecialty: translate(language, specialties[index]) },
+		}));
+	}, [language]);
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const apiEnabled = Boolean(process.env.NEXT_PUBLIC_API_GRAPHQL_URL);
@@ -36,7 +48,7 @@ const AppointmentPage = () => {
 		skip: !apiEnabled,
 		fetchPolicy: 'cache-and-network',
 	});
-	const services = servicesQuery.data?.getServices?.list?.length ? servicesQuery.data.getServices.list : demoServices;
+	const services = servicesQuery.data?.getServices?.list?.length ? servicesQuery.data.getServices.list : localizedDemoServices;
 	const selectedService = useMemo(() => services.find((service: any) => service._id === form.serviceId), [form.serviceId, services]);
 	const canLoadSlots = apiEnabled && mongoId.test(form.serviceId) && mongoId.test(form.doctorId) && Boolean(form.date);
 	const slotsQuery = useQuery(GET_AVAILABLE_DOCTOR_SLOTS, {
