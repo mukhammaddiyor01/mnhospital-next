@@ -3,10 +3,12 @@ import { DocumentNode, useMutation, useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { userVar } from '@/apollo/store';
 import Icon from './Icon';
+import { useTranslation } from '@/libs/i18n/useTranslation';
 
 interface LikeButtonProps { mutation: DocumentNode; id: string; variableName: string; initialLiked?: boolean; label?: string; }
 
 const LikeButton = ({ mutation, id, variableName, initialLiked = false, label }: LikeButtonProps) => {
+	const t = useTranslation();
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
 	const [liked, setLiked] = React.useState(initialLiked);
@@ -19,7 +21,7 @@ const LikeButton = ({ mutation, id, variableName, initialLiked = false, label }:
 		try { await likeTarget({ variables: { [variableName]: id } }); setLiked((value) => !value); } catch (error) { console.warn('Like action failed', error); }
 	};
 
-	return <button type="button" className={`like-button ${liked ? 'liked' : ''}`} onClick={clickHandler} disabled={loading} aria-label={label ?? (liked ? 'Remove like' : 'Like')} aria-pressed={liked}><Icon name={liked ? 'favorite' : 'favorite_border'} /></button>;
+	return <button type="button" className={`like-button ${liked ? 'liked' : ''}`} onClick={clickHandler} disabled={loading} aria-label={label ?? (liked ? t('like.remove') : t('like.add'))} aria-pressed={liked}><Icon name={liked ? 'favorite' : 'favorite_border'} /></button>;
 };
 
 export default LikeButton;
