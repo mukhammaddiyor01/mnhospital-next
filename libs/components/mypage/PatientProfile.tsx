@@ -164,11 +164,11 @@ const PatientProfile = () => {
 		const phoneChanged = memberPhone !== (session.memberPhone ?? '');
 		const mailChanged = memberMail !== (session.memberMail ?? '');
 		if (phoneChanged && (!memberPhone || !PHONE_PATTERN.test(memberPhone))) {
-			setContactError('Enter a valid phone number.');
+			setContactError(t('patient.phoneError'));
 			return;
 		}
 		if (mailChanged && (!memberMail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberMail))) {
-			setContactError('Enter a valid email address.');
+			setContactError(t('patient.emailError'));
 			return;
 		}
 		if (!phoneChanged && !mailChanged) {
@@ -181,11 +181,11 @@ const PatientProfile = () => {
 			if (mailChanged) input.memberMail = memberMail;
 			const result = await updateMember({ variables: { input } });
 			const member = result.data?.updateMember as MemberSession | undefined;
-			if (!member?.accessToken) throw new Error('Account contact details could not be saved.');
+			if (!member?.accessToken) throw new Error(t('patient.contactSaveError'));
 			refreshMemberSession(member);
 			setEditingContact(false);
 		} catch (requestError: any) {
-			setContactError(requestError?.message ?? 'Account contact details could not be saved.');
+			setContactError(requestError?.message ?? t('patient.contactSaveError'));
 		}
 	};
 
@@ -242,19 +242,19 @@ const PatientProfile = () => {
 				<div className="clinical-profile-actions"><button className="clinical-primary-button" type="submit" disabled={saving}>{saving ? t('patient.saving') : patient ? t('patient.saveChanges') : t('patient.createProfile')}</button>{patient && <button className="clinical-secondary-button" type="button" onClick={() => { setEditing(false); setFormError(''); setPhotoFile(null); }}>{t('patient.cancel')}</button>}</div>
 			</form>}
 			<div className="clinical-account-contact">
-				<div><span className="clinical-section-kicker">ACCOUNT CONTACT</span><h2>Phone and email</h2><p>These details belong to your account and are used to reach you about your care.</p></div>
-				{!editingContact && <div className="clinical-profile-actions"><button className="clinical-secondary-button" type="button" onClick={() => { setContactError(''); setEditingContact(true); }}>Edit phone and email <Icon name="edit" /></button></div>}
+				<div><span className="clinical-section-kicker">{t('patient.contactKicker')}</span><h2>{t('patient.contactTitle')}</h2><p>{t('patient.contactIntro')}</p></div>
+				{!editingContact && <div className="clinical-profile-actions"><button className="clinical-secondary-button" type="button" onClick={() => { setContactError(''); setEditingContact(true); }}>{t('patient.editContact')} <Icon name="edit" /></button></div>}
 				{editingContact && <form className="clinical-contact-form clinical-patient-form" onSubmit={saveContact}>
-					<div className="clinical-patient-form-grid"><label>Phone number<input type="tel" autoComplete="tel" value={contact.memberPhone} onChange={(event) => { setContact({ ...contact, memberPhone: event.target.value }); setContactError(''); }} placeholder="+821012345678" /></label><label>Email address<input type="email" autoComplete="email" value={contact.memberMail} onChange={(event) => { setContact({ ...contact, memberMail: event.target.value }); setContactError(''); }} placeholder="name@example.com" /></label></div>
+					<div className="clinical-patient-form-grid"><label>{t('patient.phoneNumber')}<input type="tel" autoComplete="tel" value={contact.memberPhone} onChange={(event) => { setContact({ ...contact, memberPhone: event.target.value }); setContactError(''); }} placeholder="+821012345678" /></label><label>{t('patient.emailAddress')}<input type="email" autoComplete="email" value={contact.memberMail} onChange={(event) => { setContact({ ...contact, memberMail: event.target.value }); setContactError(''); }} placeholder="name@example.com" /></label></div>
 					{contactError && <p className="clinical-form-error">{contactError}</p>}
-					<div className="clinical-profile-actions"><button className="clinical-primary-button" type="submit" disabled={memberState.loading}>{memberState.loading ? 'Saving…' : 'Save contact details'}</button><button className="clinical-secondary-button" type="button" onClick={() => { setContact({ memberPhone: session.memberPhone ?? '', memberMail: session.memberMail ?? '' }); setContactError(''); setEditingContact(false); }}>Cancel</button></div>
+					<div className="clinical-profile-actions"><button className="clinical-primary-button" type="submit" disabled={memberState.loading}>{memberState.loading ? t('patient.saving') : t('patient.saveContact')}</button><button className="clinical-secondary-button" type="button" onClick={() => { setContact({ memberPhone: session.memberPhone ?? '', memberMail: session.memberMail ?? '' }); setContactError(''); setEditingContact(false); }}>{t('patient.cancel')}</button></div>
 				</form>}
 			</div>
-			{patient && !editing && error ? <p className="clinical-form-error">Live profile data is unavailable. Showing your last patient profile.</p> : null}
+			{patient && !editing && error ? <p className="clinical-form-error">{t('patient.staleProfile')}</p> : null}
 		</section>
 		<FollowLists profileId={session._id} kind="patient" />
 		<PatientActivity />
-		<section className="clinical-mypage-grid"><Link href="/appointment"><Icon name="calendar_month" /><div><h3>Book an appointment</h3><p>Choose a service, specialist, and available time.</p></div><Icon name="arrow_forward" /></Link><Link href="/doctor"><Icon name="stethoscope" /><div><h3>Find a specialist</h3><p>Browse doctors by name and medical specialty.</p></div><Icon name="arrow_forward" /></Link><Link href="/service"><Icon name="medical_services" /><div><h3>Explore services</h3><p>Review active hospital services and departments.</p></div><Icon name="arrow_forward" /></Link><button type="button" onClick={() => void logOut()}><Icon name="logout" /><div><h3>Sign out</h3><p>Securely close your current patient session.</p></div><Icon name="arrow_forward" /></button></section>
+		<section className="clinical-mypage-grid"><Link href="/appointment"><Icon name="calendar_month" /><div><h3>{t('patient.bookTitle')}</h3><p>{t('patient.bookIntro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/doctor"><Icon name="stethoscope" /><div><h3>{t('patient.findTitle')}</h3><p>{t('patient.findIntro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/service"><Icon name="medical_services" /><div><h3>{t('patient.serviceTitle')}</h3><p>{t('patient.serviceIntro')}</p></div><Icon name="arrow_forward" /></Link><button type="button" onClick={() => void logOut()}><Icon name="logout" /><div><h3>{t('patient.signoutTitle')}</h3><p>{t('patient.signoutIntro')}</p></div><Icon name="arrow_forward" /></button></section>
 	</>;
 };
 
