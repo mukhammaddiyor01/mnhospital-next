@@ -59,7 +59,7 @@ const PatientProfile = () => {
 	const [contact, setContact] = useState({ memberPhone: '', memberMail: '' });
 	const [contactError, setContactError] = useState('');
 	const { data, loading, error, refetch } = useQuery(GET_MY_PATIENT_PROFILE, {
-		skip: !session._id,
+		skip: !session._id || session.memberType !== MemberType.PATIENT,
 		fetchPolicy: 'cache-and-network',
 	});
 	const [createProfile, createState] = useMutation(CREATE_PATIENT_PROFILE);
@@ -208,7 +208,8 @@ const PatientProfile = () => {
 	};
 
 	if (!session._id) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-profile-large"><Icon name="lock" /></span><span className="clinical-section-kicker">{t('page.patientPortal')}</span><h2>{t('patient.signinTitle')}</h2><p>{t('patient.signinIntro')}</p><div><Link className="clinical-primary-button" href="/account/signin">{t('patient.signin')}</Link><Link className="clinical-secondary-button" href="/account/join">{t('patient.join')}</Link></div></section>;
-	if (session.memberType === MemberType.DOCTOR) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-section-kicker">{t('patient.doctorKicker')}</span><h2>{t('patient.doctorTitle')}</h2><p>{t('patient.doctorIntro')}</p><Link className="clinical-primary-button" href={`/doctor/${session._id}`}>{t('patient.openDoctor')}</Link></section>;
+	if (session.memberType === MemberType.DOCTOR) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-section-kicker">{t('patient.doctorKicker')}</span><h2>{t('patient.doctorTitle')}</h2><p>{t('patient.doctorIntro')}</p><div className="clinical-profile-actions"><Link className="clinical-primary-button" href="/mypage/messages">{t('messages.title')}</Link><Link className="clinical-secondary-button" href={`/doctor/${session._id}`}>{t('patient.openDoctor')}</Link></div></section>;
+	if (session.memberType !== MemberType.PATIENT) return <section className="clinical-inner-section clinical-auth-gate"><span className="clinical-section-kicker">{t('page.profile')}</span><h2>{session.memberFullName || session.memberNick}</h2><p>{t('messages.intro')}</p><Link className="clinical-primary-button" href="/mypage/messages">{t('messages.title')}</Link></section>;
 	if (loading && !patient) return <section className="clinical-inner-section"><p className="clinical-query-status">{t('patient.loading')}</p></section>;
 	if (error && !profileMissing && !patient) return <section className="clinical-inner-section"><p className="clinical-form-error">{t('patient.unavailable')}</p><button className="clinical-secondary-button" type="button" onClick={() => void refetch()}>{t('patient.retry')}</button></section>;
 
@@ -254,7 +255,7 @@ const PatientProfile = () => {
 		</section>
 		<FollowLists profileId={session._id} kind="patient" />
 		<PatientActivity />
-		<section className="clinical-mypage-grid"><Link href="/appointment"><Icon name="calendar_month" /><div><h3>{t('patient.bookTitle')}</h3><p>{t('patient.bookIntro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/doctor"><Icon name="stethoscope" /><div><h3>{t('patient.findTitle')}</h3><p>{t('patient.findIntro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/service"><Icon name="medical_services" /><div><h3>{t('patient.serviceTitle')}</h3><p>{t('patient.serviceIntro')}</p></div><Icon name="arrow_forward" /></Link><button type="button" onClick={() => void logOut()}><Icon name="logout" /><div><h3>{t('patient.signoutTitle')}</h3><p>{t('patient.signoutIntro')}</p></div><Icon name="arrow_forward" /></button></section>
+		<section className="clinical-mypage-grid"><Link href="/mypage/messages"><Icon name="mail" /><div><h3>{t('messages.title')}</h3><p>{t('messages.intro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/appointment"><Icon name="calendar_month" /><div><h3>{t('patient.bookTitle')}</h3><p>{t('patient.bookIntro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/doctor"><Icon name="stethoscope" /><div><h3>{t('patient.findTitle')}</h3><p>{t('patient.findIntro')}</p></div><Icon name="arrow_forward" /></Link><Link href="/service"><Icon name="medical_services" /><div><h3>{t('patient.serviceTitle')}</h3><p>{t('patient.serviceIntro')}</p></div><Icon name="arrow_forward" /></Link><button type="button" onClick={() => void logOut()}><Icon name="logout" /><div><h3>{t('patient.signoutTitle')}</h3><p>{t('patient.signoutIntro')}</p></div><Icon name="arrow_forward" /></button></section>
 	</>;
 };
 

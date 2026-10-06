@@ -4,7 +4,6 @@ import { FormEvent } from "react";
 import { useReactiveVar } from "@apollo/client";
 import { userVar } from "@/apollo/store";
 import { resolveApiAsset } from "@/libs/config";
-import { MemberType } from "./member/enums/member.enum";
 import MnLogo from "./common/MnLogo";
 import ThemeControl from "./preference/ThemeControl";
 import LanguageControl from "./preference/LanguageControl";
@@ -70,11 +69,7 @@ const Top = () => {
           {user._id ? (
             <Link
               className="clinical-profile"
-              href={
-                user.memberType === MemberType.DOCTOR
-                  ? `/doctor/${user._id}`
-                  : "/mypage"
-              }
+              href="/mypage"
               aria-label={t('nav.profile')}
               title={t('page.profile')}
               style={
