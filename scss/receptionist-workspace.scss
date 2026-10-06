@@ -54,6 +54,101 @@ html[data-theme='dark'] .clinical-staff-receptionist .clinical-staff-brand > spa
 .clinical-reception-preferences .clinical-language-control { color: var(--reception-text); background: var(--reception-alt); border-color: var(--reception-line); }
 .clinical-reception-preferences select { width: 76px; }
 .clinical-reception-preferences .clinical-theme-error { position: absolute; z-index: 2; top: 40px; right: 0; width: 180px; padding: 7px; border: 1px solid var(--reception-line); border-radius: 6px; background: var(--reception-panel); }
+.clinical-reception-dashboard { display: grid; gap: 20px; color: var(--reception-text); }
+.clinical-reception-ledger,
+.clinical-reception-queue,
+.clinical-reception-detail,
+.clinical-reception-task-preview { min-width: 0; overflow: hidden; border: 1px solid var(--reception-line); border-radius: 10px; background: var(--reception-panel); }
+.clinical-reception-ledger { padding: 19px; }
+.clinical-reception-ledger > header { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 16px; }
+.clinical-reception-ledger > header > div { display: flex; align-items: center; gap: 9px; }
+.clinical-reception-ledger h2,
+.clinical-reception-queue h2,
+.clinical-reception-detail h2,
+.clinical-reception-task-preview h2 { margin: 0; color: var(--reception-text); font: 800 15px/1.4 'Manrope', Arial, sans-serif; }
+.clinical-reception-ledger > header .material-symbols-rounded { color: var(--reception-accent); }
+.clinical-reception-ledger > header > span { color: var(--reception-muted); font-size: 11px; white-space: nowrap; }
+.clinical-reception-ledger > header strong { margin-left: 8px; color: var(--reception-text); font-size: 16px; }
+.clinical-reception-ledger-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 9px; }
+.clinical-reception-ledger-grid article { min-width: 0; min-height: 113px; padding: 14px; border: 1px solid var(--reception-line); border-radius: 8px; background: var(--reception-alt); }
+.clinical-reception-ledger-grid article > div { display: flex; justify-content: space-between; gap: 7px; }
+.clinical-reception-ledger-grid small { color: var(--reception-muted); font-size: 10px; font-weight: 700; }
+.clinical-reception-ledger-grid article > strong { display: block; margin-top: 26px; color: var(--reception-text); font: 800 27px/1 'Manrope', Arial, sans-serif; }
+.clinical-reception-ledger-grid .material-symbols-rounded { color: var(--reception-accent); font-size: 19px; }
+.clinical-reception-ledger-grid .clinical-reception-open { display: flex; align-items: center; justify-content: space-between; gap: 14px; grid-column: span 2; border-left: 3px solid var(--reception-warm); }
+.clinical-reception-open > div { display: block !important; }
+.clinical-reception-open strong { display: block; margin: 8px 0; color: var(--reception-warm); font: 800 31px/1 'Manrope', Arial, sans-serif; }
+.clinical-reception-open p { margin: 0; color: var(--reception-muted); font-size: 9px; }
+.clinical-reception-open > .material-symbols-rounded { color: var(--reception-warm); font-size: 32px; }
+.clinical-reception-board { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(310px, 1fr); align-items: start; gap: 20px; }
+.clinical-reception-queue > header,
+.clinical-reception-detail > header,
+.clinical-reception-task-preview > header { display: flex; align-items: center; gap: 9px; min-height: 64px; padding: 16px 19px; border-bottom: 1px solid var(--reception-line); }
+.clinical-reception-queue > header > div { display: flex; align-items: center; gap: 9px; }
+.clinical-reception-queue > header .material-symbols-rounded,
+.clinical-reception-detail > header .material-symbols-rounded,
+.clinical-reception-task-preview > header .material-symbols-rounded { flex: none; color: var(--reception-accent); font-size: 21px; }
+.clinical-reception-queue > header > div > span { padding: 3px 7px; border-radius: 5px; background: var(--reception-alt); color: var(--reception-accent); font-size: 10px; font-weight: 800; }
+.clinical-reception-queue > header > a { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; color: var(--reception-accent); font-size: 10px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.clinical-reception-queue > header > a .material-symbols-rounded { font-size: 16px; }
+.clinical-reception-controls { display: grid; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--reception-line); }
+.clinical-reception-controls > label { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--reception-line); border-radius: 7px; background: var(--reception-alt); color: var(--reception-muted); }
+.clinical-reception-controls input { width: 100%; min-width: 0; padding: 0; color: var(--reception-text); border: 0; background: transparent; font: 11px 'DM Sans', Arial, sans-serif; }
+.clinical-reception-controls input::placeholder { color: var(--reception-muted); }
+.clinical-reception-controls .material-symbols-rounded { font-size: 18px; }
+.clinical-reception-filters { display: flex; gap: 6px; overflow-x: auto; }
+.clinical-reception-filters button { min-height: 32px; padding: 6px 11px; border: 1px solid var(--reception-line); border-radius: 6px; background: var(--reception-alt); color: var(--reception-muted); cursor: pointer; font: 700 10px 'DM Sans', Arial, sans-serif; white-space: nowrap; }
+.clinical-reception-filters button.active { border-color: var(--reception-accent); background: var(--staff-accent-soft); color: var(--reception-accent); }
+.clinical-reception-queue-list { display: grid; gap: 9px; padding: 17px; }
+.clinical-reception-queue-row { display: grid; gap: 15px; width: 100%; padding: 16px; border: 1px solid var(--reception-line); border-radius: 8px; background: var(--reception-alt); color: var(--reception-text); cursor: pointer; text-align: left; }
+.clinical-reception-queue-row:hover,
+.clinical-reception-queue-row.active { border-color: var(--reception-accent); }
+.clinical-reception-queue-row.active { box-shadow: inset 4px 0 var(--reception-accent); }
+.clinical-reception-row-top,
+.clinical-reception-row-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
+.clinical-reception-row-top strong { color: var(--reception-accent); font: 800 12px 'Manrope', Arial, sans-serif; }
+.clinical-reception-row-top time { color: var(--reception-muted); font-size: 10px; }
+.clinical-reception-row-bottom > span:first-child { min-width: 0; margin-right: auto; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.clinical-reception-row-bottom .clinical-staff-status { flex: none; }
+.clinical-reception-row-bottom .material-symbols-rounded { color: var(--reception-accent); font-size: 18px; }
+.clinical-reception-context { display: grid; gap: 20px; }
+.clinical-reception-detail-body { padding: 19px; }
+.clinical-reception-detail-lead { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--reception-line); }
+.clinical-reception-detail-lead > strong { color: var(--reception-accent); font: 800 17px 'Manrope', Arial, sans-serif; }
+.clinical-reception-detail dl { margin: 0; }
+.clinical-reception-detail dl > div { display: flex; justify-content: space-between; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--reception-line); }
+.clinical-reception-detail dt { flex: none; color: var(--reception-muted); font-size: 10px; }
+.clinical-reception-detail dd { margin: 0; color: var(--reception-text); font-size: 11px; font-weight: 700; text-align: right; overflow-wrap: anywhere; }
+.clinical-reception-detail-actions { display: grid; gap: 8px; padding-top: 16px; }
+.clinical-reception-detail-actions a { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 37px; padding: 8px; border: 1px solid var(--reception-accent); border-radius: 6px; background: var(--reception-accent); color: #fff; font-size: 11px; font-weight: 700; text-decoration: none; }
+.clinical-reception-detail-actions a + a { border-color: var(--reception-line); background: var(--reception-alt); color: var(--reception-accent); }
+html[data-theme='dark'] .clinical-reception-detail-actions a { color: #0a141f; }
+html[data-theme='dark'] .clinical-reception-detail-actions a + a { color: var(--reception-accent); }
+.clinical-reception-detail-actions .material-symbols-rounded { font-size: 17px; }
+.clinical-reception-task-preview ul { display: grid; gap: 9px; margin: 0; padding: 15px; list-style: none; }
+.clinical-reception-task-preview li { padding: 12px; border: 1px solid var(--reception-line); border-radius: 7px; background: var(--reception-alt); }
+.clinical-reception-task-preview li > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.clinical-reception-task-preview li strong { color: var(--reception-text); font-size: 11px; }
+.clinical-reception-task-preview li p { display: -webkit-box; margin: 8px 0; overflow: hidden; color: var(--reception-muted); font-size: 11px; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.clinical-reception-task-preview li small { color: var(--reception-warm); font-size: 10px; }
+.clinical-reception-panel-link { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 13px 18px; border-top: 1px solid var(--reception-line); color: var(--reception-accent); font-size: 11px; font-weight: 700; text-decoration: none; }
+.clinical-reception-panel-link .material-symbols-rounded { font-size: 17px; }
+.clinical-reception-comms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.clinical-reception-comms a { display: flex; align-items: center; gap: 8px; padding: 13px; border: 1px solid var(--reception-line); border-radius: 8px; background: var(--reception-panel); color: var(--reception-accent); font-size: 11px; font-weight: 700; text-decoration: none; }
+.clinical-reception-comms .material-symbols-rounded { font-size: 19px; }
+.clinical-reception-dashboard button:focus-visible,
+.clinical-reception-dashboard a:focus-visible,
+.clinical-reception-controls label:focus-within { outline: 2px solid var(--reception-accent); outline-offset: 2px; }
+@media (max-width: 1280px) { .clinical-reception-ledger-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .clinical-reception-board { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+  .clinical-reception-ledger { padding: 15px; }
+  .clinical-reception-ledger-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-reception-ledger > header { align-items: flex-start; }
+  .clinical-reception-queue > header { flex-wrap: wrap; }
+  .clinical-reception-queue > header > a { margin-left: 30px; }
+  .clinical-reception-row-top { align-items: flex-start; flex-direction: column; gap: 5px; }
+}
 @media (max-width: 760px) {
   .clinical-staff-receptionist .clinical-staff-sidebar-footer { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; padding-top: 9px; }
   .clinical-staff-receptionist .clinical-staff-sidebar-footer a,
