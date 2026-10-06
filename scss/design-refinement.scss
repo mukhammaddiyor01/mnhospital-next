@@ -262,6 +262,28 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
 .clinical-contact-options h3 { margin: 0 0 10px; color: var(--clinical-navy); font-size: 20px; }
 .clinical-contact-options p { margin: 0 0 24px; color: var(--clinical-secondary); font-size: 14px; line-height: 1.6; }
 .clinical-contact-options a { display: inline-flex; align-items: center; gap: 8px; color: var(--clinical-primary); font-size: 14px; font-weight: 700; }
+.clinical-about-grid { gap: 42px; }
+.clinical-about-art { min-height: 380px; border-radius: 3px; background: var(--clinical-low); }
+.clinical-about-art::before, .clinical-about-art::after { display: none; }
+.clinical-about-art img { object-fit: cover; }
+.clinical-about-grid p { color: var(--clinical-secondary); font-size: 15px; line-height: 1.65; }
+.clinical-check-list { gap: 10px; font-size: 13px; font-weight: 600; }
+.clinical-check-list li::before { width: auto; height: auto; margin-right: 10px; border-radius: 0; background: transparent; }
+.clinical-about-values {
+  display: block;
+  margin-top: 24px;
+  padding: 36px 42px;
+  border-top: 2px solid var(--clinical-primary);
+  border-radius: 0;
+  color: var(--clinical-text);
+  background: var(--clinical-low);
+}
+.clinical-about-values h2 { color: var(--clinical-navy); font-size: 28px; }
+.clinical-value-grid { display: block; margin-top: 24px; border-top: 1px solid var(--clinical-line); }
+.clinical-value-grid article { display: grid; grid-template-columns: 40px 180px 1fr; align-items: baseline; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--clinical-line); border-radius: 0; background: transparent; }
+.clinical-value-grid strong { color: var(--clinical-primary); font-size: 13px; }
+.clinical-value-grid h3 { margin: 0; color: var(--clinical-navy); font-size: 16px; }
+.clinical-value-grid p { margin: 0; color: var(--clinical-secondary); font-size: 13px; line-height: 1.55; }
 
 .clinical-footer {
   padding: 60px 0 24px;
@@ -306,6 +328,8 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
   .clinical-footer-grid { gap: 30px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .clinical-footer-brand-card { grid-column: 1 / -1; }
   .clinical-contact-options { grid-template-columns: 1fr; }
+  .clinical-value-grid article { grid-template-columns: 35px 1fr; }
+  .clinical-value-grid p { grid-column: 2; }
 }
 @media (max-width: 680px) {
   .clinical-header, .clinical-header.has-search { height: 68px; }
@@ -330,4 +354,5 @@ html[data-theme='dark'] .clinical-service-detail p { color: var(--clinical-secon
   .clinical-footer-grid, .clinical-copyright { width: calc(100% - 32px); }
   .clinical-footer-grid { grid-template-columns: 1fr; }
   .clinical-footer-brand-card { grid-column: auto; }
+  .clinical-about-values { padding: 28px 24px; }
 }
