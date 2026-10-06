@@ -6,6 +6,8 @@ import { AdvertisementCardVariant } from './enums/advertisement.enum';
 import { Advertisement, AdvertisementPreview } from './types/advertisement';
 import Icon from '../common/Icon';
 import { resolveApiAsset } from '@/libs/config';
+import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 
 type AdvertisementRailSide = 'left' | 'right';
 
@@ -36,6 +38,9 @@ const advertisementVariants: Record<AdvertisementRailSide, AdvertisementCardVari
 };
 
 const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProps) => {
+	const t = useTranslation();
+	const { language } = usePreferences();
+	const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
 	const variant = advertisementVariants[side][index % advertisementVariants[side].length];
 	const isEmergency = advertisement._id === 'ambulance';
 	const isAccreditation = advertisement._id === 'accreditation';
@@ -44,26 +49,27 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 	const isNews = variant === AdvertisementCardVariant.NEWS;
 	const isSupport = variant === AdvertisementCardVariant.SUPPORT;
 	const isCommunity = variant === AdvertisementCardVariant.COMMUNITY;
-	const action = advertisement.previewAction ?? 'Learn more →';
+	const action = advertisement.previewAction ?? t('ads.learnMore');
 
 	return <article className={`clinical-rail-card clinical-ad-card ${variant} ${isEmergency ? 'emergency' : ''} ${isAccreditation ? 'accreditation' : ''}`}>
 		{isEmergency && <div className="clinical-emergency-label"><Icon name="ambulance" /> {advertisement.previewLabel}</div>}
-		{isService && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-blue">{advertisement.previewLabel ?? 'FEATURED SERVICE'}</span><span className="service-rank">{advertisement.previewRank ?? 'AD'}</span></div>}
-		{isPromo && <div className="clinical-rail-row"><span className="clinical-rail-kicker">{advertisement.previewLabel ?? 'PROMOTION'}</span>{advertisement.previewDiscount && <b>{advertisement.previewDiscount}</b>}</div>}
-		{isNews && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? 'HOSPITAL UPDATE'}</span>{advertisement.previewReads && <span className="news-views">{advertisement.previewReads.toLocaleString('ko-KR')} reads</span>}</div>}
-		{isSupport && !isEmergency && <div className="clinical-rail-kicker">{advertisement.previewLabel ?? 'PROMOTION'}</div>}
-		{isCommunity && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? 'FEATURED'}</span>{advertisement.previewRank && <b>{advertisement.previewRank}</b>}</div>}
-		{!isService && !isPromo && !isNews && !isSupport && !isCommunity && <div className="clinical-rail-kicker"><Icon name={advertisement._id === 'robotic-suite' ? 'smart_toy' : 'video_camera_front'} /> {advertisement.previewLabel ?? 'HOSPITAL UPDATE'}</div>}
+		{isService && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-blue">{advertisement.previewLabel ?? t('ads.featuredService')}</span><span className="service-rank">{advertisement.previewRank ?? t('ads.ad')}</span></div>}
+		{isPromo && <div className="clinical-rail-row"><span className="clinical-rail-kicker">{advertisement.previewLabel ?? t('ads.promotion')}</span>{advertisement.previewDiscount && <b>{advertisement.previewDiscount}</b>}</div>}
+		{isNews && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? t('ads.hospitalUpdate')}</span>{advertisement.previewReads && <span className="news-views">{advertisement.previewReads.toLocaleString(locale)} {t('ads.reads')}</span>}</div>}
+		{isSupport && !isEmergency && <div className="clinical-rail-kicker">{advertisement.previewLabel ?? t('ads.promotion')}</div>}
+		{isCommunity && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-green">{advertisement.previewLabel ?? t('ads.featured')}</span>{advertisement.previewRank && <b>{advertisement.previewRank}</b>}</div>}
+		{!isService && !isPromo && !isNews && !isSupport && !isCommunity && <div className="clinical-rail-kicker"><Icon name={advertisement._id === 'robotic-suite' ? 'smart_toy' : 'video_camera_front'} /> {advertisement.previewLabel ?? t('ads.hospitalUpdate')}</div>}
 		{advertisement.advertisementImage && <div className="clinical-ad-image" style={{ backgroundImage: `url(${resolveApiAsset(advertisement.advertisementImage)})` }} aria-label={advertisement.advertisementTitle} />}
 		<h3>{advertisement.advertisementTitle}</h3>
 		<p>{advertisement.advertisementContent}</p>
-		{isService && advertisement.previewPrice != null && <div className="service-meta"><span>{formatKrw(advertisement.previewPrice)}</span><span>{Number(advertisement.previewViews ?? 0).toLocaleString('ko-KR')} views</span></div>}
+		{isService && advertisement.previewPrice != null && <div className="service-meta"><span>{formatKrw(advertisement.previewPrice)}</span><span>{Number(advertisement.previewViews ?? 0).toLocaleString(locale)} {t('ads.views')}</span></div>}
 		{isPromo && advertisement.previewPrice != null && <div className="promo-price">{formatKrw(advertisement.previewPrice)} {advertisement.previewOriginalPrice != null && <del>{formatKrw(advertisement.previewOriginalPrice)}</del>}</div>}
 		<Link href={advertisement.advertisementLink || '/appointment'}>{action}</Link>
 	</article>;
 };
 
 const AdvertisementRail = ({ side }: AdvertisementRailProps) => {
+	const t = useTranslation();
 	const { data } = useQuery<{ getAdvertisements: { list: Advertisement[] } }>(GET_ADVERTISEMENTS, {
 		variables: { input: { page: 1, limit: 8 } },
 		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
@@ -73,7 +79,7 @@ const AdvertisementRail = ({ side }: AdvertisementRailProps) => {
 	const sideAdvertisements = advertisements.filter((_, index) => index % 2 === (side === 'left' ? 0 : 1));
 	const visibleAdvertisements = sideAdvertisements.length ? sideAdvertisements : advertisements.slice(0, 2);
 
-	return <aside className={`clinical-rail clinical-rail-${side}`} aria-label={`${side} advertisements`}>
+	return <aside className={`clinical-rail clinical-rail-${side}`} aria-label={side === 'left' ? t('ads.leftRail') : t('ads.rightRail')}>
 		{visibleAdvertisements.slice(0, 4).map((advertisement, index) => <AdvertisementCard advertisement={advertisement} index={index} side={side} key={`${advertisement._id}-${side}`} />)}
 	</aside>;
 };
