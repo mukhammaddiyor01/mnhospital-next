@@ -9,10 +9,14 @@ import AdminPagination from '@/libs/components/dashboard/AdminPagination';
 import { AppointmentStatus, StaffAppointment, StaffList } from '@/libs/components/dashboard/staffTypes';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { appointmentStatusKeys } from '@/libs/components/dashboard/staffLabels';
 
 const LIMIT = 10;
 export default function ReceptionistAppointments() {
   const t = useTranslation();
+  const { language } = usePreferences();
+  const format = new Intl.DateTimeFormat({ KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' }[language], { dateStyle: 'medium', timeStyle: 'short' });
   const session = useReactiveVar(userVar);
   const [page, setPage] = useState(1);
   const [busyId, setBusyId] = useState('');
@@ -43,7 +47,7 @@ export default function ReceptionistAppointments() {
       {loading && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
       {error && <p className="clinical-staff-state clinical-form-error" role="alert">{t('dashboard.appointmentsError')}</p>}
       {!loading && !error && !list.length && <p className="clinical-staff-state">{t('dashboard.noAppointments')}</p>}
-      {!loading && !error && !!list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('dashboard.appointmentCode')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('staff.patientId')}</th><th>{t('dashboard.appointmentStatus')}</th><th>{t('staff.update')}</th></tr></thead><tbody>{list.map((appointment) => <tr key={appointment._id}><td><strong>{appointment.appointmentCode}</strong><small>{appointment.appointmentReason}</small></td><td>{new Date(appointment.startsAt).toLocaleString()}</td><td>{appointment.patientId}</td><td><span className="clinical-staff-status">{appointment.appointmentStatus.replaceAll('_', ' ')}</span></td><td><div className="clinical-staff-row-actions">{appointment.appointmentStatus === 'PENDING' && <button type="button" disabled={busyId === appointment._id} onClick={() => void act(appointment, 'CONFIRMED')}>{t('dashboard.statusConfirmed')}</button>}{['PENDING', 'CONFIRMED'].includes(appointment.appointmentStatus) && <button type="button" disabled={busyId === appointment._id} onClick={() => void act(appointment, 'NO_SHOW')}>{t('dashboard.statusNoShow')}</button>}{appointment.appointmentStatus === 'CONFIRMED' && <button type="button" disabled={busyId === appointment._id} onClick={() => void act(appointment, 'CHECK_IN')}>{t('staff.checkIn')}</button>}<Link href={`/receptionist-workspace/tasks?appointmentId=${appointment._id}`}>{t('staff.createTask')}</Link></div></td></tr>)}</tbody></table></div>}
+      {!loading && !error && !!list.length && <div className="clinical-staff-table-scroll"><table><thead><tr><th>{t('dashboard.appointmentCode')}</th><th>{t('dashboard.appointmentTime')}</th><th>{t('staff.patientId')}</th><th>{t('dashboard.appointmentStatus')}</th><th>{t('staff.update')}</th></tr></thead><tbody>{list.map((appointment) => <tr key={appointment._id}><td><strong>{appointment.appointmentCode}</strong><small>{appointment.appointmentReason}</small></td><td><time dateTime={appointment.startsAt}>{format.format(new Date(appointment.startsAt))}</time></td><td>{appointment.patientId}</td><td><span className={`clinical-staff-status status-${appointment.appointmentStatus.toLowerCase()}`}>{t(appointmentStatusKeys[appointment.appointmentStatus])}</span></td><td><div className="clinical-staff-row-actions">{appointment.appointmentStatus === 'PENDING' && <button type="button" disabled={busyId === appointment._id} onClick={() => void act(appointment, 'CONFIRMED')}>{t('dashboard.statusConfirmed')}</button>}{['PENDING', 'CONFIRMED'].includes(appointment.appointmentStatus) && <button type="button" disabled={busyId === appointment._id} onClick={() => void act(appointment, 'NO_SHOW')}>{t('dashboard.statusNoShow')}</button>}{appointment.appointmentStatus === 'CONFIRMED' && <button type="button" disabled={busyId === appointment._id} onClick={() => void act(appointment, 'CHECK_IN')}>{t('staff.checkIn')}</button>}<Link href={`/receptionist-workspace/tasks?appointmentId=${appointment._id}`}>{t('staff.createTask')}</Link></div></td></tr>)}</tbody></table></div>}
       <AdminPagination page={page} total={total} limit={LIMIT} onChange={setPage} />
     </section>
   </StaffRolePage>;
