@@ -109,6 +109,21 @@
 .clinical-admin-price button { padding: 7px 9px; white-space: nowrap; }
 .clinical-admin-pagination { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 20px; color: var(--clinical-muted); border-top: 1px solid var(--clinical-line); font-size: 11px; }
 .clinical-admin-pagination > div { display: flex; align-items: center; gap: 10px; }
+.clinical-staff-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 20px; }
+.clinical-staff-form label { display: grid; gap: 6px; min-width: 0; color: var(--clinical-secondary); font-size: 11px; font-weight: 700; }
+.clinical-staff-form input, .clinical-staff-form select, .clinical-staff-form textarea, .clinical-staff-inline-form input { width: 100%; min-width: 0; padding: 9px 10px; color: var(--clinical-text); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--clinical-surface); font: inherit; font-size: 12px; }
+.clinical-staff-form textarea { min-height: 86px; resize: vertical; }
+.clinical-staff-form button { align-self: end; justify-self: start; min-height: 38px; padding: 8px 16px; color: #fff; border: 0; border-radius: 6px; background: var(--staff-accent); cursor: pointer; font-weight: 700; }
+.clinical-staff-form button:disabled { opacity: .55; cursor: not-allowed; }
+.clinical-staff-inline-form, .clinical-staff-row-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.clinical-staff-inline-form input { max-width: 145px; }
+.clinical-staff-inline-form button, .clinical-staff-row-actions button { padding: 7px 9px; color: var(--staff-accent); border: 1px solid var(--clinical-line); border-radius: 6px; background: var(--staff-accent-soft); cursor: pointer; font: 700 11px 'DM Sans', Arial, sans-serif; }
+.clinical-staff-inline-form button:disabled, .clinical-staff-row-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.clinical-staff-profile-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 22px; padding: 10px 20px; }
+.clinical-staff-profile-details > div { display: grid; gap: 3px; padding: 13px 0; border-bottom: 1px solid var(--clinical-line); }
+.clinical-staff-profile-details small { color: var(--clinical-muted); font-size: 11px; }
+.clinical-staff-profile-details strong { color: var(--clinical-navy); font-size: 13px; overflow-wrap: anywhere; }
+.clinical-admin-workspace-link { display: inline-block; margin: 15px 20px; color: var(--staff-accent); font-size: 12px; font-weight: 700; }
 .clinical-staff-content .clinical-messages-layout { margin-top: 0; border: 1px solid var(--clinical-line); border-radius: 10px; background: #fff; }
 .clinical-staff-content .clinical-notifications { margin-top: 0; border: 1px solid var(--clinical-line); border-radius: 10px; }
 .clinical-staff-content .clinical-messages-layout .clinical-messages-list { background: var(--clinical-surface); }
@@ -143,6 +158,7 @@ html[data-theme='dark'] .clinical-staff-content .clinical-messages-layout, html[
   .clinical-admin-create-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 540px) {
+  .clinical-staff-form, .clinical-staff-profile-details { grid-template-columns: 1fr; }
   .clinical-staff-page-heading { flex-direction: column; gap: 12px; }
   .clinical-staff-page-heading h1 { font-size: 24px; }
   .clinical-staff-metrics, .clinical-staff-admin-content .clinical-admin-summary { gap: 9px; }
