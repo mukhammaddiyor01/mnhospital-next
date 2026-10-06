@@ -126,12 +126,12 @@ const fallbackDoctors: ClinicalDoctorCard[] = [
 
 const labelForService = (serviceType?: string) =>
   String(serviceType ?? "Clinical service").replaceAll("_", " ");
-const doctorRole = (specialty?: string) => {
+const doctorRole = (specialty: string | undefined, t: ReturnType<typeof useTranslation>) => {
   if (specialty === DoctorSpecialty.CARDIOLOGIST)
-    return "Chief Interventional Cardiologist";
-  if (specialty === DoctorSpecialty.NEUROLOGIST) return "Head of Neurosurgery";
+    return t('home.doctor.cardio');
+  if (specialty === DoctorSpecialty.NEUROLOGIST) return t('home.doctor.neuro');
   if (specialty === DoctorSpecialty.PEDIATRICIAN)
-    return "Senior Pediatric Specialist";
+    return t('home.doctor.pediatric');
   return labelForService(specialty)
     .toLowerCase()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -296,32 +296,32 @@ const ClinicalHome = () => {
           <section className="clinical-metrics">
             <Metric
               value={hospitalStatus.yearsExperience}
-              label="Years Experience"
-              note="Pioneering medicine"
+              label={t('home.metric.years')}
+              note={t('home.metric.yearsNote')}
             />
             <Metric
               value={hospitalStatus.expertDoctors}
-              label="Expert Doctors"
-              note="Board-certified specialists"
+              label={t('home.metric.doctors')}
+              note={t('home.metric.doctorsNote')}
             />
             <Metric
               value={hospitalStatus.patientSatisfaction}
-              label="Patient Satisfaction"
-              note="Verified survey ratings"
+              label={t('home.metric.satisfaction')}
+              note={t('home.metric.satisfactionNote')}
               teal
             />
             <Metric
               value={hospitalStatus.emergencyCare}
-              label="Emergency Care"
-              note="Always available"
+              label={t('home.metric.emergency')}
+              note={t('home.metric.emergencyNote')}
             />
           </section>
 
           <section className="clinical-content-section" id="departments">
             <SectionHeading
-              kicker="SPECIALIZED CENTERS OF EXCELLENCE"
-              title="Core Departments"
-              linkLabel="View All Specializations"
+              kicker={t('home.departments.kicker')}
+              title={t('home.departments.title')}
+              linkLabel={t('home.departments.link')}
               linkHref="/service"
             />
             <DepartmentSwiper
@@ -335,9 +335,9 @@ const ClinicalHome = () => {
             id="doctors"
           >
             <SectionHeading
-              kicker="LEADING MEDICAL MINDS"
-              title="Featured Doctors"
-              linkLabel="Explore All Doctors"
+              kicker={t('home.doctors.kicker')}
+              title={t('home.doctors.title')}
+              linkLabel={t('home.doctors.link')}
               linkHref="/doctor"
             />
             <div className="clinical-doctor-grid">
@@ -350,7 +350,7 @@ const ClinicalHome = () => {
                       usingFallbackDoctors ? (
                         <Image
                           src={doctor.docImage}
-                          alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty)}`}
+                          alt={`${doctor.docFullName}, ${doctorRole(doctor.docSpecialty, t)}`}
                           fill
                           sizes="(max-width: 680px) calc(100vw - 64px), 245px"
                         />
@@ -368,24 +368,24 @@ const ClinicalHome = () => {
                     <span className="clinical-rating">
                       <Icon name="star" />{" "}
                       {Number(doctor.docPoints ?? 0).toFixed(1)} (
-                      {[320, 275, 410][index] ?? 120}+ reviews)
+                      {[320, 275, 410][index] ?? 120}+ {t('home.doctor.reviews')})
                     </span>
                   </div>
                   <h3>{doctor.docFullName}</h3>
-                  <b>{doctorRole(doctor.docSpecialty)}</b>
+                  <b>{doctorRole(doctor.docSpecialty, t)}</b>
                   <p>
                     {index === 0
                       ? "MD, FACC"
                       : index === 1
                         ? "MD, PhD"
                         : "MBBS, FAAP"}{" "}
-                    • {Number(doctor.docExperience ?? 0)} Years Exp.
+                    • {Number(doctor.docExperience ?? 0)} {t('home.doctor.years')}
                   </p>
                   <Link
                     className="clinical-doctor-book"
                     href={`/appointment?doctor=${doctor._id}`}
                   >
-                    Book Consultation
+                    {t('home.doctor.book')}
                   </Link>
                 </article>
               ))}
@@ -396,9 +396,9 @@ const ClinicalHome = () => {
             id="articles"
           >
             <SectionHeading
-              kicker="FROM THE MN HOSPITAL JOURNAL"
-              title="Latest Articles"
-              linkLabel="Explore All Articles"
+              kicker={t('home.articles.kicker')}
+              title={t('home.articles.title')}
+              linkLabel={t('home.articles.link')}
               linkHref="/article"
             />
             <div className="clinical-article-grid">

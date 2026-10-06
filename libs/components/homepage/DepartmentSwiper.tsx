@@ -3,13 +3,19 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { A11y, EffectCoverflow, Keyboard, Navigation, Pagination } from 'swiper/modules';
 import Icon from '../common/Icon';
 import { ClinicalServiceCard } from './types/clinical-home';
+import { MessageKey } from '@/libs/i18n/messages';
+import { useTranslation } from '@/libs/i18n/useTranslation';
+import { usePreferences } from '../preference/PreferenceProvider';
 
 const iconForService = (serviceType?: string) => ({ CARDIOLOGY: 'cardiology', NEUROLOGY: 'neurology', ORTHOPEDICS: 'orthopedics', PEDIATRICS: 'child_care' }[serviceType ?? ''] ?? 'medical_services');
 const labelForService = (serviceType?: string) => String(serviceType ?? 'Clinical service').replaceAll('_', ' ');
-const fallbackHighlights = ['Cath Lab 24/7', 'Stroke Center', 'Robotic Joint Care', 'NICU Level III'];
-const fallbackStats = ['14 Surgeons • 98.6% Success', '11 Specialists • Rapid TPA', '16 Consultants • MAKO Robotic', '18 Pediatricians • Warm Care'];
+const fallbackHighlights: MessageKey[] = ['home.department.highlight1', 'home.department.highlight2', 'home.department.highlight3', 'home.department.highlight4'];
+const fallbackStats: MessageKey[] = ['home.department.stat1', 'home.department.stat2', 'home.department.stat3', 'home.department.stat4'];
 
-const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServiceCard[]; usingFallback: boolean }) => <div className={`clinical-department-swiper${services.length < 3 ? ' is-compact' : ''}${services.length === 1 ? ' is-single' : ''}`} aria-label="Explore MN Hospital services">
+const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServiceCard[]; usingFallback: boolean }) => {
+	const t = useTranslation();
+	const { language } = usePreferences();
+	return <div className={`clinical-department-swiper${services.length < 3 ? ' is-compact' : ''}${services.length === 1 ? ' is-single' : ''}`} aria-label={t('home.department.aria')}>
 	<Swiper
 		key={services.map((service) => service._id).join('|')}
 		modules={[EffectCoverflow, Pagination, A11y, Keyboard, Navigation]}
@@ -28,10 +34,11 @@ const DepartmentSwiper = ({ services, usingFallback }: { services: ClinicalServi
 		pagination={{ clickable: true }}
 		navigation={services.length > 1}
 		keyboard={{ enabled: true, onlyInViewport: true }}
-		aria-label="Hospital services carousel"
+		aria-label={t('home.department.carousel')}
 	>
-		{services.map((service, index) => <SwiperSlide key={service._id}><article className="clinical-department"><div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{usingFallback ? fallbackHighlights[index] : labelForService(service.serviceType)}</span></div><h3>{service.serviceTitle || 'Clinical service'}</h3><p>{service.serviceDesc}</p><div className="clinical-dept-bottom"><span>{usingFallback ? fallbackStats[index] : `${Number(service.serviceViews ?? 0).toLocaleString('ko-KR')} views`}</span><Link href={usingFallback ? '/service' : `/service/${service._id}`}>Explore <Icon name="chevron_right" /></Link></div></article></SwiperSlide>)}
+		{services.map((service, index) => <SwiperSlide key={service._id}><article className="clinical-department"><div className="clinical-department-top"><span className="clinical-dept-icon"><Icon name={iconForService(service.serviceType)} /></span><span className="clinical-dept-status">{usingFallback ? t(fallbackHighlights[index]) : labelForService(service.serviceType)}</span></div><h3>{service.serviceTitle || t('home.department.fallback')}</h3><p>{service.serviceDesc}</p><div className="clinical-dept-bottom"><span>{usingFallback ? t(fallbackStats[index]) : `${Number(service.serviceViews ?? 0).toLocaleString(language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US')} ${t('home.department.views')}`}</span><Link href={usingFallback ? '/service' : `/service/${service._id}`}>{t('home.department.explore')} <Icon name="chevron_right" /></Link></div></article></SwiperSlide>)}
 	</Swiper>
 </div>;
+};
 
 export default DepartmentSwiper;
