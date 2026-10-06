@@ -39,9 +39,11 @@ export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) 
     } catch (requestError: any) { setActionError(requestError?.message ?? t('notifications.actionError')); }
   };
 
-  const destination = (item: NotificationItem) => item.notificationGroup === 'CONVERSATION' ? (embedded ? '/admin/messages' : '/mypage/messages')
-    : item.notificationGroup === 'APPOINTMENT' || item.notificationGroup === 'BOOKING_ORDER' ? '/appointment'
-      : '/mypage';
+  const destination = (item: NotificationItem) => {
+    if (item.notificationGroup === 'CONVERSATION') return embedded ? '/admin/messages' : '/mypage/messages';
+    if (embedded) return null;
+    return item.notificationGroup === 'APPOINTMENT' || item.notificationGroup === 'BOOKING_ORDER' ? '/appointment' : '/mypage';
+  };
 
   return <div className="clinical-inner-page">
     {!embedded && <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('notifications.title')}</div><span className="clinical-eyebrow">{t('notifications.kicker')}</span><h1>{t('notifications.title')}</h1><p>{t('notifications.intro')}</p></div></section>}
@@ -52,7 +54,7 @@ export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) 
         {error && <p className="clinical-form-error">{t('notifications.loadError')}</p>}
         {actionError && <p className="clinical-form-error" role="alert">{actionError}</p>}
         {!loading && !list.length && !error && <p className="clinical-notifications-empty">{t('notifications.empty')}</p>}
-        <div className="clinical-notifications-list">{list.map((item) => <article key={item._id} className={item.notificationStatus === 'UNREAD' ? 'unread' : ''}><div><span className="clinical-notifications-type">{item.notificationType}</span><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time></div><h2>{item.notificationTitle}</h2><p>{item.notificationDesc}</p><div className="clinical-notifications-actions"><Link href={destination(item)}>{t('notifications.open')}</Link>{item.notificationStatus === 'UNREAD' && <button type="button" disabled={busy} onClick={() => void act('read', item._id)}>{t('notifications.markRead')}</button>}{item.notificationStatus !== 'ARCHIVED' && <button type="button" disabled={busy} onClick={() => void act('archive', item._id)}>{t('notifications.archive')}</button>}</div></article>)}</div>
+        <div className="clinical-notifications-list">{list.map((item) => <article key={item._id} className={item.notificationStatus === 'UNREAD' ? 'unread' : ''}><div><span className="clinical-notifications-type">{item.notificationType}</span><time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time></div><h2>{item.notificationTitle}</h2><p>{item.notificationDesc}</p><div className="clinical-notifications-actions">{destination(item) && <Link href={destination(item)!}>{t('notifications.open')}</Link>}{item.notificationStatus === 'UNREAD' && <button type="button" disabled={busy} onClick={() => void act('read', item._id)}>{t('notifications.markRead')}</button>}{item.notificationStatus !== 'ARCHIVED' && <button type="button" disabled={busy} onClick={() => void act('archive', item._id)}>{t('notifications.archive')}</button>}</div></article>)}</div>
         {total > PAGE_SIZE && <nav className="clinical-notifications-pagination" aria-label={t('notifications.pages')}><button type="button" disabled={page <= 1} onClick={() => setPage(page - 1)}>{t('notifications.previous')}</button><span>{page} / {Math.ceil(total / PAGE_SIZE)}</span><button type="button" disabled={page * PAGE_SIZE >= total} onClick={() => setPage(page + 1)}>{t('notifications.next')}</button></nav>}
       </section>}
   </div>;
