@@ -15,7 +15,7 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 const PAGE_SIZE = 20;
 const memberTypes = Object.values(MemberType);
 
-const MessagesPage = () => {
+export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslation();
   const router = useRouter();
   const session = useReactiveVar(userVar);
@@ -95,7 +95,7 @@ const MessagesPage = () => {
       if (!id) throw new Error(t('messages.startError'));
       await conversations.refetch();
       openConversation(id);
-      void router.replace('/mypage/messages', undefined, { shallow: true });
+      void router.replace(embedded ? '/admin/messages' : '/mypage/messages', undefined, { shallow: true });
     } catch (requestError: any) { setError(requestError?.message ?? t('messages.startError')); }
   };
 
@@ -132,7 +132,7 @@ const MessagesPage = () => {
   };
 
   return <div className="clinical-inner-page">
-    <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('messages.title')}</div><span className="clinical-eyebrow">{t('messages.kicker')}</span><h1>{t('messages.title')}</h1><p>{t('messages.intro')}</p></div></section>
+    {!embedded && <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('messages.title')}</div><span className="clinical-eyebrow">{t('messages.kicker')}</span><h1>{t('messages.title')}</h1><p>{t('messages.intro')}</p></div></section>}
     {!session._id ? <section className="clinical-inner-section clinical-auth-gate"><h2>{t('messages.signinTitle')}</h2><p>{t('messages.signinIntro')}</p><Link className="clinical-primary-button" href="/account/signin">{t('patient.signin')}</Link></section> :
       <section className="clinical-inner-section clinical-messages-layout">
         <aside className="clinical-messages-list"><div className="clinical-messages-heading"><h2>{t('messages.conversations')}</h2><small>{conversations.data?.getMyConversations.total ?? 0}</small></div>

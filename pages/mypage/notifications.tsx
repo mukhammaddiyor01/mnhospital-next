@@ -12,7 +12,7 @@ type Filter = 'ALL' | NotificationStatus;
 const PAGE_SIZE = 10;
 const filterLabels = { ALL: 'notifications.all', UNREAD: 'notifications.unread', READ: 'notifications.read', ARCHIVED: 'notifications.archived' } as const;
 
-const NotificationsPage = () => {
+export const NotificationsPage = ({ embedded = false }: { embedded?: boolean }) => {
   const t = useTranslation();
   const session = useReactiveVar(userVar);
   const [filter, setFilter] = useState<Filter>('ALL');
@@ -39,12 +39,12 @@ const NotificationsPage = () => {
     } catch (requestError: any) { setActionError(requestError?.message ?? t('notifications.actionError')); }
   };
 
-  const destination = (item: NotificationItem) => item.notificationGroup === 'CONVERSATION' ? '/mypage/messages'
+  const destination = (item: NotificationItem) => item.notificationGroup === 'CONVERSATION' ? (embedded ? '/admin/messages' : '/mypage/messages')
     : item.notificationGroup === 'APPOINTMENT' || item.notificationGroup === 'BOOKING_ORDER' ? '/appointment'
       : '/mypage';
 
   return <div className="clinical-inner-page">
-    <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('notifications.title')}</div><span className="clinical-eyebrow">{t('notifications.kicker')}</span><h1>{t('notifications.title')}</h1><p>{t('notifications.intro')}</p></div></section>
+    {!embedded && <section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('page.home')}</Link> / <Link href="/mypage">{t('page.profile')}</Link> / {t('notifications.title')}</div><span className="clinical-eyebrow">{t('notifications.kicker')}</span><h1>{t('notifications.title')}</h1><p>{t('notifications.intro')}</p></div></section>}
     {!session._id ? <section className="clinical-inner-section clinical-auth-gate"><h2>{t('notifications.signinTitle')}</h2><p>{t('notifications.signinIntro')}</p><Link className="clinical-primary-button" href="/account/signin">{t('patient.signin')}</Link></section> :
       <section className="clinical-inner-section clinical-notifications">
         <div className="clinical-notifications-toolbar"><div className="clinical-notifications-filters" aria-label={t('notifications.filter')}>{(['ALL', 'UNREAD', 'READ', 'ARCHIVED'] as Filter[]).map((value) => <button key={value} type="button" className={filter === value ? 'active' : ''} aria-pressed={filter === value} onClick={() => { setFilter(value); setPage(1); }}>{t(filterLabels[value])}</button>)}</div><button className="clinical-secondary-button" type="button" disabled={busy} onClick={() => void act('all')}>{t('notifications.markAll')}</button></div>
