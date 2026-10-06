@@ -8,14 +8,16 @@ import { MemberType } from '@/libs/components/member/enums/member.enum';
 import FollowButton from '@/libs/components/follow/FollowButton';
 import FollowLists from '@/libs/components/follow/FollowLists';
 import { resolveApiAsset } from '@/libs/config';
+import { useTranslation } from '@/libs/i18n/useTranslation';
 
 const PatientPage = () => {
+	const t = useTranslation();
 	const router = useRouter();
 	const memberId = typeof router.query.memberId === 'string' ? router.query.memberId : '';
 	const { data, loading, error, refetch } = useQuery<{ getMember: Member }>(GET_MEMBER, { variables: { memberId }, skip: !/^[a-f\d]{24}$/i.test(memberId), fetchPolicy: 'cache-and-network' });
 	const patient = data?.getMember?.memberType === MemberType.PATIENT ? data.getMember : null;
-	const name = patient?.memberFullName || patient?.memberNick || 'Patient';
-	return <div className="clinical-inner-page"><section className="clinical-inner-hero"><div className="clinical-crumb"><Link href="/">Home</Link> / Patient profile</div><span className="clinical-eyebrow">MN HOSPITAL COMMUNITY</span><h1>{loading && !patient ? 'Loading patient…' : patient ? name : 'Patient profile unavailable'}</h1><p>{patient?.memberDesc || 'Connect with the MN Hospital community.'}</p></section>{patient ? <><section className="clinical-inner-section clinical-public-profile"><span className="clinical-profile-large" style={patient.memberImage ? { backgroundImage: `url(${resolveApiAsset(patient.memberImage)})` } : undefined}>{patient.memberImage ? null : name.slice(0, 2).toUpperCase()}</span><div><h2>{name}</h2><p>{patient.memberFollowers ?? 0} followers · {patient.memberFollowings ?? 0} following</p><FollowButton targetId={patient._id} kind="member" initialFollowing={Boolean(patient.meFollowed?.[0]?.myFollowing)} onChanged={refetch} /></div></section><FollowLists profileId={patient._id} kind="patient" /></> : !loading && <p className="clinical-query-status">{error ? 'Unable to load this profile.' : 'No patient profile found.'}</p>}</div>;
+	const name = patient?.memberFullName || patient?.memberNick || t('publicPatient.nameFallback');
+	return <div className="clinical-inner-page"><section className="clinical-inner-hero"><div className="clinical-crumb"><Link href="/">{t('nav.home')}</Link> / {t('publicPatient.profile')}</div><span className="clinical-eyebrow">{t('publicPatient.community')}</span><h1>{loading && !patient ? t('publicPatient.loading') : patient ? name : t('publicPatient.unavailable')}</h1><p>{patient?.memberDesc || t('publicPatient.intro')}</p></section>{patient ? <><section className="clinical-inner-section clinical-public-profile"><span className="clinical-profile-large" style={patient.memberImage ? { backgroundImage: `url(${resolveApiAsset(patient.memberImage)})` } : undefined}>{patient.memberImage ? null : name.slice(0, 2).toUpperCase()}</span><div><h2>{name}</h2><p>{patient.memberFollowers ?? 0} {t('follow.followers')} · {patient.memberFollowings ?? 0} {t('follow.following')}</p><FollowButton targetId={patient._id} kind="member" initialFollowing={Boolean(patient.meFollowed?.[0]?.myFollowing)} onChanged={refetch} /></div></section><FollowLists profileId={patient._id} kind="patient" /></> : !loading && <p className="clinical-query-status">{error ? t('publicPatient.loadError') : t('publicPatient.notFound')}</p>}</div>;
 };
 
 export default withLayoutMain(PatientPage);
