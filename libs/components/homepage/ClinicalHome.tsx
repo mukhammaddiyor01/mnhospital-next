@@ -231,9 +231,11 @@ const ClinicalHome = () => {
 							<div className="clinical-hero-content">
 								<div className="clinical-hero-heading">
 									<strong className="clinical-hero-brand">MN Hospital</strong>
-									<div className="clinical-accreditation">
-										<Icon name="verified" /> {t('home.accreditation')}
-									</div>
+									{t('home.accreditation') !== 'MN Hospital' && (
+										<div className="clinical-accreditation">
+											<Icon name="verified" /> {t('home.accreditation')}
+										</div>
+									)}
 								</div>
 								<h1>{t('home.title')}</h1>
 								<p>{t('home.intro')}</p>
