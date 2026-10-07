@@ -24,3 +24,7 @@ On desktop, animated chat controls occupy the lower right advertisement column a
 ## Staff navigation
 
 Staff sign-in opens the role dashboard. Its work links keep the staff shell: profile, messaging, notifications and management sections use the corresponding admin/doctor/receptionist workspace. Doctor dashboard profile actions open `/doctor-workspace/profile`, not the public directory detail. The staff sidebar has no client website exit link. Public doctor directory pages remain available to patients and guests.
+
+## Doctor creation room choices
+
+The admin doctor form loads `getAvailableDoctorRooms` as a required room-number dropdown. Occupied, inactive, maintenance and doctor-assigned rooms are excluded by the backend, including legacy assignments. Loading, unavailable and empty states prevent creating with an arbitrary room number. The admin can refresh choices or manage rooms within the same workspace. Choices refresh after saving or deleting a doctor; readonly edits display the current saved room number.

@@ -1,6 +1,6 @@
 {
-  "businessOperations": 143,
-  "coveredBusinessOperations": 143,
+  "businessOperations": 144,
+  "coveredBusinessOperations": 144,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -184,6 +184,12 @@
     },
     {
       "field": "getMyDoctorProfile",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAvailableDoctorRooms",
       "kind": "query",
       "frontendContract": true,
       "internalDiagnostic": false

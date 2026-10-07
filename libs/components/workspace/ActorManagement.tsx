@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { operation } from '@/apollo/workspace/operations';
@@ -9,6 +10,12 @@ import ResourcePanel, {
 	ResourceField,
 } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
+const availableRooms = operation(
+	'query',
+	'getAvailableDoctorRooms',
+	null,
+	'_id roomNumber roomName roomStatus',
+);
 const doctorDetail = operation(
 	'query',
 	'getDoctorByAdmin',
@@ -46,6 +53,19 @@ export default function ActorManagement({
 	const [selected, setSelected] = useState<RecordItem | null>(null);
 	const doctor = kind === 'doctor';
 	const prefix = doctor ? 'doc' : 'receptionist';
+	const rooms = useQuery<{
+		getAvailableDoctorRooms: { roomNumber: string; roomName?: string }[];
+	}>(availableRooms, { skip: !doctor, fetchPolicy: 'network-only' });
+	const roomOptions = useMemo(
+		() =>
+			(rooms.data?.getAvailableDoctorRooms ?? []).map((room) => ({
+				value: room.roomNumber,
+				label: room.roomName
+					? `${room.roomNumber} · ${room.roomName}`
+					: room.roomNumber,
+			})),
+		[rooms.data],
+	);
 	const arg = doctor ? 'doctorId' : 'receptionistId';
 	const detail = useQuery(doctor ? doctorDetail : receptionDetail, {
 		variables: { [arg]: selected?._id },
@@ -109,7 +129,13 @@ export default function ActorManagement({
 			},
 			...(doctor
 				? ([
-						{ name: 'docRoom', label: 'room', required: true, readonly: true },
+						{
+							name: 'docRoom',
+							label: 'room',
+							required: true,
+							readonly: true,
+							options: roomOptions,
+						},
 						{
 							name: 'docExperience',
 							label: 'experience',
@@ -149,12 +175,20 @@ export default function ActorManagement({
 			columns: [fields[0], fields[1], fields[2], fields[fields.length - 1]],
 			fields,
 			onSelect: setSelected,
-			create: operation(
-				'mutation',
-				doctor ? 'createDoctorByAdmin' : 'createReceptionist',
-				doctor ? 'DoctorInput' : 'ReceptionistInput',
-				'_id',
-			),
+			onSaved: doctor
+				? async () => {
+						await rooms.refetch().catch(() => undefined);
+					}
+				: undefined,
+			create:
+				doctor && (rooms.loading || rooms.error || !roomOptions.length)
+					? undefined
+					: operation(
+							'mutation',
+							doctor ? 'createDoctorByAdmin' : 'createReceptionist',
+							doctor ? 'DoctorInput' : 'ReceptionistInput',
+							'_id',
+						),
 			createVariables: (input) => {
 				const { memberStatus, ...rest } = input;
 				return { input: rest };
@@ -201,7 +235,7 @@ export default function ActorManagement({
 			canRemove: (r) => r.memberStatus !== 'DELETE',
 			search: true,
 		};
-	}, [doctor, prefix]);
+	}, [doctor, prefix, roomOptions, rooms.loading, rooms.error, rooms.refetch]);
 	const record =
 		detail.data?.[doctor ? 'getDoctorByAdmin' : 'getReceptionistByAdmin'];
 	const metrics =
@@ -212,6 +246,25 @@ export default function ActorManagement({
 		];
 	return (
 		<>
+			{doctor && (
+				<section className="clinical-staff-panel clinical-resource-panel">
+					<button
+						type="button"
+						onClick={() => void rooms.refetch().catch(() => undefined)}
+						disabled={rooms.loading}
+					>
+						{w('refresh')} · {w('room')}
+					</button>
+					{rooms.loading && <p role="status">{w('roomsLoading')}</p>}
+					{rooms.error && <p role="alert">{w('roomsUnavailable')}</p>}
+					{!rooms.loading && !rooms.error && !roomOptions.length && (
+						<p>
+							{w('noAvailableRooms')}{' '}
+							<Link href="/admin/rooms">{w('room')}</Link>
+						</p>
+					)}
+				</section>
+			)}
 			<ResourcePanel config={config} />
 			{selected && (
 				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">

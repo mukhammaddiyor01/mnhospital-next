@@ -1,5 +1,20 @@
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 const text = {
+	roomsLoading: [
+		'Loading available rooms…',
+		'Bo‘sh xonalar yuklanmoqda…',
+		'사용 가능한 진료실을 불러오는 중…',
+	],
+	roomsUnavailable: [
+		'Room choices could not load. Refresh to try again.',
+		'Xonalar yuklanmadi. Yangilab qayta urinib ko‘ring.',
+		'진료실 목록을 불러올 수 없습니다. 새로고침하세요.',
+	],
+	noAvailableRooms: [
+		'No unassigned available rooms. Manage rooms first.',
+		'Biriktirilmagan bo‘sh xona yo‘q. Avval xonalarni boshqaring.',
+		'배정 가능한 빈 진료실이 없습니다. 먼저 진료실을 관리하세요.',
+	],
 	catalogEmpty: [
 		'No doctors match your search.',
 		'Qidiruvga mos shifokor topilmadi.',
