@@ -51,6 +51,7 @@ export type ResourceConfig = {
 	canEdit?: (record: RecordItem) => boolean;
 	canRemove?: (record: RecordItem) => boolean;
 	onSelect?: (record: RecordItem) => void;
+	onSaved?: () => Promise<void>;
 	arrayResult?: boolean;
 	search?: boolean;
 };
@@ -181,6 +182,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 			setEditor(undefined);
 			setFeedback(t('admin.saved'));
 			await load();
+			await config.onSaved?.();
 		} catch (e: any) {
 			setFeedback(e.message ?? t('admin.actionError'));
 		} finally {
@@ -207,6 +209,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 			});
 			setFeedback(t('admin.saved'));
 			await load();
+			await config.onSaved?.();
 		} catch (e: any) {
 			setFeedback(e.message ?? t('admin.actionError'));
 		} finally {
@@ -268,7 +271,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 						{(config.fields ?? []).map((field) => (
 							<label key={field.name}>
 								{w(field.label)}
-								{field.options ? (
+								{field.options && !(field.readonly && Boolean(editor)) ? (
 									<select
 										disabled={field.readonly && Boolean(editor)}
 										required={field.required}
