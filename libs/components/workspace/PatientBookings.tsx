@@ -1,6 +1,7 @@
+import { userVar } from '@/apollo/store';
 import Link from 'next/link';
 import { FormEvent, useMemo, useRef, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import {
 	PATIENT_ORDERS,
 	PATIENT_ORDER,
@@ -14,6 +15,7 @@ import ResourcePanel, { RecordItem, ResourceConfig } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
 export default function PatientBookings() {
 	const w = useWorkspaceText();
+	const session = useReactiveVar(userVar);
 	const [selected, setSelected] = useState<RecordItem | null>(null);
 	const [revision, setRevision] = useState(0);
 	const [feedback, setFeedback] = useState('');
@@ -64,8 +66,23 @@ export default function PatientBookings() {
 			)
 		)
 			return;
-		const key = [order._id, item.serviceId, item.doctorId, provider].join(':');
-		keys.current[key] ??= crypto.randomUUID();
+		const key = [
+			'mn-payment',
+			session._id,
+			order._id,
+			item.serviceId,
+			item.doctorId,
+			provider,
+		].join(':');
+		if (!keys.current[key]) {
+			try {
+				keys.current[key] =
+					window.sessionStorage.getItem(key) || crypto.randomUUID();
+				window.sessionStorage.setItem(key, keys.current[key]);
+			} catch {
+				keys.current[key] = crypto.randomUUID();
+			}
+		}
 		try {
 			await payment({
 				variables: {
