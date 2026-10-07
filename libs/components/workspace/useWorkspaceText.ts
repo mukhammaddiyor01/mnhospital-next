@@ -1,5 +1,15 @@
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 const text = {
+	catalogEmpty: [
+		'No doctors match your search.',
+		'Qidiruvga mos shifokor topilmadi.',
+		'검색 조건에 맞는 의료진이 없습니다.',
+	],
+	catalogUnavailable: [
+		'The doctor directory could not load. Please try again.',
+		'Shifokorlar ro‘yxati yuklanmadi. Qayta urinib ko‘ring.',
+		'의료진 목록을 불러올 수 없습니다. 다시 시도하세요.',
+	],
 	saved: ['Saved', 'Saqlandi', '저장되었습니다'],
 	cash: ['Cash at reception', 'Qabulxonada naqd to‘lov', '접수처 현금 결제'],
 	paymentRecorded: [
