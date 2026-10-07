@@ -5,6 +5,7 @@ import Top from '../Top';
 import Footer from '../Footer';
 import MobileBottomNav from '../common/MobileBottomNav';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
+import RightAdvertisementRail from '../advertisement/RightAdvertisementRail';
 import GeneralChat from '../chat/GeneralChat';
 import ChatLauncher from '../chat/ChatLauncher';
 import { useRouter } from 'next/router';
@@ -52,7 +53,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 								<div className="clinical-center-column">
 									<Component {...props} />
 								</div>
-								<AdvertisementRail side="right" />
+								<RightAdvertisementRail />
 							</div>
 						)}
 					</main>

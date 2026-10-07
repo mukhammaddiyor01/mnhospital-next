@@ -17,6 +17,7 @@ import type { HospitalStatus } from '@/pages/api/hospital-status';
 import Icon from '../common/Icon';
 import { resolveApiAsset } from '@/libs/config';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
+import RightAdvertisementRail from '../advertisement/RightAdvertisementRail';
 import { ClinicalDoctorCard, ClinicalServiceCard } from './types/clinical-home';
 import { DoctorSpecialty } from '../doctor/enums/doctor.enum';
 import DepartmentSwiper from './DepartmentSwiper';
@@ -468,7 +469,7 @@ const ClinicalHome = () => {
 						{notice}
 					</p>
 				</div>
-				<AdvertisementRail side="right" />
+				<RightAdvertisementRail />
 			</div>
 		</div>
 	);

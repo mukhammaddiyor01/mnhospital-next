@@ -19,7 +19,7 @@ Generate the backend schema with `node scripts/export-workspace-schema.cjs /tmp/
 
 Both application builds and focused booking, payment, appointment, room, role and ownership tests were checked during implementation. Provider checkout is separate from contract verification: Eximbay requires the hospital merchant configuration and a provider test transaction before production use. No financial transaction was executed during this implementation.
 
-On desktop, animated chat controls occupy the lower right advertisement column above the bottom navigation; that rail reserves scrollable space above the controls. On smaller screens without advertisement rails, the controls use their own normal-flow space below the header. Public doctor lists use real API records and show truthful empty/error states. Existing advertisement rails and carousel animations remain.
+On desktop, right advertisements use their full natural height. Chat controls occupy a separate block after the last advertisement and stay available while scrolling the workspace. The block is outside the advertisement container; it does not crop or cover cards. Smaller screens keep compact floating chat controls above the bottom navigation. Public doctor lists use real API records and show truthful empty/error states. Existing advertisement data and carousel animations remain.
 
 ## Staff navigation
 
