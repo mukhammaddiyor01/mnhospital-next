@@ -255,19 +255,21 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
   bottom: 72px;
   z-index: 100;
   display: flex;
-  width: 140px;
+  width: 120px;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 @media (max-width: 900px) {
   .clinical-chat-launchers { position: relative; right: auto; bottom: auto; width: calc(100% - 32px); margin: 12px auto; flex-direction: row; justify-content: flex-end; flex-wrap: wrap; }
   .clinical-shell > .clinical-chat-widget { right: 16px; bottom: 72px; }
 }
-.clinical-chat-launchers button { position: relative; display: flex; align-items: center; gap: 7px; min-height: 44px; padding: 9px 13px; color: #fff; border: 1px solid var(--clinical-primary); border-radius: 24px; background: var(--clinical-primary); box-shadow: 0 4px 12px rgba(18,48,55,.18); cursor: pointer; font: inherit; font-size: 11px; font-weight: 700; }
+.clinical-chat-launchers button { position: relative; display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 10px; color: #fff; border: 1px solid var(--clinical-primary); border-radius: 24px; background: var(--clinical-primary); box-shadow: 0 4px 12px rgba(18,48,55,.18); cursor: pointer; font: inherit; font-size: 10px; font-weight: 700; }
 .clinical-chat-launchers .clinical-assistant-launcher { color: var(--clinical-navy); border-color: var(--clinical-line); background: var(--clinical-surface); }
-.clinical-chat-launchers button > .material-symbols-rounded { font-size: 22px; animation: clinical-chat-breathe 3s ease-in-out infinite; }
+.clinical-chat-launchers button > .material-symbols-rounded { font-size: 18px; animation: clinical-chat-breathe 3s ease-in-out infinite; }
 .clinical-chat-launchers button.active > .material-symbols-rounded { animation: none; }
 .clinical-chat-launchers button:focus-visible { outline: 3px solid var(--clinical-primary); outline-offset: 4px; }
 @keyframes clinical-chat-breathe { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 
 @media (prefers-reduced-motion: reduce) { .clinical-chat-launchers button > .material-symbols-rounded { animation: none; } }
+
+@media (pointer: coarse) { .clinical-chat-launchers button { min-height: 44px; } }
