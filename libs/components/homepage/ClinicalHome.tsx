@@ -205,19 +205,6 @@ const ClinicalHome = () => {
 				<AdvertisementRail side="left" />
 				<div className="clinical-center-column">
 					<section className="clinical-hero-card">
-						<div className="clinical-accreditation">
-							<Icon name="verified" /> {t('home.accreditation')}
-						</div>
-						<h1>{t('home.title')}</h1>
-						<p>{t('home.intro')}</p>
-						<div className="clinical-hero-actions">
-							<Link className="clinical-primary-button" href="/appointment">
-								<Icon name="calendar_month" /> {t('nav.book')}
-							</Link>
-							<Link className="clinical-secondary-button" href="/service">
-								<Icon name="medical_services" /> {t('home.exploreServices')}
-							</Link>
-						</div>
 						<div
 							className="clinical-hero-visual"
 							role="region"
@@ -235,35 +222,55 @@ const ClinicalHome = () => {
 											alt={t(slide.alt)}
 											fill
 											priority={index === 0}
-											sizes="(max-width: 1120px) calc(100vw - 64px), 768px"
+											sizes="(max-width: 680px) calc(100vw - 24px), (max-width: 1120px) calc(100vw - 64px), 768px"
 										/>
 									</div>
 								))}
 							</div>
 							<div className="clinical-hero-image-overlay" />
-							<div className="clinical-visual-copy">
-								<span className="clinical-emergency-icon">
-									<Icon name="favorite" />
-								</span>
-								<span>
-									<strong>{t(heroSlides[activeSlide].title)}</strong>
-									<small>{t(heroSlides[activeSlide].description)}</small>
-								</span>
+							<div className="clinical-hero-content">
+								<div className="clinical-hero-heading">
+									<strong className="clinical-hero-brand">MN Hospital</strong>
+									<div className="clinical-accreditation">
+										<Icon name="verified" /> {t('home.accreditation')}
+									</div>
+								</div>
+								<h1>{t('home.title')}</h1>
+								<p>{t('home.intro')}</p>
+								<div className="clinical-hero-actions">
+									<Link className="clinical-primary-button" href="/appointment">
+										<Icon name="calendar_month" /> {t('nav.book')}
+									</Link>
+									<Link className="clinical-secondary-button" href="/service">
+										<Icon name="medical_services" /> {t('home.exploreServices')}
+									</Link>
+								</div>
 							</div>
-							<div
-								className="clinical-hero-dots"
-								aria-label={t('home.chooseHighlight')}
-							>
-								{heroSlides.map((slide, index) => (
-									<button
-										type="button"
-										className={activeSlide === index ? 'is-active' : ''}
-										aria-label={`${t('home.showImage')} ${index + 1}: ${t(slide.title)}`}
-										aria-current={activeSlide === index ? 'true' : undefined}
-										onClick={() => setActiveSlide(index)}
-										key={slide.image}
-									/>
-								))}
+							<div className="clinical-hero-footer">
+								<div className="clinical-visual-copy">
+									<span className="clinical-emergency-icon">
+										<Icon name="favorite" />
+									</span>
+									<span>
+										<strong>{t(heroSlides[activeSlide].title)}</strong>
+										<small>{t(heroSlides[activeSlide].description)}</small>
+									</span>
+								</div>
+								<div
+									className="clinical-hero-dots"
+									aria-label={t('home.chooseHighlight')}
+								>
+									{heroSlides.map((slide, index) => (
+										<button
+											type="button"
+											className={activeSlide === index ? 'is-active' : ''}
+											aria-label={`${t('home.showImage')} ${index + 1}: ${t(slide.title)}`}
+											aria-current={activeSlide === index ? 'true' : undefined}
+											onClick={() => setActiveSlide(index)}
+											key={slide.image}
+										/>
+									))}
+								</div>
 							</div>
 						</div>
 					</section>

@@ -1,0 +1,167 @@
+// Keep translated hero copy in the image, with room for longer mobile text.
+.clinical-home {
+	.clinical-hero-card {
+		padding: 0;
+		overflow: hidden;
+		background: #102f46;
+	}
+	.clinical-hero-visual {
+		display: flex;
+		min-height: 600px;
+		height: auto;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 72px;
+		margin: 0;
+		padding: 44px 36px 28px;
+		border-radius: 0;
+		background: #102f46;
+	}
+	.clinical-hero-image-overlay {
+		background:
+			linear-gradient(90deg, rgba(5, 24, 39, .88), rgba(5, 24, 39, .6) 58%, rgba(5, 24, 39, .12)),
+			linear-gradient(0deg, rgba(5, 24, 39, .82), transparent 45%);
+		pointer-events: none;
+	}
+	.clinical-hero-content {
+		position: relative;
+		z-index: 2;
+		max-width: 580px;
+	}
+	.clinical-hero-content .clinical-accreditation {
+		padding: 7px 11px;
+		color: #fff;
+		border: 1px solid rgba(255, 255, 255, .3);
+		background: rgba(255, 255, 255, .12);
+		font-size: 8px;
+	}
+	.clinical-hero-heading {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+	.clinical-hero-brand {
+		color: #fff;
+		font-size: 16px;
+		letter-spacing: -.02em;
+	}
+	.clinical-hero-content .clinical-accreditation .material-symbols-rounded {
+		color: #9ae2df;
+	}
+	.clinical-hero-content h1 {
+		margin: 24px 0 18px;
+		color: #fff;
+		font-size: clamp(36px, 3.6vw, 48px);
+		line-height: 1.14;
+		letter-spacing: -.045em;
+	}
+	.clinical-hero-content > p {
+		max-width: 530px;
+		margin: 0;
+		color: #edf4fa;
+		font-size: 14px;
+		line-height: 1.75;
+	}
+	.clinical-hero-actions {
+		gap: 12px;
+		margin-top: 28px;
+	}
+	.clinical-hero-actions a {
+		min-height: 46px;
+		padding: 0 18px;
+		font-size: 12px;
+	}
+	.clinical-hero-actions .clinical-secondary-button {
+		color: #fff;
+		border-color: rgba(255, 255, 255, .5);
+		background: rgba(5, 24, 39, .25);
+	}
+	.clinical-hero-actions .clinical-secondary-button:hover {
+		background: rgba(255, 255, 255, .18);
+	}
+	.clinical-hero-actions a:focus-visible,
+	.clinical-hero-dots button:focus-visible {
+		outline: 2px solid #fff;
+		outline-offset: 4px;
+	}
+	.clinical-hero-footer {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 20px;
+	}
+	.clinical-visual-copy {
+		position: static;
+		min-width: 0;
+		gap: 12px;
+	}
+	.clinical-visual-copy strong {
+		font-size: 12px;
+	}
+	.clinical-visual-copy small {
+		max-width: 380px;
+		font-size: 11px;
+	}
+	.clinical-emergency-icon {
+		flex: none;
+	}
+	.clinical-hero-dots {
+		position: static;
+		flex: none;
+		gap: 4px;
+	}
+	.clinical-hero-dots button {
+		display: grid;
+		width: 28px;
+		height: 28px;
+		place-items: center;
+		border: 0;
+		background: transparent;
+	}
+	.clinical-hero-dots button::before {
+		width: 8px;
+		height: 8px;
+		border: 1px solid #fff;
+		border-radius: 8px;
+		background: rgba(255, 255, 255, .45);
+		content: '';
+	}
+	.clinical-hero-dots button.is-active::before {
+		width: 20px;
+		background: #fff;
+	}
+}
+
+@media (max-width: 680px) {
+	.clinical-home {
+		.clinical-hero-visual {
+			min-height: 640px;
+			gap: 48px;
+			padding: 28px 22px 22px;
+		}
+		.clinical-hero-image-overlay {
+			background: linear-gradient(90deg, rgba(5, 24, 39, .85), rgba(5, 24, 39, .62));
+		}
+		.clinical-hero-content h1 {
+			font-size: clamp(30px, 8vw, 36px);
+		}
+		.clinical-hero-content > p {
+			font-size: 13px;
+		}
+		.clinical-hero-actions {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+		.clinical-hero-footer {
+			align-items: flex-start;
+			flex-direction: column;
+			gap: 14px;
+		}
+		.clinical-hero-dots {
+			margin-left: 48px;
+		}
+	}
+}
