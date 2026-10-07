@@ -181,8 +181,13 @@ const ClinicalHome = () => {
 					serviceDesc: service.serviceDesc ?? t('home.department.careFallback'),
 				}),
 			);
-	const doctors: ClinicalDoctorCard[] =
-		doctorsQuery.data?.getDoctors?.list ?? [];
+	const doctors: ClinicalDoctorCard[] = (
+		doctorsQuery.data?.getDoctors?.list ?? []
+	).map((doctor: ClinicalDoctorCard) => ({
+		...doctor,
+		docFullName:
+			doctor.docFullName || doctor.docNick || t('doctors.nameFallback'),
+	}));
 	const articles: Article[] = articlesQuery.data?.getArticles?.list?.length
 		? articlesQuery.data.getArticles.list
 		: fallbackArticles;

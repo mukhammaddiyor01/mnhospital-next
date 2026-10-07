@@ -34,7 +34,8 @@ const DoctorDetailPage = () => {
 		skip: !router.isReady || !isApiDoctor,
 	});
 	const doctor = data?.getDoctor;
-	const name = doctor?.docFullName ?? t('doctors.nameFallback');
+	const name =
+		doctor?.docFullName || doctor?.docNick || t('doctors.nameFallback');
 	const specialty = specialtyLabel(doctor?.docSpecialty);
 	const initials = name
 		.split(' ')

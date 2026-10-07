@@ -113,7 +113,7 @@ const DoctorsPage = () => {
 					{doctors.map((doctor: any, index: number) => (
 						<article className="clinical-directory-card" key={doctor._id}>
 							<Link
-								aria-label={`${t('doctors.viewProfile')} ${doctor.docFullName ?? t('doctors.nameFallback')}`}
+								aria-label={`${t('doctors.viewProfile')} ${doctor.docFullName || doctor.docNick || t('doctors.nameFallback')}`}
 								href={`/doctor/${doctor._id}`}
 							>
 								<div
@@ -126,7 +126,7 @@ const DoctorsPage = () => {
 											: undefined
 									}
 								>
-									<span>{initials(doctor.docFullName)}</span>
+									<span>{initials(doctor.docFullName || doctor.docNick)}</span>
 									<b>★ {Number(doctor.docPoints ?? 0).toFixed(1)}</b>
 								</div>
 							</Link>
@@ -134,7 +134,9 @@ const DoctorsPage = () => {
 								<div>
 									<h3>
 										<Link href={`/doctor/${doctor._id}`}>
-											{doctor.docFullName ?? t('doctors.nameFallback')}
+											{doctor.docFullName ||
+												doctor.docNick ||
+												t('doctors.nameFallback')}
 										</Link>
 									</h3>
 									<p>{specialtyLabel(doctor.docSpecialty)}</p>
