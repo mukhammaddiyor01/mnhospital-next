@@ -2,7 +2,10 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { operation } from '@/apollo/workspace/operations';
-import { MemberType } from '@/libs/components/member/enums/member.enum';
+import {
+	MemberStatus,
+	MemberType,
+} from '@/libs/components/member/enums/member.enum';
 import { DoctorSpecialty } from './catalogEnums';
 import ResourcePanel, {
 	RecordItem,
@@ -20,7 +23,7 @@ const doctorDetail = operation(
 	'query',
 	'getDoctorByAdmin',
 	'String',
-	'_id docNick docFullName docPhone docMail docAddress docDesc docRoom docSpecialty docExperience memberStatus',
+	'_id docNick docFullName docPhone docMail docAddress docDesc docImage docRoom docSpecialty docExperience memberStatus',
 	'doctorId',
 );
 const receptionDetail = operation(
@@ -84,6 +87,7 @@ export default function ActorManagement({
 				label: 'nickname',
 				required: true,
 				maxLength: 30,
+				minLength: 3,
 				readonly: true,
 			},
 			{
@@ -91,20 +95,19 @@ export default function ActorManagement({
 				label: 'fullName',
 				required: !doctor,
 				maxLength: 100,
-				readonly: doctor,
+				minLength: 2,
 			},
 			{
 				name: `${prefix}Phone`,
 				label: 'phone',
 				required: true,
-				readonly: doctor,
 			},
 			{
 				name: `${prefix}Mail`,
 				label: 'email',
 				type: 'email',
 				required: !doctor,
-				readonly: doctor,
+				clearable: doctor,
 			},
 			{
 				name: `${prefix}Password`,
@@ -112,19 +115,27 @@ export default function ActorManagement({
 				type: 'password',
 				required: true,
 				maxLength: 32,
+				minLength: 8,
 				readonly: true,
 			},
-			{ name: `${prefix}Address`, label: 'address', readonly: doctor },
+			{
+				name: `${prefix}Address`,
+				label: 'address',
+				maxLength: doctor ? 300 : undefined,
+				clearable: doctor,
+			},
 			{
 				name: `${prefix}Desc`,
 				label: 'description',
 				type: 'textarea',
-				readonly: doctor,
+				maxLength: doctor ? 2000 : undefined,
+				clearable: doctor,
 			},
 			{
 				name: `${prefix}Image`,
 				label: 'image',
-				readonly: doctor,
+				maxLength: doctor ? 500 : undefined,
+				clearable: doctor,
 				imageTarget: doctor ? 'doctor' : 'receptionist',
 			},
 			...(doctor
@@ -142,25 +153,24 @@ export default function ActorManagement({
 							type: 'number',
 							required: true,
 							min: 0,
-							readonly: true,
 						},
 						{
 							name: 'docSpecialty',
 							label: 'specialty',
 							options: [...DoctorSpecialty],
-							readonly: true,
 						},
 					] as ResourceField[])
 				: []),
 			{
 				name: 'memberStatus',
 				label: 'status',
-				options: ['ACTIVE', 'BLOCK'],
-				defaultValue: 'ACTIVE',
+				editOnly: true,
+				options: [MemberStatus.ACTIVE, MemberStatus.BLOCK],
+				defaultValue: MemberStatus.ACTIVE,
 			},
 		];
 		const selection = doctor
-			? '_id docNick docFullName docPhone docMail docRoom docSpecialty docExperience memberStatus'
+			? '_id docNick docFullName docPhone docMail docAddress docDesc docImage docRoom docSpecialty docExperience memberStatus'
 			: '_id receptionistNick receptionistFullName receptionistPhone receptionistMail receptionistAddress receptionistDesc receptionistImage memberStatus';
 		return {
 			role: MemberType.ADMIN,
@@ -177,31 +187,50 @@ export default function ActorManagement({
 			onSelect: setSelected,
 			onSaved: doctor
 				? async () => {
-						await rooms.refetch().catch(() => undefined);
+						await Promise.allSettled([
+							rooms.refetch(),
+							...(selected ? [detail.refetch()] : []),
+						]);
 					}
 				: undefined,
-			create:
-				doctor && (rooms.loading || rooms.error || !roomOptions.length)
-					? undefined
-					: operation(
-							'mutation',
-							doctor ? 'createDoctorByAdmin' : 'createReceptionist',
-							doctor ? 'DoctorInput' : 'ReceptionistInput',
-							'_id',
-						),
+			create: operation(
+				'mutation',
+				doctor ? 'createDoctorByAdmin' : 'createReceptionist',
+				doctor ? 'DoctorInput' : 'ReceptionistInput',
+				'_id',
+			),
+			createDisabled:
+				doctor && Boolean(rooms.loading || rooms.error || !roomOptions.length),
+			createDisabledReason: doctor
+				? rooms.loading
+					? 'roomsLoading'
+					: rooms.error
+						? 'roomsUnavailable'
+						: !roomOptions.length
+							? 'noAvailableRooms'
+							: undefined
+				: undefined,
 			createVariables: (input) => {
 				const { memberStatus, ...rest } = input;
 				return { input: rest };
 			},
 			update: operation(
 				'mutation',
-				doctor ? 'updateDoctorStatusByAdmin' : 'updateReceptionistByAdmin',
-				doctor ? 'DoctorStatusUpdateInput' : 'ReceptionistAdminUpdateInput',
+				doctor ? 'updateDoctorByAdmin' : 'updateReceptionistByAdmin',
+				doctor ? 'DoctorAdminUpdateInput' : 'ReceptionistAdminUpdateInput',
 				'_id memberStatus',
 			),
 			updateVariables: (input, r) => ({
 				input: doctor
-					? { _id: r._id, memberStatus: input.memberStatus }
+					? {
+							_id: r._id,
+							...Object.fromEntries(
+								Object.entries(input).filter(
+									([key]) =>
+										!['docNick', 'docPassword', 'docRoom'].includes(key),
+								),
+							),
+						}
 					: {
 							_id: r._id,
 							...Object.fromEntries(
@@ -235,7 +264,16 @@ export default function ActorManagement({
 			canRemove: (r) => r.memberStatus !== 'DELETE',
 			search: true,
 		};
-	}, [doctor, prefix, roomOptions, rooms.loading, rooms.error, rooms.refetch]);
+	}, [
+		doctor,
+		prefix,
+		roomOptions,
+		rooms.loading,
+		rooms.error,
+		rooms.refetch,
+		detail.refetch,
+		selected,
+	]);
 	const record =
 		detail.data?.[doctor ? 'getDoctorByAdmin' : 'getReceptionistByAdmin'];
 	const metrics =
@@ -266,6 +304,9 @@ export default function ActorManagement({
 				</section>
 			)}
 			<ResourcePanel config={config} />
+			{doctor && (
+				<p className="clinical-staff-state">{w('doctorStatusHelp')}</p>
+			)}
 			{selected && (
 				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">
 					<header>

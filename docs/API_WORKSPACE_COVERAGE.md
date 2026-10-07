@@ -11,7 +11,7 @@ The offline contract check compares frontend GraphQL documents and workspace for
 | Receptionist | `/receptionist-workspace`: assigned appointments, bookings, payments, reception tasks, reports, profile, messages and notifications |
 | Patient | `/mypage`: profile, cart, bookings, payments, appointments, own reports, messaging, notifications and preferences |
 
-Doctor schedules use the existing `upsertMyDoctorSchedule` contract. Doctor and patient private details remain owner scoped. Reception appointment reads are restricted to active assigned tasks. Admin doctor profile management exposes the status mutation that actually exists in the backend.
+Doctor schedules use the existing `upsertMyDoctorSchedule` contract. Doctor and patient private details remain owner scoped. Reception appointment reads are restricted to active assigned tasks. Admin doctor editing uses `updateDoctorByAdmin` for contact details, image, experience, specialty and ACTIVE/BLOCK status. Login credentials and the assigned office remain fixed. DELETE is the separate archive operation; archived doctor records cannot be edited.
 
 ## Verification
 
@@ -27,4 +27,4 @@ Staff sign-in opens the role dashboard. Its work links keep the staff shell: pro
 
 ## Doctor creation room choices
 
-The admin doctor form loads `getAvailableDoctorRooms` as a required room-number dropdown. Occupied, inactive, maintenance and doctor-assigned rooms are excluded by the backend, including legacy assignments. Loading, unavailable and empty states prevent creating with an arbitrary room number. The admin can refresh choices or manage rooms within the same workspace. Choices refresh after saving or deleting a doctor; readonly edits display the current saved room number.
+The admin doctor form loads `getAvailableDoctorRooms` as a required room-number dropdown. Occupied, inactive, maintenance and doctor-assigned rooms are excluded by the backend, including legacy assignments. Create stays visible in loading, unavailable and empty states. The form explains the room state and disables saving until an available room can be selected. The admin can refresh choices or manage rooms within the same workspace. Choices refresh after saving or deleting a doctor; readonly edits display the current saved room number. New doctors start ACTIVE; status can be changed after creation. Editing loads complete profile fields, supports clearing optional contact/image fields and refreshes the selected detail view.

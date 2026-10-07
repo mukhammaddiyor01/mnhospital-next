@@ -1,5 +1,10 @@
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 const text = {
+	doctorStatusHelp: [
+		'New doctors start ACTIVE. ACTIVE allows access; BLOCK disables access. Use Remove to archive as DELETE. Login credentials and the assigned room stay unchanged when editing.',
+		'Yangi doctor ACTIVE holatda yaratiladi. ACTIVE kirishga ruxsat beradi; BLOCK kirishni to‘sadi. DELETE uchun O‘chirish amalini ishlating. Tahrirlashda login ma’lumotlari va biriktirilgan xona saqlanadi.',
+		'새 의사는 ACTIVE 상태로 생성됩니다. ACTIVE는 접근을 허용하고 BLOCK은 차단합니다. DELETE 보관은 삭제 작업을 사용하세요. 수정 시 로그인 정보와 배정 진료실은 유지됩니다.',
+	],
 	roomsLoading: [
 		'Loading available rooms…',
 		'Bo‘sh xonalar yuklanmoqda…',

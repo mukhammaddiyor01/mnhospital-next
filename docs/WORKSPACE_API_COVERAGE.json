@@ -1,6 +1,6 @@
 {
-  "businessOperations": 144,
-  "coveredBusinessOperations": 144,
+  "businessOperations": 145,
+  "coveredBusinessOperations": 145,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -652,6 +652,12 @@
     },
     {
       "field": "loginDoctor",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateDoctorByAdmin",
       "kind": "mutation",
       "frontendContract": true,
       "internalDiagnostic": false
