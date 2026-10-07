@@ -43,15 +43,11 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 							setAssistantOpen(false);
 							setChatOpen((value) => !value);
 						}}
-						assistantOpen={isHome && assistantOpen}
-						onAssistantToggle={
-							isHome
-								? () => {
-										setChatOpen(false);
-										setAssistantOpen((value) => !value);
-									}
-								: undefined
-						}
+						assistantOpen={assistantOpen}
+						onAssistantToggle={() => {
+							setChatOpen(false);
+							setAssistantOpen((value) => !value);
+						}}
 					/>
 					<main id="main">
 						{isHome ? (
@@ -69,7 +65,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 					<Footer />
 					<GeneralChat open={chatOpen} onClose={() => setChatOpen(false)} />
 					<HospitalAssistant
-						open={isHome && assistantOpen}
+						open={assistantOpen}
 						onClose={() => setAssistantOpen(false)}
 					/>
 					<MobileBottomNav />
