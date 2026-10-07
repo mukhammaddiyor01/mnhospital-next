@@ -38,6 +38,7 @@ const ReceptionistDashboard = ({ stats, appointments, loading, error }: {
   const filters: QueueFilter[] = ['ALL', 'PENDING', 'CONFIRMED', 'IN_PROGRESS'];
 
   return <div className="clinical-reception-dashboard">
+    <div className="clinical-resource-actions"><Link href="/receptionist-workspace/bookings">{t('dashboard.bookings')}</Link></div>
     <section className="clinical-reception-ledger" aria-labelledby="reception-ledger-heading">
       <header><div><Icon name="support_agent" /><h2 id="reception-ledger-heading">{t('dashboard.receptionistTasks')}</h2></div><span>{t('dashboard.allTasks')} <strong>{stats.taskCount.toLocaleString()}</strong></span></header>
       <div className="clinical-reception-ledger-grid">

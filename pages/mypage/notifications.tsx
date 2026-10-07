@@ -107,7 +107,7 @@ export const NotificationsPage = ({
 		const group = item.notificationGroup;
 		if (group === 'CONVERSATION') return `${root}/messages`;
 		if (group === 'PAYMENT') return session.memberType === MemberType.DOCTOR ? `${root}/appointments` : `${root}/payments`;
-		if (group === 'BOOKING_ORDER') return session.memberType === MemberType.DOCTOR ? `${root}/appointments` : `${root}/bookings`;
+		if (group === 'BOOKING_ORDER') return `${root}/bookings`;
 		if (group === 'APPOINTMENT') return `${root}/appointments`;
 		if (group === 'REPORT') return session.memberType === MemberType.ADMIN ? `${root}/appointments` : `${root}/reports`;
 		if (

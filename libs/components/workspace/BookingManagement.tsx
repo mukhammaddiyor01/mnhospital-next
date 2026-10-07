@@ -16,6 +16,7 @@ export default function BookingManagement({
 	);
 	return (
 		<>
+			<p>{w('bookingFlow')}</p>
 			<ResourcePanel config={config} />
 			{selected && (
 				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">

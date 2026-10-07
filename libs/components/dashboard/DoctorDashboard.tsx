@@ -42,6 +42,7 @@ const DoctorDashboard = ({ stats, appointments, loading, error }: {
   ];
 
   return <div className="clinical-doctor-dashboard">
+    <div className="clinical-resource-actions"><Link href="/doctor-workspace/bookings">{t('dashboard.bookings')}</Link></div>
     <section className="clinical-doctor-ribbon" aria-label={t('dashboard.workSummary')}>
       <div className="clinical-doctor-ribbon-heading"><span className="clinical-doctor-ribbon-mark" /><span>{t('dashboard.doctorCare')}</span><small>{t('dashboard.intro')}</small></div>
       <div className="clinical-doctor-ribbon-grid">{metrics.map((metric) => <article key={metric.label}><div><span>{metric.label}</span><Icon name={metric.icon} /></div><strong>{metric.value.toLocaleString()}</strong></article>)}</div>

@@ -170,6 +170,7 @@ export default function PatientBookings() {
 								{order.bookingOrderTotalAmount} {order.bookingOrderCurrency}
 							</p>
 							<Link href="/mypage/payments">{w('payments')}</Link>
+							{order.bookingOrderItems.some((item: any) => !item.appointmentId) && <p>{w('bookingNextStep')}</p>}
 							<label>
 								{w('provider')}
 								<select

@@ -11,6 +11,7 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 import { MessageKey } from '@/libs/i18n/messages';
 import Link from 'next/link';
+import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 
 const LIMIT = 10;
 const transitions: Record<AppointmentStatus, AppointmentStatus[]> = {
@@ -28,6 +29,7 @@ const statusKeys: Record<AppointmentStatus, MessageKey> = {
 
 export default function DoctorAppointments() {
   const t = useTranslation();
+  const w = useWorkspaceText();
   const { language } = usePreferences();
   const format = new Intl.DateTimeFormat({ KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' }[language], { dateStyle: 'medium', timeStyle: 'short' });
   const session = useReactiveVar(userVar);
@@ -51,6 +53,8 @@ export default function DoctorAppointments() {
   };
 
   return <StaffRolePage role={MemberType.DOCTOR} titleKey="dashboard.myAppointments" introKey="staff.appointmentsIntro">
+    <p>{w('bookingFlow')}</p>
+    <div className="clinical-resource-actions"><Link href="/doctor-workspace/bookings">{w('bookings')}</Link></div>
     <section className="clinical-staff-panel clinical-admin-resource"><header><h2>{t('dashboard.myAppointments')}</h2></header>
       {feedback && <p className="clinical-admin-feedback" role="status">{feedback}</p>}
       {loading && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}

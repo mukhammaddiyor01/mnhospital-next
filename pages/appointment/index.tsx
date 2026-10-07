@@ -13,6 +13,7 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
 import { translate } from '@/libs/i18n/messages';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
+import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 
 const mongoId = /^[a-f\d]{24}$/i;
 const demoServices = [
@@ -59,6 +60,7 @@ const demoServices = [
 
 const AppointmentPage = () => {
 	const t = useTranslation();
+	const w = useWorkspaceText();
 	const specialtyLabel = useDoctorSpecialtyLabel();
 	const { language } = usePreferences();
 	const locale =
@@ -254,7 +256,7 @@ const AppointmentPage = () => {
 						<h2>{t('booking.success')}</h2>
 						<p>
 							{t('booking.status')}: {order.bookingOrderStatus}.{' '}
-							{t('booking.successIntro')}
+							{w('bookingNextStep')}
 						</p>
 						<Link className="clinical-primary-button" href="/mypage/bookings">
 							{t('booking.order')}

@@ -131,7 +131,7 @@ const StaffWorkspace = ({
 					'tasks',
 				]
 			: role === MemberType.DOCTOR
-				? ['articles', 'departments', 'schedule']
+				? ['bookings', 'articles', 'departments', 'schedule']
 				: ['bookings', 'payments']
 		).map((page) => ({
 			href: `${workspaceRoot}/${page}`,

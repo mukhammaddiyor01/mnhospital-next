@@ -1,6 +1,21 @@
 import { operation } from '@/apollo/workspace/operations';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { ResourceConfig } from './ResourcePanel';
+export const doctorBookings: ResourceConfig = {
+	role: MemberType.DOCTOR,
+	title: 'bookings',
+	list: operation('query', 'getMyDoctorBookingRequests', 'BookingOrderInquiry',
+		'list { _id bookingOrderId orderCode bookingOrderStatus serviceId serviceName serviceDuration requestedStartAt appointmentId } metaCounter { total }'),
+	listKey: 'getMyDoctorBookingRequests',
+	columns: [
+		{ name: 'orderCode', label: 'code' },
+		{ name: 'serviceName', label: 'service' },
+		{ name: 'requestedStartAt', label: 'start' },
+		{ name: 'serviceDuration', label: 'duration' },
+		{ name: 'bookingOrderStatus', label: 'status' },
+	],
+	search: true,
+};
 export const departments: ResourceConfig = {
 	role: MemberType.DOCTOR,
 	title: 'departments',
