@@ -277,3 +277,21 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
 // Keep the waves attached to their edges at the same size on every breakpoint.
 .clinical-animated-wave--header { height: 12px; bottom: -12px; }
 .clinical-animated-wave--footer { height: 20px; top: -20px; }
+
+
+.clinical-staff-login-links { gap: 8px; }
+.clinical-staff-login-links .clinical-staff-signin {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  text-decoration: none;
+}
+.clinical-staff-login-links .clinical-staff-signin:focus-visible { outline: 2px solid var(--clinical-primary); outline-offset: 3px; }
+.clinical-staff-login-links .clinical-staff-signin--doctor { color: #124b76; border-color: #92c6e7; background: #d8efff; }
+.clinical-staff-login-links .clinical-staff-signin--doctor:hover { background: #bee3fa; }
+.clinical-staff-login-links .clinical-staff-signin--receptionist { color: #18543d; border-color: #99cdb1; background: #d8f1e5; }
+.clinical-staff-login-links .clinical-staff-signin--receptionist:hover { background: #bce4ce; }
