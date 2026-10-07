@@ -1,0 +1,876 @@
+{
+  "businessOperations": 143,
+  "coveredBusinessOperations": 143,
+  "operations": [
+    {
+      "field": "getMyAdminProfile",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAdminDashboardStats",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getPatientActivityByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAllArticlesByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getCommentsByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAdvertisements",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAdvertisementsByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyAppointments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAppointments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getRooms",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getArticle",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getArticles",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyArticles",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyCart",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyBookingOrders",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyBookingOrder",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyPayments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyPayment",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getBookingOrders",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getPayments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getComments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDepartments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorFollowings",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorFollowers",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyDoctorReports",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyDoctorReport",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyPatientReports",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyPatientReport",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorSchedules",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAvailableDoctorSlots",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyDoctorProfile",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyDoctorDashboardStats",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorDashboardStatsByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorsByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctors",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctor",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMemberFollowings",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMemberFollowers",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "checkAuth",
+      "kind": "query",
+      "frontendContract": false,
+      "internalDiagnostic": true
+    },
+    {
+      "field": "checkAuthRoles",
+      "kind": "query",
+      "frontendContract": false,
+      "internalDiagnostic": true
+    },
+    {
+      "field": "getMember",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyConversations",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyConversation",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyMessages",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getPublishedNotices",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getNoticesByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyNotifications",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyNotification",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyPatientProfile",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getPatientsByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getPatientByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyPreferences",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyReceptionistProfile",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getReceptionists",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getReceptionistByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyReceptionistDashboardStats",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyReceptionistReports",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyReceptionistAppointmentQueue",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getReceptionistDashboardStatsByAdmin",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getReceptionTasks",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getReceptionTask",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getService",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getRecommendedServices",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getFavorites",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getVisited",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getServices",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getDoctorServices",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "loginAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAllMembersByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMemberByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getAllServicesByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateServiceByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removeServiceByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateArticleByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removeArticleByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removeCommentByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createAdvertisement",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateAdvertisement",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removeAdvertisement",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "askHospitalAssistant",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createAppointment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "cancelAppointment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateAppointmentStatus",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createRoom",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateRoom",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createArticle",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "likeTargetArticle",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateArticle",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createCart",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "addCartItem",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removeCartItem",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createBookingOrder",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "cancelBookingOrder",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createPayment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updatePaymentStatus",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "prepareEximbayPayment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createComment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateComment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createDepartment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "subscribeDoctor",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "unsubscribeDoctor",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createDoctorReport",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateDoctorReport",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "upsertMyDoctorSchedule",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMyDoctorProfile",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createDoctorByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "loginDoctor",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateDoctorStatusByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "likeTargetDoctor",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "subscribe",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "unsubscribe",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "signup",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "login",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "socialAuthenticate",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMember",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "likeTargetMember",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "imageUploader",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "imagesUploader",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "startDirectConversation",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "sendDirectMessage",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "markMyMessagesRead",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createNotice",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateNotice",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "archiveNotice",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "markMyNotificationRead",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "markAllMyNotificationsRead",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "archiveMyNotification",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createPatientProfile",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMyPatientProfile",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "uploadMyPatientImage",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updatePatientStatusByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMyPreferences",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "loginReceptionist",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createReceptionist",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMyReceptionistProfile",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "checkInReceptionistAppointment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateReceptionistByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateReceptionistStatusByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removeReceptionistByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createReceptionTask",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateReceptionTaskStatus",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createService",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "likeTargetService",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateService",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    }
+  ]
+}
