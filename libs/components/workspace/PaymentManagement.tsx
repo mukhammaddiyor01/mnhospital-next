@@ -70,6 +70,22 @@ export default function PaymentManagement({
 						{selected.paymentProvider} · {selected.paymentMethod} ·{' '}
 						{selected.paymentStatus}
 					</p>
+					<dl>
+						{(
+							['bookingOrderId', 'patientId', 'doctorId', 'serviceId'] as const
+						).map((field, index) => (
+							<div key={field}>
+								<dt>
+									{w(
+										(['booking', 'patient', 'doctor', 'service'] as const)[
+											index
+										],
+									)}
+								</dt>
+								<dd>{selected[field]}</dd>
+							</div>
+						))}
+					</dl>
 					{feedback && <p role="alert">{feedback}</p>}
 					<div className="clinical-resource-actions">
 						{(transitions[selected.paymentStatus] ?? []).map((status) => (

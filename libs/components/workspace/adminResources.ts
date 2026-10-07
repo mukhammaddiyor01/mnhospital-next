@@ -90,7 +90,7 @@ export const bookings = (
 	search: true,
 });
 export const paymentSelection =
-	'list { _id bookingOrderId paymentAmount paymentCurrency paymentProvider paymentMethod paymentStatus createdAt } metaCounter { total }';
+	'list { _id bookingOrderId patientId doctorId serviceId paymentAmount paymentCurrency paymentProvider paymentMethod paymentStatus createdAt } metaCounter { total }';
 export const payments = (
 	role: MemberType.ADMIN | MemberType.RECEPTIONIST,
 ): ResourceConfig => ({
