@@ -295,3 +295,29 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
 .clinical-staff-login-links .clinical-staff-signin--doctor:hover { background: #bee3fa; }
 .clinical-staff-login-links .clinical-staff-signin--receptionist { color: #18543d; border-color: #99cdb1; background: #d8f1e5; }
 .clinical-staff-login-links .clinical-staff-signin--receptionist:hover { background: #bce4ce; }
+
+.clinical-staff-login-links .clinical-staff-signin--admin {
+  position: relative;
+  overflow: hidden;
+  color: #e4ffef;
+  border-color: #34463e;
+  background: #090d0b;
+  font-family: 'Courier New', monospace;
+  box-shadow: inset 0 0 0 1px rgba(109, 231, 169, .08);
+}
+.clinical-staff-login-links .clinical-staff-signin--admin:hover { background: #15221b; border-color: #6de7a9; }
+.clinical-admin-signin-label { position: relative; z-index: 1; }
+.clinical-admin-signin-glitch { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }
+.clinical-admin-signin-glitch--cyan { color: #72f5ff; clip-path: inset(22% 0 49%); animation: clinical-admin-glitch-cyan 4.8s steps(1, end) infinite; }
+.clinical-admin-signin-glitch--pink { color: #ff80bd; clip-path: inset(57% 0 18%); animation: clinical-admin-glitch-pink 4.8s steps(1, end) infinite; }
+@keyframes clinical-admin-glitch-cyan {
+  0%, 90%, 100% { opacity: 0; transform: translateX(0); }
+  91%, 95% { opacity: 1; transform: translateX(-2px); }
+  93%, 97% { opacity: .75; transform: translateX(2px); }
+}
+@keyframes clinical-admin-glitch-pink {
+  0%, 91%, 100% { opacity: 0; transform: translateX(0); }
+  92%, 96% { opacity: .8; transform: translateX(2px); }
+  94%, 98% { opacity: 1; transform: translateX(-1px); }
+}
+@media (prefers-reduced-motion: reduce) { .clinical-admin-signin-glitch { animation: none; display: none; } }

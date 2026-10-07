@@ -219,7 +219,11 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
           <div className="clinical-staff-login-links">
             <Link className="clinical-staff-signin clinical-staff-signin--doctor" href="/account/doctor-signin">{t('auth.doctorSignin')}</Link>
             <Link className="clinical-staff-signin clinical-staff-signin--receptionist" href="/account/receptionist-signin">{t('dashboard.receptionistSignin')}</Link>
-            <Link className="clinical-staff-signin clinical-staff-signin--admin" href="/account/admin-signin">{t('dashboard.adminSignin')}</Link>
+            <Link className="clinical-staff-signin clinical-staff-signin--admin" href="/account/admin-signin">
+              <span className="clinical-admin-signin-label">{t('dashboard.adminSignin')}</span>
+              <span className="clinical-admin-signin-glitch clinical-admin-signin-glitch--cyan" aria-hidden="true">{t('dashboard.adminSignin')}</span>
+              <span className="clinical-admin-signin-glitch clinical-admin-signin-glitch--pink" aria-hidden="true">{t('dashboard.adminSignin')}</span>
+            </Link>
           </div>
           <button
             className="clinical-auth-mobile-switch"
