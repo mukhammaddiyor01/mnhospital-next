@@ -27,6 +27,9 @@ export type ResourceField = {
 	min?: number;
 	max?: number;
 	maxLength?: number;
+	minLength?: number;
+	clearable?: boolean;
+	editOnly?: boolean;
 	step?: string;
 	options?: (string | { value: string; label: string })[];
 	readonly?: boolean;
@@ -43,6 +46,8 @@ export type ResourceConfig = {
 	columns: ResourceField[];
 	fields?: ResourceField[];
 	create?: DocumentNode;
+	createDisabled?: boolean;
+	createDisabledReason?: WorkspaceTextKey;
 	update?: DocumentNode;
 	createVariables?: (input: RecordItem) => RecordItem;
 	updateVariables?: (input: RecordItem, record: RecordItem) => RecordItem;
@@ -124,7 +129,9 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 	useEffect(() => {
 		if (editor !== undefined)
 			formRef.current
-				?.querySelector<HTMLInputElement>('input,select,textarea')
+				?.querySelector<HTMLInputElement>(
+					'input:not(:disabled),select:not(:disabled),textarea:not(:disabled)',
+				)
 				?.focus();
 	}, [editor]);
 	const open = (record: RecordItem | null) => {
@@ -144,10 +151,12 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 	const save = async (event: FormEvent) => {
 		event.preventDefault();
 		if (pending.current || uploading) return;
+		if (!editor && config.createDisabled) return;
 		const operation = editor ? config.update : config.create;
 		if (!operation) return;
 		const input: RecordItem = {};
 		for (const field of config.fields ?? []) {
+			if (field.editOnly && !editor) continue;
 			if (field.readonly && editor) continue;
 			const value = draft[field.name];
 			if (value === '' || value == null) {
@@ -155,6 +164,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 					setFeedback(`${w(field.label)}: ${w('choose')}`);
 					return;
 				}
+				if (editor && field.clearable) input[field.name] = '';
 				continue;
 			}
 			input[field.name] =
@@ -217,6 +227,9 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 			setBusy(false);
 		}
 	};
+	const editorFields = (config.fields ?? []).filter(
+		(field) => !field.editOnly || editor,
+	);
 	const filtered = search
 		? rows.filter((row) =>
 				config.columns.some((field) =>
@@ -267,8 +280,11 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 			{editor !== undefined && (
 				<form ref={formRef} className="clinical-resource-form" onSubmit={save}>
 					<h3>{w(editor ? 'edit' : 'create')}</h3>
+					{!editor && config.createDisabledReason && config.createDisabled && (
+						<p role="status">{w(config.createDisabledReason)}</p>
+					)}
 					<fieldset disabled={busy || uploading}>
-						{(config.fields ?? []).map((field) => (
+						{editorFields.map((field) => (
 							<label key={field.name}>
 								{w(field.label)}
 								{field.options && !(field.readonly && Boolean(editor)) ? (
@@ -277,7 +293,10 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 										required={field.required}
 										value={String(draft[field.name] ?? '')}
 										onChange={(e) =>
-											setDraft((d) => ({ ...d, [field.name]: e.target.value }))
+											setDraft((d) => ({
+												...d,
+												[field.name]: e.target.value,
+											}))
 										}
 									>
 										<option value="">{w('choose')}</option>
@@ -298,13 +317,17 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 										disabled={field.readonly && Boolean(editor)}
 										required={field.required}
 										maxLength={field.maxLength}
+										minLength={field.minLength}
 										value={
 											Array.isArray(draft[field.name])
 												? draft[field.name].join('\n')
 												: (draft[field.name] ?? '')
 										}
 										onChange={(e) =>
-											setDraft((d) => ({ ...d, [field.name]: e.target.value }))
+											setDraft((d) => ({
+												...d,
+												[field.name]: e.target.value,
+											}))
 										}
 									/>
 								) : (
@@ -314,6 +337,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 										min={field.min}
 										max={field.max}
 										maxLength={field.maxLength}
+										minLength={field.minLength}
 										step={field.step}
 										disabled={field.readonly && Boolean(editor)}
 										checked={
@@ -366,7 +390,10 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 						))}
 					</fieldset>
 					<div className="clinical-resource-actions">
-						<button type="submit" disabled={busy || uploading}>
+						<button
+							type="submit"
+							disabled={busy || uploading || (!editor && config.createDisabled)}
+						>
 							{w('save')}
 						</button>
 						<button
