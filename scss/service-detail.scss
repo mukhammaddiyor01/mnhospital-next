@@ -1,0 +1,38 @@
+.clinical-shell .clinical-service-page {
+	min-width: 0;
+	min-height: auto;
+	padding: 0;
+	background: var(--clinical-surface);
+	> .container { width: 100%; margin: 0; }
+	.detail-layout { grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr); align-items: start; }
+	.detail-panel, .detail-aside { min-width: 0; padding: 24px; overflow-wrap: anywhere; }
+	.detail-panel h1 { font-size: clamp(26px, 3vw, 36px); line-height: 1.2; letter-spacing: -.04em; }
+	.detail-panel > p { font-size: 14px; }
+	.detail-icon { margin-bottom: 20px; }
+	.detail-aside h2 { font-size: 23px; line-height: 1.25; }
+	.button { max-width: 100%; padding: 12px 18px; text-align: center; }
+	.detail-meta { gap: 12px; margin: 22px 0; }
+	.detail-meta > span { min-width: 0; }
+	.detail-meta .material-symbols-rounded { flex-shrink: 0; }
+	.related-section { margin-top: 32px; }
+	.section-heading h2 { font-size: 25px; overflow-wrap: anywhere; }
+	.related-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	.related-card { min-width: 0; overflow-wrap: anywhere; }
+	.comments-section { margin-top: 32px; padding-top: 24px; }
+	.comments-section .section-heading, .comment-form-footer { display: flex; flex-wrap: wrap; gap: 12px; }
+	.clinical-service-error-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+}
+
+@media (max-width: 1120px) {
+	.clinical-shell .clinical-service-page {
+		.detail-layout { grid-template-columns: minmax(0, 1fr); }
+		.related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+}
+
+@media (max-width: 680px) {
+	.clinical-shell .clinical-service-page {
+		.detail-panel, .detail-aside { padding: 20px; }
+		.related-grid { grid-template-columns: minmax(0, 1fr); }
+	}
+}

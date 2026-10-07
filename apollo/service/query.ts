@@ -31,7 +31,7 @@ export const GET_SERVICE = gql`
 		getService(serviceId: $serviceId) {
 			_id serviceName departmentId serviceType serviceStatus serviceRoomName serviceRoom serviceTitle servicePrice
 			serviceViews serviceLikes serviceComments serviceRank serviceImages serviceDesc serviceDuration memberId
-			memberData { _id docFullName docSpecialty docImage docExperience docPoints docPatients }
+			memberData { _id memberStatus docFullName docSpecialty docImage docExperience docPoints docPatients }
 			meLiked { memberId likeRefId myFavorite }
 		}
 	}

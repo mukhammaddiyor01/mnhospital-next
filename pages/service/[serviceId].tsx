@@ -14,6 +14,8 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
 import { MessageKey } from '@/libs/i18n/messages';
 import { ServiceType } from '@/libs/components/service/enums/service.enum';
+import { Service } from '@/libs/components/service/types/service';
+import { MemberStatus } from '@/libs/components/member/enums/member.enum';
 
 const previewServices: Record<string, { title: MessageKey; description: MessageKey; type: ServiceType }> = {
 	'general-medicine': { title: 'services.demoGeneral', description: 'services.demoGeneralDesc', type: ServiceType.CONSULTATION },
@@ -24,36 +26,59 @@ const previewServices: Record<string, { title: MessageKey; description: MessageK
 	dentistry: { title: 'services.demoDentistry', description: 'services.demoDentistryDesc', type: ServiceType.DENTISTRY },
 };
 
+type ServiceDetail = Omit<Service, 'memberData'> & {
+	memberData?: (NonNullable<Service['memberData']> & { memberStatus: MemberStatus }) | null;
+	meLiked?: Array<{ myFavorite: boolean }>;
+};
+
 const ServiceDetailPage = () => {
 	const t = useTranslation();
 	const typeLabel = useServiceTypeLabel();
 	const router = useRouter();
-	const serviceId = String(router.query.serviceId ?? '');
+	const serviceId = typeof router.query.serviceId === 'string' ? router.query.serviceId : '';
 	const isApiService = /^[a-f\d]{24}$/i.test(serviceId);
 	const previewService = previewServices[serviceId];
-	const fallbackTitle = previewService ? t(previewService.title) : serviceId.replaceAll('-', ' ');
-	const { data, loading, error } = useQuery(GET_SERVICE, { variables: { serviceId }, skip: !isApiService || !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-and-network' });
-	const { data: relatedData } = useQuery(GET_RECOMMENDED_SERVICES, { variables: { serviceId, limit: 3 }, skip: !isApiService || !process.env.NEXT_PUBLIC_API_GRAPHQL_URL, fetchPolicy: 'cache-first' });
-	const service = data?.getService;
+	const { data, loading, error, refetch } = useQuery<{ getService: ServiceDetail }>(GET_SERVICE, {
+		variables: { serviceId }, skip: !router.isReady || !isApiService, fetchPolicy: 'cache-and-network',
+	});
+	const service = data?.getService?._id === serviceId ? data.getService : undefined;
+	const { data: relatedData } = useQuery<{ getRecommendedServices: { list: Service[] } }>(GET_RECOMMENDED_SERVICES, {
+		variables: { serviceId, limit: 3 }, skip: !service, fetchPolicy: 'cache-first',
+	});
 	const relatedServices = relatedData?.getRecommendedServices?.list ?? [];
-	const title = service?.serviceTitle ?? fallbackTitle;
-	if (!router.isReady || (loading && !service)) return <div className="inner-page"><div className="container"><ServiceLoading /></div></div>;
-	return <div className="inner-page"><div className="container">
+	const title = service?.serviceTitle || service?.serviceName || (previewService ? t(previewService.title) : t('nav.services'));
+	const description = service ? service.serviceDesc : previewService ? t(previewService.description) : undefined;
+	const canBook = service ? service.memberData?.memberStatus === MemberStatus.ACTIVE : Boolean(previewService);
+	if (!router.isReady || (isApiService && loading && !service)) return <div className="inner-page clinical-service-page"><div className="container"><ServiceLoading /></div></div>;
+	if (!service && !previewService) return <div className="inner-page clinical-service-page"><div className="container">
+		<section className="detail-panel clinical-service-error" role="alert">
+			<h1>{isApiService ? t('activity.unavailable') : t('notFound.title')}</h1>
+			<div className="clinical-service-error-actions">
+				{isApiService && <button type="button" className="button button-primary" onClick={() => void refetch().catch(() => undefined)}>{t('patient.retry')}</button>}
+				<Link className="button button-outline" href="/service">{t('nav.services')}</Link>
+			</div>
+		</section>
+	</div></div>;
+	return <div className="inner-page clinical-service-page"><div className="container">
 		<div className="detail-layout">
 			<article className="detail-panel">
 				<div className="detail-header"><div className="detail-icon"><Icon name="medical_services" /></div>{service && <LikeButton mutation={LIKE_TARGET_SERVICE} id={service._id} variableName="serviceId" initialLiked={Boolean(service.meLiked?.[0]?.myFavorite)} />}</div>
 				<span className="eyebrow">{typeLabel(service?.serviceType ?? previewService?.type)}</span>
-				<h1>{title.charAt(0).toUpperCase() + title.slice(1)}</h1>
-				<p>{service?.serviceDesc ?? (previewService ? t(previewService.description) : t('serviceDetail.summaryFallback'))}</p>
-				<div className="detail-meta"><span><Icon name="schedule" /> {service?.serviceDuration ?? t('serviceDetail.available')}</span><span><Icon name="payments" /> {service?.servicePrice ? formatKrw(service.servicePrice) : t('serviceDetail.priceRequest')}</span><span><Icon name="location_on" /> {service?.serviceRoom ?? 'MN Hospital'}</span></div>
-				<Link className="button button-primary" href={`/appointment?service=${service?._id ?? serviceId}`}>{t('serviceDetail.book')} <span>→</span></Link>
+				<h1>{title}</h1>
+				{description && <p>{description}</p>}
+				<div className="detail-meta">
+					{(service?.serviceDuration || previewService) && <span><Icon name="schedule" /> {service?.serviceDuration || t('serviceDetail.available')}</span>}
+					<span><Icon name="payments" /> {service && Number.isFinite(service.servicePrice) ? formatKrw(service.servicePrice) : t('serviceDetail.priceRequest')}</span>
+					<span><Icon name="location_on" /> {service?.serviceRoom || 'MN Hospital'}</span>
+				</div>
+				{canBook ? <Link className="button button-primary" href={`/appointment?service=${service?._id ?? serviceId}`}>{t('serviceDetail.book')} <span>→</span></Link> : <p className="query-status" role="status">{t('booking.unavailable')}</p>}
 			</article>
 			<aside className="detail-aside"><span className="eyebrow">{t('serviceDetail.asideKicker')}</span><h2>{t('serviceDetail.asideTitle')}</h2><p>{t('serviceDetail.asideIntro')}</p><Link className="button button-secondary" href="/doctor">{t('serviceDetail.findDoctor')}</Link></aside>
 		</div>
-		{loading && <span className="query-status">{t('serviceDetail.loading')}</span>}
-		{error && <span className="query-status">{t('serviceDetail.reconnecting')}</span>}
-		{relatedServices.length > 0 && <section className="related-section"><div className="section-heading"><div><span className="eyebrow">{t('serviceDetail.relatedKicker')}</span><h2>{t('serviceDetail.relatedTitle')}</h2></div></div><div className="related-grid">{relatedServices.map((item: any) => <Link className="related-card" href={`/service/${item._id}`} key={item._id}><Icon name="arrow_outward" /><strong>{item.serviceTitle}</strong><span>{item.serviceDesc}</span></Link>)}</div></section>}
-		{service && <CommentsSection targetId={service._id} group={ReferenceGroup.SERVICE} />}
+		{loading && <p className="query-status" role="status">{t('serviceDetail.loading')}</p>}
+		{error && <p className="query-status" role="alert">{t('activity.unavailable')}</p>}
+		{relatedServices.length > 0 && <section className="related-section"><div className="section-heading"><div><span className="eyebrow">{t('serviceDetail.relatedKicker')}</span><h2>{t('serviceDetail.relatedTitle')}</h2></div></div><div className="related-grid">{relatedServices.map((item) => <Link className="related-card" href={`/service/${item._id}`} key={item._id}><Icon name="arrow_outward" /><strong>{item.serviceTitle}</strong><span>{item.serviceDesc}</span></Link>)}</div></section>}
+		{service && <CommentsSection key={service._id} targetId={service._id} group={ReferenceGroup.SERVICE} />}
 	</div></div>;
 };
 
