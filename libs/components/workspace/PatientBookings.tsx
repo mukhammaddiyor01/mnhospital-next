@@ -13,6 +13,7 @@ import {
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import ResourcePanel, { RecordItem, ResourceConfig } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
+import { useEximbayCheckout } from '@/libs/payments/useEximbayCheckout';
 export default function PatientBookings() {
 	const w = useWorkspaceText();
 	const session = useReactiveVar(userVar);
@@ -21,6 +22,7 @@ export default function PatientBookings() {
 	const [feedback, setFeedback] = useState('');
 	const [line, setLine] = useState<number | null>(null);
 	const [provider, setProvider] = useState('CASH');
+	const eximbay = useEximbayCheckout(provider === 'EXIMBAY');
 	const keys = useRef<Record<string, string>>({});
 	const config = useMemo<ResourceConfig>(
 		() => ({
@@ -52,7 +54,7 @@ export default function PatientBookings() {
 	const [cancel, cancelling] = useMutation(CANCEL_ORDER);
 	const [payment, paying] = useMutation(CREATE_PAYMENT);
 	const [appointment, creating] = useMutation(CREATE_APPOINTMENT);
-	const busy = cancelling.loading || paying.loading || creating.loading;
+	const busy = cancelling.loading || paying.loading || creating.loading || eximbay.loading;
 	const refresh = async () => {
 		await detail.refetch();
 		setRevision((v) => v + 1);
@@ -84,7 +86,7 @@ export default function PatientBookings() {
 			}
 		}
 		try {
-			await payment({
+			const result = await payment({
 				variables: {
 					input: {
 						bookingOrderId: order._id,
@@ -97,6 +99,9 @@ export default function PatientBookings() {
 				},
 			});
 			setFeedback(w('paymentRecorded'));
+			if (provider === 'EXIMBAY' && result.data?.createPayment?.paymentStatus === 'PENDING') {
+				await eximbay.openCheckout(result.data.createPayment._id);
+			}
 			await refresh();
 		} catch (e: any) {
 			setFeedback(e.message);
@@ -141,6 +146,7 @@ export default function PatientBookings() {
 	};
 	return (
 		<>
+			{eximbay.script}
 			<ResourcePanel key={revision} config={config} />
 			{selected && (
 				<section className="clinical-inner-section clinical-resource-panel">
@@ -175,6 +181,7 @@ export default function PatientBookings() {
 									<option value="EXIMBAY">Eximbay</option>
 								</select>
 							</label>
+							{provider === 'EXIMBAY' && !eximbay.ready && <p role="status">{eximbay.error || w('paymentLoading')}</p>}
 							{order.bookingOrderItems.map((item: any, index: number) => (
 								<div className="clinical-resource-actions" key={index}>
 									<span>
@@ -185,7 +192,7 @@ export default function PatientBookings() {
 										order.bookingOrderStatus,
 									) && (
 										<button
-											disabled={busy}
+											disabled={busy || (provider === 'EXIMBAY' && !eximbay.ready)}
 											onClick={() => void preparePayment(item)}
 										>
 											{w('pay')}

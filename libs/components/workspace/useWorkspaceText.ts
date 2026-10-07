@@ -62,6 +62,8 @@ const text = {
 		'To‘lov xizmati yuklanmadi. Qayta urinib ko‘ring.',
 		'결제 서비스를 불러올 수 없습니다. 다시 시도하세요.',
 	],
+	paymentLoading: ['Loading secure card checkout…', 'Xavfsiz karta to‘lov oynasi yuklanmoqda…', '안전한 카드 결제를 불러오는 중…'],
+	paymentChecking: ['Checking payment status…', 'To‘lov holati tekshirilmoqda…', '결제 상태를 확인하는 중…'],
 	paymentNotice: [
 		'Only the hospital payment record confirms payment. Cash is confirmed by reception; online payment requires the configured gateway.',
 		'To‘lov hospital yozuvi orqali tasdiqlanadi. Naqd to‘lovni qabulxona tasdiqlaydi; onlayn to‘lov sozlangan provayderni talab qiladi.',

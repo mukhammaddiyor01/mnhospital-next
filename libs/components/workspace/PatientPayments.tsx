@@ -1,28 +1,18 @@
 import { useMemo, useState } from 'react';
-import Script from 'next/script';
-import { useMutation, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
 	MY_PAYMENTS,
 	MY_PAYMENT,
-	PREPARE_EXIMBAY,
 } from '@/apollo/workspace/patientOperations';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import ResourcePanel, { RecordItem, ResourceConfig } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
-const configured =
-	process.env.NEXT_PUBLIC_EXIMBAY_SDK_URL ??
-	'https://api-test.eximbay.com/v1/javascriptSDK.js';
-const sdkUrl =
-	/^https:\/\/(api-test|api)\.eximbay\.com\/v1\/javascriptSDK\.js$/.test(
-		configured,
-	)
-		? configured
-		: '';
+import { useEximbayCheckout } from '@/libs/payments/useEximbayCheckout';
 export default function PatientPayments() {
 	const w = useWorkspaceText();
 	const [selected, setSelected] = useState<RecordItem | null>(null);
 	const [feedback, setFeedback] = useState('');
-	const [ready, setReady] = useState(false);
+	const eximbay = useEximbayCheckout(selected?.paymentProvider === 'EXIMBAY');
 	const config = useMemo<ResourceConfig>(
 		() => ({
 			role: MemberType.PATIENT,
@@ -45,38 +35,19 @@ export default function PatientPayments() {
 		skip: !selected,
 		fetchPolicy: 'network-only',
 	});
-	const [prepare, state] = useMutation(PREPARE_EXIMBAY);
 	const payment = detail.data?.getMyPayment;
 	const pay = async () => {
-		if (!selected || state.loading || !ready) return;
+		if (!selected || eximbay.loading || !eximbay.ready) return;
 		setFeedback('');
 		try {
-			const response = await prepare({
-				variables: { input: { paymentId: selected._id } },
-			});
-			const payload = JSON.parse(
-				JSON.stringify(response.data.prepareEximbayPayment),
-				(key, value) => (key === '__typename' ? undefined : value),
-			);
-			const sdk = (window as any).EXIMBAY;
-			if (!sdk?.request_pay) throw new Error(w('paymentUnavailable'));
-			sdk.request_pay(payload);
+			await eximbay.openCheckout(selected._id);
 		} catch (e: any) {
 			setFeedback(e.message);
 		}
 	};
 	return (
 		<>
-			{selected?.paymentProvider === 'EXIMBAY' && sdkUrl && (
-				<Script
-					src={sdkUrl}
-					onReady={() => setReady(true)}
-					onError={() => {
-						setReady(false);
-						setFeedback(w('paymentUnavailable'));
-					}}
-				/>
-			)}
+			{eximbay.script}
 			<ResourcePanel config={config} />
 			{selected && (
 				<section className="clinical-inner-section clinical-resource-panel">
@@ -86,6 +57,8 @@ export default function PatientPayments() {
 					</header>
 					{detail.error && <p role="alert">{detail.error.message}</p>}
 					{feedback && <p role="alert">{feedback}</p>}
+					{eximbay.error && <p role="alert">{eximbay.error}</p>}
+					{selected.paymentProvider === 'EXIMBAY' && !eximbay.ready && !eximbay.error && <p role="status">{w('paymentLoading')}</p>}
 					{payment && (
 						<>
 							<p>
@@ -96,7 +69,7 @@ export default function PatientPayments() {
 							{selected.paymentProvider === 'EXIMBAY' &&
 								payment.paymentStatus === 'PENDING' && (
 									<button
-										disabled={state.loading || !ready}
+										disabled={eximbay.loading || !eximbay.ready}
 										onClick={() => void pay()}
 									>
 										{w('pay')}

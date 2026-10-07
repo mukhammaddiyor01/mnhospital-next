@@ -69,7 +69,7 @@ export const PREPARE_EXIMBAY = operation(
 	'mutation',
 	'prepareEximbayPayment',
 	'EximbayPrepareInput',
-	'fgkey payment { transaction_type order_id currency amount lang } merchant { mid } buyer { name email } url { return_url status_url }',
+	'fgkey payment { transaction_type order_id currency amount lang } merchant { mid } buyer { name email } url { return_url status_url } settings { display_type }',
 );
 export const MY_APPOINTMENTS = operation(
 	'query',
