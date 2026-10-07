@@ -184,3 +184,9 @@ html[data-theme='dark'] .clinical-staff-content .clinical-messages-layout, html[
 .clinical-resource-search { margin: 12px 18px; width: calc(100% - 36px); }
 .clinical-staff-admin .clinical-resource-panel input, .clinical-staff-admin .clinical-resource-panel select, .clinical-staff-admin .clinical-resource-panel textarea, .clinical-staff-admin .clinical-resource-panel button { background: #172437; border-color: #344257; color: #e8eef6; }
 @media (max-width: 600px) { .clinical-resource-form fieldset { grid-template-columns: 1fr; } }
+
+// Keep all administrative sections reachable as the workspace grows.
+@media (min-width: 761px) {
+  .clinical-staff-sidebar nav { min-height: 0; flex: 1; overflow-y: auto; overscroll-behavior: contain; }
+  .clinical-staff-sidebar-footer, .clinical-staff-brand, .clinical-staff-role { flex-shrink: 0; }
+}
