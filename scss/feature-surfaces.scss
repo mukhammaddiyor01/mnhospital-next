@@ -246,6 +246,8 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
 @media (min-width: 901px) {
   // Reserve the lower right rail for the chat controls; advertisements remain scrollable.
   .clinical-shell .clinical-rail-right { max-height: calc(100dvh - 276px); }
+  .clinical-shell .clinical-rail-right > article { flex-shrink: 0; }
+  .clinical-shell > .clinical-chat-widget .clinical-chat-panel { height: min(510px, calc(100dvh - 210px)); }
 }
 .clinical-chat-launchers {
   position: fixed;
