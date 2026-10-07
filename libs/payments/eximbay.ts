@@ -15,7 +15,7 @@ declare global { interface Window { EXIMBAY?: EximbaySdk; } }
 
 export const getEximbaySdkUrl = (configured?: string) => {
 	const url = configured ?? 'https://api-test.eximbay.com/v3/javascriptSDK.js';
-	return /^https:\/\/(api-test|api)\.eximbay\.com\/v3\/javascriptSDK\.js$/.test(url) ? url : '';
+	return url === 'https://api-test.eximbay.com/v3/javascriptSDK.js' ? url : '';
 };
 
 export const requestEximbayCheckout = (payload: EximbayCheckoutPayload, sdk: EximbaySdk | undefined, errorMessage: string) => {

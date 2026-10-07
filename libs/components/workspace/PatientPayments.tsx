@@ -57,6 +57,7 @@ export default function PatientPayments() {
 					</header>
 					{detail.error && <p role="alert">{detail.error.message}</p>}
 					{feedback && <p role="alert">{feedback}</p>}
+					{selected.paymentProvider === 'EXIMBAY' && <p>{w('paymentSandbox')}</p>}
 					{eximbay.error && <p role="alert">{eximbay.error}</p>}
 					{selected.paymentProvider === 'EXIMBAY' && !eximbay.ready && !eximbay.error && <p role="status">{w('paymentLoading')}</p>}
 					{payment && (

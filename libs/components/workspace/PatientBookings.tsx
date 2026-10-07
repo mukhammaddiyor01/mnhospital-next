@@ -178,9 +178,10 @@ export default function PatientBookings() {
 									disabled={busy}
 								>
 									<option value="CASH">{w('cash')}</option>
-									<option value="EXIMBAY">Eximbay</option>
+									<option value="EXIMBAY">{w('eximbayTest')}</option>
 								</select>
 							</label>
+							{provider === 'EXIMBAY' && <p>{w('paymentSandbox')}</p>}
 							{provider === 'EXIMBAY' && !eximbay.ready && <p role="status">{eximbay.error || w('paymentLoading')}</p>}
 							{order.bookingOrderItems.map((item: any, index: number) => (
 								<div className="clinical-resource-actions" key={index}>

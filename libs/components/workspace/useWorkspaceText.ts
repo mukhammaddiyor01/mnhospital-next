@@ -64,6 +64,8 @@ const text = {
 	],
 	paymentLoading: ['Loading secure card checkout…', 'Xavfsiz karta to‘lov oynasi yuklanmoqda…', '안전한 카드 결제를 불러오는 중…'],
 	paymentChecking: ['Checking payment status…', 'To‘lov holati tekshirilmoqda…', '결제 상태를 확인하는 중…'],
+	eximbayTest: ['Eximbay (test)', 'Eximbay (test)', 'Eximbay (테스트)'],
+	paymentSandbox: ['Test payments only. No real charge.', 'Faqat test to‘lov. Haqiqiy pul yechilmaydi.', '테스트 결제만 가능합니다. 실제 청구되지 않습니다.'],
 	paymentNotice: [
 		'Only the hospital payment record confirms payment. Cash is confirmed by reception; online payment requires the configured gateway.',
 		'To‘lov hospital yozuvi orqali tasdiqlanadi. Naqd to‘lovni qabulxona tasdiqlaydi; onlayn to‘lov sozlangan provayderni talab qiladi.',

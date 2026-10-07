@@ -8,7 +8,8 @@ Module._extensions['.ts'] = (module, filename) => module._compile(ts.transpileMo
 const { getEximbaySdkUrl, requestEximbayCheckout } = require('../libs/payments/eximbay.ts');
 
 assert.equal(getEximbaySdkUrl(), 'https://api-test.eximbay.com/v3/javascriptSDK.js');
-assert.equal(getEximbaySdkUrl('https://api.eximbay.com/v3/javascriptSDK.js'), 'https://api.eximbay.com/v3/javascriptSDK.js');
+assert.equal(getEximbaySdkUrl('https://api-test.eximbay.com/v3/javascriptSDK.js'), 'https://api-test.eximbay.com/v3/javascriptSDK.js');
+assert.equal(getEximbaySdkUrl('https://api.eximbay.com/v3/javascriptSDK.js'), '', 'Production SDK is blocked');
 assert.equal(getEximbaySdkUrl('https://api-test.eximbay.com/v1/javascriptSDK.js'), '');
 assert.equal(getEximbaySdkUrl('https://example.com/javascriptSDK.js'), '');
 
