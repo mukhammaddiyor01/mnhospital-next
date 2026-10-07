@@ -16,6 +16,7 @@ const Top = () => {
   const user = useReactiveVar(userVar);
   const t = useTranslation();
   const isHome = router.pathname === "/";
+  const isStaffSignIn = ['/account/admin-signin', '/account/doctor-signin', '/account/receptionist-signin'].includes(router.pathname);
 
   const searchHandler = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -73,12 +74,12 @@ const Top = () => {
             >
               <span>{initials}</span>
             </Link>
-          ) : (
+          ) : !isStaffSignIn ? (
             <Link className="clinical-signup-top" href="/account/join" aria-label={t('nav.signup')}>
               <span className="clinical-signup-top-text">{t('nav.signup')}</span>
               <span className="clinical-signup-top-icon material-symbols-rounded" aria-hidden="true">person_add</span>
             </Link>
-          )}
+          ) : null}
         </div>
       </div>
       <AnimatedWave variant="header" />

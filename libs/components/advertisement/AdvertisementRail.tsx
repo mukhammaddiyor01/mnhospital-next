@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ADVERTISEMENTS } from '@/apollo/advertisement/query';
 import { formatKrw } from '../common/currency';
@@ -9,7 +8,6 @@ import Icon from '../common/Icon';
 import { resolveApiAsset } from '@/libs/config';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
-import { MessageKey, translate } from '@/libs/i18n/messages';
 
 type AdvertisementRailSide = 'left' | 'right';
 
@@ -22,28 +20,6 @@ interface AdvertisementCardProps {
 	side: AdvertisementRailSide;
 	index: number;
 }
-
-const fallbackAdvertisements: AdvertisementPreview[] = [
-	{ _id: 'ambulance', advertisementTitle: 'Ambulance & Trauma', advertisementContent: 'Instant GPS-dispatched emergency ambulance response.', advertisementLink: 'tel:1800662273', previewLabel: '24/7 DIRECT LINE', previewAction: '1-800-MN-CARE' },
-	{ _id: 'robotic-suite', advertisementTitle: 'Robotic Surgery Excellence', advertisementContent: 'Minimally invasive 3D HD-enabled procedures with sub-millimeter accuracy.', advertisementLink: '/service', previewLabel: 'TECHNOLOGY', previewAction: 'Learn More' },
-	{ _id: 'rapid-care', advertisementTitle: 'Fast-Track Specialist Booking', advertisementContent: 'Skip wait times. Book priority consultations with department directors within 3 hours.', advertisementLink: '/appointment', previewLabel: 'RAPID CARE', previewRank: 'Active Now', previewAction: 'Book Rapid Slot' },
-	{ _id: 'cardiac-camp', advertisementTitle: 'Free Cardiac Screening', advertisementContent: 'This Saturday, 9 AM–2 PM. Complimentary lipid profile, BP & cardiologist triage.', advertisementLink: '/appointment', previewLabel: 'COMMUNITY CAMP', previewRank: 'Free', previewAction: 'Reserve Seat' },
-	{ _id: 'clinical-promo', advertisementTitle: 'Full Body Health Checkup', advertisementContent: 'Comprehensive package includes 72 pathology tests, 3T MRI screen, ECG & expert consult.', advertisementLink: '/service', previewLabel: 'SPECIAL PROMO', previewPrice: 149000, previewOriginalPrice: 220000, previewDiscount: '30% OFF', previewAction: 'View Package' },
-	{ _id: 'telehealth', advertisementTitle: 'Instant Video Consult', advertisementContent: 'Connect securely with certified physicians from your home in under 60 seconds.', advertisementLink: '/appointment', previewLabel: 'TELEHEALTH', previewRank: 'Available', previewAction: 'Start Teleconsult' },
-	{ _id: 'hospital-update', advertisementTitle: 'Hospital Announcement', advertisementContent: 'New Advanced Da Vinci Xi Robotic Suite now operational for urological and spinal surgeries.', advertisementLink: '/article', previewLabel: 'ANNOUNCEMENT' },
-	{ _id: 'accreditation', advertisementTitle: 'JCI & NABH Gold', advertisementContent: 'Global safety standard.', advertisementLink: '/about', previewLabel: 'ACCREDITED' },
-];
-
-const fallbackKeys: Record<string, { title: MessageKey; content: MessageKey; label: MessageKey; rank?: MessageKey; action?: MessageKey; discount?: MessageKey }> = {
-	ambulance: { title: 'ads.ambulance.title', content: 'ads.ambulance.content', label: 'ads.ambulance.label' },
-	'robotic-suite': { title: 'ads.robotic.title', content: 'ads.robotic.content', label: 'ads.robotic.label', action: 'ads.robotic.action' },
-	'rapid-care': { title: 'ads.rapid.title', content: 'ads.rapid.content', label: 'ads.rapid.label', rank: 'ads.rapid.rank', action: 'ads.rapid.action' },
-	'cardiac-camp': { title: 'ads.cardiac.title', content: 'ads.cardiac.content', label: 'ads.cardiac.label', rank: 'ads.cardiac.rank', action: 'ads.cardiac.action' },
-	'clinical-promo': { title: 'ads.promo.title', content: 'ads.promo.content', label: 'ads.promo.label', discount: 'ads.promo.discount', action: 'ads.promo.action' },
-	telehealth: { title: 'ads.telehealth.title', content: 'ads.telehealth.content', label: 'ads.telehealth.label', rank: 'ads.telehealth.rank', action: 'ads.telehealth.action' },
-	'hospital-update': { title: 'ads.update.title', content: 'ads.update.content', label: 'ads.update.label' },
-	accreditation: { title: 'ads.accreditation.title', content: 'ads.accreditation.content', label: 'ads.accreditation.label' },
-};
 
 const advertisementVariants: Record<AdvertisementRailSide, AdvertisementCardVariant[]> = {
 	left: [AdvertisementCardVariant.SUPPORT, AdvertisementCardVariant.SERVICE, AdvertisementCardVariant.PROMO, AdvertisementCardVariant.NEWS],
@@ -83,29 +59,16 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 
 const AdvertisementRail = ({ side }: AdvertisementRailProps) => {
 	const t = useTranslation();
-	const { language } = usePreferences();
-	const localizedFallback = useMemo(() => fallbackAdvertisements.map((advertisement) => {
-		const keys = fallbackKeys[advertisement._id];
-		return {
-			...advertisement,
-			advertisementTitle: translate(language, keys.title),
-			advertisementContent: translate(language, keys.content),
-			previewLabel: translate(language, keys.label),
-			previewRank: keys.rank ? translate(language, keys.rank) : advertisement.previewRank,
-			previewAction: keys.action ? translate(language, keys.action) : advertisement.previewAction,
-			previewDiscount: keys.discount ? translate(language, keys.discount) : advertisement.previewDiscount,
-		};
-	}), [language]);
-	const { data } = useQuery<{ getAdvertisements: { list: Advertisement[] } }>(GET_ADVERTISEMENTS, {
+	const { data, loading, error } = useQuery<{ getAdvertisements: { list: Advertisement[] } }>(GET_ADVERTISEMENTS, {
 		variables: { input: { page: 1, limit: 8 } },
-		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-first',
 	});
-	const advertisements: AdvertisementPreview[] = data?.getAdvertisements?.list?.length ? data.getAdvertisements.list : localizedFallback;
+	const advertisements: AdvertisementPreview[] = data?.getAdvertisements?.list ?? [];
 	const sideAdvertisements = advertisements.filter((_, index) => index % 2 === (side === 'left' ? 0 : 1));
 	const visibleAdvertisements = sideAdvertisements.length ? sideAdvertisements : advertisements.slice(0, 2);
 
 	return <aside className={`clinical-rail clinical-rail-${side}`} aria-label={side === 'left' ? t('ads.leftRail') : t('ads.rightRail')}>
+		{!advertisements.length && <p className="clinical-rail-status" role="status">{t(loading ? 'ads.loading' : error ? 'ads.unavailable' : 'ads.empty')}</p>}
 		{visibleAdvertisements.slice(0, 4).map((advertisement, index) => <AdvertisementCard advertisement={advertisement} index={index} side={side} key={`${advertisement._id}-${side}`} />)}
 	</aside>;
 };

@@ -342,3 +342,5 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
   94%, 98% { opacity: 1; transform: translateX(-1px); }
 }
 @media (prefers-reduced-motion: reduce) { .clinical-admin-signin-glitch { animation: none; display: none; } }
+
+.clinical-rail-status { margin: 0; padding: 14px; color: var(--clinical-muted); border: 1px solid var(--clinical-line); border-radius: 12px; background: var(--clinical-low); font-size: 11px; line-height: 1.5; }
