@@ -244,18 +244,10 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
   bottom: 210px;
 }
 @media (min-width: 901px) {
-  .clinical-right-rail-column { display: flex; min-width: 0; align-self: stretch; flex-direction: column; gap: 16px; }
-  .clinical-shell .clinical-rail-right { position: static; max-height: none; overflow: visible; }
+  // Floating chat controls must not shorten the advertisement rail or create an inner scrollbar.
+  .clinical-shell .clinical-rail-right { max-height: none; overflow: visible; }
   .clinical-shell .clinical-rail-right > article { flex-shrink: 0; }
-  #clinical-rail-chat-slot { position: sticky; top: 96px; padding: 14px; border: 1px solid var(--clinical-line); border-radius: 12px; background: var(--clinical-surface); }
-  .clinical-chat-launchers.is-docked { position: static; width: 100%; }
-  .clinical-chat-launchers.is-docked .clinical-back-to-top:not(.is-visible) { display: none; }
-  .clinical-chat-launchers:not(.is-docked) { display: none; }
-  .clinical-shell > .clinical-chat-widget { right: max(256px, calc((100vw - 1300px) / 2 + 256px)); }
   .clinical-shell > .clinical-chat-widget .clinical-chat-panel { height: min(510px, calc(100dvh - 234px)); }
-}
-@media (min-width: 901px) and (max-width: 1120px) {
-  .clinical-shell > .clinical-chat-widget { right: 208px; }
 }
 .clinical-chat-launchers {
   position: fixed;
@@ -268,7 +260,6 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
   gap: 8px;
 }
 @media (max-width: 900px) {
-  .clinical-right-rail-column { display: none; }
   .clinical-chat-launchers { right: 16px; bottom: calc(80px + env(safe-area-inset-bottom)); width: auto; flex-direction: row; align-items: center; }
   .clinical-chat-launchers button { width: 44px; height: 44px; justify-content: center; padding: 0; }
   .clinical-chat-launchers button > span:last-child:not(.material-symbols-rounded) { display: none; }

@@ -1,10 +1,5 @@
 import AdvertisementRail from './AdvertisementRail';
 
-const RightAdvertisementRail = () => (
-	<div className="clinical-right-rail-column">
-		<AdvertisementRail side="right" />
-		<div id="clinical-rail-chat-slot" />
-	</div>
-);
+const RightAdvertisementRail = () => <AdvertisementRail side="right" />;
 
 export default RightAdvertisementRail;

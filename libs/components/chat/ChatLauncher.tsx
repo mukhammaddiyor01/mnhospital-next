@@ -1,9 +1,6 @@
 import Icon from '@/libs/components/common/Icon';
 import BackToTop from '@/libs/components/common/BackToTop';
 import { useTranslation } from '@/libs/i18n/useTranslation';
-import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useRouter } from 'next/router';
 
 const ChatLauncher = ({
   chatOpen,
@@ -17,17 +14,8 @@ const ChatLauncher = ({
   onAssistantToggle?: () => void;
 }) => {
   const t = useTranslation();
-  const { asPath } = useRouter();
-  const [railSlot, setRailSlot] = useState<HTMLElement | null>(null);
-  useEffect(() => {
-    const desktop = window.matchMedia('(min-width: 901px)');
-    const updateSlot = () => setRailSlot(desktop.matches ? document.getElementById('clinical-rail-chat-slot') : null);
-    updateSlot();
-    desktop.addEventListener('change', updateSlot);
-    return () => desktop.removeEventListener('change', updateSlot);
-  }, [asPath]);
-  const controls = (
-    <div className={`clinical-chat-launchers${railSlot ? ' is-docked' : ''}`}>
+  return (
+    <div className="clinical-chat-launchers">
       <BackToTop />
       <button
         type="button"
@@ -55,6 +43,5 @@ const ChatLauncher = ({
       )}
     </div>
   );
-  return railSlot ? createPortal(controls, railSlot) : controls;
 };
 export default ChatLauncher;
