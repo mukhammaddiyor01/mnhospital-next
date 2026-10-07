@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import Icon from './Icon';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 
@@ -7,13 +7,17 @@ const BackToTop = () => {
 	const [visible, setVisible] = useState(false);
 
 	useEffect(() => {
-		const updateVisibility = () => setVisible(window.scrollY > 300);
+		const updateVisibility = () => {
+			const offset = window.scrollY;
+			setVisible((current) => offset > (current ? 0 : 300));
+		};
 		updateVisibility();
 		window.addEventListener('scroll', updateVisibility, { passive: true });
 		return () => window.removeEventListener('scroll', updateVisibility);
 	}, []);
 
-	const scrollToTop = () => {
+	const scrollToTop = (event: MouseEvent<HTMLButtonElement>) => {
+		event.currentTarget.blur();
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' });
 	};
