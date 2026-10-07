@@ -14,7 +14,10 @@ import { usePreferences } from '@/libs/components/preference/PreferenceProvider'
 interface CommentsSectionProps {
 	targetId: string;
 	group:
-		ReferenceGroup.SERVICE | ReferenceGroup.ARTICLE | ReferenceGroup.DOCTOR;
+		| ReferenceGroup.SERVICE
+		| ReferenceGroup.ARTICLE
+		| ReferenceGroup.DOCTOR
+		| ReferenceGroup.MEMBER;
 }
 
 const UPDATE_COMMENT = operation(
