@@ -273,3 +273,7 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
 @media (prefers-reduced-motion: reduce) { .clinical-chat-launchers button > .material-symbols-rounded { animation: none; } }
 
 @media (pointer: coarse) { .clinical-chat-launchers button { min-height: 44px; } }
+
+// Keep the waves attached to their edges at the same size on every breakpoint.
+.clinical-animated-wave--header { height: 12px; bottom: -12px; }
+.clinical-animated-wave--footer { height: 20px; top: -20px; }
