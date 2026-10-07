@@ -1,0 +1,136 @@
+// Role-specific presentation; authentication stays in the existing page controllers.
+.clinical-role-signin {
+  --portal-accent: #186ea5;
+  --portal-accent-hover: #115581;
+  --portal-soft: #e9f5fd;
+  --portal-line: #d3e6f3;
+  --portal-ink: #16374f;
+  --portal-muted: #587385;
+  --portal-surface: #fff;
+  padding: 16px 0;
+}
+.clinical-role-signin-card { position: relative; display: grid; grid-template-columns: .88fr 1.12fr; min-height: 590px; overflow: hidden; border: 1px solid var(--portal-line); border-radius: 20px; background: var(--portal-surface); box-shadow: 0 16px 50px rgba(21, 59, 80, .09); }
+.clinical-role-signin-visual { position: relative; display: flex; min-width: 0; flex-direction: column; overflow: hidden; padding: 30px 28px 26px; color: var(--portal-ink); border-right: 1px solid var(--portal-line); background: radial-gradient(ellipse at 10% 15%, #fff 0, transparent 65%), linear-gradient(145deg, #e9f7ff, #d4eaff); }
+.clinical-role-signin-brand { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; width: fit-content; color: inherit; text-decoration: none; }
+.clinical-role-signin-brand > span { display: grid; width: 35px; height: 35px; place-items: center; color: var(--portal-accent); border: 1px solid var(--portal-line); border-radius: 10px; background: var(--portal-surface); }
+.clinical-role-signin-brand strong { font-size: 15px; letter-spacing: -.04em; }
+.clinical-role-signin-art { position: relative; display: grid; height: 228px; margin: 24px -12px 16px; place-items: center; }
+.clinical-role-signin-orbit { position: absolute; width: 215px; height: 215px; border: 1px solid rgba(24, 110, 165, .15); border-radius: 50%; }
+.clinical-role-signin-orbit--outer::after { position: absolute; top: 17px; right: 32px; width: 9px; height: 9px; content: ''; border: 3px solid var(--portal-soft); border-radius: 50%; background: var(--portal-accent); box-shadow: 0 0 0 5px rgba(24, 110, 165, .07); }
+.clinical-role-signin-orbit--inner { width: 162px; height: 162px; border-style: dashed; }
+.clinical-role-signin-emblem { position: relative; z-index: 1; display: grid; width: 104px; height: 104px; place-items: center; color: var(--portal-accent); border: 1px solid rgba(255, 255, 255, .9); border-radius: 28px; background: rgba(255, 255, 255, .78); box-shadow: 0 18px 35px rgba(37, 112, 156, .12), inset 0 0 0 5px rgba(255,255,255,.32); transform: rotate(-8deg); }
+.clinical-role-signin-emblem > .material-symbols-rounded { font-size: 54px; transform: rotate(8deg); }
+.clinical-role-signin-pulse { position: absolute; z-index: 2; right: -12px; bottom: 10px; left: -12px; width: calc(100% + 24px); height: 48px; overflow: visible; }
+.clinical-role-signin-pulse path { stroke: var(--portal-accent); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .32; }
+.clinical-role-signin-visual-copy { position: relative; z-index: 1; margin-top: auto; }
+.clinical-role-signin-kicker { color: var(--portal-accent); font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.clinical-role-signin-visual h2 { margin: 12px 0 20px; color: var(--portal-ink); font-size: clamp(21px, 2.4vw, 28px); line-height: 1.2; letter-spacing: -.045em; }
+.clinical-role-signin-visual ul { display: grid; gap: 11px; margin: 0; padding: 0; list-style: none; }
+.clinical-role-signin-visual li { display: flex; align-items: center; gap: 10px; color: var(--portal-muted); font-size: 11px; }
+.clinical-role-signin-visual li .material-symbols-rounded { color: var(--portal-accent); font-size: 17px; }
+.clinical-role-signin-index { margin-top: 28px; color: var(--portal-muted); font-size: 9px; letter-spacing: .12em; opacity: .65; }
+.clinical-role-signin-content { position: relative; display: flex; min-width: 0; flex-direction: column; justify-content: center; padding: 40px 36px; color: var(--portal-ink); }
+.clinical-role-signin-badge { display: inline-flex; align-items: center; align-self: flex-start; gap: 6px; padding: 7px 9px; color: var(--portal-accent); border: 1px solid var(--portal-line); border-radius: 6px; background: var(--portal-soft); font-size: 9px; font-weight: 800; letter-spacing: .04em; }
+.clinical-role-signin-badge .material-symbols-rounded { font-size: 16px; }
+.clinical-role-signin-content h1 { position: relative; margin: 20px 0 12px; color: var(--portal-ink); font-size: clamp(25px, 2.6vw, 34px); font-weight: 800; line-height: 1.15; letter-spacing: -.05em; overflow-wrap: anywhere; }
+.clinical-role-signin-intro { margin: 0 0 26px; color: var(--portal-muted); font-size: 12px; line-height: 1.7; }
+.clinical-role-signin-form { display: grid; gap: 17px; }
+.clinical-role-signin-form label { display: grid; gap: 8px; color: var(--portal-ink); font-size: 11px; font-weight: 700; }
+.clinical-role-signin-field { display: flex; align-items: center; gap: 9px; min-width: 0; min-height: 48px; padding: 0 12px; color: var(--portal-muted); border: 1px solid var(--portal-line); border-radius: 8px; background: var(--portal-surface); transition: border-color .18s ease, box-shadow .18s ease; }
+.clinical-role-signin-field > .material-symbols-rounded { flex-shrink: 0; font-size: 19px; }
+.clinical-role-signin-field:focus-within { border-color: var(--portal-accent); box-shadow: 0 0 0 3px var(--portal-soft); }
+.clinical-role-signin-field input { display: block; width: 100%; min-width: 0; min-height: 46px; padding: 0; color: var(--portal-ink); border: 0; outline: 0; background: transparent; font: inherit; font-size: 13px; font-weight: 400; }
+.clinical-role-signin-submit { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; margin-top: 4px; padding: 0 16px; color: #fff; border: 1px solid transparent; border-radius: 8px; background: var(--portal-accent); box-shadow: 0 6px 16px rgba(24, 110, 165, .15); cursor: pointer; font: inherit; font-size: 12px; font-weight: 800; transition: background-color .18s ease, box-shadow .18s ease; }
+.clinical-role-signin-submit:hover:not(:disabled) { background: var(--portal-accent-hover); box-shadow: 0 8px 20px rgba(24, 110, 165, .2); }
+.clinical-role-signin-submit:disabled { opacity: .6; cursor: wait; }
+.clinical-role-signin-submit > .material-symbols-rounded { font-size: 19px; }
+.clinical-role-signin-return { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; margin-top: 15px; color: var(--portal-muted); font-size: 11px; text-decoration: none; }
+.clinical-role-signin-return:hover { color: var(--portal-accent); }
+.clinical-role-signin-return .material-symbols-rounded { font-size: 15px; }
+.clinical-role-signin-access { display: flex; align-items: flex-start; gap: 7px; margin: 12px 0 0; padding-top: 17px; color: var(--portal-muted); border-top: 1px solid var(--portal-line); font-size: 9px; line-height: 1.6; }
+.clinical-role-signin-access .material-symbols-rounded { flex-shrink: 0; font-size: 14px; }
+.clinical-role-signin-error { margin: 0; padding: 10px 12px; color: #a52a3a; border: 1px solid #f1b9c0; border-radius: 6px; background: #fff1f3; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.clinical-role-signin a:focus-visible, .clinical-role-signin button:focus-visible { outline: 3px solid var(--portal-accent); outline-offset: 4px; }
+
+.clinical-role-signin--receptionist {
+  --portal-accent: #247556; --portal-accent-hover: #19583f;
+  --portal-soft: #eaf5ee; --portal-line: #d5e5da;
+  --portal-ink: #233f32; --portal-muted: #627869;
+}
+.clinical-role-signin--receptionist .clinical-role-signin-visual { background: radial-gradient(ellipse at 5% 10%, #fffdf5 0, transparent 65%), linear-gradient(145deg, #f2f6eb, #dceddf); }
+.clinical-role-signin--receptionist .clinical-role-signin-orbit { border-color: rgba(36, 117, 86, .16); }
+.clinical-role-signin--receptionist .clinical-role-signin-orbit--outer { border-radius: 48px; transform: rotate(12deg); }
+.clinical-role-signin--receptionist .clinical-role-signin-orbit--inner { border-radius: 36px; transform: rotate(-8deg); }
+.clinical-role-signin--receptionist .clinical-role-signin-emblem { width: 88px; height: 88px; transform: translateY(-30px) rotate(-8deg); box-shadow: 0 18px 35px rgba(36, 117, 86, .12); }
+.clinical-role-signin-queue { position: absolute; z-index: 2; bottom: 5px; left: 50%; display: grid; gap: 5px; width: 170px; transform: translateX(-50%) rotate(-4deg); }
+.clinical-role-signin-queue > span { display: flex; align-items: center; gap: 12px; height: 31px; padding: 0 11px; color: var(--portal-accent); border: 1px solid var(--portal-line); border-radius: 6px; background: var(--portal-surface); box-shadow: 0 5px 15px rgba(36, 117, 86, .05); }
+.clinical-role-signin-queue b { font-size: 8px; }
+.clinical-role-signin-queue i { width: 75px; height: 4px; border-radius: 5px; background: var(--portal-line); }
+.clinical-role-signin-queue > span:nth-child(2) { margin-left: 8px; }
+.clinical-role-signin-queue > span:nth-child(3) { margin-left: 16px; }
+.clinical-role-signin-queue .material-symbols-rounded { margin-left: auto; font-size: 15px; }
+
+.clinical-role-signin--admin {
+  --portal-accent: #8ee9b6; --portal-accent-hover: #b9f4d1;
+  --portal-soft: #15271f; --portal-line: #2a3c33;
+  --portal-ink: #e5f5ed; --portal-muted: #9ab0a3; --portal-surface: #101713;
+  font-family: 'Courier New', monospace;
+}
+.clinical-role-signin--admin .clinical-role-signin-card { border-radius: 12px; background: #101713; box-shadow: 0 20px 55px rgba(5, 19, 12, .22); }
+.clinical-role-signin--admin .clinical-role-signin-visual { background: radial-gradient(ellipse at 50% 38%, rgba(100, 229, 160, .08), transparent 65%), repeating-linear-gradient(0deg, transparent 0 27px, rgba(142, 233, 182, .05) 28px, transparent 29px), repeating-linear-gradient(90deg, transparent 0 27px, rgba(142, 233, 182, .05) 28px, transparent 29px), #090f0c; }
+.clinical-role-signin--admin .clinical-role-signin-brand > span, .clinical-role-signin--admin .clinical-role-signin-field, .clinical-role-signin--admin .clinical-role-signin-badge { border-radius: 4px; }
+.clinical-role-signin--admin .clinical-role-signin-orbit { border-color: rgba(142, 233, 182, .15); border-radius: 12px; transform: rotate(45deg); }
+.clinical-role-signin--admin .clinical-role-signin-orbit--inner { border-style: solid; border-color: rgba(142, 233, 182, .25); }
+.clinical-role-signin--admin .clinical-role-signin-emblem { color: #8ee9b6; border-color: #3e6c52; border-radius: 12px; background: #11231a; box-shadow: 0 0 50px rgba(142, 233, 182, .09), inset 0 0 0 5px rgba(142, 233, 182, .02); transform: none; }
+.clinical-role-signin--admin .clinical-role-signin-emblem > .material-symbols-rounded { transform: none; }
+.clinical-role-signin-crosshair { position: absolute; color: #7daf92; font-size: 23px; font-weight: 400; }
+.clinical-role-signin-crosshair--one { top: 10px; left: 12px; }
+.clinical-role-signin-crosshair--two { right: 12px; bottom: 10px; }
+.clinical-role-signin-scan { position: absolute; z-index: 2; top: 0; left: 15px; width: calc(100% - 30px); height: 1px; background: linear-gradient(90deg, transparent, #8ee9b6, transparent); opacity: .45; animation: clinical-portal-scan 7s ease-in-out infinite; }
+.clinical-role-signin--admin .clinical-role-signin-content::before { position: absolute; top: 0; right: 0; left: 0; height: 3px; content: ''; background: linear-gradient(90deg, #8ee9b6 0 60%, #72f5ff 60% 80%, #ff80bd 80%); opacity: .65; }
+.clinical-role-signin--admin .clinical-role-signin-content h1 { font-family: inherit; font-size: clamp(26px, 2.6vw, 32px); font-weight: 700; letter-spacing: -.055em; }
+.clinical-role-signin--admin .clinical-role-signin-submit { color: #0b1a11; border-color: #8ee9b6; border-radius: 4px; background: var(--portal-accent); box-shadow: 0 0 18px rgba(142, 233, 182, .08); }
+.clinical-role-signin--admin .clinical-role-signin-error { color: #ffc2ca; border-color: #65414a; background: #321c23; }
+.clinical-role-signin-glitch-copy { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.clinical-role-signin-glitch-copy--cyan { color: #72f5ff; clip-path: inset(22% 0 49%); animation: clinical-admin-glitch-cyan 4.8s steps(1, end) infinite; }
+.clinical-role-signin-glitch-copy--pink { color: #ff80bd; clip-path: inset(57% 0 18%); animation: clinical-admin-glitch-pink 4.8s steps(1, end) infinite; }
+@keyframes clinical-portal-scan { 0%, 100% { transform: translateY(20px); opacity: 0; } 20%, 80% { opacity: .45; } 50% { transform: translateY(205px); } }
+
+html[data-theme='dark'] .clinical-role-signin:where(:not(.clinical-role-signin--admin)) { --portal-ink: #e3eef6; --portal-muted: #a5bac8; --portal-surface: #172733; --portal-line: #344b5b; --portal-soft: #243e50; --portal-accent: #83caff; --portal-accent-hover: #acdfff; }
+html[data-theme='dark'] .clinical-role-signin--doctor .clinical-role-signin-visual { background: radial-gradient(ellipse at 15% 20%, #284d65, transparent 70%), #1a3446; }
+html[data-theme='dark'] .clinical-role-signin--receptionist { --portal-ink: #e5f2ea; --portal-muted: #abc2b2; --portal-surface: #182c22; --portal-line: #365343; --portal-soft: #264735; --portal-accent: #8bdbac; --portal-accent-hover: #b4edca; }
+html[data-theme='dark'] .clinical-role-signin--receptionist .clinical-role-signin-visual { background: radial-gradient(ellipse at 15% 20%, #325c43, transparent 70%), #1b3828; }
+html[data-theme='dark'] .clinical-role-signin:not(.clinical-role-signin--admin) .clinical-role-signin-emblem { border-color: var(--portal-line); background: var(--portal-surface); box-shadow: 0 18px 35px rgba(0,0,0,.12); }
+html[data-theme='dark'] .clinical-role-signin:not(.clinical-role-signin--admin) .clinical-role-signin-submit { color: #102839; }
+html[data-theme='dark'] .clinical-role-signin:not(.clinical-role-signin--admin) .clinical-role-signin-error { color: #ffc2ca; border-color: #65414a; background: #321c23; }
+
+@media (max-width: 900px) {
+  // Give persistent chat actions their own navigation row on staff sign in pages.
+  .clinical-shell:has(.clinical-role-signin) .clinical-bottom-nav { height: calc(118px + env(safe-area-inset-bottom)); min-height: 118px; align-items: flex-end; padding: 64px 0 calc(12px + env(safe-area-inset-bottom)); }
+  .clinical-shell:has(.clinical-role-signin) .clinical-chat-launchers { bottom: calc(64px + env(safe-area-inset-bottom)); z-index: 101; }
+}
+@media (max-width: 600px) {
+  .clinical-role-signin { padding: 0; }
+  .clinical-role-signin-card { grid-template-columns: 1fr; min-height: 0; border-radius: 14px; }
+  .clinical-role-signin-visual { min-height: 112px; padding: 22px; border-right: 0; border-bottom: 1px solid var(--portal-line); }
+  .clinical-role-signin-art { position: absolute; top: -28px; right: -17px; width: 180px; height: 180px; margin: 0; opacity: .38; transform: scale(.8); pointer-events: none; }
+  .clinical-role-signin-visual-copy { margin-top: 15px; }
+  .clinical-role-signin-visual h2 { max-width: 72%; margin: 0; font-size: 20px; }
+  .clinical-role-signin-visual-copy .clinical-role-signin-kicker, .clinical-role-signin-visual ul, .clinical-role-signin-index { display: none; }
+  .clinical-role-signin-content { padding: 28px 22px; }
+  .clinical-role-signin-content h1 { font-size: 28px; }
+  .clinical-role-signin-field input { font-size: 16px; }
+}
+@media (max-width: 600px) and (max-height: 760px) {
+  .clinical-role-signin-visual { min-height: 88px; padding: 18px 22px; }
+  .clinical-role-signin-visual-copy { display: none; }
+  .clinical-role-signin-art { top: -42px; opacity: .3; }
+  .clinical-role-signin-content { padding: 22px; }
+  .clinical-role-signin-content h1 { margin-top: 16px; }
+  .clinical-role-signin-intro { margin-bottom: 20px; }
+  .clinical-role-signin-form { gap: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .clinical-role-signin-scan, .clinical-role-signin-glitch-copy { display: none; animation: none; }
+  .clinical-role-signin-field, .clinical-role-signin-submit { transition: none; }
+}
