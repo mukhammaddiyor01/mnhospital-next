@@ -42,7 +42,7 @@ const Dashboard = () => {
         {request.loading && !request.data && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
         {request.error && !request.data && <div className="clinical-staff-state"><p className="clinical-form-error" role="alert">{t('dashboard.loadError')}</p><button type="button" className="clinical-secondary-button" onClick={retry}>{t('patient.retry')}</button></div>}
         {role === MemberType.ADMIN && admin.data && <AdminDashboard stats={admin.data.getAdminDashboardStats} />}
-        {role === MemberType.DOCTOR && doctor.data && <DoctorDashboard stats={doctor.data.getMyDoctorDashboardStats} doctorId={session._id} appointments={doctorAppointments.data?.getAppointments.list} loading={doctorAppointments.loading} error={Boolean(doctorAppointments.error)} />}
+        {role === MemberType.DOCTOR && doctor.data && <DoctorDashboard stats={doctor.data.getMyDoctorDashboardStats} appointments={doctorAppointments.data?.getAppointments.list} loading={doctorAppointments.loading} error={Boolean(doctorAppointments.error)} />}
         {role === MemberType.RECEPTIONIST && receptionist.data && <ReceptionistDashboard stats={receptionist.data.getMyReceptionistDashboardStats} appointments={receptionistQueue.data?.getMyReceptionistAppointmentQueue.list} loading={receptionistQueue.loading} error={Boolean(receptionistQueue.error)} />}
       </StaffWorkspace>}
   </StaffLayout>;

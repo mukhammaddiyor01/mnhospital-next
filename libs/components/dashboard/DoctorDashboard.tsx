@@ -14,12 +14,11 @@ const statusKeys: Record<WorkspaceAppointment['appointmentStatus'], MessageKey> 
 };
 type QueueFilter = 'ALL' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED';
 
-const DoctorDashboard = ({ stats, appointments, loading, error, doctorId }: {
+const DoctorDashboard = ({ stats, appointments, loading, error }: {
   stats: DoctorDashboardStats;
   appointments?: WorkspaceAppointment[];
   loading: boolean;
   error: boolean;
-  doctorId: string;
 }) => {
   const t = useTranslation();
   const { language } = usePreferences();
@@ -62,7 +61,7 @@ const DoctorDashboard = ({ stats, appointments, loading, error, doctorId }: {
         <section className="clinical-doctor-detail" aria-labelledby="doctor-detail-heading"><header><Icon name="clinical_notes" /><h2 id="doctor-detail-heading">{t('dashboard.selectedAppointment')}</h2></header>
           {selected && !loading && !error ? <div className="clinical-doctor-detail-body"><div className="clinical-doctor-detail-lead"><span className="clinical-doctor-detail-icon"><Icon name="event" /></span><div><small>{t('dashboard.appointmentCode')}</small><strong>{selected.appointmentCode}</strong></div><span className={`clinical-staff-status status-${selected.appointmentStatus.toLowerCase()}`}>{t(statusKeys[selected.appointmentStatus])}</span></div><dl><div><dt>{t('dashboard.appointmentTime')}</dt><dd><time dateTime={selected.startsAt}>{format.format(new Date(selected.startsAt))}</time></dd></div><div><dt>{t('staff.reason')}</dt><dd>{selected.appointmentReason || '—'}</dd></div><div><dt>{t('dashboard.appointmentStatus')}</dt><dd>{t(statusKeys[selected.appointmentStatus])}</dd></div></dl><div className="clinical-doctor-detail-actions"><Link href="/doctor-workspace/appointments"><Icon name="sync_alt" />{t('staff.nextStatus')}</Link>{(selected.appointmentStatus === 'ENDED' || selected.appointmentStatus === 'COMPLETED') && <Link href={`/doctor-workspace/reports?appointmentId=${selected._id}`}><Icon name="post_add" />{t('staff.createReport')}</Link>}</div></div> : <p className="clinical-staff-state">{t('dashboard.selectAppointment')}</p>}
         </section>
-        <section className="clinical-doctor-links" aria-labelledby="doctor-links-heading"><header><Icon name="dashboard_customize" /><h2 id="doctor-links-heading">{t('dashboard.workSummary')}</h2></header><nav><Link href="/doctor-workspace/services"><Icon name="medical_services" />{t('dashboard.myServices')}<Icon name="arrow_forward" /></Link><Link href="/doctor-workspace/reports"><Icon name="description" />{t('dashboard.myReports')}<Icon name="arrow_forward" /></Link><Link href="/doctor-workspace/messages"><Icon name="mail" />{t('messages.title')}<Icon name="arrow_forward" /></Link><Link href={`/doctor/${doctorId}`}><Icon name="open_in_new" />{t('patient.openDoctor')}<Icon name="arrow_forward" /></Link></nav></section>
+        <section className="clinical-doctor-links" aria-labelledby="doctor-links-heading"><header><Icon name="dashboard_customize" /><h2 id="doctor-links-heading">{t('dashboard.workSummary')}</h2></header><nav><Link href="/doctor-workspace/services"><Icon name="medical_services" />{t('dashboard.myServices')}<Icon name="arrow_forward" /></Link><Link href="/doctor-workspace/reports"><Icon name="description" />{t('dashboard.myReports')}<Icon name="arrow_forward" /></Link><Link href="/doctor-workspace/messages"><Icon name="mail" />{t('messages.title')}<Icon name="arrow_forward" /></Link><Link href="/doctor-workspace/profile"><Icon name="account_circle" />{t('dashboard.profileLink')}<Icon name="arrow_forward" /></Link></nav></section>
       </div>
     </div>
   </div>;

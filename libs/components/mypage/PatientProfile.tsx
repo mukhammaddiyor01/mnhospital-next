@@ -276,20 +276,20 @@ const PatientProfile = () => {
 					<Link className="clinical-primary-button" href="/mypage/dashboard">
 						{t('dashboard.title')}
 					</Link>
-					<Link className="clinical-secondary-button" href="/mypage/messages">
+					<Link className="clinical-secondary-button" href="/doctor-workspace/messages">
 						{t('messages.title')}
 					</Link>
 					<Link
 						className="clinical-secondary-button"
-						href="/mypage/notifications"
+						href="/doctor-workspace/notifications"
 					>
 						{t('notifications.title')}
 					</Link>
 					<Link
 						className="clinical-secondary-button"
-						href={`/doctor/${session._id}`}
+						href="/doctor-workspace/profile"
 					>
-						{t('patient.openDoctor')}
+						{t('dashboard.profileLink')}
 					</Link>
 					<button
 						className="clinical-secondary-button"
