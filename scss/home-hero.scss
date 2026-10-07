@@ -13,9 +13,13 @@
 		justify-content: flex-end;
 		gap: 20px;
 		margin: 0;
-		padding: 44px 36px 24px;
+		padding: 310px 36px 24px;
 		border-radius: 0;
 		background: #051827;
+	}
+	.clinical-hero-slides {
+		bottom: auto;
+		height: 600px;
 	}
 	.clinical-hero-image-overlay {
 		background: linear-gradient(0deg, rgba(5, 24, 39, .98), rgba(5, 24, 39, .8) 30%, rgba(5, 24, 39, .2) 57%, transparent 78%);
