@@ -20,8 +20,8 @@ const FollowLists = ({ profileId, kind }: { profileId: string; kind: 'doctor' | 
 	const [followerLimit, setFollowerLimit] = useState(50);
 	const [followingLimit, setFollowingLimit] = useState(50);
 	const validId = /^[a-f\d]{24}$/i.test(profileId);
-	const memberFollowers = useQuery(GET_MEMBER_FOLLOWERS, { variables: { input: { page: 1, limit: followerLimit, search: { followingId: profileId } } }, skip: !validId || kind !== 'patient' });
-	const doctorFollowers = useQuery(GET_DOCTOR_FOLLOWERS, { variables: { input: { page: 1, limit: followerLimit, search: { doctorId: profileId } } }, skip: !validId || kind !== 'doctor' });
+	const memberFollowers = useQuery(GET_MEMBER_FOLLOWERS, { variables: { input: { page: 1, limit: followerLimit, search: { followingId: profileId } } }, skip: !validId || kind !== 'patient', fetchPolicy: 'cache-and-network' });
+	const doctorFollowers = useQuery(GET_DOCTOR_FOLLOWERS, { variables: { input: { page: 1, limit: followerLimit, search: { doctorId: profileId } } }, skip: !validId || kind !== 'doctor', fetchPolicy: 'cache-and-network' });
 	const memberFollowings = useQuery(GET_MEMBER_FOLLOWINGS, { variables: { input: { page: 1, limit: followingLimit, search: { followerId: profileId } } }, skip: !validId });
 	const doctorFollowings = useQuery(GET_DOCTOR_FOLLOWINGS, { variables: { input: { page: 1, limit: followingLimit, search: { memberId: profileId } } }, skip: !validId });
 	const followers = kind === 'doctor' ? (doctorFollowers.data?.getDoctorFollowers?.list ?? []).map((item: DoctorFollower) => asMember(item.memberData) ?? asDoctor(item.followerDoctorData)) : (memberFollowers.data?.getMemberFollowers?.list ?? []).map((item: MemberFollower) => asMember(item.followerData) ?? asDoctor(item.followerDoctorData));
