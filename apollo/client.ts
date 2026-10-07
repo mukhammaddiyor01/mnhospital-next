@@ -1,28 +1,25 @@
 import { useMemo } from 'react';
-import { ApolloClient, ApolloLink, InMemoryCache, NormalizedCacheObject, from } from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
+import {
+	ApolloClient,
+	InMemoryCache,
+	NormalizedCacheObject,
+	from,
+} from '@apollo/client';
+import { createSessionLinks } from '@/libs/auth/sessionLink';
 import createUploadLink from 'apollo-upload-client/public/createUploadLink.js';
-import { getJwtToken } from '@/libs/auth/token';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
-const apiUrl = process.env.NEXT_PUBLIC_API_GRAPHQL_URL ?? 'http://localhost:2001/graphql';
-
-function getHeaders(): Record<string, string> {
-	const token = getJwtToken();
-	return token ? { Authorization: `Bearer ${token}` } : {};
-}
+const apiUrl =
+	process.env.NEXT_PUBLIC_API_GRAPHQL_URL ?? 'http://localhost:2001/graphql';
 
 function createApolloLink() {
-	const authLink = new ApolloLink((operation, forward) => {
-		operation.setContext(({ headers = {} }) => ({ headers: { ...headers, ...getHeaders() } }));
-		return forward(operation);
+	const { auth, errors } = createSessionLinks();
+	const uploadLink = createUploadLink({
+		uri: apiUrl,
+		credentials: 'include',
+		headers: { 'Apollo-Require-Preflight': 'true' },
 	});
-	const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
-		graphQLErrors?.forEach(({ message, path }) => console.error(`[GraphQL:${operation.operationName}] ${message}`, path ?? ''));
-		if (networkError) console.error(`[Network:${operation.operationName}] ${networkError.message}`);
-	});
-	const uploadLink = createUploadLink({ uri: apiUrl, credentials: 'same-origin' });
-	return from([errorLink, authLink.concat(uploadLink)]);
+	return from([errors, auth, uploadLink]);
 }
 
 function createApolloClient() {

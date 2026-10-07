@@ -2,6 +2,7 @@ import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
+import { GET_MY_MEMBER_PROFILE } from '@/apollo/member/query';
 import { GET_MY_PATIENT_PROFILE } from '@/apollo/patient/query';
 import {
 	CREATE_PATIENT_PROFILE,
@@ -71,6 +72,14 @@ const PatientProfile = () => {
 		skip: !session._id || session.memberType !== MemberType.PATIENT,
 		fetchPolicy: 'cache-and-network',
 	});
+	const account = useQuery(GET_MY_MEMBER_PROFILE, {
+		skip: !session._id || session.memberType !== MemberType.PATIENT,
+		fetchPolicy: 'cache-and-network',
+	});
+	const accountPhone =
+		account.data?.getMyMemberProfile.memberPhone ?? session.memberPhone ?? '';
+	const accountMail =
+		account.data?.getMyMemberProfile.memberMail ?? session.memberMail ?? '';
 	const [createProfile, createState] = useMutation(CREATE_PATIENT_PROFILE);
 	const [updateProfile, updateState] = useMutation(UPDATE_MY_PATIENT_PROFILE);
 	const [uploadImage, uploadState] = useMutation(UPLOAD_MY_PATIENT_IMAGE);
@@ -97,10 +106,10 @@ const PatientProfile = () => {
 
 	useEffect(() => {
 		setContact({
-			memberPhone: session.memberPhone ?? '',
-			memberMail: session.memberMail ?? '',
+			memberPhone: accountPhone,
+			memberMail: accountMail,
 		});
-	}, [session.memberPhone, session.memberMail]);
+	}, [accountPhone, accountMail]);
 
 	useEffect(() => {
 		if (!photoFile) {
@@ -183,8 +192,8 @@ const PatientProfile = () => {
 		setContactError('');
 		const memberPhone = contact.memberPhone.trim();
 		const memberMail = contact.memberMail.trim().toLowerCase();
-		const phoneChanged = memberPhone !== (session.memberPhone ?? '');
-		const mailChanged = memberMail !== (session.memberMail ?? '');
+		const phoneChanged = memberPhone !== accountPhone;
+		const mailChanged = memberMail !== accountMail;
 		if (phoneChanged && (!memberPhone || !PHONE_PATTERN.test(memberPhone))) {
 			setContactError(t('patient.phoneError'));
 			return;
@@ -209,6 +218,7 @@ const PatientProfile = () => {
 			const member = result.data?.updateMember as MemberSession | undefined;
 			if (!member?.accessToken) throw new Error(t('patient.contactSaveError'));
 			refreshMemberSession(member);
+			await account.refetch();
 			setEditingContact(false);
 		} catch (requestError: any) {
 			setContactError(requestError?.message ?? t('patient.contactSaveError'));
@@ -276,7 +286,10 @@ const PatientProfile = () => {
 					<Link className="clinical-primary-button" href="/mypage/dashboard">
 						{t('dashboard.title')}
 					</Link>
-					<Link className="clinical-secondary-button" href="/doctor-workspace/messages">
+					<Link
+						className="clinical-secondary-button"
+						href="/doctor-workspace/messages"
+					>
 						{t('messages.title')}
 					</Link>
 					<Link
@@ -406,12 +419,12 @@ const PatientProfile = () => {
 					<span>
 						<Icon name="call" />
 						<small>{t('patient.phone')}</small>
-						<b>{session.memberPhone || t('patient.notProvided')}</b>
+						<b>{accountPhone || t('patient.notProvided')}</b>
 					</span>
 					<span>
 						<Icon name="mail" />
 						<small>{t('patient.email')}</small>
-						<b>{session.memberMail || t('patient.notProvided')}</b>
+						<b>{accountMail || t('patient.notProvided')}</b>
 					</span>
 					{patient && (
 						<span>
@@ -654,8 +667,8 @@ const PatientProfile = () => {
 									type="button"
 									onClick={() => {
 										setContact({
-											memberPhone: session.memberPhone ?? '',
-											memberMail: session.memberMail ?? '',
+											memberPhone: accountPhone,
+											memberMail: accountMail,
 										});
 										setContactError('');
 										setEditingContact(false);

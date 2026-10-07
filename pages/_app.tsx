@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useApollo } from '@/apollo/client';
 import { createQueryClient } from '@/libs/query/query-client';
 import { PreferenceProvider } from '@/libs/components/preference/PreferenceProvider';
+import SessionBootstrap from '@/libs/components/auth/SessionBootstrap';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
@@ -17,7 +18,11 @@ export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<ApolloProvider client={apolloClient}>
 			<QueryClientProvider client={queryClient}>
-				<PreferenceProvider><Component {...pageProps} /></PreferenceProvider>
+				<SessionBootstrap>
+					<PreferenceProvider>
+						<Component {...pageProps} />
+					</PreferenceProvider>
+				</SessionBootstrap>
 			</QueryClientProvider>
 		</ApolloProvider>
 	);

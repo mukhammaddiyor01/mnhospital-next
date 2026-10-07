@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
-import { getJwtToken } from '@/libs/auth/token';
+import { ensureAccessToken, refreshSessionToken } from '@/libs/auth/session';
 import Icon from '@/libs/components/common/Icon';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
@@ -45,15 +45,30 @@ const GeneralChat = ({ open, onClose }: { open: boolean; onClose: () => void }) 
     if (!open) return;
     let stopped = false;
     let retry: ReturnType<typeof setTimeout> | undefined;
-    const connect = () => {
+    const connect = async () => {
       setStatus('connecting');
       setSending(false);
       pendingRequest.current = null;
-      const client = new WebSocket(socketAddress(session._id ? getJwtToken() : ''));
+      let token = '';
+      if (session._id) {
+        try {
+          token = await ensureAccessToken();
+        } catch {
+          if (!stopped) {
+            setStatus('disconnected');
+            retry = setTimeout(connect, 3000);
+          }
+          return;
+        }
+      }
+      if (stopped) return;
+      const client = new WebSocket(socketAddress(token));
       const arrivedDuringHistory: GeneralChatMessage[] = [];
       let historyLoaded = false;
       socket.current = client;
-      client.onopen = () => { if (!stopped) setError((current) => current === translate(language, 'chat.sendUnconfirmed') ? current : ''); };
+      client.onopen = () => {
+        if (!stopped) setError((current) => (current === translate(language, 'chat.sendUnconfirmed') ? current : ''));
+      };
       client.onmessage = ({ data }) => {
         if (stopped) return;
         try {
@@ -74,13 +89,23 @@ const GeneralChat = ({ open, onClose }: { open: boolean; onClose: () => void }) 
           if (packet.event === 'messageSent' && packet.requestId === pendingRequest.current) {
             pendingRequest.current = null;
             if (ackTimer.current) clearTimeout(ackTimer.current);
-            setSending(false); setText(''); setError('');
+            setSending(false);
+            setText('');
+            setError('');
           }
-          if (packet.event === 'info') { setOnline(packet.totalClients); setStatus('connected'); }
+          if (packet.event === 'info') {
+            setOnline(packet.totalClients);
+            setStatus('connected');
+          }
           if (packet.event === 'error') {
-            const errorKey = packet.code === 'GENERAL_HISTORY_UNAVAILABLE' ? 'chat.historyError'
-              : packet.code === 'GENERAL_SEND_FAILED' ? 'chat.sendError'
-              : packet.code === 'INVALID_GENERAL_MESSAGE' ? 'chat.invalidMessage' : null;
+            const errorKey =
+              packet.code === 'GENERAL_HISTORY_UNAVAILABLE'
+                ? 'chat.historyError'
+                : packet.code === 'GENERAL_SEND_FAILED'
+                  ? 'chat.sendError'
+                  : packet.code === 'INVALID_GENERAL_MESSAGE'
+                    ? 'chat.invalidMessage'
+                    : null;
             setError(errorKey ? translate(language, errorKey) : packet.message);
             if (pendingRequest.current && (packet.requestId === pendingRequest.current || !packet.code)) {
               pendingRequest.current = null;
@@ -88,22 +113,40 @@ const GeneralChat = ({ open, onClose }: { open: boolean; onClose: () => void }) 
               setSending(false);
             }
           }
-        } catch { /* Ignore malformed frames; keep the conversation usable. */ }
+        } catch {
+          /* Ignore malformed frames; keep the conversation usable. */
+        }
       };
-      client.onerror = () => { if (!stopped) setError(translate(language, 'chat.connectionError')); };
-      client.onclose = () => {
+      client.onerror = () => {
+        if (!stopped) setError(translate(language, 'chat.connectionError'));
+      };
+      client.onclose = async (event) => {
         if (stopped) return;
         if (pendingRequest.current) setError(translate(language, 'chat.sendUnconfirmed'));
         pendingRequest.current = null;
         if (ackTimer.current) clearTimeout(ackTimer.current);
         setSending(false);
         setStatus('disconnected');
-        retry = setTimeout(connect, 3000);
+        if (event.code === 1008 && session._id) {
+          try {
+            await refreshSessionToken();
+          } catch {
+            return;
+          }
+        }
+        if (!stopped) retry = setTimeout(connect, 3000);
       };
     };
     connect();
-    return () => { stopped = true; clearTimeout(retry); if (ackTimer.current) clearTimeout(ackTimer.current); pendingRequest.current = null; socket.current?.close(); socket.current = null; };
-  }, [open, session._id, language]);
+    return () => {
+      stopped = true;
+      clearTimeout(retry);
+      if (ackTimer.current) clearTimeout(ackTimer.current);
+      pendingRequest.current = null;
+      socket.current?.close();
+      socket.current = null;
+    };
+  }, [open, session._id, session.accessToken, language]);
 
   useEffect(() => { if (open && !sending) input.current?.focus(); }, [open, sending]);
   useEffect(() => { bottom.current?.scrollIntoView({ block: 'nearest' }); }, [messages.length]);

@@ -1,33 +1,14 @@
-import { jwtDecode } from 'jwt-decode';
+import { translate } from '@/libs/i18n/messages';
+import { applySessionToken, restoreSession, revokeBrowserSession, withBrowserSessionLock } from './session';
 import { initializeApollo } from '@/apollo/client';
-import { userVar } from '@/apollo/store';
 import { LOGIN, SIGN_UP, SOCIAL_AUTHENTICATE } from '@/apollo/member/mutation';
 import { LOGIN_DOCTOR } from '@/apollo/doctor/mutation';
 import { LOGIN_ADMIN, LOGIN_RECEPTIONIST } from '@/apollo/staff/mutation';
 import { MemberSession } from '@/libs/components/member/types/member';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
-import { getJwtToken, removeJwtToken, setJwtToken } from './token';
+import { getJwtToken } from './token';
 
-interface JwtPayload extends MemberSession { exp?: number; iat?: number; }
-const emptySession: MemberSession = { _id: '', memberNick: '' };
-
-const updateStorage = (token: string) => {
-	setJwtToken(token);
-	window.localStorage.setItem('login', Date.now().toString());
-};
-
-const syncSession = (token: string, member?: MemberSession) => {
-	if (typeof window === 'undefined') return;
-	const claims = jwtDecode<JwtPayload>(token);
-	if (claims.exp && claims.exp * 1000 <= Date.now()) {
-		removeJwtToken();
-		userVar(emptySession);
-		return;
-	}
-	updateStorage(token);
-	const doctorClaims = claims as JwtPayload & { docNick?: string; docFullName?: string; docImage?: string };
-	userVar({ ...claims, ...member, _id: String(member?._id ?? claims._id ?? ''), memberNick: member?.memberNick ?? claims.memberNick ?? doctorClaims.docNick ?? '', memberFullName: member?.memberFullName ?? claims.memberFullName ?? doctorClaims.docFullName, memberImage: member?.memberImage ?? claims.memberImage ?? doctorClaims.docImage ?? '' });
-};
+const syncSession = applySessionToken;
 
 export const refreshMemberSession = (member: MemberSession) => {
 	if (!member.accessToken) throw new Error('The server did not return an access token.');
@@ -113,83 +94,190 @@ export const clearSocialAuthTransaction = () => {
 };
 
 export const completeSocialAuth = async (transaction: SocialAuthTransaction, authorizationCode: string) => {
-	const redirectUri = `${window.location.origin}/account/oauth/callback`;
-	const result = await initializeApollo().mutate({
-		mutation: SOCIAL_AUTHENTICATE,
-		variables: { input: { provider: transaction.provider, authorizationCode, redirectUri, state: transaction.state, codeVerifier: transaction.codeVerifier } },
-		fetchPolicy: 'network-only',
+	return withBrowserSessionLock(async () => {
+		const redirectUri = `${window.location.origin}/account/oauth/callback`;
+		const result = await initializeApollo().mutate({
+			mutation: SOCIAL_AUTHENTICATE,
+			variables: {
+				input: {
+					provider: transaction.provider,
+					authorizationCode,
+					redirectUri,
+					state: transaction.state,
+					codeVerifier: transaction.codeVerifier,
+				},
+			},
+			fetchPolicy: 'network-only',
+		});
+		const member = result.data?.socialAuthenticate as MemberSession | undefined;
+		if (!member?.accessToken) throw new Error('The server did not return an access token.');
+		syncSession(member.accessToken, member);
+		return member;
 	});
-	const member = result.data?.socialAuthenticate as MemberSession | undefined;
-	if (!member?.accessToken) throw new Error('The server did not return an access token.');
-	syncSession(member.accessToken, member);
-	return member;
 };
 
 export { getJwtToken, setJwtToken } from './token';
 
 export const updateUserInfo = (token = getJwtToken()) => {
 	if (!token) return;
-	try { syncSession(token); }
-	catch (error) {
-		console.warn('Unable to restore MN Hospital session', error);
-		removeJwtToken();
-		userVar(emptySession);
+	try {
+		applySessionToken(token);
+	} catch {
+		void restoreSession();
 	}
 };
 
 const requestLogin = async (memberNick: string, memberPassword: string) => {
-	const result = await initializeApollo().mutate({ mutation: LOGIN, variables: { input: { memberNick, memberPassword } }, fetchPolicy: 'network-only' });
+	const result = await initializeApollo().mutate({
+		mutation: LOGIN,
+		variables: { input: { memberNick, memberPassword } },
+		fetchPolicy: 'network-only',
+	});
 	return result.data?.login as MemberSession | undefined;
 };
 
 export const logIn = async (memberNick: string, memberPassword: string) => {
-	const member = await requestLogin(memberNick, memberPassword);
-	if (!member?.accessToken) throw new Error('The server did not return an access token.');
-	syncSession(member.accessToken, member);
-	return member;
+	return withBrowserSessionLock(async () => {
+		const member = await requestLogin(memberNick, memberPassword);
+		if (!member?.accessToken) throw new Error('The server did not return an access token.');
+		syncSession(member.accessToken, member);
+		return member;
+	});
 };
 
 export const logInDoctor = async (docNick: string, docPassword: string) => {
-	const result = await initializeApollo().mutate({ mutation: LOGIN_DOCTOR, variables: { input: { docNick, docPassword } }, fetchPolicy: 'network-only' });
-	const doctor = result.data?.loginDoctor as { _id: string; memberType: MemberType; docNick: string; docFullName: string; docImage: string; accessToken: string } | undefined;
-	if (!doctor?.accessToken) throw new Error('The server did not return an access token.');
-	syncSession(doctor.accessToken, { _id: doctor._id, memberType: doctor.memberType, memberNick: doctor.docNick, memberFullName: doctor.docFullName, memberImage: doctor.docImage, accessToken: doctor.accessToken });
-	return doctor;
+	return withBrowserSessionLock(async () => {
+		const result = await initializeApollo().mutate({
+			mutation: LOGIN_DOCTOR,
+			variables: { input: { docNick, docPassword } },
+			fetchPolicy: 'network-only',
+		});
+		const doctor = result.data?.loginDoctor as
+			| {
+					_id: string;
+					memberType: MemberType;
+					docNick: string;
+					docFullName: string;
+					docImage: string;
+					accessToken: string;
+			  }
+			| undefined;
+		if (!doctor?.accessToken) throw new Error('The server did not return an access token.');
+		syncSession(doctor.accessToken, {
+			_id: doctor._id,
+			memberType: doctor.memberType,
+			memberNick: doctor.docNick,
+			memberFullName: doctor.docFullName,
+			memberImage: doctor.docImage,
+			accessToken: doctor.accessToken,
+		});
+		return doctor;
+	});
 };
 
 export const logInAdmin = async (adminNick: string, adminPassword: string) => {
-	const result = await initializeApollo().mutate({ mutation: LOGIN_ADMIN, variables: { input: { adminNick, adminPassword } }, fetchPolicy: 'network-only' });
-	const admin = result.data?.loginAdmin as { _id: string; memberType: MemberType; adminNick: string; adminImage: string; accessToken: string } | undefined;
-	if (!admin?.accessToken) throw new Error('The server did not return an access token.');
-	syncSession(admin.accessToken, { _id: admin._id, memberType: admin.memberType, memberNick: admin.adminNick, memberImage: admin.adminImage, accessToken: admin.accessToken });
-	return admin;
+	return withBrowserSessionLock(async () => {
+		const result = await initializeApollo().mutate({
+			mutation: LOGIN_ADMIN,
+			variables: { input: { adminNick, adminPassword } },
+			fetchPolicy: 'network-only',
+		});
+		const admin = result.data?.loginAdmin as
+			| {
+					_id: string;
+					memberType: MemberType;
+					adminNick: string;
+					adminImage: string;
+					accessToken: string;
+			  }
+			| undefined;
+		if (!admin?.accessToken) throw new Error('The server did not return an access token.');
+		syncSession(admin.accessToken, {
+			_id: admin._id,
+			memberType: admin.memberType,
+			memberNick: admin.adminNick,
+			memberImage: admin.adminImage,
+			accessToken: admin.accessToken,
+		});
+		return admin;
+	});
 };
 
 export const logInReceptionist = async (receptionistNick: string, receptionistPassword: string) => {
-	const result = await initializeApollo().mutate({ mutation: LOGIN_RECEPTIONIST, variables: { input: { receptionistNick, receptionistPassword } }, fetchPolicy: 'network-only' });
-	const receptionist = result.data?.loginReceptionist as { _id: string; memberType: MemberType; receptionistNick: string; receptionistFullName: string; receptionistImage: string; accessToken: string } | undefined;
-	if (!receptionist?.accessToken) throw new Error('The server did not return an access token.');
-	syncSession(receptionist.accessToken, { _id: receptionist._id, memberType: receptionist.memberType, memberNick: receptionist.receptionistNick, memberFullName: receptionist.receptionistFullName, memberImage: receptionist.receptionistImage, accessToken: receptionist.accessToken });
-	return receptionist;
+	return withBrowserSessionLock(async () => {
+		const result = await initializeApollo().mutate({
+			mutation: LOGIN_RECEPTIONIST,
+			variables: { input: { receptionistNick, receptionistPassword } },
+			fetchPolicy: 'network-only',
+		});
+		const receptionist = result.data?.loginReceptionist as
+			| {
+					_id: string;
+					memberType: MemberType;
+					receptionistNick: string;
+					receptionistFullName: string;
+					receptionistImage: string;
+					accessToken: string;
+			  }
+			| undefined;
+		if (!receptionist?.accessToken) throw new Error('The server did not return an access token.');
+		syncSession(receptionist.accessToken, {
+			_id: receptionist._id,
+			memberType: receptionist.memberType,
+			memberNick: receptionist.receptionistNick,
+			memberFullName: receptionist.receptionistFullName,
+			memberImage: receptionist.receptionistImage,
+			accessToken: receptionist.accessToken,
+		});
+		return receptionist;
+	});
 };
 
-const requestSignUp = async (memberNick: string, memberPassword: string, memberPhone: string, memberFullName?: string) => {
-	const result = await initializeApollo().mutate({ mutation: SIGN_UP, variables: { input: { memberNick, memberPassword, memberPhone, memberFullName, memberType: MemberType.PATIENT } }, fetchPolicy: 'network-only' });
+const requestSignUp = async (
+	memberNick: string,
+	memberPassword: string,
+	memberPhone: string,
+	memberFullName?: string,
+) => {
+	const result = await initializeApollo().mutate({
+		mutation: SIGN_UP,
+		variables: {
+			input: {
+				memberNick,
+				memberPassword,
+				memberPhone,
+				memberFullName,
+				memberType: MemberType.PATIENT,
+			},
+		},
+		fetchPolicy: 'network-only',
+	});
 	return result.data?.signup as MemberSession | undefined;
 };
 
-export const signUp = async (memberNick: string, memberPassword: string, memberPhone: string, memberFullName?: string) => {
-	const member = await requestSignUp(memberNick, memberPassword, memberPhone, memberFullName);
-	if (!member?.accessToken) throw new Error('The server did not return an access token.');
-	syncSession(member.accessToken, member);
-	return member;
+export const signUp = async (
+	memberNick: string,
+	memberPassword: string,
+	memberPhone: string,
+	memberFullName?: string,
+) => {
+	return withBrowserSessionLock(async () => {
+		const member = await requestSignUp(memberNick, memberPassword, memberPhone, memberFullName);
+		if (!member?.accessToken) throw new Error('The server did not return an access token.');
+		syncSession(member.accessToken, member);
+		return member;
+	});
 };
 
 export const logOut = async () => {
 	if (typeof window === 'undefined') return;
-	removeJwtToken();
-	window.localStorage.setItem('logout', Date.now().toString());
-	userVar(emptySession);
+	try {
+		await revokeBrowserSession();
+	} catch {
+		const language = document.documentElement.lang;
+		window.alert(translate(language === 'uz' ? 'UZ' : language === 'ko' ? 'KR' : 'EN', 'auth.logoutError'));
+		return;
+	}
 	await initializeApollo().clearStore();
 	window.location.href = '/';
 };

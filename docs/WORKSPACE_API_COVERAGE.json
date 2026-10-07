@@ -1,6 +1,6 @@
 {
-  "businessOperations": 145,
-  "coveredBusinessOperations": 145,
+  "businessOperations": 148,
+  "coveredBusinessOperations": 148,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -238,6 +238,12 @@
     },
     {
       "field": "getMemberFollowers",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyMemberProfile",
       "kind": "query",
       "frontendContract": true,
       "internalDiagnostic": false
@@ -538,6 +544,18 @@
     },
     {
       "field": "updateArticle",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "refreshSession",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "logoutSession",
       "kind": "mutation",
       "frontendContract": true,
       "internalDiagnostic": false

@@ -19,7 +19,7 @@ import {
 	ChatMessage,
 } from '@/libs/components/messaging/types';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
-import { getJwtToken } from '@/libs/auth/token';
+import { ensureAccessToken, refreshSessionToken } from '@/libs/auth/session';
 import { socketAddress } from '@/libs/components/chat/GeneralChat';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 
@@ -121,12 +121,18 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 
 	useEffect(() => {
 		if (!session._id || (staffWorkspace && !embedded)) return;
-		const token = getJwtToken();
-		if (!token) return;
 		let stopped = false;
 		let retry: ReturnType<typeof setTimeout> | undefined;
 		let socket: WebSocket;
-		const connect = () => {
+		const connect = async () => {
+			let token: string;
+			try {
+				token = await ensureAccessToken();
+			} catch {
+				if (!stopped) retry = setTimeout(connect, 3000);
+				return;
+			}
+			if (stopped || !token) return;
 			socket = new WebSocket(socketAddress(token));
 			socket.onopen = () => {
 				if (!stopped) {
@@ -158,7 +164,15 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 					/* Ignore invalid socket frames. */
 				}
 			};
-			socket.onclose = () => {
+			socket.onclose = async (event) => {
+				if (stopped) return;
+				if (event.code === 1008) {
+					try {
+						await refreshSessionToken();
+					} catch {
+						return;
+					}
+				}
 				if (!stopped) retry = setTimeout(connect, 3000);
 			};
 		};
@@ -170,7 +184,7 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 		};
 		// Reconnect on a conversation change so callbacks use its current GraphQL variables.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [session._id, staffWorkspace, selectedId, embedded]);
+	}, [session._id, session.accessToken, staffWorkspace, selectedId, embedded]);
 
 	const openConversation = (id: string) => {
 		setSelectedId(id);

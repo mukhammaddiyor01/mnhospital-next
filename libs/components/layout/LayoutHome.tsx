@@ -3,8 +3,6 @@ import dynamic from 'next/dynamic';
 import { ComponentType, ReactNode, useState } from 'react';
 import Top from '../Top';
 import Footer from '../Footer';
-import { useEffect } from 'react';
-import { getJwtToken, updateUserInfo } from '@/libs/auth';
 import MobileBottomNav from '../common/MobileBottomNav';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
 import GeneralChat from '../chat/GeneralChat';
@@ -23,10 +21,6 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 		const isHome = router.pathname === '/';
 		const [chatOpen, setChatOpen] = useState(false);
 		const [assistantOpen, setAssistantOpen] = useState(false);
-		useEffect(() => {
-			const token = getJwtToken();
-			if (token) updateUserInfo(token);
-		}, []);
 		return (
 			<>
 				<Head>
