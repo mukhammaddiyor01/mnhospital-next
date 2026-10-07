@@ -106,10 +106,10 @@ export const NotificationsPage = ({
 		const root = staffWorkspace || '/mypage';
 		const group = item.notificationGroup;
 		if (group === 'CONVERSATION') return `${root}/messages`;
-		if (group === 'PAYMENT') return `${root}/payments`;
-		if (group === 'BOOKING_ORDER') return `${root}/bookings`;
+		if (group === 'PAYMENT') return session.memberType === MemberType.DOCTOR ? `${root}/appointments` : `${root}/payments`;
+		if (group === 'BOOKING_ORDER') return session.memberType === MemberType.DOCTOR ? `${root}/appointments` : `${root}/bookings`;
 		if (group === 'APPOINTMENT') return `${root}/appointments`;
-		if (group === 'REPORT') return `${root}/reports`;
+		if (group === 'REPORT') return session.memberType === MemberType.ADMIN ? `${root}/appointments` : `${root}/reports`;
 		if (
 			group === 'RECEPTION_TASK' &&
 			session.memberType !== MemberType.PATIENT &&
