@@ -191,10 +191,6 @@ const StaffWorkspace = ({
 					))}
 				</nav>
 				<div className="clinical-staff-sidebar-footer">
-					<Link href="/">
-						<Icon name="open_in_new" />
-						{t('dashboard.visitSite')}
-					</Link>
 					<button type="button" onClick={() => void logOut()}>
 						<Icon name="logout" />
 						{t('patient.signoutTitle')}
