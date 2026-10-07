@@ -50,10 +50,12 @@ export default function ActorManagement({
 	const detail = useQuery(doctor ? doctorDetail : receptionDetail, {
 		variables: { [arg]: selected?._id },
 		skip: !selected,
+		fetchPolicy: 'network-only',
 	});
 	const stats = useQuery(doctor ? doctorStats : receptionStats, {
 		variables: { [arg]: selected?._id },
 		skip: !selected,
+		fetchPolicy: 'network-only',
 	});
 	const config = useMemo<ResourceConfig>(() => {
 		const fields: ResourceField[] = [
