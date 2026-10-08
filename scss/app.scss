@@ -374,3 +374,6 @@
   .checkout-online, .checkout-success { padding: 24px; margin: 24px 0; border-radius: 16px; border: 1px solid var(--clinical-border, #cbd5e1); }
   .clinical-resource-actions { flex-wrap: wrap; }
 }
+
+// Keep dark color semantics after all shared and role-specific presentation rules.
+@import './dark-mode';

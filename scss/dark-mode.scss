@@ -1,0 +1,182 @@
+// Final dark-theme contract: text accents never double as filled surfaces.
+// Import after page, workspace and profile styles to keep the cascade explicit.
+html[data-theme='dark'] {
+  --mn-page: #0d1722;
+  --mn-card: #172838;
+  --clinical-surface: var(--mn-page);
+  --clinical-low: #203345;
+  --clinical-text: #e4edf4;
+  --clinical-navy: #e9f4fb;
+  --clinical-secondary: #b9cce0;
+  --clinical-muted: #aec0cd;
+  --clinical-primary: #82c9ff;
+  --clinical-primary-soft: #19394f;
+  --clinical-teal: #75dfc6;
+  --clinical-teal-soft: #164036;
+  --clinical-line: #334b5f;
+  --clinical-control-line: #66839a;
+  --clinical-primary-fill: #206999;
+  --clinical-primary-fill-hover: #287caf;
+  --clinical-on-fill: #ffffff;
+  --clinical-feature-surface: #1a3041;
+  --clinical-danger: #ffc1c8;
+  --clinical-danger-soft: #4a2735;
+  --clinical-warning: #f2c27a;
+  --clinical-warning-soft: #45351f;
+  --clinical-on-accent: #10282e;
+
+  body { color: var(--clinical-text); background: var(--mn-page); }
+
+  // Keep raised surfaces distinct from the canvas, including every rail variant.
+  .clinical-header,
+  .clinical-chat-panel,
+  .clinical-rail-card,
+  .clinical-rail .community,
+  .clinical-rail .news-card,
+  .clinical-rail .promo,
+  .clinical-rail .technology,
+  .clinical-rail .support-card,
+  .clinical-rail .emergency { background: var(--mn-card); border-color: var(--clinical-line); }
+  .clinical-inner-hero,
+  .clinical-about-values,
+  .clinical-cta-card { background: var(--clinical-feature-surface); }
+  .clinical-about-values { color: var(--clinical-text); }
+  .clinical-about-values h2,
+  .clinical-value-grid h3 { color: var(--clinical-navy); }
+  .clinical-about-grid p,
+  .clinical-value-grid p,
+  .clinical-about-values .clinical-section-kicker { color: var(--clinical-secondary); }
+  .clinical-value-grid article { background: var(--mn-card); }
+  .clinical-value-grid strong { color: var(--clinical-teal); }
+
+  // A blue text link and a blue filled action have different contrast needs.
+  .clinical-book-top,
+  .clinical-primary-button,
+  .clinical-doctor-book,
+  .clinical-auth-submit,
+  .clinical-rail-card > a,
+  .clinical-rail .community > a,
+  .clinical-pagination b,
+  .clinical-shell .button-primary,
+  .clinical-header-search button {
+    color: var(--clinical-on-fill);
+    background: var(--clinical-primary-fill);
+  }
+  .clinical-book-top:hover,
+  .clinical-primary-button:hover:not(:disabled),
+  .clinical-doctor-book:hover,
+  .clinical-auth-submit:hover:not(:disabled),
+  .clinical-rail-card > a:hover,
+  .clinical-shell .button-primary:hover {
+    background: var(--clinical-primary-fill-hover);
+  }
+  .clinical-light-button,
+  .clinical-shell .button-outline,
+  .clinical-shell .button-ghost {
+    color: var(--clinical-primary);
+    border-color: var(--clinical-control-line);
+    background: var(--mn-card);
+  }
+  .clinical-light-button:hover,
+  .clinical-shell .button-outline:hover,
+  .clinical-shell .button-ghost:hover { background: var(--clinical-low); }
+  .clinical-department-swiper :is(.swiper-button-prev, .swiper-button-next):hover {
+    color: var(--clinical-on-accent);
+    background: var(--clinical-primary);
+  }
+  .clinical-auth-brand > span,
+  .clinical-admin-brand > span { color: var(--clinical-on-accent); }
+
+  // Native dates/selects inherit color-scheme from PreferenceProvider.
+  .clinical-shell :is(.clinical-header-search input, .clinical-filter-bar label,
+    .clinical-filter-bar select, .clinical-contact-form input, .clinical-contact-form textarea,
+    .clinical-patient-form input, .clinical-patient-form select, .clinical-patient-form textarea,
+    .clinical-auth-field, .clinical-booking-review-final textarea),
+  .clinical-shell .booking-wizard :is(input, select, textarea),
+  .clinical-shell .clinical-service-page :is(.service-search, .list-toolbar select, .comment-form textarea),
+  .clinical-chat-panel form input,
+  .clinical-messages-compose input {
+    color: var(--clinical-text);
+    border-color: var(--clinical-control-line);
+    background: var(--clinical-low);
+  }
+  :is(.clinical-shell, .clinical-staff-shell, .clinical-chat-panel) :is(input, textarea)::placeholder {
+    color: var(--clinical-muted);
+    opacity: 1;
+  }
+  .clinical-shell .clinical-auth-field:focus-within {
+    border-color: var(--clinical-primary);
+    background: var(--clinical-low);
+  }
+  .clinical-shell .wizard-steps .active b {
+    color: var(--clinical-on-accent);
+    background: var(--clinical-primary);
+  }
+  .clinical-shell .clinical-service-page :is(.section-heading h2, .comment-card strong) {
+    color: var(--clinical-navy);
+  }
+  .clinical-shell .clinical-service-page .comment-card time { color: var(--clinical-muted); }
+
+  // Errors stay readable against both the canvas and a tinted error surface.
+  .clinical-form-error,
+  .clinical-shell .form-error,
+  .clinical-auth-error,
+  .clinical-oauth-status.is-error { color: var(--clinical-danger) !important; }
+  .clinical-shell .form-error,
+  .clinical-auth-error,
+  .clinical-oauth-status.is-error { background: var(--clinical-danger-soft); }
+  .clinical-chat-error,
+  .clinical-assistant-help .clinical-chat-error { color: var(--clinical-danger); }
+
+  // Role surfaces keep their own clinical identity; shared forms follow it.
+  .clinical-staff-doctor {
+    --clinical-surface: var(--doctor-bg);
+    --clinical-low: var(--doctor-panel-alt);
+    --clinical-line: var(--doctor-line);
+    --clinical-text: var(--doctor-text);
+    --clinical-navy: var(--doctor-text);
+    --clinical-secondary: var(--doctor-muted);
+    --clinical-muted: var(--doctor-muted);
+    --clinical-primary: var(--doctor-accent);
+    --clinical-primary-soft: var(--staff-accent-soft);
+  }
+  .clinical-staff-receptionist {
+    --clinical-surface: var(--reception-bg);
+    --clinical-low: var(--reception-alt);
+    --clinical-line: var(--reception-line);
+    --clinical-text: var(--reception-text);
+    --clinical-navy: var(--reception-text);
+    --clinical-secondary: var(--reception-muted);
+    --clinical-muted: var(--reception-muted);
+    --clinical-primary: var(--reception-accent);
+    --clinical-primary-soft: var(--staff-accent-soft);
+  }
+  .clinical-staff-shell .clinical-staff-form button,
+  .clinical-staff-shell .clinical-staff-profile-buttons button:first-child {
+    color: var(--clinical-on-accent);
+  }
+  .clinical-staff-shell .clinical-staff-profile-buttons button:last-child:not(:first-child) {
+    color: var(--staff-accent);
+  }
+  .clinical-staff-shell :is(.clinical-staff-form, .clinical-resource-form, .clinical-admin-create-form)
+    :is(input, select, textarea),
+  .clinical-staff-shell .clinical-account-profile .clinical-staff-profile-form :is(input, textarea),
+  .clinical-staff-shell .clinical-resource-search {
+    color: var(--clinical-text);
+    border-color: var(--clinical-control-line);
+    background: var(--clinical-low);
+  }
+  .clinical-staff-shell .clinical-staff-status:is(.status-cancelled, .status-no_show) {
+    color: var(--clinical-danger);
+    background: var(--clinical-danger-soft);
+  }
+  .clinical-staff-shell .clinical-staff-status:is(.status-completed, .status-ended) {
+    color: var(--clinical-teal);
+    background: var(--clinical-teal-soft);
+  }
+  .clinical-account-profile .mn-profile-panel .clinical-staff-profile-form :is(input, textarea) {
+    border-color: var(--clinical-control-line);
+  }
+  .clinical-role-signin-field { border-color: var(--clinical-control-line); }
+  .clinical-role-signin-field input::placeholder { color: var(--portal-muted); }
+}
