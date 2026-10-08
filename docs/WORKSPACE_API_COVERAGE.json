@@ -1,6 +1,6 @@
 {
-  "businessOperations": 149,
-  "coveredBusinessOperations": 149,
+  "businessOperations": 150,
+  "coveredBusinessOperations": 150,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -388,6 +388,12 @@
     },
     {
       "field": "getReceptionTask",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyDoctorServiceTypes",
       "kind": "query",
       "frontendContract": true,
       "internalDiagnostic": false

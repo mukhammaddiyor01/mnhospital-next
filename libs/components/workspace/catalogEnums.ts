@@ -76,6 +76,12 @@ export const DoctorSpecialty = [
 	'PEDIATRICIAN',
 	'SURGEON',
 	'DENTIST',
+	'UROLOGIST',
+	'OPHTHALMOLOGIST',
+	'NEUROSURGEON',
+	'PLASTIC_SURGEON',
+	'OBSTETRICIAN_GYNECOLOGIST',
+	'FAMILY_PHYSICIAN',
 ] as const;
 export const DoctorSort = [
 	'createdAt',

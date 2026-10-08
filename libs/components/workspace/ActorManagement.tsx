@@ -13,6 +13,7 @@ import ResourcePanel, {
 	ResourceField,
 } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
+import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 const availableRooms = operation(
 	'query',
 	'getAvailableDoctorRooms',
@@ -53,6 +54,7 @@ export default function ActorManagement({
 	kind: 'doctor' | 'receptionist';
 }) {
 	const w = useWorkspaceText();
+	const specialtyLabel = useDoctorSpecialtyLabel();
 	const [selected, setSelected] = useState<RecordItem | null>(null);
 	const doctor = kind === 'doctor';
 	const prefix = doctor ? 'doc' : 'receptionist';
@@ -157,7 +159,8 @@ export default function ActorManagement({
 						{
 							name: 'docSpecialty',
 							label: 'specialty',
-							options: [...DoctorSpecialty],
+							required: true,
+							options: DoctorSpecialty.map((value) => ({ value, label: specialtyLabel(value) })),
 						},
 					] as ResourceField[])
 				: []),
@@ -265,6 +268,7 @@ export default function ActorManagement({
 			search: true,
 		};
 	}, [
+		specialtyLabel,
 		doctor,
 		prefix,
 		roomOptions,
@@ -322,7 +326,7 @@ export default function ActorManagement({
 								.map((field) => (
 									<div key={field.name}>
 										<dt>{w(field.label)}</dt>
-										<dd>{String(record[field.name] ?? '—')}</dd>
+										<dd>{field.name === 'docSpecialty' ? specialtyLabel(record[field.name]) : String(record[field.name] ?? '—')}</dd>
 									</div>
 								))}
 						</dl>

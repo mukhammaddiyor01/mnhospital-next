@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
-import { useQuery, useReactiveVar } from '@apollo/client';
+import { gql, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
 import { operation } from '@/apollo/workspace/operations';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import ResourcePanel, { ResourceConfig, ResourceField } from './ResourcePanel';
 import { ServiceRoom, ServiceRoomName, ServiceType } from './catalogEnums';
+import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
+import { useWorkspaceText } from './useWorkspaceText';
+const MY_SERVICE_TYPES = gql`query GetMyDoctorServiceTypes { getMyDoctorServiceTypes }`;
 const DEPARTMENTS = operation(
 	'query',
 	'getDepartments',
@@ -51,6 +54,12 @@ export default function ServiceManagement({
 	role: MemberType.ADMIN | MemberType.DOCTOR;
 }) {
 	const session = useReactiveVar(userVar);
+	const w = useWorkspaceText();
+	const typeLabel = useServiceTypeLabel();
+	const types = useQuery<{ getMyDoctorServiceTypes: string[] }>(MY_SERVICE_TYPES, {
+		skip: !session._id || session.memberType !== MemberType.DOCTOR || role !== MemberType.DOCTOR,
+		fetchPolicy: 'network-only',
+	});
 	const { data, error } = useQuery(DEPARTMENTS, {
 		skip: !session._id || session.memberType !== role,
 	});
@@ -62,7 +71,8 @@ export default function ServiceManagement({
 				name: 'serviceType',
 				label: 'type',
 				required: true,
-				options: [...ServiceType],
+				options: (role === MemberType.ADMIN ? [...ServiceType] : (types.data?.getMyDoctorServiceTypes ?? []))
+					.map((value) => ({ value, label: typeLabel(value) })),
 			},
 			{
 				name: 'departmentId',
@@ -140,6 +150,8 @@ export default function ServiceManagement({
 			columns: [fields[0], fields[2], fields[6], fields[12]],
 			fields,
 			create: role === MemberType.DOCTOR ? create : undefined,
+			createDisabled: role === MemberType.DOCTOR && (types.loading || Boolean(types.error) || !types.data?.getMyDoctorServiceTypes.length),
+			createDisabledReason: 'specialtyServicesHelp',
 			update: role === MemberType.ADMIN ? adminUpdate : doctorUpdate,
 			remove: role === MemberType.ADMIN ? adminRemove : doctorUpdate,
 			removeVariables: (r) =>
@@ -156,9 +168,12 @@ export default function ServiceManagement({
 					: r.serviceStatus === 'ACTIVE',
 			search: true,
 		};
-	}, [role, data]);
+	}, [role, data, types.data, types.loading, types.error, typeLabel]);
 	return (
 		<>
+			<p>{w('specialtyServicesHelp')}</p>
+			{role === MemberType.DOCTOR && <button type="button" disabled={types.loading} onClick={() => void types.refetch().catch(() => undefined)}>{w('refresh')} · {w('specialty')}</button>}
+			{types.error && <p role="alert" className="clinical-form-error">{types.error.message}</p>}
 			{error && (
 				<p role="alert" className="clinical-form-error">
 					{error.message}

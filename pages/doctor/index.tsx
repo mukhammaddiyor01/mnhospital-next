@@ -87,18 +87,7 @@ const DoctorsPage = () => {
 						aria-label={t('doctors.filterSpecialty')}
 					>
 						<option value="">{t('doctors.allDepartments')}</option>
-						<option value={DoctorSpecialty.GENERAL_PRACTITIONER}>
-							{t('doctors.general')}
-						</option>
-						<option value={DoctorSpecialty.CARDIOLOGIST}>
-							{t('doctors.cardiology')}
-						</option>
-						<option value={DoctorSpecialty.DENTIST}>
-							{t('doctors.dentistry')}
-						</option>
-						<option value={DoctorSpecialty.PEDIATRICIAN}>
-							{t('doctors.pediatrics')}
-						</option>
+						{Object.values(DoctorSpecialty).map((value) => <option key={value} value={value}>{specialtyLabel(value)}</option>)}
 					</select>
 					<select aria-label={t('doctors.filterAvailability')}>
 						<option>{t('doctors.anyAvailability')}</option>

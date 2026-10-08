@@ -1,5 +1,7 @@
 # Hospital frontend API coverage
 
+Doctor specialty catalog: 13 specialties and all 16 service types match backend enums and have EN/UZ/KR labels. Admin create/edit and public filters use the expanded specialty list. Doctor service options come from the doctor-only `getMyDoctorServiceTypes` query; creation is disabled until a specialty has allowed types. The backend validates doctor/admin type changes and reactivation, and rejects specialty changes that invalidate active services. See backend `docs/DOCTOR_SPECIALTIES.md`; run `node scripts/verify-specialty-catalog.cjs <schema-path>` for enum and localization verification.
+
 The offline contract check compares frontend GraphQL documents and workspace form operations with the schema exported from the backend resolver classes. It checks field names, arguments and selections. It does not prove that every database workflow has been exercised with live accounts.
 
 ## Role routes
