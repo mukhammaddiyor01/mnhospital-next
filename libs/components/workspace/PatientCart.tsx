@@ -1,3 +1,5 @@
+import { clinicDateTime } from '@/libs/payments/clinic';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import Link from 'next/link';
 import { useMutation, useQuery } from '@apollo/client';
 import { useState } from 'react';
@@ -10,6 +12,7 @@ import { CREATE_BOOKING_ORDER } from '@/apollo/booking/mutation';
 import { useWorkspaceText } from './useWorkspaceText';
 export default function PatientCart() {
 	const w = useWorkspaceText();
+	const clinic = useClinicSettings();
 	const [feedback, setFeedback] = useState('');
 	const { data, loading, error, refetch } = useQuery(MY_CART, {
 		fetchPolicy: 'network-only',
@@ -54,7 +57,7 @@ export default function PatientCart() {
 						<div className="clinical-resource-actions" key={item._id}>
 							<span>
 								{item.serviceName} · {item.servicePrice} ·{' '}
-								{new Date(item.requestedStartAt).toLocaleString()}
+								{clinicDateTime(item.requestedStartAt, 'en-US', clinic.timeZone)}
 							</span>
 							<button
 								disabled={busy}
@@ -74,8 +77,8 @@ export default function PatientCart() {
 						onClick={async () => {
 							if (!window.confirm(w('checkout'))) return;
 							try {
-								await checkout();
-								window.location.assign('/mypage/bookings');
+								const result = await checkout();
+								window.location.assign(`/booking/${result.data.createBookingOrder._id}/payment`);
 							} catch (e: any) {
 								setFeedback(e.message);
 							}

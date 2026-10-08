@@ -90,8 +90,8 @@ const PatientProfile = () => {
 	useEffect(() => {
 		if (!patient) return;
 		setForm({
-			patientBloodType: patient.patientBloodType,
-			patientGender: patient.patientGender,
+			patientBloodType: patient.patientBloodType ?? '',
+			patientGender: patient.patientGender ?? '',
 			patientBirthDate: toDateInput(patient.patientBirthDate),
 			patientIdNumber: patient.patientIdNumber ?? '',
 			patientFullName: patient.patientFullName ?? '',

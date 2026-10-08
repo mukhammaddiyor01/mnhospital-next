@@ -1,3 +1,4 @@
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import { useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/libs/components/common/Icon';
@@ -20,7 +21,8 @@ const ReceptionistDashboard = ({ stats, appointments, loading, error }: {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<QueueFilter>('ALL');
   const [selectedId, setSelectedId] = useState('');
-  const format = new Intl.DateTimeFormat({ KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' }[language], { dateStyle: 'medium', timeStyle: 'short' });
+  const clinic = useClinicSettings();
+  const format = new Intl.DateTimeFormat({ KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' }[language], { timeZone: clinic.timeZone, dateStyle: 'medium', timeStyle: 'short' });
   const term = search.trim().toLocaleLowerCase();
   const visible = (appointments ?? []).filter((item) =>
     (filter === 'ALL' || item.appointmentStatus === filter) &&

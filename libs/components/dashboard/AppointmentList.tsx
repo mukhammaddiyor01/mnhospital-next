@@ -1,3 +1,4 @@
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import { WorkspaceAppointment } from './types';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
@@ -17,7 +18,8 @@ const locales = { KR: 'ko-KR', UZ: 'uz-UZ', EN: 'en-US' };
 const AppointmentList = ({ appointments, loading, error }: { appointments?: WorkspaceAppointment[]; loading: boolean; error: boolean }) => {
   const t = useTranslation();
   const { language } = usePreferences();
-  const format = new Intl.DateTimeFormat(locales[language], { dateStyle: 'medium', timeStyle: 'short' });
+  const clinic = useClinicSettings();
+  const format = new Intl.DateTimeFormat(locales[language], { timeZone: clinic.timeZone, dateStyle: 'medium', timeStyle: 'short' });
 
   return <section className="clinical-staff-panel clinical-staff-appointment-panel">
     <header><div><span className="clinical-staff-panel-kicker">{t('dashboard.workSummary')}</span><h2>{t('dashboard.assignedAppointments')}</h2></div></header>

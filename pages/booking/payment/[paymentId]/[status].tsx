@@ -27,6 +27,7 @@ function PaymentResultPage() {
 			{(result.error || (router.isReady && !validId)) && <p role="alert">{w('paymentUnavailable')}</p>}
 			{payment && <p>{payment.paymentAmount} {payment.paymentCurrency} · {w('status')}: {payment.paymentStatus}</p>}
 			<p>{w('paymentNotice')}</p>
+			{payment && <Link className="clinical-primary-button" href={`/booking/${payment.bookingOrderId}/payment`}>{w('bookingSummary')}</Link>}
 			<div className="clinical-resource-actions">
 				{validId && <button disabled={result.loading} type="button" onClick={() => void result.refetch().catch(() => undefined)}>{w('refresh')}</button>}
 				<Link href="/mypage/payments">{w('payments')}</Link>

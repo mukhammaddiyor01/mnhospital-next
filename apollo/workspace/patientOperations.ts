@@ -56,7 +56,7 @@ export const MY_PAYMENT = operation(
 	'query',
 	'getMyPayment',
 	'String',
-	'_id paymentAmount paymentCurrency paymentStatus paymentMethod paymentProvider paidAt refundedAt',
+	'_id bookingOrderId paymentAmount paymentCurrency paymentStatus paymentMethod paymentProvider testPayment paidAt refundedAt',
 	'paymentId',
 );
 export const CREATE_PAYMENT = operation(

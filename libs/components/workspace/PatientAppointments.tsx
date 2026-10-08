@@ -1,3 +1,5 @@
+import { clinicDateTime } from '@/libs/payments/clinic';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useMutation } from '@apollo/client';
@@ -10,6 +12,7 @@ import ResourcePanel, { ResourceConfig, RecordItem } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
 export default function PatientAppointments() {
 	const w = useWorkspaceText();
+	const clinic = useClinicSettings();
 	const [selected, setSelected] = useState<RecordItem | null>(null);
 	const [revision, setRevision] = useState(0);
 	const [feedback, setFeedback] = useState('');
@@ -39,7 +42,7 @@ export default function PatientAppointments() {
 					<p>{selected.appointmentReason}</p>
 					<p>{selected.appointmentDesc}</p>
 					<p>
-						{new Date(selected.startsAt).toLocaleString()} ·{' '}
+						{clinicDateTime(selected.startsAt, 'en-US', clinic.timeZone)} ·{' '}
 						{selected.appointmentStatus}
 					</p>
 					{feedback && <p role="alert">{feedback}</p>}

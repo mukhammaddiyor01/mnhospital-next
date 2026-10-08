@@ -75,7 +75,8 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
         registerForm.memberPhone,
         registerForm.memberFullName,
       );
-      await router.push("/mypage");
+      const destination = typeof router.query.redirect === "string" && router.query.redirect.startsWith("/") && !router.query.redirect.startsWith("//") ? router.query.redirect : "/mypage";
+      await router.push(destination);
     } catch (err: unknown) {
       setError(
         err instanceof Error

@@ -1,430 +1,123 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { ADD_CART_ITEM, CREATE_BOOKING_ORDER } from '@/apollo/booking/mutation';
+import { CREATE_APPOINTMENT_BOOKING } from '@/apollo/booking/checkout';
 import { GET_AVAILABLE_DOCTOR_SLOTS } from '@/apollo/booking/query';
 import { GET_SERVICES } from '@/apollo/service/query';
 import { userVar } from '@/apollo/store';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
 import { AppointmentDraft } from '@/libs/components/booking/types/booking';
+import { Service, Services } from '@/libs/components/service/types/service';
+import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { useTranslation } from '@/libs/i18n/useTranslation';
-import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
-import { translate } from '@/libs/i18n/messages';
-import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { clinicToday, clinicDateTime } from '@/libs/payments/clinic';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
+import { formatMoney } from '@/libs/components/common/currency';
 
-const mongoId = /^[a-f\d]{24}$/i;
-const demoServices = [
-	{
-		_id: 'cardiology',
-		memberId: 'azizbek-rahimov',
-		serviceTitle: 'Cardiology consultation',
-		serviceName: 'Cardiology',
-		serviceDuration: '30',
-		servicePrice: 250000,
-		memberData: {
-			_id: 'azizbek-rahimov',
-			docFullName: 'Dr. Azizbek Rahimov',
-			docSpecialty: 'CARDIOLOGIST',
-		},
-	},
-	{
-		_id: 'general-medicine',
-		memberId: 'madina-karimova',
-		serviceTitle: 'General medicine consultation',
-		serviceName: 'General Medicine',
-		serviceDuration: '30',
-		servicePrice: 180000,
-		memberData: {
-			_id: 'madina-karimova',
-			docFullName: 'Dr. Madina Karimova',
-			docSpecialty: 'GENERAL_PRACTITIONER',
-		},
-	},
-	{
-		_id: 'pediatrics',
-		memberId: 'sardor-ergashev',
-		serviceTitle: 'Pediatric consultation',
-		serviceName: 'Pediatrics',
-		serviceDuration: '30',
-		servicePrice: 200000,
-		memberData: {
-			_id: 'sardor-ergashev',
-			docFullName: 'Dr. Sardor Ergashev',
-			docSpecialty: 'PEDIATRICIAN',
-		},
-	},
-];
-
-const AppointmentPage = () => {
+const draftKey = 'mn-appointment-draft-v1';
+const emptyDraft: AppointmentDraft = { serviceId: '', doctorId: '', date: '', startsAt: '', patientNote: '' };
+function AppointmentPage() {
 	const t = useTranslation();
 	const w = useWorkspaceText();
-	const specialtyLabel = useDoctorSpecialtyLabel();
+	const clinic = useClinicSettings();
 	const { language } = usePreferences();
-	const locale =
-		language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
-	const steps = [
-		t('booking.stepService'),
-		t('booking.stepSpecialist'),
-		t('booking.stepTime'),
-		t('booking.stepReview'),
-	];
-	const localizedDemoServices = useMemo(() => {
-		const titles = [
-			'booking.demoCardiology',
-			'booking.demoGeneral',
-			'booking.demoPediatrics',
-		] as const;
-		const names = [
-			'booking.demoCardiologyName',
-			'booking.demoGeneralName',
-			'booking.demoPediatricsName',
-		] as const;
-		const specialties = [
-			'booking.demoCardiologyDoctor',
-			'booking.demoGeneralDoctor',
-			'booking.demoPediatricsDoctor',
-		] as const;
-		return demoServices.map((service, index) => ({
-			...service,
-			serviceTitle: translate(language, titles[index]),
-			serviceName: translate(language, names[index]),
-			memberData: {
-				...service.memberData,
-				docSpecialty: translate(language, specialties[index]),
-			},
-		}));
-	}, [language]);
+	const locale = language === 'KR' ? 'ko-KR' : language === 'UZ' ? 'uz-UZ' : 'en-US';
 	const router = useRouter();
 	const user = useReactiveVar(userVar);
-	const apiEnabled = true;
-	const [step, setStep] = useState(1);
-	const [form, setForm] = useState<AppointmentDraft>({
-		serviceId: '',
-		doctorId: '',
-		date: '',
-		startsAt: '',
-		patientNote: '',
-	});
-	const [order, setOrder] = useState<{
-		orderCode: string;
-		bookingOrderStatus: string;
-	} | null>(null);
+	const [form, setForm] = useState(emptyDraft);
 	const [message, setMessage] = useState('');
-	const servicesQuery = useQuery(GET_SERVICES, {
-		variables: {
-			input: {
-				page: 1,
-				limit: 50,
-				sort: 'serviceRank',
-				direction: 'DESC',
-				search: { serviceStatusList: ['ACTIVE'] },
-			},
-		},
-		skip: !apiEnabled,
-		fetchPolicy: 'cache-and-network',
-	});
-	const services = servicesQuery.data?.getServices?.list?.length
-		? servicesQuery.data.getServices.list
-		: localizedDemoServices;
-	const selectedService = useMemo(
-		() => services.find((service: any) => service._id === form.serviceId),
-		[form.serviceId, services],
-	);
-	const canLoadSlots =
-		apiEnabled &&
-		mongoId.test(form.serviceId) &&
-		mongoId.test(form.doctorId) &&
-		Boolean(form.date);
-	const slotsQuery = useQuery(GET_AVAILABLE_DOCTOR_SLOTS, {
-		variables: {
-			input: {
-				serviceId: form.serviceId,
-				doctorId: form.doctorId,
-				date: form.date,
-			},
-		},
-		skip: !canLoadSlots,
+	const [page, setPage] = useState(1);
+	const [search, setSearch] = useState('');
+	const restored = useRef(false);
+	const preselected = useRef(false);
+	const lock = useRef(false);
+	const requestKey = useRef('');
+	const [create, creating] = useMutation<{ createAppointmentBooking: { _id: string } }>(CREATE_APPOINTMENT_BOOKING);
+	const catalog = useQuery<{ getServices: Services }>(GET_SERVICES, {
+		variables: { input: { page, limit: 50, sort: 'serviceRank', direction: 'DESC', search: { ...(search ? { text: search } : {}), ...(typeof router.query.doctor === 'string' && /^[a-f\d]{24}$/i.test(router.query.doctor) ? { memberId: router.query.doctor } : {}) } } },
 		fetchPolicy: 'network-only',
 	});
-	const slots = canLoadSlots
-		? (slotsQuery.data?.getAvailableDoctorSlots ?? [])
-		: form.date
-			? ['09:00', '10:30', '14:00', '16:00'].map((time) => ({
-					startsAt: `${form.date}T${time}:00`,
-					endsAt: '',
-				}))
-			: [];
-	const [addCartItem, addState] = useMutation(ADD_CART_ITEM);
-	const [createBookingOrder, orderState] = useMutation(CREATE_BOOKING_ORDER);
-
+	const services = catalog.data?.getServices.list ?? [];
+	const selected = services.find((service) => service._id === form.serviceId);
+	const slotsQuery = useQuery<{ getAvailableDoctorSlots: Array<{ startsAt: string; endsAt: string }> }>(GET_AVAILABLE_DOCTOR_SLOTS, {
+		variables: { input: { serviceId: form.serviceId, doctorId: form.doctorId, date: form.date } },
+		skip: !selected || !form.date,
+		fetchPolicy: 'network-only',
+	});
+	const slots = slotsQuery.data?.getAvailableDoctorSlots ?? [];
 	useEffect(() => {
-		if (!router.isReady) return;
-		const requestedService =
-			typeof router.query.service === 'string'
-				? services.find((service: any) => service._id === router.query.service)
-				: undefined;
-		const requestedDoctor =
-			typeof router.query.doctor === 'string' ? router.query.doctor : '';
-		const matchingService =
-			requestedService ??
-			services.find((service: any) => service.memberId === requestedDoctor);
-		if (matchingService || requestedDoctor)
-			setForm((current) => ({
-				...current,
-				doctorId: matchingService?.memberId ?? requestedDoctor,
-				...(matchingService ? { serviceId: matchingService._id } : {}),
-			}));
-	}, [router.isReady, router.query.doctor, router.query.service, services]);
-
-	const updateForm = (field: keyof AppointmentDraft, value: string) => {
-		setMessage('');
-		setForm((current) => ({
-			...current,
-			[field]: value,
-			...(field === 'date' ? { startsAt: '' } : {}),
-		}));
-	};
-	const chooseService = (serviceId: string) => {
-		const service = services.find((item: any) => item._id === serviceId);
-		setForm((current) => ({
-			...current,
-			serviceId,
-			doctorId: service?.memberId ?? '',
-			startsAt: '',
-		}));
-	};
-	const submitStep = async (event: FormEvent) => {
-		event.preventDefault();
-		setMessage('');
-		if (step < steps.length) return setStep((current) => current + 1);
-		if (!apiEnabled) return setMessage(t('booking.previewError'));
-		if (!user._id) return setMessage(t('booking.signinError'));
+		if (!router.isReady || restored.current) return;
+		restored.current = true;
 		try {
-			await addCartItem({
-				variables: {
-					input: {
-						serviceId: form.serviceId,
-						doctorId: form.doctorId,
-						patientNote: form.patientNote || undefined,
-						requestedStartAt: form.startsAt,
-					},
-				},
-			});
-			const result = await createBookingOrder();
-			setOrder(result.data?.createBookingOrder ?? null);
-		} catch (error: any) {
-			setMessage(error.message ?? t('booking.orderError'));
+			const saved = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
+			if (saved && Object.keys(emptyDraft).every((key) => typeof saved[key] === 'string')) setForm(saved);
+		} catch { /* A malformed or unavailable draft does not block booking. */ }
+	}, [router.isReady]);
+	useEffect(() => {
+		if (!router.isReady || preselected.current || !catalog.data) return;
+		preselected.current = true;
+		const requested = services.find((service) => service._id === router.query.service) || services.find((service) => service.memberId === router.query.doctor);
+		if (requested) setForm((current) => ({ ...current, serviceId: requested._id, doctorId: requested.memberId, startsAt: '' }));
+	}, [router.isReady, router.query.service, router.query.doctor, catalog.data, services]);
+	const update = (patch: Partial<AppointmentDraft>) => {
+		setForm((current) => ({ ...current, ...patch }));
+		requestKey.current = '';
+		setMessage('');
+	};
+	const submit = async (event: FormEvent) => {
+		event.preventDefault();
+		if (lock.current || !selected || !slots.some((slot) => slot.startsAt === form.startsAt)) return;
+		if (!user._id) {
+			try { sessionStorage.setItem(draftKey, JSON.stringify(form)); } catch { /* Keep the in-page draft. */ }
+			await router.push('/account/signin?redirect=%2Fappointment');
+			return;
 		}
+		if (user.memberType !== MemberType.PATIENT) return setMessage(w('patientBookingOnly'));
+		lock.current = true;
+		setMessage('');
+		if (!requestKey.current) requestKey.current = crypto.randomUUID();
+		try {
+			const result = await create({ variables: { input: { serviceId: selected._id, doctorId: selected.memberId, requestedStartAt: form.startsAt,
+				patientNote: form.patientNote || undefined, idempotencyKey: requestKey.current } } });
+			if (!result.data) throw new Error(t('booking.orderError'));
+			try { sessionStorage.removeItem(draftKey); } catch { /* Storage is optional. */ }
+			await router.push(`/booking/${result.data.createAppointmentBooking._id}/payment`);
+		} catch (error) { setMessage(error instanceof Error ? error.message : t('booking.orderError')); }
+		finally { lock.current = false; }
 	};
-	const formatSlot = (value: string) => {
-		const date = new Date(value);
-		return Number.isNaN(date.getTime())
-			? t('booking.unavailable')
-			: new Intl.DateTimeFormat(locale, {
-					hour: '2-digit',
-					minute: '2-digit',
-				}).format(date);
-	};
-	const busy = addState.loading || orderState.loading;
-
-	return (
-		<div className="clinical-inner-page">
-			<section className="clinical-inner-hero">
-				<div>
-					<div className="clinical-crumb">
-						<Link href="/">{t('nav.home')}</Link> / {t('nav.appointments')}
-					</div>
-					<span className="clinical-eyebrow">{t('booking.eyebrow')}</span>
-					<h1>
-						{t('booking.hero1')}
-						<br />
-						<em>{t('booking.hero2')}</em>
-					</h1>
-					<p>{t('booking.intro')}</p>
+	return <div className="clinical-inner-page">
+		<section className="clinical-inner-hero"><div><div className="clinical-crumb"><Link href="/">{t('nav.home')}</Link> / {t('nav.appointments')}</div>
+			<span className="clinical-eyebrow">{t('booking.eyebrow')}</span><h1>{t('booking.hero1')}<br /><em>{t('booking.hero2')}</em></h1><p>{w('simpleBookingIntro')}</p></div></section>
+		<section className="clinical-inner-section clinical-appointment-section">
+			<form className="booking-wizard" onSubmit={submit}>
+				<div className="wizard-steps"><span className="active"><b>01</b>{w('chooseVisit')}</span><span><b>02</b>{w('payments')}</span></div>
+				<div className="booking-fields">
+					<label>{t('booking.date')}<input type="date" min={clinicToday(clinic.timeZone)} value={form.date} required onChange={(event) => update({ date: event.target.value, startsAt: '' })} /></label>
+					<label>{w('searchService')}<input type="search" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); update({ serviceId: '', doctorId: '', startsAt: '' }); }} /></label>
+					<label className="wide-field">{t('booking.hospitalService')}<select value={form.serviceId} required disabled={catalog.loading || !services.length} onChange={(event) => {
+						const service = services.find((item) => item._id === event.target.value);
+						update({ serviceId: service?._id || '', doctorId: service?.memberId || '', startsAt: '' });
+					}}><option value="">{t('booking.selectService')}</option>{services.map((service: Service) => <option value={service._id} key={service._id}>{service.serviceTitle || service.serviceName} · {service.memberData?.docFullName} · {formatMoney(service.servicePrice, clinic.currency)}</option>)}</select></label>
+					<label>{t('booking.availableTime')}<select value={form.startsAt} required disabled={!selected || !form.date || slotsQuery.loading} onChange={(event) => update({ startsAt: event.target.value })}>
+						<option value="">{slotsQuery.loading ? t('booking.checking') : t('booking.selectTime')}</option>{slots.map((slot) => <option key={slot.startsAt} value={slot.startsAt}>{new Intl.DateTimeFormat(locale, { timeZone: clinic.timeZone, hour: '2-digit', minute: '2-digit' }).format(new Date(slot.startsAt))}</option>)}
+					</select><small>{w('clinicTime')} · {clinic.timeZone}</small></label>
+					<label>{t('booking.note')}<textarea maxLength={1000} value={form.patientNote} onChange={(event) => update({ patientNote: event.target.value })} placeholder={t('booking.notePlaceholder')} /></label>
 				</div>
-			</section>
-			<section className="clinical-inner-section clinical-appointment-section">
-				{order ? (
-					<div className="clinical-booking-success">
-						<Icon name="check_circle" />
-						<span className="clinical-section-kicker">
-							{t('booking.order')} {order.orderCode}
-						</span>
-						<h2>{t('booking.success')}</h2>
-						<p>
-							{t('booking.status')}: {order.bookingOrderStatus}.{' '}
-							{w('bookingNextStep')}
-						</p>
-						<Link className="clinical-primary-button" href="/mypage/bookings">
-							{t('booking.order')}
-						</Link>
-					</div>
-				) : (
-					<form className="booking-wizard" onSubmit={submitStep}>
-						<div className="wizard-steps">
-							{steps.map((label, index) => (
-								<span className={step >= index + 1 ? 'active' : ''} key={label}>
-									<b>0{index + 1}</b>
-									{label}
-								</span>
-							))}
-						</div>
-						{step === 1 && (
-							<label>
-								{t('booking.hospitalService')}
-								<select
-									value={form.serviceId}
-									onChange={(event) => chooseService(event.target.value)}
-									required
-								>
-									<option value="">{t('booking.selectService')}</option>
-									{services.map((service: any) => (
-										<option value={service._id} key={service._id}>
-											{service.serviceTitle || service.serviceName}
-										</option>
-									))}
-								</select>
-								{servicesQuery.loading && (
-									<small>{t('booking.refreshing')}</small>
-								)}
-							</label>
-						)}
-						{step === 2 && (
-							<div className="clinical-booking-review">
-								<span className="clinical-service-detail-icon">
-									<Icon name="stethoscope" />
-								</span>
-								<div>
-									<small>{t('booking.assigned')}</small>
-									<h3>
-										{selectedService?.memberData?.docFullName ??
-											t('booking.assignedFallback')}
-									</h3>
-									<p>
-										{selectedService?.memberData?.docSpecialty
-											? specialtyLabel(selectedService.memberData.docSpecialty)
-											: t('booking.specialistFallback')}
-									</p>
-								</div>
-								<input type="hidden" value={form.doctorId} required readOnly />
-							</div>
-						)}
-						{step === 3 && (
-							<div className="booking-fields">
-								<label>
-									{t('booking.date')}
-									<input
-										type="date"
-										min={new Date().toISOString().slice(0, 10)}
-										value={form.date}
-										onChange={(event) => updateForm('date', event.target.value)}
-										required
-									/>
-								</label>
-								<label>
-									{t('booking.availableTime')}
-									<select
-										value={form.startsAt}
-										onChange={(event) =>
-											updateForm('startsAt', event.target.value)
-										}
-										required
-										disabled={!form.date || slotsQuery.loading}
-									>
-										<option value="">
-											{slotsQuery.loading
-												? t('booking.checking')
-												: t('booking.selectTime')}
-										</option>
-										{slots.map((slot: any) => (
-											<option value={slot.startsAt} key={slot.startsAt}>
-												{formatSlot(slot.startsAt)}
-											</option>
-										))}
-									</select>
-								</label>
-								{form.date && !slotsQuery.loading && slots.length === 0 && (
-									<p className="clinical-form-error wide-field">
-										{t('booking.noSlots')}
-									</p>
-								)}
-							</div>
-						)}
-						{step === 4 && (
-							<div className="clinical-booking-review clinical-booking-review-final">
-								<div>
-									<small>{t('booking.stepService')}</small>
-									<h3>
-										{selectedService?.serviceTitle ||
-											selectedService?.serviceName}
-									</h3>
-									<p>
-										{selectedService?.memberData?.docFullName} ·{' '}
-										{form.startsAt
-											? new Date(form.startsAt).toLocaleString(locale)
-											: ''}
-									</p>
-								</div>
-								<strong>
-									{Number(selectedService?.servicePrice ?? 0).toLocaleString(
-										locale,
-									)}{' '}
-									UZS
-								</strong>
-								<label>
-									{t('booking.note')}
-									<textarea
-										value={form.patientNote}
-										onChange={(event) =>
-											updateForm('patientNote', event.target.value)
-										}
-										placeholder={t('booking.notePlaceholder')}
-									/>
-								</label>
-							</div>
-						)}
-						{message && (
-							<div className="clinical-booking-message">
-								<Icon name="info" />
-								<span>
-									{message}{' '}
-									{!user._id && apiEnabled && (
-										<Link href="/account/signin">{t('patient.signin')}</Link>
-									)}
-								</span>
-							</div>
-						)}
-						<div className="clinical-booking-actions">
-							{step > 1 && (
-								<button
-									className="clinical-secondary-button"
-									type="button"
-									onClick={() => setStep((current) => current - 1)}
-								>
-									{t('booking.back')}
-								</button>
-							)}
-							<button
-								className="clinical-primary-button"
-								type="submit"
-								disabled={busy}
-							>
-								{busy
-									? t('booking.creating')
-									: step === 4
-										? t('booking.place')
-										: t('booking.next')}{' '}
-								<Icon name="arrow_forward" />
-							</button>
-						</div>
-					</form>
-				)}
-			</section>
-		</div>
-	);
-};
-
+				{catalog.loading && <p role="status">{t('booking.refreshing')}</p>}
+				{catalog.error && <p role="alert">{w('servicesUnavailable')} <button type="button" onClick={() => void catalog.refetch().catch(() => undefined)}>{w('refresh')}</button></p>}
+				{!catalog.loading && !catalog.error && !services.length && <p role="status">{w('servicesEmpty')}</p>}
+				{(page > 1 || (catalog.data?.getServices.metaCounter[0]?.total || 0) > 50) && <div className="clinical-booking-actions"><button type="button" disabled={page <= 1 || catalog.loading} onClick={() => setPage((value) => value - 1)}>←</button><span>{page}</span><button type="button" disabled={page * 50 >= (catalog.data?.getServices.metaCounter[0]?.total || 0) || catalog.loading} onClick={() => setPage((value) => value + 1)}>→</button></div>}
+				{slotsQuery.error && <p role="alert">{slotsQuery.error.message}</p>}
+				{selected && form.date && !slotsQuery.loading && !slotsQuery.error && !slots.length && <p role="status">{t('booking.noSlots')}</p>}
+				{selected && <div className="clinical-booking-review"><div><h3>{selected.serviceTitle}</h3><p>{selected.memberData?.docFullName}{form.startsAt ? ` · ${clinicDateTime(form.startsAt, locale, clinic.timeZone)}` : ''}</p></div><strong>{formatMoney(selected.servicePrice, clinic.currency)}</strong></div>}
+				{message && <p className="clinical-form-error" role="alert">{message}</p>}
+				<div className="clinical-booking-actions"><button className="clinical-primary-button" type="submit" disabled={creating.loading || catalog.loading || slotsQuery.loading || !selected || !slots.some((slot) => slot.startsAt === form.startsAt)}>{creating.loading ? t('booking.creating') : w('continuePayment')} <Icon name="arrow_forward" /></button></div>
+			</form>
+		</section>
+	</div>;
+}
 export default withLayoutMain(AppointmentPage);

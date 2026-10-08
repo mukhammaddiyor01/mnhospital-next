@@ -1,3 +1,5 @@
+import { clinicDateTime } from '@/libs/payments/clinic';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import ImageUpload from './ImageUpload';
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { DocumentNode } from 'graphql';
@@ -72,6 +74,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 	const session = useReactiveVar(userVar);
 	const t = useTranslation();
 	const w = useWorkspaceText();
+	const clinic = useClinicSettings();
 	const [page, setPage] = useState(1);
 	const [rows, setRows] = useState<RecordItem[]>([]);
 	const [total, setTotal] = useState(0);
@@ -426,7 +429,9 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 								<tr key={record._id ?? index}>
 									{config.columns.map((field) => (
 										<td key={field.name}>
-											{Array.isArray(record[field.name])
+											{['startsAt', 'endsAt', 'requestedStartAt'].includes(field.name) && record[field.name] && Number.isFinite(new Date(record[field.name]).getTime())
+												? clinicDateTime(record[field.name], 'en-US', clinic.timeZone)
+												: Array.isArray(record[field.name])
 												? record[field.name].join(', ')
 												: typeof record[field.name] === 'boolean'
 													? record[field.name]

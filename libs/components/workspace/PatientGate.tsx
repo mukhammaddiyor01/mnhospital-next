@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
@@ -11,6 +12,7 @@ export default function PatientGate({
 	children: ReactNode;
 	title: string;
 }) {
+	const router = useRouter();
 	const session = useReactiveVar(userVar);
 	const w = useWorkspaceText();
 	return (
@@ -24,7 +26,7 @@ export default function PatientGate({
 			) : (
 				<section className="clinical-inner-section">
 					<p>{w('session')}</p>
-					<Link href="/account/signin">{w('approve')}</Link>
+					<Link href={`/account/signin?redirect=${encodeURIComponent(router.asPath)}`}>{w('approve')}</Link>
 				</section>
 			)}
 		</div>

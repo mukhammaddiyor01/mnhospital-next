@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import {
@@ -7,12 +8,12 @@ import {
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import ResourcePanel, { RecordItem, ResourceConfig } from './ResourcePanel';
 import { useWorkspaceText } from './useWorkspaceText';
-import { useEximbayCheckout } from '@/libs/payments/useEximbayCheckout';
+
 export default function PatientPayments() {
 	const w = useWorkspaceText();
 	const [selected, setSelected] = useState<RecordItem | null>(null);
-	const [feedback, setFeedback] = useState('');
-	const eximbay = useEximbayCheckout(selected?.paymentProvider === 'EXIMBAY');
+
+
 	const config = useMemo<ResourceConfig>(
 		() => ({
 			role: MemberType.PATIENT,
@@ -36,18 +37,9 @@ export default function PatientPayments() {
 		fetchPolicy: 'network-only',
 	});
 	const payment = detail.data?.getMyPayment;
-	const pay = async () => {
-		if (!selected || eximbay.loading || !eximbay.ready) return;
-		setFeedback('');
-		try {
-			await eximbay.openCheckout(selected._id);
-		} catch (e: any) {
-			setFeedback(e.message);
-		}
-	};
+
 	return (
 		<>
-			{eximbay.script}
 			<ResourcePanel config={config} />
 			{selected && (
 				<section className="clinical-inner-section clinical-resource-panel">
@@ -56,10 +48,9 @@ export default function PatientPayments() {
 						<button onClick={() => setSelected(null)}>{w('cancel')}</button>
 					</header>
 					{detail.error && <p role="alert">{detail.error.message}</p>}
-					{feedback && <p role="alert">{feedback}</p>}
+
 					{selected.paymentProvider === 'EXIMBAY' && <p>{w('paymentSandbox')}</p>}
-					{eximbay.error && <p role="alert">{eximbay.error}</p>}
-					{selected.paymentProvider === 'EXIMBAY' && !eximbay.ready && !eximbay.error && <p role="status">{w('paymentLoading')}</p>}
+
 					{payment && (
 						<>
 							<p>
@@ -67,17 +58,9 @@ export default function PatientPayments() {
 								{payment.paymentStatus}
 							</p>
 							<p>{w('paymentNotice')}</p>
-							{selected.paymentProvider === 'EXIMBAY' &&
-								payment.paymentStatus === 'PENDING' && (
-									<button
-										disabled={eximbay.loading || !eximbay.ready}
-										onClick={() => void pay()}
-									>
-										{w('pay')}
-									</button>
-								)}
+							<Link href={`/booking/${payment.bookingOrderId}/payment`}>{w('bookingSummary')}</Link>
 							<button
-								onClick={() => void detail.refetch()}
+								onClick={() => void detail.refetch().catch(() => undefined)}
 								disabled={detail.loading}
 							>
 								{w('refresh')}

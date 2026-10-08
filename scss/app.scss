@@ -360,3 +360,17 @@
 
 @import './home-hero';
 @import './service-detail';
+
+.booking-checkout {
+  max-width: 860px;
+  .checkout-total { font-size: 1.25rem; text-align: right; margin: 24px 0; }
+  .checkout-methods { border: 0; padding: 0; margin: 24px 0; display: grid; gap: 12px; }
+  .checkout-methods legend { font-weight: 700; margin-bottom: 12px; }
+  .checkout-methods label { display: flex; align-items: center; gap: 16px; padding: 20px; border: 1px solid var(--clinical-border, #cbd5e1); border-radius: 16px; cursor: pointer; }
+  .checkout-methods label:has(input:checked) { border-color: var(--clinical-primary, #0d9488); }
+  .checkout-methods label:has(input:disabled) { opacity: .6; cursor: default; }
+  .checkout-methods input { width: 20px; height: 20px; flex-shrink: 0; accent-color: #0d9488; }
+  .checkout-methods small { display: block; margin-top: 8px; line-height: 1.5; }
+  .checkout-online, .checkout-success { padding: 24px; margin: 24px 0; border-radius: 16px; border: 1px solid var(--clinical-border, #cbd5e1); }
+  .clinical-resource-actions { flex-wrap: wrap; }
+}
