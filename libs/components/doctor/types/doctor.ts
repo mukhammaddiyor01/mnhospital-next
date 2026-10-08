@@ -14,6 +14,8 @@ export interface Doctor {
 	docRoom: string;
 	docPoints: number;
 	docPatients: number;
+	docViews?: number;
+	docLikes?: number;
 	docServices?: number;
 	docArticles?: number;
 	docFollowers?: number;

@@ -15,6 +15,8 @@ export const GET_DOCTORS = gql`
 				docRoom
 				docPoints
 				docPatients
+				docViews
+				docLikes
 			}
 			metaCounter {
 				total
