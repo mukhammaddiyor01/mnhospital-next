@@ -15,7 +15,7 @@ const DEPARTMENTS = operation(
 	'_id departmentName departmentStatus',
 );
 const selection =
-	'list { _id departmentId serviceName serviceTitle serviceType serviceStatus servicePrice serviceRoom serviceRoomName serviceImages serviceDesc serviceDuration openedAt closedAt } metaCounter { total }';
+	'list { _id departmentId serviceName serviceTitle serviceType serviceStatus servicePrice serviceRoom serviceRoomName serviceImages serviceDesc serviceDuration availabilityDates openedAt closedAt } metaCounter { total }';
 const doctorList = operation(
 	'query',
 	'getDoctorServices',
@@ -122,6 +122,7 @@ export default function ServiceManagement({
 				required: true,
 				imageTarget: 'service',
 			},
+			{ name: 'availabilityDates', label: 'schedule', type: 'calendar-dates', defaultValue: [] },
 			{ name: 'openedAt', label: 'start', type: 'datetime-local' },
 			{ name: 'closedAt', label: 'end', type: 'datetime-local' },
 			{
@@ -147,7 +148,7 @@ export default function ServiceManagement({
 					...(role === MemberType.ADMIN ? { search: {} } : {}),
 				},
 			}),
-			columns: [fields[0], fields[2], fields[6], fields[12]],
+			columns: [fields[0], fields[2], fields[6], fields.find(field => field.name === 'serviceStatus')!, fields.find(field => field.name === 'availabilityDates')!],
 			fields,
 			create: role === MemberType.DOCTOR ? create : undefined,
 			createDisabled: role === MemberType.DOCTOR && (types.loading || Boolean(types.error) || !types.data?.getMyDoctorServiceTypes.length),

@@ -1,0 +1,18 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const ts = require('typescript');
+const Module = require('node:module');
+const path = require('node:path');
+const source = path.resolve(__dirname, '../libs/components/workspace/service-calendar.ts');
+const fixture = new Module(source, module);
+fixture._compile(ts.transpileModule(fs.readFileSync(source, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, source);
+const { datesInRange } = fixture.exports;
+assert.deepEqual(datesInRange('2028-02-28','2028-03-01'), ['2028-02-28','2028-02-29','2028-03-01']);
+assert.equal(datesInRange('2026-10-01','2026-10-31').length,31);
+assert.equal(datesInRange('2028-01-01','2028-12-31').length,366);
+assert.deepEqual(datesInRange('2028-01-01','2029-01-01'),[]);
+assert.deepEqual(datesInRange('2026-10-18','2026-10-13'),[]);
+assert.deepEqual(datesInRange('','2026-10-13'),[]);
+assert.deepEqual(datesInRange('2026-02-30','2026-03-03'),[]);
+assert.deepEqual(datesInRange('2026-1-01','2026-01-02'),[]);
+console.log('SERVICE_CALENDAR_VERIFIED 8 checks');

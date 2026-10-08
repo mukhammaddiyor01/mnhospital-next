@@ -1,0 +1,16 @@
+.calendar.calendar {
+ display: block;
+ min-width: 0;
+ grid-column: 1 / -1;
+ border: 1px solid var(--border-color, #627083);
+ border-radius: 12px;
+ padding: 16px;
+ legend { font-weight: 600; padding: 0 6px; }
+ p { line-height: 1.5; }
+ button { color: inherit; background: transparent; border: 1px solid currentColor; border-radius: 7px; padding: 8px; cursor: pointer; }
+ button[aria-pressed='true'] { background: #235578; color: #fff; }
+ button:disabled { opacity: .4; cursor: default; }
+ button:focus-visible { outline: 3px solid #62baf4; outline-offset: 2px; }
+}
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 12px 0; label { display: grid; gap: 4px; } }
+.grid { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 6px; max-width: 480px; text-align: center; span { font-size: .8rem; } }

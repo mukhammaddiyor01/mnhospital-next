@@ -1,3 +1,4 @@
+import ServiceDateCalendar from './ServiceDateCalendar';
 import { clinicDateTime } from '@/libs/payments/clinic';
 import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import ImageUpload from './ImageUpload';
@@ -14,6 +15,7 @@ export type ResourceField = {
 	name: string;
 	label: WorkspaceTextKey;
 	type?:
+		| 'calendar-dates'
 		| 'text'
 		| 'textarea'
 		| 'number'
@@ -36,7 +38,7 @@ export type ResourceField = {
 	options?: (string | { value: string; label: string })[];
 	readonly?: boolean;
 	imageTarget?: string;
-	defaultValue?: string | boolean;
+	defaultValue?: string | boolean | string[];
 };
 export type ResourceConfig = {
 	role: MemberType;
@@ -287,7 +289,9 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 						<p role="status">{w(config.createDisabledReason)}</p>
 					)}
 					<fieldset disabled={busy || uploading}>
-						{editorFields.map((field) => (
+						{editorFields.map((field) => field.type === 'calendar-dates' ? (
+							<div key={field.name} style={{ gridColumn: '1 / -1' }}><ServiceDateCalendar value={Array.isArray(draft[field.name]) ? draft[field.name] : []} onChange={(days) => setDraft((current) => ({ ...current, [field.name]: days }))} /></div>
+						) : (
 							<label key={field.name}>
 								{w(field.label)}
 								{field.options && !(field.readonly && Boolean(editor)) ? (
@@ -432,7 +436,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 											{['startsAt', 'endsAt', 'requestedStartAt'].includes(field.name) && record[field.name] && Number.isFinite(new Date(record[field.name]).getTime())
 												? clinicDateTime(record[field.name], 'en-US', clinic.timeZone)
 												: Array.isArray(record[field.name])
-												? record[field.name].join(', ')
+												? field.type === 'calendar-dates' ? (record[field.name].length ? record[field.name].slice(0, 3).join(', ') + (record[field.name].length > 3 ? ` (+${record[field.name].length - 3})` : '') : w('schedule')) : record[field.name].join(', ')
 												: typeof record[field.name] === 'boolean'
 													? record[field.name]
 														? '✓'
