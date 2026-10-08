@@ -1,3 +1,4 @@
+import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import Link from "next/link";
 import { useState } from "react";
 import Icon from "@/libs/components/common/Icon";
@@ -36,7 +37,7 @@ export default function DoctorDirectoryCard({ doctor }: { doctor: Doctor }) {
       language === "KR" ? "ko-KR" : language === "UZ" ? "uz-UZ" : "en-US",
     ).format(Math.max(0, Number.isFinite(value) ? value! : 0));
   return (
-    <article className={styles.card}>
+    <article className={`${styles.card} ${cardInteraction.surface}`}>
       <Link
         className={styles.portrait}
         href={`/doctor/${doctor._id}`}
@@ -64,7 +65,7 @@ export default function DoctorDirectoryCard({ doctor }: { doctor: Doctor }) {
           {specialtyLabel(doctor.docSpecialty)}
         </p>
         <h3>
-          <Link href={`/doctor/${doctor._id}`}>{name}</Link>
+          <Link className={cardInteraction.primaryLink} href={`/doctor/${doctor._id}`}>{name}</Link>
         </h3>
         <p className={styles.experience}>
           <Icon name="stethoscope" />

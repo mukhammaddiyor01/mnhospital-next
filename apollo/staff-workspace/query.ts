@@ -8,7 +8,7 @@ export const GET_DOCTOR_PROFILE = gql`
 
 export const GET_STAFF_APPOINTMENTS = gql`
   query GetStaffWorkspaceAppointments($input: StaffAppointmentInquiry!) {
-    getAppointments(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt } metaCounter { total } }
+    getAppointments(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt patientPreview { patientFullName patientImage } } metaCounter { total } }
   }
 `;
 
@@ -38,7 +38,7 @@ export const GET_RECEPTION_TASKS = gql`
 
 export const GET_RECEPTIONIST_QUEUE = gql`
   query GetReceptionistWorkspaceAppointments($input: ReceptionistAppointmentQueueInquiry!) {
-    getMyReceptionistAppointmentQueue(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt } metaCounter { total } }
+    getMyReceptionistAppointmentQueue(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt patientPreview { patientFullName patientImage } } metaCounter { total } }
   }
 `;
 

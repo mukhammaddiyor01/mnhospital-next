@@ -1,3 +1,5 @@
+import RecordThumbnail from '@/libs/components/common/RecordThumbnail';
+import thumbnailStyles from '@/libs/components/common/RecordThumbnail.module.scss';
 import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -56,7 +58,7 @@ const ReceptionistDashboard = ({ stats, appointments, loading, error }: {
         {loading && <p className="clinical-staff-state">{t('dashboard.loading')}</p>}
         {error && <p className="clinical-staff-state clinical-form-error" role="alert">{t('dashboard.appointmentsError')}</p>}
         {!loading && !error && !visible.length && <p className="clinical-staff-state">{t('dashboard.noAppointments')}</p>}
-        {!loading && !error && visible.length > 0 && <div className="clinical-reception-queue-list">{visible.map((item) => <button key={item._id} type="button" className={`clinical-reception-queue-row${selected?._id === item._id ? ' active' : ''}`} aria-pressed={selected?._id === item._id} onClick={() => setSelectedId(item._id)}><span className="clinical-reception-row-top"><strong>{item.appointmentCode}</strong><time dateTime={item.startsAt}>{format.format(new Date(item.startsAt))}</time></span><span className="clinical-reception-row-bottom"><span>{item.appointmentReason || '—'}</span><span className={`clinical-staff-status status-${item.appointmentStatus.toLowerCase()}`}>{t(appointmentStatusKeys[item.appointmentStatus])}</span><Icon name="chevron_right" /></span></button>)}</div>}
+        {!loading && !error && visible.length > 0 && <div className="clinical-reception-queue-list">{visible.map((item) => <button key={item._id} type="button" className={`clinical-reception-queue-row${selected?._id === item._id ? ' active' : ''}`} aria-pressed={selected?._id === item._id} onClick={() => setSelectedId(item._id)}><span className="clinical-reception-row-top"><span className={thumbnailStyles.queueIdentity}><RecordThumbnail image={item.patientPreview?.patientImage} name={item.patientPreview?.patientFullName || item.appointmentCode} portrait /><span>{item.patientPreview?.patientFullName && <small>{item.patientPreview.patientFullName}</small>}<strong>{item.appointmentCode}</strong></span></span><time dateTime={item.startsAt}>{format.format(new Date(item.startsAt))}</time></span><span className="clinical-reception-row-bottom"><span>{item.appointmentReason || '—'}</span><span className={`clinical-staff-status status-${item.appointmentStatus.toLowerCase()}`}>{t(appointmentStatusKeys[item.appointmentStatus])}</span><Icon name="chevron_right" /></span></button>)}</div>}
       </section>
 
       <div className="clinical-reception-context">

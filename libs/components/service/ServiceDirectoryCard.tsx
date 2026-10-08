@@ -1,3 +1,4 @@
+import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import Link from "next/link";
 import { useState } from "react";
 import Icon from "@/libs/components/common/Icon";
@@ -42,7 +43,7 @@ export default function ServiceDirectoryCard({
       language === "KR" ? "ko-KR" : language === "UZ" ? "uz-UZ" : "en-US",
     ).format(Math.max(0, Number.isFinite(value) ? value! : 0));
   return (
-    <article className={styles.card}>
+    <article className={`${styles.card} ${cardInteraction.surface}`}>
       <Link
         className={`${styles.portrait} ${serviceStyles.image}`}
         href={href}
@@ -75,7 +76,7 @@ export default function ServiceDirectoryCard({
       <div className={styles.body}>
         <p className={styles.specialty}>{typeLabel(service.serviceType)}</p>
         <h3>
-          <Link href={href}>{title}</Link>
+          <Link className={cardInteraction.primaryLink} href={href}>{title}</Link>
         </h3>
         {service.serviceDesc && (
           <p className={serviceStyles.description}>{service.serviceDesc}</p>

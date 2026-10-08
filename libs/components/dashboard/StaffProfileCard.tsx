@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import Icon from '@/libs/components/common/Icon';
-import { resolveApiAsset } from '@/libs/config';
+import ProfileAvatar from '@/libs/components/common/ProfileAvatar';
 
 const StaffProfileCard = ({ name, nickname, image, facts, children }: {
   name: string;
@@ -9,10 +9,9 @@ const StaffProfileCard = ({ name, nickname, image, facts, children }: {
   facts: { label: string; value: ReactNode }[];
   children: ReactNode;
 }) => {
-  const initials = name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
   return <section className="clinical-staff-profile-card">
     <div className="clinical-staff-profile-identity">
-      <span className="clinical-staff-profile-photo" style={image ? { backgroundImage: `url(${resolveApiAsset(image)})` } : undefined}>{image ? null : initials || <Icon name="person" />}</span>
+      <ProfileAvatar className="clinical-staff-profile-photo" image={image} name={name} />
       <h2>{name}</h2><p>@{nickname}</p>
       <div className="clinical-staff-profile-actions">{children}</div>
     </div>

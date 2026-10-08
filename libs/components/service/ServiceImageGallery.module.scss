@@ -1,0 +1,10 @@
+.gallery { margin: 24px 0; }
+.main { overflow: hidden; border-radius: 12px; border: 1px solid var(--clinical-line, #dce5ee); background: var(--clinical-low, #f4f7fa); aspect-ratio: 8 / 5;
+ img { width: 100%; height: 100%; display: block; object-fit: contain; }
+}
+.thumbnails { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;
+ button { padding: 3px; width: 80px; min-height: 66px; overflow: hidden; border: 2px solid var(--clinical-line, #dce5ee); border-radius: 8px; background: var(--mn-card, #fff); cursor: pointer; }
+ button[aria-pressed='true'] { border-color: var(--clinical-primary, #1769b2); }
+ button:focus-visible { outline: 3px solid var(--clinical-primary, #1769b2); outline-offset: 2px; }
+ img { display: block; width: 100%; height: 60px; object-fit: cover; border-radius: 4px; }
+}

@@ -89,6 +89,7 @@ const articleSelection =
 export const adminArticles: ResourceConfig = {
 	role: MemberType.ADMIN,
 	title: 'articles',
+	thumbnail: { image: 'articleImage', name: 'articleTitle' },
 	list: operation(
 		'query',
 		'getAllArticlesByAdmin',

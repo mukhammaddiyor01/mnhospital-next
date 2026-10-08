@@ -1,3 +1,4 @@
+import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useMemo } from 'react';
@@ -49,8 +50,8 @@ export const articleExcerpt = (article: Article) => article.articleContent.repla
 export const ArticleCard = ({ article }: { article: Article }) => {
 	const t = useTranslation();
 	const categoryLabel = useArticleCategoryLabel();
-	return <article className="clinical-article-card">
+	return <article className={`clinical-article-card ${cardInteraction.surface}`}>
 		<Link className="clinical-article-image" href={`/article/${article._id}`} aria-label={`${t('articles.readAria')} ${article.articleTitle}`}><Image src={articleImage(article)} alt="" fill sizes="(max-width: 680px) calc(100vw - 48px), 245px" unoptimized={!article.articleImage?.startsWith('/')} /></Link>
-		<div className="clinical-article-body"><div className="clinical-article-card-top"><span className="clinical-article-category">{categoryLabel(article.articleCategory)}</span>{/^[a-f\d]{24}$/i.test(article._id) && <LikeButton mutation={LIKE_TARGET_ARTICLE} id={article._id} variableName="articleId" initialLiked={Boolean(article.meLiked?.[0]?.myFavorite)} label={`${t('articles.likeAria')} ${article.articleTitle}`} />}</div><h3><Link href={`/article/${article._id}`}>{article.articleTitle}</Link></h3><p>{articleExcerpt(article)}{article.articleContent.length > 115 ? '…' : ''}</p><Link className="clinical-article-read" href={`/article/${article._id}`}>{t('articles.read')} <Icon name="arrow_forward" /></Link></div>
+		<div className="clinical-article-body"><div className="clinical-article-card-top"><span className="clinical-article-category">{categoryLabel(article.articleCategory)}</span>{/^[a-f\d]{24}$/i.test(article._id) && <LikeButton mutation={LIKE_TARGET_ARTICLE} id={article._id} variableName="articleId" initialLiked={Boolean(article.meLiked?.[0]?.myFavorite)} label={`${t('articles.likeAria')} ${article.articleTitle}`} />}</div><h3><Link className={cardInteraction.primaryLink} href={`/article/${article._id}`}>{article.articleTitle}</Link></h3><p>{articleExcerpt(article)}{article.articleContent.length > 115 ? '…' : ''}</p><Link className="clinical-article-read" href={`/article/${article._id}`}>{t('articles.read')} <Icon name="arrow_forward" /></Link></div>
 	</article>;
 };

@@ -138,6 +138,7 @@ export default function ServiceManagement({
 		return {
 			role,
 			title: 'service',
+			thumbnail: { image: 'serviceImages', name: 'serviceTitle' },
 			list: role === MemberType.ADMIN ? adminList : doctorList,
 			listKey:
 				role === MemberType.ADMIN

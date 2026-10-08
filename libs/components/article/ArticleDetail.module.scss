@@ -1,0 +1,11 @@
+.image {
+ position: relative;
+ width: 100%;
+ height: clamp(260px, 65vh, 580px);
+ overflow: hidden;
+ border: 1px solid var(--clinical-line, #dce5ee);
+ border-radius: 10px;
+ background: var(--clinical-low, #f4f7fa);
+ img { object-fit: contain; object-position: center; }
+}
+@media (max-width: 680px) { .image { height: clamp(240px, 60vh, 460px); } }

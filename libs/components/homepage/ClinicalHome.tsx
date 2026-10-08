@@ -1,3 +1,4 @@
+import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -261,7 +262,7 @@ const ClinicalHome = () => {
 							!doctors.length && <p>{w('catalogEmpty')}</p>}
 						<div className="clinical-doctor-grid">
 							{doctors.map((doctor, index) => (
-								<article className="clinical-doctor-card" key={doctor._id}>
+								<article className={`clinical-doctor-card ${cardInteraction.surface}`} key={doctor._id}>
 									<div
 										className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? 'teal' : index === 2 ? 'slate' : 'blue'}`}
 									>
@@ -282,7 +283,7 @@ const ClinicalHome = () => {
 											{Number(doctor.docPoints ?? 0).toFixed(1)}
 										</span>
 									</div>
-									<h3>{doctor.docFullName}</h3>
+									<h3><Link className={cardInteraction.primaryLink} href={`/doctor/${doctor._id}`}>{doctor.docFullName}</Link></h3>
 									<b>{doctorRole(doctor.docSpecialty, t, specialtyLabel)}</b>
 									<p>
 										{Number(doctor.docExperience ?? 0)} {t('home.doctor.years')}

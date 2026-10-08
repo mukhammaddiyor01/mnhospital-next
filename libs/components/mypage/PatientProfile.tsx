@@ -1,3 +1,4 @@
+import ProfileAvatar from '@/libs/components/common/ProfileAvatar';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -329,18 +330,7 @@ const PatientProfile = () => {
 				{patient && (
 					<>
 						<div className="clinical-patient-identity">
-							<span
-								className="clinical-profile-large"
-								style={
-									patient.patientImage
-										? {
-												backgroundImage: `url(${resolveApiAsset(patient.patientImage)})`,
-											}
-										: undefined
-								}
-							>
-								{patient.patientImage ? null : initials}
-							</span>
+							<ProfileAvatar className="clinical-profile-large" image={patient.patientImage || account.data?.getMyMemberProfile.memberImage || session.memberImage} name={displayName} />
 							<div>
 								<span className="clinical-section-kicker">
 									{t('patient.profileKicker')}
@@ -548,7 +538,7 @@ const PatientProfile = () => {
 						</div>
 					</form>
 				)}
-				<AccountProfileEditor role={MemberType.PATIENT} />
+				<AccountProfileEditor role={MemberType.PATIENT} fallbackImage={patient?.patientImage} />
 				{patient && !editing && error ? (
 					<p className="clinical-form-error">{t('patient.staleProfile')}</p>
 				) : null}

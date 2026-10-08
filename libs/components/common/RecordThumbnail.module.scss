@@ -1,0 +1,53 @@
+.thumbnail {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--clinical-line, #dce5ee);
+  border-radius: 8px;
+  background: var(--clinical-primary-soft, #e7f0fa);
+  color: var(--clinical-primary, #1769b2);
+  vertical-align: middle;
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  > span {
+    font: 600 13px/1 var(--mn-heading-font, "Manrope", sans-serif);
+  }
+}
+.portrait {
+  border-radius: 50%;
+  img {
+    object-position: center 22%;
+  }
+}
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 150px;
+  > span:last-child {
+    overflow-wrap: anywhere;
+  }
+}
+.queueIdentity > span:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.queueIdentity {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  > span:last-child {
+    overflow-wrap: anywhere;
+  }
+}

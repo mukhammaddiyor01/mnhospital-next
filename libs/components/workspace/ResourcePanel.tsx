@@ -1,3 +1,5 @@
+import RecordThumbnail from '@/libs/components/common/RecordThumbnail';
+import thumbnailStyles from '@/libs/components/common/RecordThumbnail.module.scss';
 import ServiceDateCalendar from './ServiceDateCalendar';
 import { clinicDateTime } from '@/libs/payments/clinic';
 import { useClinicSettings } from '@/libs/payments/useClinicSettings';
@@ -48,6 +50,7 @@ export type ResourceConfig = {
 	mutationList?: boolean;
 	variables?: (page: number) => RecordItem;
 	columns: ResourceField[];
+	thumbnail?: { image: string; name: string; portrait?: boolean };
 	fields?: ResourceField[];
 	create?: DocumentNode;
 	createDisabled?: boolean;
@@ -433,6 +436,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 								<tr key={record._id ?? index}>
 									{config.columns.map((field) => (
 										<td key={field.name}>
+											{config.thumbnail && field.name === config.columns[0].name ? <span className={thumbnailStyles.identity}><RecordThumbnail image={Array.isArray(record[config.thumbnail.image]) ? record[config.thumbnail.image][0] : record[config.thumbnail.image]} name={String(record[config.thumbnail.name] || record[field.name] || '')} portrait={config.thumbnail.portrait} /><span>{String(record[field.name] ?? '—')}</span></span> : <>
 											{['startsAt', 'endsAt', 'requestedStartAt'].includes(field.name) && record[field.name] && Number.isFinite(new Date(record[field.name]).getTime())
 												? clinicDateTime(record[field.name], 'en-US', clinic.timeZone)
 												: Array.isArray(record[field.name])
@@ -445,6 +449,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 															'_',
 															' ',
 														)}
+										</>}
 										</td>
 									))}
 									<td>

@@ -1,3 +1,5 @@
+import ServiceImageGallery from '@/libs/components/service/ServiceImageGallery';
+import ServiceDirectoryCard from '@/libs/components/service/ServiceDirectoryCard';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useQuery } from '@apollo/client';
@@ -67,6 +69,7 @@ const ServiceDetailPage = () => {
 				<div className="detail-header"><div className="detail-icon"><Icon name="medical_services" /></div>{service && <LikeButton mutation={LIKE_TARGET_SERVICE} id={service._id} variableName="serviceId" initialLiked={Boolean(service.meLiked?.[0]?.myFavorite)} />}</div>
 				<span className="eyebrow">{typeLabel(service?.serviceType ?? previewService?.type)}</span>
 				<h1>{title}</h1>
+				{service && <ServiceImageGallery key={service._id} images={service.serviceImages} title={title} />}
 				{description && <p>{description}</p>}
 				<div className="detail-meta">
 					{(service?.serviceDuration || previewService) && <span><Icon name="schedule" /> {service?.serviceDuration || t('serviceDetail.available')}</span>}
@@ -79,7 +82,7 @@ const ServiceDetailPage = () => {
 		</div>
 		{loading && <p className="query-status" role="status">{t('serviceDetail.loading')}</p>}
 		{error && <p className="query-status" role="alert">{t('activity.unavailable')}</p>}
-		{relatedServices.length > 0 && <section className="related-section"><div className="section-heading"><div><span className="eyebrow">{t('serviceDetail.relatedKicker')}</span><h2>{t('serviceDetail.relatedTitle')}</h2></div></div><div className="related-grid">{relatedServices.map((item) => <Link className="related-card" href={`/service/${item._id}`} key={item._id}><Icon name="arrow_outward" /><strong>{item.serviceTitle}</strong><span>{item.serviceDesc}</span></Link>)}</div></section>}
+		{relatedServices.length > 0 && <section className="related-section"><div className="section-heading"><div><span className="eyebrow">{t('serviceDetail.relatedKicker')}</span><h2>{t('serviceDetail.relatedTitle')}</h2></div></div><div className="related-grid">{relatedServices.map((item) => <ServiceDirectoryCard service={item} currency={clinic.currency} key={item._id} />)}</div></section>}
 		{service && <CommentsSection key={service._id} targetId={service._id} group={ReferenceGroup.SERVICE} />}
 	</div></div>;
 };

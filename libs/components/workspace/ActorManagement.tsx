@@ -178,6 +178,7 @@ export default function ActorManagement({
 		return {
 			role: MemberType.ADMIN,
 			title: doctor ? 'doctor' : 'receptionist',
+			thumbnail: { image: `${prefix}Image`, name: `${prefix}FullName`, portrait: true },
 			list: operation(
 				'query',
 				doctor ? 'getDoctorsByAdmin' : 'getReceptionists',

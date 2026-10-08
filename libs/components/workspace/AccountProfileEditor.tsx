@@ -56,7 +56,7 @@ const suffixes: Record<string, string> = {
 	experience: 'Experience',
 };
 
-export default function AccountProfileEditor({ role }: { role: MemberType }) {
+export default function AccountProfileEditor({ role, fallbackImage }: { role: MemberType; fallbackImage?: string }) {
 	const w = useWorkspaceText();
 	const specialtyLabel = useDoctorSpecialtyLabel();
 	const session = useReactiveVar(userVar);
@@ -174,7 +174,7 @@ export default function AccountProfileEditor({ role }: { role: MemberType }) {
 					<StaffProfileCard
 						name={value('fullName') || value('nickname')}
 						nickname={value('nickname')}
-						image={value('image')}
+						image={value('image') || fallbackImage}
 						facts={fields
 							.filter((key) => !['nickname', 'fullName'].includes(key))
 							.map((key) => ({ label: w(labels[key]), value: value(key) || '—' }))}

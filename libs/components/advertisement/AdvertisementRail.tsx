@@ -1,3 +1,4 @@
+import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import Link from 'next/link';
 import { useQuery } from '@apollo/client';
 import { GET_ADVERTISEMENTS } from '@/apollo/advertisement/query';
@@ -40,7 +41,7 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 	const isCommunity = variant === AdvertisementCardVariant.COMMUNITY;
 	const action = advertisement.previewAction ?? t('ads.learnMore');
 
-	return <article className={`clinical-rail-card clinical-ad-card ${variant} ${isEmergency ? 'emergency' : ''} ${isAccreditation ? 'accreditation' : ''}`}>
+	return <article className={`clinical-rail-card clinical-ad-card ${cardInteraction.surface} ${variant} ${isEmergency ? 'emergency' : ''} ${isAccreditation ? 'accreditation' : ''}`}>
 		{isEmergency && <div className="clinical-emergency-label"><Icon name="ambulance" /> {advertisement.previewLabel}</div>}
 		{isService && <div className="clinical-rail-row"><span className="clinical-tag clinical-tag-blue">{advertisement.previewLabel ?? t('ads.featuredService')}</span><span className="service-rank">{advertisement.previewRank ?? t('ads.ad')}</span></div>}
 		{isPromo && <div className="clinical-rail-row"><span className="clinical-rail-kicker">{advertisement.previewLabel ?? t('ads.promotion')}</span>{advertisement.previewDiscount && <b>{advertisement.previewDiscount}</b>}</div>}
@@ -53,7 +54,7 @@ const AdvertisementCard = ({ advertisement, index, side }: AdvertisementCardProp
 		<p>{advertisement.advertisementContent}</p>
 		{isService && advertisement.previewPrice != null && <div className="service-meta"><span>{formatKrw(advertisement.previewPrice)}</span><span>{Number(advertisement.previewViews ?? 0).toLocaleString(locale)} {t('ads.views')}</span></div>}
 		{isPromo && advertisement.previewPrice != null && <div className="promo-price">{formatKrw(advertisement.previewPrice)} {advertisement.previewOriginalPrice != null && <del>{formatKrw(advertisement.previewOriginalPrice)}</del>}</div>}
-		<Link href={advertisement.advertisementLink || '/appointment'}>{action}</Link>
+		<Link className={cardInteraction.primaryLink} href={advertisement.advertisementLink || '/appointment'}>{action}</Link>
 	</article>;
 };
 

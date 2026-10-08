@@ -19,6 +19,7 @@ export const doctorBookings: ResourceConfig = {
 export const departments: ResourceConfig = {
 	role: MemberType.DOCTOR,
 	title: 'departments',
+	thumbnail: { image: 'departmentImage', name: 'departmentTitle' },
 	list: operation(
 		'query',
 		'getDepartments',

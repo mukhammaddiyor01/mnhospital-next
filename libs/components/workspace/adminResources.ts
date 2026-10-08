@@ -5,11 +5,12 @@ const statuses = ['ACTIVE', 'BLOCK', 'DELETE'];
 export const patients: ResourceConfig = {
 	role: MemberType.ADMIN,
 	title: 'patients',
+	thumbnail: { image: 'patientImage', name: 'patientFullName', portrait: true },
 	list: operation(
 		'query',
 		'getPatientsByAdmin',
 		'AdminPatientInquiry',
-		'list { _id memberId patientFullName patientBirthDate patientGender patientBloodType patientAddress memberStatus } metaCounter { total }',
+		'list { _id memberId patientFullName patientImage patientBirthDate patientGender patientBloodType patientAddress memberStatus } metaCounter { total }',
 	),
 	listKey: 'getPatientsByAdmin',
 	columns: [
@@ -45,11 +46,12 @@ const memberFields: ResourceField[] = [
 export const accounts: ResourceConfig = {
 	role: MemberType.ADMIN,
 	title: 'accounts',
+	thumbnail: { image: 'memberImage', name: 'memberFullName', portrait: true },
 	list: operation(
 		'mutation',
 		'getAllMembersByAdmin',
 		'MembersInquiry',
-		'list { _id memberNick memberFullName memberPhone memberMail memberDesc memberStatus } metaCounter { total }',
+		'list { _id memberNick memberFullName memberImage memberPhone memberMail memberDesc memberStatus } metaCounter { total }',
 	),
 	listKey: 'getAllMembersByAdmin',
 	mutationList: true,

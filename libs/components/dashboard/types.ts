@@ -33,6 +33,7 @@ export interface ReceptionistDashboardStats {
 }
 
 export interface WorkspaceAppointment {
+  patientPreview?: { patientFullName?: string; patientImage?: string };
   _id: string;
   appointmentCode: string;
   appointmentStatus: 'PENDING' | 'CONFIRMED' | 'IN_PROGRESS' | 'ENDED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
