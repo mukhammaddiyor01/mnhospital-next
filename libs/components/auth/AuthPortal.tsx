@@ -5,6 +5,7 @@ import { logIn, signUp } from "@/libs/auth";
 import Icon from "@/libs/components/common/Icon";
 import SocialAuthButtons from "./SocialAuthButtons";
 import { useTranslation } from "@/libs/i18n/useTranslation";
+import { authFormError, prepareSignup } from "@/libs/auth/signupForm";
 
 type AuthMode = "login" | "register";
 
@@ -55,11 +56,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
           : "/mypage";
       await router.push(destination);
     } catch (err: unknown) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : t('auth.loginError'),
-      );
+      setError(authFormError(err, t('auth.loginError'), t('auth.connectionError')));
     } finally {
       setSubmitting(false);
     }
@@ -67,22 +64,23 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
   const submitRegister = async (event: FormEvent) => {
     event.preventDefault();
     setError("");
+    const prepared = prepareSignup(registerForm);
+    if (prepared.error) {
+      setError(t(prepared.error));
+      return;
+    }
     setSubmitting(true);
     try {
       await signUp(
-        registerForm.memberNick,
-        registerForm.memberPassword,
-        registerForm.memberPhone,
-        registerForm.memberFullName,
+        prepared.input.memberNick,
+        prepared.input.memberPassword,
+        prepared.input.memberPhone,
+        prepared.input.memberFullName,
       );
       const destination = typeof router.query.redirect === "string" && router.query.redirect.startsWith("/") && !router.query.redirect.startsWith("//") ? router.query.redirect : "/mypage";
       await router.push(destination);
     } catch (err: unknown) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : t('auth.registerError'),
-      );
+      setError(authFormError(err, t('auth.registerError'), t('auth.connectionError')));
     } finally {
       setSubmitting(false);
     }
@@ -256,6 +254,8 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                 <Icon name="badge" />
                 <input
                   autoComplete="name"
+                  minLength={2}
+                  maxLength={100}
                   value={registerForm.memberFullName}
                   onChange={(event) =>
                     setRegisterForm({
@@ -274,6 +274,7 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                 <Icon name="call" />
                 <input
                   autoComplete="tel"
+                  type="tel"
                   value={registerForm.memberPhone}
                   onChange={(event) =>
                     setRegisterForm({
@@ -294,6 +295,8 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
               <input
                 autoComplete="username"
                 value={registerForm.memberNick}
+                minLength={3}
+                maxLength={30}
                 onChange={(event) =>
                   setRegisterForm({
                     ...registerForm,
@@ -320,7 +323,8 @@ const AuthPortal = ({ initialMode }: { initialMode: AuthMode }) => {
                 }
                 type={showRegisterPassword ? "text" : "password"}
                 placeholder="••••••••"
-                minLength={6}
+                minLength={8}
+                maxLength={32}
                 required
               />
               <button
