@@ -104,9 +104,12 @@ export default function ServiceManagement({
 			},
 			{
 				name: 'serviceDuration',
-				label: 'duration',
+				label: 'durationMinutes',
+				type: 'number',
+				min: 1,
+				max: 1440,
+				step: '1',
 				required: true,
-				maxLength: 50,
 			},
 			{
 				name: 'serviceDesc',
@@ -151,6 +154,8 @@ export default function ServiceManagement({
 			columns: [fields[0], fields[2], fields[6], fields.find(field => field.name === 'serviceStatus')!, fields.find(field => field.name === 'availabilityDates')!],
 			fields,
 			create: role === MemberType.DOCTOR ? create : undefined,
+			createVariables: (input) => ({ input: { ...input, serviceDuration: String(input.serviceDuration) } }),
+			updateVariables: (input, record) => ({ input: { ...input, _id: record._id, serviceDuration: String(input.serviceDuration) } }),
 			createDisabled: role === MemberType.DOCTOR && (types.loading || Boolean(types.error) || !types.data?.getMyDoctorServiceTypes.length),
 			createDisabledReason: 'specialtyServicesHelp',
 			update: role === MemberType.ADMIN ? adminUpdate : doctorUpdate,

@@ -137,6 +137,7 @@ const text = {
 	price: ['Price', 'Narx', '가격'],
 	type: ['Type', 'Turi', '유형'],
 	duration: ['Duration', 'Davomiylik', '소요 시간'],
+	durationMinutes: ['Duration (minutes, 1–1440)', 'Davomiylik (daqiqa, 1–1440)', '소요 시간 (분, 1–1440)'],
 	description: ['Description', 'Tavsif', '설명'],
 	department: ['Department', 'Bo‘lim', '진료과'],
 	room: ['Room', 'Xona', '진료실'],
