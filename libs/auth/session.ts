@@ -3,7 +3,7 @@ import { print } from 'graphql';
 import { userVar } from '@/apollo/store';
 import { REFRESH_SESSION, LOGOUT_SESSION } from '@/apollo/auth/mutation';
 import { MemberSession } from '@/libs/components/member/types/member';
-import { getJwtToken, setJwtToken, removeJwtToken } from './token';
+import { getJwtToken, setJwtToken, removeJwtToken, storedSessionIdentity, publishSessionEvent, SESSION_ROLE_HEADER, SessionRole } from './token';
 
 type Claims = MemberSession & {
 	exp?: number;
@@ -20,7 +20,6 @@ type Claims = MemberSession & {
 };
 const apiUrl =
 	process.env.NEXT_PUBLIC_API_GRAPHQL_URL ?? 'http://localhost:2001/graphql';
-const SESSION_MARKER = 'mn-hospital-session';
 let pendingRefresh: Promise<string> | undefined;
 let loggingOut = false;
 
@@ -41,7 +40,6 @@ export function applySessionToken(token: string, member?: MemberSession): void {
 			? previous
 			: {};
 	setJwtToken(token);
-	window.localStorage.setItem(SESSION_MARKER, 'true');
 	userVar({
 		...existing,
 		...claims,
@@ -77,24 +75,24 @@ export function applySessionToken(token: string, member?: MemberSession): void {
 		window.dispatchEvent(new Event('mn-hospital-session-changed'));
 }
 export function clearSession(broadcast = true): void {
+	if (broadcast) publishSessionEvent('logout');
 	removeJwtToken();
-	window.localStorage.removeItem(SESSION_MARKER);
-	if (broadcast) window.localStorage.setItem('logout', Date.now().toString());
 	userVar({ _id: '', memberNick: '' });
 	window.dispatchEvent(new Event('mn-hospital-session-ended'));
 }
 export function hasStoredSession(): boolean {
 	return (
 		typeof window !== 'undefined' &&
-		Boolean(getJwtToken() || window.localStorage.getItem(SESSION_MARKER))
+		Boolean(storedSessionIdentity())
 	);
 }
 export async function withBrowserSessionLock<T>(
 	action: () => Promise<T>,
+	role: SessionRole | undefined = storedSessionIdentity()?.memberType,
 ): Promise<T> {
-	// Cookies are shared by tabs. Serialize rotation/logout across tabs when Web Locks are available.
+	// Same-role tabs share one HttpOnly cookie; different roles rotate independently.
 	if (typeof navigator !== 'undefined' && navigator.locks)
-		return navigator.locks.request('mn-hospital-auth-session', action);
+		return navigator.locks.request(`mn-hospital-auth-session-${role ?? 'legacy'}`, action);
 	return action();
 }
 async function requestSession(refresh: boolean) {
@@ -108,7 +106,8 @@ async function requestSession(refresh: boolean) {
 			headers: {
 				'Content-Type': 'application/json',
 				'Apollo-Require-Preflight': 'true',
-				...(!refresh && getJwtToken()
+				...(storedSessionIdentity() ? { [SESSION_ROLE_HEADER]: storedSessionIdentity()!.memberType } : {}),
+				...(getJwtToken()
 					? { Authorization: `Bearer ${getJwtToken()}` }
 					: {}),
 			},
@@ -137,17 +136,25 @@ export function refreshSessionToken(): Promise<string> {
 	if (loggingOut)
 		return Promise.reject(new SessionRejectedError('Logout is in progress'));
 	if (pendingRefresh) return pendingRefresh;
+	const expected = storedSessionIdentity();
+	const sameSession = () => {
+		const current = storedSessionIdentity();
+		return Boolean(expected && current?.sid === expected.sid && current.memberType === expected.memberType);
+	};
 	pendingRefresh = withBrowserSessionLock(async () => {
-		if (loggingOut || !hasStoredSession())
+		if (loggingOut || !hasStoredSession() || !sameSession())
 			throw new SessionRejectedError('No login session');
 		const data = await requestSession(true);
 		if (!data.refreshSession?.accessToken)
 			throw new SessionRejectedError('Session is unavailable');
+		const renewed = jwtDecode<Claims>(data.refreshSession.accessToken);
+		if (!sameSession() || !expected || renewed.memberType !== expected.memberType || renewed.sid !== expected.sid)
+			throw new SessionRejectedError('Session was replaced');
 		applySessionToken(data.refreshSession.accessToken);
 		return data.refreshSession.accessToken as string;
 	})
 		.catch((error) => {
-			if (error instanceof SessionRejectedError && !loggingOut) clearSession();
+			if (error instanceof SessionRejectedError && !loggingOut && sameSession()) clearSession();
 			throw error;
 		})
 		.finally(() => {

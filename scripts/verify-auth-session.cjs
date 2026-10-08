@@ -25,14 +25,20 @@ for (const ext of ['.ts', '.tsx'])
 			}).outputText,
 			filename,
 		);
+const sharedValues = new Map();
 const values = new Map(),
 	events = [];
 let lock = Promise.resolve();
 global.window = {
-	localStorage: {
+	sessionStorage: {
 		getItem: (key) => values.get(key) ?? null,
 		setItem: (key, value) => values.set(key, String(value)),
 		removeItem: (key) => values.delete(key),
+	},
+	localStorage: {
+		getItem: () => null,
+		setItem: (key, value) => sharedValues.set(key, String(value)),
+		removeItem: (key) => sharedValues.delete(key),
 	},
 	dispatchEvent: (event) => {
 		events.push(event.type);
@@ -52,7 +58,7 @@ Object.defineProperty(global, 'navigator', {
 	},
 });
 const session = require(root + '/libs/auth/session.ts');
-const { getJwtToken, setJwtToken } = require(root + '/libs/auth/token.ts');
+const { getJwtToken, setJwtToken, sessionEventInvalidatesTab, SESSION_EVENT_KEY } = require(root + '/libs/auth/token.ts');
 const { userVar } = require(root + '/apollo/store.ts');
 const { createSessionLinks } = require(root + '/libs/auth/sessionLink.ts');
 const { ApolloLink, Observable, gql, execute } = require('@apollo/client');
@@ -128,6 +134,25 @@ async function main() {
 	);
 	await session.ensureAccessToken();
 	check(calls.length === 1, 'valid access does not rotate unnecessarily');
+	check(calls[0].options.headers['X-MN-Session-Role'] === 'PATIENT' && Boolean(calls[0].options.headers.Authorization), 'refresh binds the role cookie to this tab access session');
+	check(!sharedValues.has('accessToken'), 'access credentials are never shared through localStorage');
+	for (const role of ['DOCTOR', 'RECEPTIONIST', 'ADMIN']) {
+		check(!sessionEventInvalidatesTab(SESSION_EVENT_KEY, JSON.stringify({ kind: 'login', role, sid: 'another' })), role + ' login does not invalidate patient tab');
+		check(!sessionEventInvalidatesTab(SESSION_EVENT_KEY, JSON.stringify({ kind: 'logout', role, sid })), role + ' logout does not invalidate patient tab');
+	}
+	check(sessionEventInvalidatesTab(SESSION_EVENT_KEY, JSON.stringify({ kind: 'logout', role: 'PATIENT', sid })), 'same session logout invalidates duplicated tabs');
+	check(sessionEventInvalidatesTab(SESSION_EVENT_KEY, JSON.stringify({ kind: 'login', role: 'PATIENT', sid: 'replacement' })), 'replacement same-role login invalidates old account tabs');
+	check(!sessionEventInvalidatesTab(SESSION_EVENT_KEY, JSON.stringify({ kind: 'login', role: 'PATIENT', sid })), 'same-session login events retain the current tab');
+	check(!sessionEventInvalidatesTab('logout', 'legacy'), 'legacy global logout no longer affects isolated roles');
+	const patientTab = getJwtToken();
+	const originalStorage = window.sessionStorage;
+	const otherValues = new Map();
+	window.sessionStorage = { getItem: key => otherValues.get(key) ?? null, setItem: (key, value) => otherValues.set(key, value), removeItem: key => otherValues.delete(key) };
+	check(!getJwtToken(), 'new independent tab starts as guest');
+	setJwtToken(token('DOCTOR'));
+	check(getJwtToken() !== patientTab, 'doctor tab stores its own access identity');
+	window.sessionStorage = originalStorage;
+	check(getJwtToken() === patientTab, 'patient tab identity survives another tab login');
 	for (const role of ['PATIENT', 'DOCTOR', 'RECEPTIONIST', 'ADMIN']) {
 		session.applySessionToken(token(role, 900, role + ' login'));
 		check(
@@ -353,6 +378,25 @@ async function main() {
 		userVar().memberType === 'PATIENT',
 		'late private responses from the previous identity are discarded',
 	);
+	session.applySessionToken(token('PATIENT'));
+	let finishOldRefresh;
+	fetchWith(async () => new Promise(resolve => { finishOldRefresh = () => resolve(response({ refreshSession: { accessToken: token('PATIENT') } })); }));
+	const oldRefresh = session.refreshSessionToken();
+	const rejectOld = assert.rejects(oldRefresh, session.SessionRejectedError);
+	await new Promise(resolve => setImmediate(resolve));
+	session.applySessionToken(token('DOCTOR'));
+	finishOldRefresh();
+	await rejectOld;
+	check(userVar().memberType === 'DOCTOR' && getJwtToken() === token('DOCTOR'), 'in-flight patient refresh cannot overwrite or clear new doctor login in the same tab');
+	const loginLinks = createSessionLinks();
+	let loginHeader;
+	const loginTerminal = new ApolloLink(operation => new Observable(observer => {
+		loginHeader = operation.getContext().headers;
+		observer.next({ data: { loginAdmin: { accessToken: token('ADMIN') } } });
+		observer.complete();
+	}));
+	await result(ApolloLink.from([loginLinks.auth, loginTerminal]), { query: gql`mutation LoginAdmin { loginAdmin { accessToken } }` });
+	check(loginHeader['X-MN-Session-Role'] === 'ADMIN' && !loginHeader.Authorization, 'admin login selects its own cookie independently of current patient tab');
 	console.log('FRONTEND_AUTH_VERIFIED ' + checks + ' checks');
 }
 main().catch((error) => {

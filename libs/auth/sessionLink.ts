@@ -1,7 +1,7 @@
 import { ApolloLink, Observable } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { jwtDecode } from 'jwt-decode';
-import { getJwtToken } from './token';
+import { getJwtToken, storedSessionIdentity, SESSION_ROLE_HEADER, SessionRole } from './token';
 import {
 	ensureAccessToken,
 	refreshSessionToken,
@@ -18,6 +18,10 @@ const publicAuth = new Set([
 	'RefreshSession',
 	'LogoutSession',
 ]);
+const loginRoles: Record<string, SessionRole> = {
+	Login: 'PATIENT', Signup: 'PATIENT', SocialAuthenticate: 'PATIENT',
+	LoginDoctor: 'DOCTOR', LoginReceptionist: 'RECEPTIONIST', LoginAdmin: 'ADMIN',
+};
 function identity(token: string): string {
 	try {
 		const claims = jwtDecode<{ _id: string; memberType: string; sid: string }>(
@@ -53,6 +57,9 @@ export function createSessionLinks() {
 							'Apollo-Require-Preflight': 'true',
 						};
 						delete nextHeaders.Authorization;
+						delete nextHeaders[SESSION_ROLE_HEADER];
+						const role = loginRoles[operation.operationName] ?? storedSessionIdentity()?.memberType;
+						if (role) nextHeaders[SESSION_ROLE_HEADER] = role;
 						if (token) nextHeaders.Authorization = `Bearer ${token}`;
 						return { headers: nextHeaders, sessionToken: token };
 					});

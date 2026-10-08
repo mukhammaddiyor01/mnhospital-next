@@ -6,9 +6,12 @@ import { LOGIN_DOCTOR } from '@/apollo/doctor/mutation';
 import { LOGIN_ADMIN, LOGIN_RECEPTIONIST } from '@/apollo/staff/mutation';
 import { MemberSession } from '@/libs/components/member/types/member';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
-import { getJwtToken } from './token';
+import { getJwtToken, publishSessionEvent } from './token';
 
-const syncSession = applySessionToken;
+const syncSession = (token: string, member?: MemberSession) => {
+	applySessionToken(token, member);
+	publishSessionEvent('login');
+};
 
 export const refreshMemberSession = (member: MemberSession) => {
 	if (!member.accessToken) throw new Error('The server did not return an access token.');
@@ -113,7 +116,7 @@ export const completeSocialAuth = async (transaction: SocialAuthTransaction, aut
 		if (!member?.accessToken) throw new Error('The server did not return an access token.');
 		syncSession(member.accessToken, member);
 		return member;
-	});
+	}, 'PATIENT');
 };
 
 export { getJwtToken, setJwtToken } from './token';
@@ -142,7 +145,7 @@ export const logIn = async (memberNick: string, memberPassword: string) => {
 		if (!member?.accessToken) throw new Error('The server did not return an access token.');
 		syncSession(member.accessToken, member);
 		return member;
-	});
+	}, 'PATIENT');
 };
 
 export const logInDoctor = async (docNick: string, docPassword: string) => {
@@ -172,7 +175,7 @@ export const logInDoctor = async (docNick: string, docPassword: string) => {
 			accessToken: doctor.accessToken,
 		});
 		return doctor;
-	});
+	}, 'DOCTOR');
 };
 
 export const logInAdmin = async (adminNick: string, adminPassword: string) => {
@@ -200,7 +203,7 @@ export const logInAdmin = async (adminNick: string, adminPassword: string) => {
 			accessToken: admin.accessToken,
 		});
 		return admin;
-	});
+	}, 'ADMIN');
 };
 
 export const logInReceptionist = async (receptionistNick: string, receptionistPassword: string) => {
@@ -230,7 +233,7 @@ export const logInReceptionist = async (receptionistNick: string, receptionistPa
 			accessToken: receptionist.accessToken,
 		});
 		return receptionist;
-	});
+	}, 'RECEPTIONIST');
 };
 
 const requestSignUp = async (
@@ -266,7 +269,7 @@ export const signUp = async (
 		if (!member?.accessToken) throw new Error('The server did not return an access token.');
 		syncSession(member.accessToken, member);
 		return member;
-	});
+	}, 'PATIENT');
 };
 
 export const logOut = async () => {

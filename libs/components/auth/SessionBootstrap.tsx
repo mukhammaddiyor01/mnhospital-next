@@ -8,11 +8,10 @@ import {
 import { useApolloClient } from '@apollo/client';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-	applySessionToken,
 	clearSession,
 	restoreSession,
 } from '@/libs/auth/session';
-import { getJwtToken } from '@/libs/auth/token';
+import { sessionEventInvalidatesTab } from '@/libs/auth/token';
 
 const SessionReady = createContext(false);
 export const useSessionReady = () => useContext(SessionReady);
@@ -35,16 +34,7 @@ export default function SessionBootstrap({
 			queries.clear();
 		};
 		const storage = (event: StorageEvent) => {
-			if (event.key !== 'accessToken' && event.key !== 'logout') return;
-			const token = getJwtToken();
-			if (token) {
-				try {
-					applySessionToken(token);
-				} catch {
-					void restoreSession();
-				}
-			} else clearSession(false);
-			void client.clearStore();
+			if (sessionEventInvalidatesTab(event.key, event.newValue)) clearSession(false);
 		};
 		window.addEventListener('storage', storage);
 		window.addEventListener('mn-hospital-session-ended', ended);
