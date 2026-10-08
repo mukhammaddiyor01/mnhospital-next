@@ -5,7 +5,7 @@ const backend = path.resolve(
 	process.argv[3] || path.join(root, '../mnhospital/node_modules'),
 );
 const ts = require(root + '/node_modules/typescript');
-const { buildSchema, parse, validate } = require(
+const { buildSchema, parse, validate, specifiedRules, NoUnusedFragmentsRule } = require(
 	root + '/node_modules/graphql',
 );
 const schema = buildSchema(
@@ -38,7 +38,11 @@ function check(doc, file) {
 			for (const field of def.selectionSet.selections)
 				if (field.name) operations.add(field.name.value);
 	}
-	for (const err of validate(schema, doc)) {
+	// Standalone reusable fragments have no operation until composed by Apollo.
+	const rules = doc.definitions.every((definition) => definition.kind === 'FragmentDefinition')
+		? specifiedRules.filter((rule) => rule !== NoUnusedFragmentsRule)
+		: specifiedRules;
+	for (const err of validate(schema, doc, rules)) {
 		console.log(file + ': ' + err.message);
 		errors++;
 	}

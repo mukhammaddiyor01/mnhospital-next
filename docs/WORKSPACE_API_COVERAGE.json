@@ -1,6 +1,6 @@
 {
-  "businessOperations": 152,
-  "coveredBusinessOperations": 152,
+  "businessOperations": 157,
+  "coveredBusinessOperations": 157,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -124,6 +124,18 @@
     },
     {
       "field": "getPayments",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getBookingPaymentOptions",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getMyBookingCheckout",
       "kind": "query",
       "frontendContract": true,
       "internalDiagnostic": false
@@ -628,6 +640,24 @@
     },
     {
       "field": "prepareEximbayPayment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "createAppointmentBooking",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "chooseBookingPayment",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "completeTestOnlinePayment",
       "kind": "mutation",
       "frontendContract": true,
       "internalDiagnostic": false
