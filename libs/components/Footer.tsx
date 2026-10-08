@@ -72,7 +72,7 @@ const Footer = () => {
       <span>
         © {new Date().getFullYear()} {t('footer.rights')}
       </span>
-      <a href="tel:103">
+      <a href="tel:119">
         <Icon name="emergency" /> {t('footer.emergency')}
       </a>
       <SocialLinks />

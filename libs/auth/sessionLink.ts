@@ -105,7 +105,11 @@ export function createSessionLinks() {
 								subscription = forward(operation).subscribe(observer);
 						})
 						.catch((error) => {
-							if (!stopped) observer.error(error);
+							if (stopped) return;
+							// Guests may still read public pages after a revoked session.
+							// Private operations remain protected by the API guards.
+							if (error instanceof SessionRejectedError) subscription = forward(operation).subscribe(observer);
+							else observer.error(error);
 						});
 					return () => {
 						stopped = true;

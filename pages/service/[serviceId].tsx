@@ -7,7 +7,8 @@ import LikeButton from '@/libs/components/common/LikeButton';
 import CommentsSection from '@/libs/components/comment/CommentsSection';
 import { ReferenceGroup } from '@/libs/components/comment/enums/comment.enum';
 import ServiceLoading from '@/libs/components/service/ServiceLoading';
-import { formatKrw } from '@/libs/components/common/currency';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
+import { formatMoney } from '@/libs/components/common/currency';
 import { GET_RECOMMENDED_SERVICES, GET_SERVICE } from '@/apollo/service/query';
 import { LIKE_TARGET_SERVICE } from '@/apollo/service/mutation';
 import { useTranslation } from '@/libs/i18n/useTranslation';
@@ -33,6 +34,7 @@ type ServiceDetail = Omit<Service, 'memberData'> & {
 
 const ServiceDetailPage = () => {
 	const t = useTranslation();
+	const clinic = useClinicSettings();
 	const typeLabel = useServiceTypeLabel();
 	const router = useRouter();
 	const serviceId = typeof router.query.serviceId === 'string' ? router.query.serviceId : '';
@@ -48,7 +50,7 @@ const ServiceDetailPage = () => {
 	const relatedServices = relatedData?.getRecommendedServices?.list ?? [];
 	const title = service?.serviceTitle || service?.serviceName || (previewService ? t(previewService.title) : t('nav.services'));
 	const description = service ? service.serviceDesc : previewService ? t(previewService.description) : undefined;
-	const canBook = service ? service.memberData?.memberStatus === MemberStatus.ACTIVE : Boolean(previewService);
+	const canBook = service ? service.memberData?.memberStatus === MemberStatus.ACTIVE : false;
 	if (!router.isReady || (isApiService && loading && !service)) return <div className="inner-page clinical-service-page"><div className="container"><ServiceLoading /></div></div>;
 	if (!service && !previewService) return <div className="inner-page clinical-service-page"><div className="container">
 		<section className="detail-panel clinical-service-error" role="alert">
@@ -68,7 +70,7 @@ const ServiceDetailPage = () => {
 				{description && <p>{description}</p>}
 				<div className="detail-meta">
 					{(service?.serviceDuration || previewService) && <span><Icon name="schedule" /> {service?.serviceDuration || t('serviceDetail.available')}</span>}
-					<span><Icon name="payments" /> {service && Number.isFinite(service.servicePrice) ? formatKrw(service.servicePrice) : t('serviceDetail.priceRequest')}</span>
+					<span><Icon name="payments" /> {service && Number.isFinite(service.servicePrice) ? formatMoney(service.servicePrice, clinic.currency) : t('serviceDetail.priceRequest')}</span>
 					<span><Icon name="location_on" /> {service?.serviceRoom || 'MN Hospital'}</span>
 				</div>
 				{canBook ? <Link className="button button-primary" href={`/appointment?service=${service?._id ?? serviceId}`}>{t('serviceDetail.book')} <span>→</span></Link> : <p className="query-status" role="status">{t('booking.unavailable')}</p>}

@@ -8,10 +8,10 @@ export interface HospitalStatus {
 }
 
 export const defaultHospitalStatus: HospitalStatus = {
-	yearsExperience: '25+',
-	expertDoctors: '150+',
-	patientSatisfaction: '99%',
-	emergencyCare: '24/7',
+	yearsExperience: process.env.HOSPITAL_YEARS_EXPERIENCE || '—',
+	expertDoctors: process.env.HOSPITAL_VERIFIED_DOCTOR_COUNT || '—',
+	patientSatisfaction: process.env.HOSPITAL_VERIFIED_SATISFACTION || '—',
+	emergencyCare: process.env.HOSPITAL_EMERGENCY_HOURS || '—',
 };
 
 export default function handler(_request: NextApiRequest, response: NextApiResponse<HospitalStatus>) {

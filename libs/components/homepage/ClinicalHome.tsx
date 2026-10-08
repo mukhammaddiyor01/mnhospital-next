@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery as useApolloQuery } from '@apollo/client';
-import { useQuery as useReactQuery } from '@tanstack/react-query';
 import { GET_DOCTORS } from '@/apollo/doctor/query';
 import { DoctorSort } from '@/libs/components/doctor/enums/doctor.enum';
 import { GET_SERVICES } from '@/apollo/service/query';
@@ -10,10 +9,8 @@ import { GET_ARTICLES } from '@/apollo/article/query';
 import { ArticleStatus } from '@/libs/components/article/enums/article.enum';
 import { Article } from '@/libs/components/article/types/article';
 import {
-	useFallbackArticles,
 	ArticleCard,
 } from '@/libs/components/article/ArticleCard';
-import type { HospitalStatus } from '@/pages/api/hospital-status';
 import Icon from '../common/Icon';
 import { resolveApiAsset } from '@/libs/config';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
@@ -24,6 +21,7 @@ import DepartmentSwiper from './DepartmentSwiper';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 
 const heroSlides = [
 	{
@@ -45,56 +43,6 @@ const heroSlides = [
 		description: 'home.slide3.description',
 	},
 ] as const;
-const defaultStatus: HospitalStatus = {
-	yearsExperience: '25+',
-	expertDoctors: '150+',
-	patientSatisfaction: '99%',
-	emergencyCare: '24/7',
-};
-
-const fallbackServices: ClinicalServiceCard[] = [
-	{
-		_id: 'cardiology',
-		serviceTitle: 'Cardiology & Vascular',
-		serviceDesc:
-			'Comprehensive interventional cardiology, electrophysiology, cardiac rehabilitation, and minimally invasive bypass procedures.',
-		servicePrice: 250000,
-		serviceViews: 856,
-		serviceType: 'CARDIOLOGY',
-		serviceRank: 1,
-	},
-	{
-		_id: 'neurology',
-		serviceTitle: 'Neurology & Brain Sciences',
-		serviceDesc:
-			'Advanced stroke intervention, neuro-oncology, spinal cord reconstruction, and computerized functional neuroimaging.',
-		servicePrice: 220000,
-		serviceViews: 642,
-		serviceType: 'NEUROLOGY',
-		serviceRank: 2,
-	},
-	{
-		_id: 'orthopedics',
-		serviceTitle: 'Orthopedics & Sports Rehab',
-		serviceDesc:
-			'Precision robotic joint replacement, sports injury arthroscopy, pediatric spine stabilization, and kinematic recovery.',
-		servicePrice: 180000,
-		serviceViews: 512,
-		serviceType: 'ORTHOPEDICS',
-		serviceRank: 3,
-	},
-	{
-		_id: 'pediatrics',
-		serviceTitle: 'Pediatrics & Child Health',
-		serviceDesc:
-			'Child-centered neonatal intensive care, developmental neurology, pediatric cardiology, and adolescent psychological support.',
-		servicePrice: 180000,
-		serviceViews: 512,
-		serviceType: 'PEDIATRICS',
-		serviceRank: 4,
-	},
-];
-
 const doctorRole = (
 	specialty: string | undefined,
 	t: ReturnType<typeof useTranslation>,
@@ -112,7 +60,7 @@ const ClinicalHome = () => {
 	const t = useTranslation();
 	const specialtyLabel = useDoctorSpecialtyLabel();
 	const w = useWorkspaceText();
-	const fallbackArticles = useFallbackArticles();
+	const clinic = useClinicSettings();
 	const [notice, setNotice] = useState('');
 	const [activeSlide, setActiveSlide] = useState(0);
 	useEffect(() => {
@@ -132,7 +80,6 @@ const ClinicalHome = () => {
 				search: {},
 			},
 		},
-		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-and-network',
 	});
 	const doctorsQuery = useApolloQuery(GET_DOCTORS, {
@@ -157,31 +104,11 @@ const ClinicalHome = () => {
 				search: { articleStatus: ArticleStatus.PUBLISHED },
 			},
 		},
-		skip: !process.env.NEXT_PUBLIC_API_GRAPHQL_URL,
 		fetchPolicy: 'cache-and-network',
 	});
-	const { data: hospitalStatus = defaultStatus } =
-		useReactQuery<HospitalStatus>({
-			queryKey: ['hospital-status'],
-			queryFn: async () => {
-				const response = await fetch('/api/hospital-status');
-				if (!response.ok) throw new Error('Hospital status is unavailable');
-				return response.json();
-			},
-			initialData: defaultStatus,
-		});
 
-	const usingFallbackServices = !servicesQuery.data?.getServices?.list?.length;
-
-	const services: ClinicalServiceCard[] = usingFallbackServices
-		? fallbackServices
-		: servicesQuery.data.getServices.list.map(
-				(service: ClinicalServiceCard) => ({
-					...service,
-					serviceTitle: service.serviceTitle ?? t('home.department.fallback'),
-					serviceDesc: service.serviceDesc ?? t('home.department.careFallback'),
-				}),
-			);
+	const usingFallbackServices = false;
+	const services: ClinicalServiceCard[] = servicesQuery.data?.getServices?.list ?? [];
 	const doctors: ClinicalDoctorCard[] = (
 		doctorsQuery.data?.getDoctors?.list ?? []
 	).map((doctor: ClinicalDoctorCard) => ({
@@ -189,9 +116,7 @@ const ClinicalHome = () => {
 		docFullName:
 			doctor.docFullName || doctor.docNick || t('doctors.nameFallback'),
 	}));
-	const articles: Article[] = articlesQuery.data?.getArticles?.list?.length
-		? articlesQuery.data.getArticles.list
-		: fallbackArticles;
+	const articles: Article[] = articlesQuery.data?.getArticles?.list ?? [];
 	const initials = (name?: string) =>
 		name
 			?.replace(/^Dr\.\s*/i, '')
@@ -280,25 +205,25 @@ const ClinicalHome = () => {
 
 					<section className="clinical-metrics">
 						<Metric
-							value={hospitalStatus.yearsExperience}
-							label={t('home.metric.years')}
-							note={t('home.metric.yearsNote')}
+							value={servicesQuery.error || servicesQuery.loading && !servicesQuery.data ? '—' : String(servicesQuery.data?.getServices?.metaCounter?.[0]?.total ?? 0)}
+							label={t('nav.services')}
+							note={t('nav.services')}
 						/>
 						<Metric
-							value={hospitalStatus.expertDoctors}
+							value={doctorsQuery.error || doctorsQuery.loading && !doctorsQuery.data ? '—' : String(doctorsQuery.data?.getDoctors?.metaCounter?.[0]?.total ?? 0)}
 							label={t('home.metric.doctors')}
 							note={t('home.metric.doctorsNote')}
 						/>
 						<Metric
-							value={hospitalStatus.patientSatisfaction}
-							label={t('home.metric.satisfaction')}
-							note={t('home.metric.satisfactionNote')}
+							value={articlesQuery.error || articlesQuery.loading && !articlesQuery.data ? '—' : String(articlesQuery.data?.getArticles?.metaCounter?.[0]?.total ?? 0)}
+							label={w('articles')}
+							note={t('nav.articles')}
 							teal
 						/>
 						<Metric
-							value={hospitalStatus.emergencyCare}
-							label={t('home.metric.emergency')}
-							note={t('home.metric.emergencyNote')}
+							value={clinic.timeZone === 'Asia/Tashkent' ? 'UTC+5' : clinic.timeZone === 'Asia/Seoul' ? 'UTC+9' : 'UTC'}
+							label={w('clinicTime')}
+							note={clinic.timeZone}
 						/>
 					</section>
 

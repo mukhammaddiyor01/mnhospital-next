@@ -306,6 +306,18 @@ async function main() {
 	} finally {
 		console.error = logError;
 	}
+	session.applySessionToken(token());
+	fetchWith(async () => response(null, [{ code: 'UNAUTHENTICATED' }]));
+	const guestLinks = createSessionLinks();
+	const guestHeaders = [];
+	const guestTerminal = new ApolloLink(operation => new Observable(observer => {
+		guestHeaders.push(operation.getContext().headers);
+		observer.next(guestHeaders.length === 1 ? { errors: [{ message: 'Revoked session', extensions: { code: 'UNAUTHENTICATED' } }] } : { data: { getServices: { list: [] } } });
+		observer.complete();
+	}));
+	const guestResult = await result(ApolloLink.from([guestLinks.errors, guestLinks.auth, guestTerminal]), { query: gql`query GuestCatalog { getServices { list { _id } } }` });
+	check(guestResult.data?.getServices.list.length === 0 && guestHeaders.length === 2 && !guestHeaders[1].Authorization, 'revoked sessions can read public catalog without stale credentials');
+
 	session.applySessionToken(token('DOCTOR'));
 	const accountLinks = createSessionLinks();
 	let accountForwards = 0;
