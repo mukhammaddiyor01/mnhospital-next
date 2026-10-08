@@ -4,7 +4,7 @@ import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { CREATE_APPOINTMENT_BOOKING } from '@/apollo/booking/checkout';
 import { GET_AVAILABLE_DOCTOR_SLOTS } from '@/apollo/booking/query';
-import { GET_SERVICES } from '@/apollo/service/query';
+import { GET_SERVICES, GET_SERVICE } from '@/apollo/service/query';
 import { userVar } from '@/apollo/store';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
@@ -33,7 +33,7 @@ function AppointmentPage() {
 	const [page, setPage] = useState(1);
 	const [search, setSearch] = useState('');
 	const restored = useRef(false);
-	const preselected = useRef(false);
+	const preselected = useRef('');
 	const lock = useRef(false);
 	const requestKey = useRef('');
 	const [create, creating] = useMutation<{ createAppointmentBooking: { _id: string } }>(CREATE_APPOINTMENT_BOOKING);
@@ -41,7 +41,16 @@ function AppointmentPage() {
 		variables: { input: { page, limit: 50, sort: 'serviceRank', direction: 'DESC', search: { ...(search ? { text: search } : {}), ...(typeof router.query.doctor === 'string' && /^[a-f\d]{24}$/i.test(router.query.doctor) ? { memberId: router.query.doctor } : {}) } } },
 		fetchPolicy: 'network-only',
 	});
-	const services = catalog.data?.getServices.list ?? [];
+	// A detail-page selection may sit outside the first catalog page.
+	const requestedServiceId = typeof router.query.service === 'string' && /^[a-f\d]{24}$/i.test(router.query.service) ? router.query.service : '';
+	const selectionKey = requestedServiceId || (typeof router.query.doctor === 'string' ? router.query.doctor : 'none');
+	const requestedQuery = useQuery<{ getService: Service }>(GET_SERVICE, {
+		variables: { serviceId: requestedServiceId }, skip: !router.isReady || !requestedServiceId, fetchPolicy: 'network-only',
+	});
+	const requestedService = requestedQuery.data?.getService?._id === requestedServiceId ? requestedQuery.data.getService : undefined;
+	const catalogServices = catalog.data?.getServices.list ?? [];
+	const services = requestedService && !catalogServices.some((item) => item._id === requestedService._id)
+		&& (preselected.current !== selectionKey || form.serviceId === requestedService._id) ? [requestedService, ...catalogServices] : catalogServices;
 	const selected = services.find((service) => service._id === form.serviceId);
 	const slotsQuery = useQuery<{ getAvailableDoctorSlots: Array<{ startsAt: string; endsAt: string }> }>(GET_AVAILABLE_DOCTOR_SLOTS, {
 		variables: { input: { serviceId: form.serviceId, doctorId: form.doctorId, date: form.date } },
@@ -58,11 +67,14 @@ function AppointmentPage() {
 		} catch { /* A malformed or unavailable draft does not block booking. */ }
 	}, [router.isReady]);
 	useEffect(() => {
-		if (!router.isReady || preselected.current || !catalog.data) return;
-		preselected.current = true;
-		const requested = services.find((service) => service._id === router.query.service) || services.find((service) => service.memberId === router.query.doctor);
+		if (!router.isReady || preselected.current === selectionKey || (requestedServiceId ? requestedQuery.loading : !catalog.data)) return;
+		preselected.current = selectionKey;
+		const requested = requestedServiceId ? requestedService : services.find((service) => service.memberId === router.query.doctor);
 		if (requested) setForm((current) => ({ ...current, serviceId: requested._id, doctorId: requested.memberId, startsAt: '' }));
-	}, [router.isReady, router.query.service, router.query.doctor, catalog.data, services]);
+		else if (requestedServiceId) setForm((current) => ({ ...current, serviceId: '', doctorId: '', startsAt: '' }));
+		requestKey.current = '';
+		setMessage('');
+	}, [router.isReady, router.query.service, router.query.doctor, catalog.data, services, requestedServiceId, requestedService, requestedQuery.loading, selectionKey]);
 	const update = (patch: Partial<AppointmentDraft>) => {
 		setForm((current) => ({ ...current, ...patch }));
 		requestKey.current = '';
@@ -107,7 +119,8 @@ function AppointmentPage() {
 					</select><small>{w('clinicTime')} · {clinic.timeZone}</small></label>
 					<label>{t('booking.note')}<textarea maxLength={1000} value={form.patientNote} onChange={(event) => update({ patientNote: event.target.value })} placeholder={t('booking.notePlaceholder')} /></label>
 				</div>
-				{catalog.loading && <p role="status">{t('booking.refreshing')}</p>}
+				{(catalog.loading || requestedQuery.loading) && <p role="status">{t('booking.refreshing')}</p>}
+				{requestedQuery.error && <p role="alert">{w('servicesUnavailable')} <button type="button" onClick={() => { preselected.current = ''; void requestedQuery.refetch().catch(() => undefined); }}>{w('refresh')}</button></p>}
 				{catalog.error && <p role="alert">{w('servicesUnavailable')} <button type="button" onClick={() => void catalog.refetch().catch(() => undefined)}>{w('refresh')}</button></p>}
 				{!catalog.loading && !catalog.error && !services.length && <p role="status">{w('servicesEmpty')}</p>}
 				{(page > 1 || (catalog.data?.getServices.metaCounter[0]?.total || 0) > 50) && <div className="clinical-booking-actions"><button type="button" disabled={page <= 1 || catalog.loading} onClick={() => setPage((value) => value - 1)}>←</button><span>{page}</span><button type="button" disabled={page * 50 >= (catalog.data?.getServices.metaCounter[0]?.total || 0) || catalog.loading} onClick={() => setPage((value) => value + 1)}>→</button></div>}
@@ -115,7 +128,7 @@ function AppointmentPage() {
 				{selected && form.date && !slotsQuery.loading && !slotsQuery.error && !slots.length && <p role="status">{t('booking.noSlots')}</p>}
 				{selected && <div className="clinical-booking-review"><div><h3>{selected.serviceTitle}</h3><p>{selected.memberData?.docFullName}{form.startsAt ? ` · ${clinicDateTime(form.startsAt, locale, clinic.timeZone)}` : ''}</p></div><strong>{formatMoney(selected.servicePrice, clinic.currency)}</strong></div>}
 				{message && <p className="clinical-form-error" role="alert">{message}</p>}
-				<div className="clinical-booking-actions"><button className="clinical-primary-button" type="submit" disabled={creating.loading || catalog.loading || slotsQuery.loading || !selected || !slots.some((slot) => slot.startsAt === form.startsAt)}>{creating.loading ? t('booking.creating') : w('continuePayment')} <Icon name="arrow_forward" /></button></div>
+				<div className="clinical-booking-actions"><button className="clinical-primary-button" type="submit" disabled={creating.loading || catalog.loading || requestedQuery.loading || slotsQuery.loading || !selected || !slots.some((slot) => slot.startsAt === form.startsAt)}>{creating.loading ? t('booking.creating') : w('continuePayment')} <Icon name="arrow_forward" /></button></div>
 			</form>
 		</section>
 	</div>;

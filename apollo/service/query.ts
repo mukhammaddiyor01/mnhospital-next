@@ -63,3 +63,13 @@ export const GET_FAVORITE_SERVICES = gql`
 		}
 	}
 `;
+
+export const GET_SERVICE_BOOKING_OPTIONS = gql`
+ query GetServiceBookingOptions($input: ServicesInquiry!) {
+  getServices(input: $input) {
+   list { _id memberId departmentId serviceType serviceStatus serviceTitle serviceName servicePrice serviceDuration
+    memberData { _id memberStatus } }
+   metaCounter { total }
+  }
+ }
+`;

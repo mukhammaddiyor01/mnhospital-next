@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import ServiceBookingOptions from '@/libs/components/service/ServiceBookingOptions';
+import { BookingOption, getBookingOptions } from '@/libs/components/service/bookingOptions';
 import ServiceImageGallery from '@/libs/components/service/ServiceImageGallery';
 import ServiceDirectoryCard from '@/libs/components/service/ServiceDirectoryCard';
 import { useRouter } from 'next/router';
@@ -11,7 +14,7 @@ import { ReferenceGroup } from '@/libs/components/comment/enums/comment.enum';
 import ServiceLoading from '@/libs/components/service/ServiceLoading';
 import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import { formatMoney } from '@/libs/components/common/currency';
-import { GET_RECOMMENDED_SERVICES, GET_SERVICE } from '@/apollo/service/query';
+import { GET_RECOMMENDED_SERVICES, GET_SERVICE, GET_SERVICE_BOOKING_OPTIONS } from '@/apollo/service/query';
 import { LIKE_TARGET_SERVICE } from '@/apollo/service/mutation';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useServiceTypeLabel } from '@/libs/i18n/useServiceTypeLabel';
@@ -36,6 +39,7 @@ type ServiceDetail = Omit<Service, 'memberData'> & {
 
 const ServiceDetailPage = () => {
 	const t = useTranslation();
+	const [selectedOptionId, setSelectedOptionId] = useState('');
 	const clinic = useClinicSettings();
 	const typeLabel = useServiceTypeLabel();
 	const router = useRouter();
@@ -49,10 +53,17 @@ const ServiceDetailPage = () => {
 	const { data: relatedData } = useQuery<{ getRecommendedServices: { list: Service[] } }>(GET_RECOMMENDED_SERVICES, {
 		variables: { serviceId, limit: 3 }, skip: !service, fetchPolicy: 'cache-first',
 	});
+	const optionsQuery = useQuery<{ getServices: { list: BookingOption[] } }>(GET_SERVICE_BOOKING_OPTIONS, {
+		variables: { input: { page: 1, limit: 100, sort: 'servicePrice', direction: 'ASC', search: {
+			memberId: service?.memberId, departmentId: service?.departmentId, serviceTypeList: service ? [service.serviceType] : [],
+		} } }, skip: !service, fetchPolicy: 'cache-and-network',
+	});
+	const options = service ? getBookingOptions(service, optionsQuery.error ? [] : optionsQuery.data?.getServices.list ?? []) : [];
+	const selectedOption = options.find((option) => option._id === selectedOptionId) ?? options[0];
 	const relatedServices = relatedData?.getRecommendedServices?.list ?? [];
 	const title = service?.serviceTitle || service?.serviceName || (previewService ? t(previewService.title) : t('nav.services'));
 	const description = service ? service.serviceDesc : previewService ? t(previewService.description) : undefined;
-	const canBook = service ? service.memberData?.memberStatus === MemberStatus.ACTIVE : false;
+	const canBook = Boolean(selectedOption);
 	if (!router.isReady || (isApiService && loading && !service)) return <div className="inner-page clinical-service-page"><div className="container"><ServiceLoading /></div></div>;
 	if (!service && !previewService) return <div className="inner-page clinical-service-page"><div className="container">
 		<section className="detail-panel clinical-service-error" role="alert">
@@ -76,7 +87,7 @@ const ServiceDetailPage = () => {
 					<span><Icon name="payments" /> {service && Number.isFinite(service.servicePrice) ? formatMoney(service.servicePrice, clinic.currency) : t('serviceDetail.priceRequest')}</span>
 					<span><Icon name="location_on" /> {service?.serviceRoom || 'MN Hospital'}</span>
 				</div>
-				{canBook ? <Link className="button button-primary" href={`/appointment?service=${service?._id ?? serviceId}`}>{t('serviceDetail.book')} <span>→</span></Link> : <p className="query-status" role="status">{t('booking.unavailable')}</p>}
+				{canBook && selectedOption && service ? <ServiceBookingOptions options={options} selected={selectedOption} baseId={service._id} currency={clinic.currency} loading={optionsQuery.loading} failed={Boolean(optionsQuery.error)} onChange={setSelectedOptionId} onRetry={() => void optionsQuery.refetch().catch(() => undefined)} /> : <p className="query-status" role="status">{t('booking.unavailable')}</p>}
 			</article>
 			<aside className="detail-aside"><span className="eyebrow">{t('serviceDetail.asideKicker')}</span><h2>{t('serviceDetail.asideTitle')}</h2><p>{t('serviceDetail.asideIntro')}</p><Link className="button button-secondary" href="/doctor">{t('serviceDetail.findDoctor')}</Link></aside>
 		</div>
