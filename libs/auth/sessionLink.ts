@@ -44,6 +44,9 @@ export function createSessionLinks() {
 						}
 					}
 					if (stopped) return;
+					const expectedAccount = operation.getContext().expectedAccount;
+					if (expectedAccount && identity(token).split(':').slice(0, 2).join(':') !== expectedAccount)
+						throw new SessionRejectedError('Account changed');
 					operation.setContext(({ headers = {} }) => {
 						const nextHeaders: Record<string, string> = {
 							...headers,

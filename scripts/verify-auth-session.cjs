@@ -307,6 +307,11 @@ async function main() {
 		console.error = logError;
 	}
 	session.applySessionToken(token('DOCTOR'));
+	const accountLinks = createSessionLinks();
+	let accountForwards = 0;
+	const accountTerminal = new ApolloLink(() => new Observable(observer => { accountForwards++; observer.next({ data: {} }); observer.complete(); }));
+	await assert.rejects(result(ApolloLink.from([accountLinks.auth, accountTerminal]), { ...op, context: { expectedAccount: 'PATIENT:' + id } }), /Account changed/);
+	check(accountForwards === 0, 'profile writes are rejected before send when the account identity changes');
 	let deliver;
 	const staleLinks = createSessionLinks();
 	const stale = new ApolloLink(

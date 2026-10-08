@@ -1,6 +1,6 @@
 {
-  "businessOperations": 150,
-  "coveredBusinessOperations": 150,
+  "businessOperations": 152,
+  "coveredBusinessOperations": 152,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -556,6 +556,18 @@
     },
     {
       "field": "updateArticle",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updateMyAccountProfile",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "changeMyAccountPassword",
       "kind": "mutation",
       "frontendContract": true,
       "internalDiagnostic": false

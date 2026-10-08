@@ -40,7 +40,7 @@ const StaffWorkspace = ({
 		: role === MemberType.DOCTOR
 			? '/doctor-workspace'
 			: '/receptionist-workspace';
-	const profileHref = isAdmin ? dashboardHref : `${workspaceRoot}/profile`;
+	const profileHref = `${workspaceRoot}/profile`;
 	const notificationHref = `${workspaceRoot}/notifications`;
 	const roleLabel: MessageKey =
 		role === MemberType.ADMIN
@@ -55,15 +55,7 @@ const StaffWorkspace = ({
 		workspaceLabel?: WorkspaceTextKey;
 	}[] = [
 		{ href: dashboardHref, icon: 'dashboard', label: 'dashboard.title' },
-		...(!isAdmin
-			? [
-					{
-						href: profileHref,
-						icon: 'account_circle',
-						label: 'dashboard.profileLink' as MessageKey,
-					},
-				]
-			: []),
+		{ href: profileHref, icon: 'account_circle', label: 'dashboard.profileLink' },
 		...(role === MemberType.ADMIN
 			? [
 					{

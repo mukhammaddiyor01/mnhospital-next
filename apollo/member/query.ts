@@ -28,6 +28,7 @@ export const GET_MY_MEMBER_PROFILE = gql`
 			memberNick
 			memberFullName
 			memberImage
+			memberDesc
 			memberPhone
 			memberMail
 		}

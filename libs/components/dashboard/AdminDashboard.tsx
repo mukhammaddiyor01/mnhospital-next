@@ -89,6 +89,7 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
 
 	return (
 		<div className="clinical-staff-admin-content clinical-admin-command">
+			<Link href="/admin/profile">{w('edit')} · {w('accountProfile')}</Link>
 			<button
 				type="button"
 				className="clinical-staff-table-action"

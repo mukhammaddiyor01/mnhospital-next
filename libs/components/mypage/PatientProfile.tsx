@@ -20,6 +20,7 @@ import {
 import { resolveApiAsset } from '@/libs/config';
 import Icon from '@/libs/components/common/Icon';
 import FollowLists from '@/libs/components/follow/FollowLists';
+import AccountProfileEditor from '@/libs/components/workspace/AccountProfileEditor';
 import PatientActivity from './PatientActivity';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { useTranslation } from '@/libs/i18n/useTranslation';
@@ -48,7 +49,6 @@ const emptyForm: PatientFormState = {
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const PATIENT_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
-const PHONE_PATTERN = /^(?:\+?[1-9]\d{7,14}|0\d{1,2}-?\d{3,4}-?\d{4})$/;
 
 const toDateInput = (value?: string) => {
 	if (!value) return '';
@@ -65,9 +65,6 @@ const PatientProfile = () => {
 	const [formError, setFormError] = useState('');
 	const [photoFile, setPhotoFile] = useState<File | null>(null);
 	const [photoPreview, setPhotoPreview] = useState('');
-	const [editingContact, setEditingContact] = useState(false);
-	const [contact, setContact] = useState({ memberPhone: '', memberMail: '' });
-	const [contactError, setContactError] = useState('');
 	const { data, loading, error, refetch } = useQuery(GET_MY_PATIENT_PROFILE, {
 		skip: !session._id || session.memberType !== MemberType.PATIENT,
 		fetchPolicy: 'cache-and-network',
@@ -83,7 +80,7 @@ const PatientProfile = () => {
 	const [createProfile, createState] = useMutation(CREATE_PATIENT_PROFILE);
 	const [updateProfile, updateState] = useMutation(UPDATE_MY_PATIENT_PROFILE);
 	const [uploadImage, uploadState] = useMutation(UPLOAD_MY_PATIENT_IMAGE);
-	const [updateMember, memberState] = useMutation(UPDATE_MEMBER);
+	const [updateMember] = useMutation(UPDATE_MEMBER);
 	const patient = data?.getMyPatientProfile;
 	const profileMissing =
 		!loading &&
@@ -104,12 +101,6 @@ const PatientProfile = () => {
 		});
 	}, [patient]);
 
-	useEffect(() => {
-		setContact({
-			memberPhone: accountPhone,
-			memberMail: accountMail,
-		});
-	}, [accountPhone, accountMail]);
 
 	useEffect(() => {
 		if (!photoFile) {
@@ -168,6 +159,7 @@ const PatientProfile = () => {
 			patientImage: form.patientImage,
 		};
 
+		const photoChanged = Boolean(photoFile);
 		try {
 			if (photoFile) {
 				const uploaded = await uploadImage({ variables: { file: photoFile } });
@@ -179,49 +171,17 @@ const PatientProfile = () => {
 			}
 			if (patient) await updateProfile({ variables: { input } });
 			else await createProfile({ variables: { input } });
+			if (photoChanged) {
+				const updated = await updateMember({ variables: { input: { _id: session._id, memberImage: input.patientImage } }, context: { expectedAccount: `PATIENT:${session._id}` } });
+				if (userVar()._id !== session._id || userVar().memberType !== MemberType.PATIENT) return;
+				refreshMemberSession(updated.data.updateMember as MemberSession);
+				await account.refetch();
+			}
 			await refetch();
 			setPhotoFile(null);
 			setEditing(false);
 		} catch (requestError: any) {
 			setFormError(requestError?.message ?? t('patient.saveError'));
-		}
-	};
-
-	const saveContact = async (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		setContactError('');
-		const memberPhone = contact.memberPhone.trim();
-		const memberMail = contact.memberMail.trim().toLowerCase();
-		const phoneChanged = memberPhone !== accountPhone;
-		const mailChanged = memberMail !== accountMail;
-		if (phoneChanged && (!memberPhone || !PHONE_PATTERN.test(memberPhone))) {
-			setContactError(t('patient.phoneError'));
-			return;
-		}
-		if (
-			mailChanged &&
-			(!memberMail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(memberMail))
-		) {
-			setContactError(t('patient.emailError'));
-			return;
-		}
-		if (!phoneChanged && !mailChanged) {
-			setEditingContact(false);
-			return;
-		}
-		try {
-			const input: { _id: string; memberPhone?: string; memberMail?: string } =
-				{ _id: session._id };
-			if (phoneChanged) input.memberPhone = memberPhone;
-			if (mailChanged) input.memberMail = memberMail;
-			const result = await updateMember({ variables: { input } });
-			const member = result.data?.updateMember as MemberSession | undefined;
-			if (!member?.accessToken) throw new Error(t('patient.contactSaveError'));
-			refreshMemberSession(member);
-			await account.refetch();
-			setEditingContact(false);
-		} catch (requestError: any) {
-			setContactError(requestError?.message ?? t('patient.contactSaveError'));
 		}
 	};
 
@@ -588,98 +548,7 @@ const PatientProfile = () => {
 						</div>
 					</form>
 				)}
-				<div className="clinical-account-contact">
-					<div>
-						<span className="clinical-section-kicker">
-							{t('patient.contactKicker')}
-						</span>
-						<h2>{t('patient.contactTitle')}</h2>
-						<p>{t('patient.contactIntro')}</p>
-					</div>
-					{!editingContact && (
-						<div className="clinical-profile-actions">
-							<button
-								className="clinical-secondary-button"
-								type="button"
-								onClick={() => {
-									setContactError('');
-									setEditingContact(true);
-								}}
-							>
-								{t('patient.editContact')} <Icon name="edit" />
-							</button>
-						</div>
-					)}
-					{editingContact && (
-						<form
-							className="clinical-contact-form clinical-patient-form"
-							onSubmit={saveContact}
-						>
-							<div className="clinical-patient-form-grid">
-								<label>
-									{t('patient.phoneNumber')}
-									<input
-										type="tel"
-										autoComplete="tel"
-										value={contact.memberPhone}
-										onChange={(event) => {
-											setContact({
-												...contact,
-												memberPhone: event.target.value,
-											});
-											setContactError('');
-										}}
-										placeholder="+821012345678"
-									/>
-								</label>
-								<label>
-									{t('patient.emailAddress')}
-									<input
-										type="email"
-										autoComplete="email"
-										value={contact.memberMail}
-										onChange={(event) => {
-											setContact({
-												...contact,
-												memberMail: event.target.value,
-											});
-											setContactError('');
-										}}
-										placeholder="name@example.com"
-									/>
-								</label>
-							</div>
-							{contactError && (
-								<p className="clinical-form-error">{contactError}</p>
-							)}
-							<div className="clinical-profile-actions">
-								<button
-									className="clinical-primary-button"
-									type="submit"
-									disabled={memberState.loading}
-								>
-									{memberState.loading
-										? t('patient.saving')
-										: t('patient.saveContact')}
-								</button>
-								<button
-									className="clinical-secondary-button"
-									type="button"
-									onClick={() => {
-										setContact({
-											memberPhone: accountPhone,
-											memberMail: accountMail,
-										});
-										setContactError('');
-										setEditingContact(false);
-									}}
-								>
-									{t('patient.cancel')}
-								</button>
-							</div>
-						</form>
-					)}
-				</div>
+				<AccountProfileEditor role={MemberType.PATIENT} />
 				{patient && !editing && error ? (
 					<p className="clinical-form-error">{t('patient.staleProfile')}</p>
 				) : null}
