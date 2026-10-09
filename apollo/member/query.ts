@@ -11,7 +11,14 @@ export const GET_MEMBER = gql`
 			memberImage
 			memberDesc
 			memberFollowers
+			memberLikes
+			memberViews
 			memberFollowings
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 			meFollowed {
 				myFollowing
 			}
