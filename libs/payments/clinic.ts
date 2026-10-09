@@ -8,7 +8,7 @@ export const clinicDateTime = (date: string, locale = 'en-US', timeZone = CLINIC
 	timeZone, dateStyle: 'medium', timeStyle: 'short',
 }).format(new Date(date));
 export interface CheckoutState {
-	order: { _id: string; orderCode: string; bookingOrderStatus: string; bookingOrderCurrency: string; bookingOrderTotalAmount: number;
+	order: { _id: string; orderCode: string; bookingOrderStatus: string; bookingOrderCurrency: string; bookingOrderTotalAmount: number; bookingOrderSubtotalAmount: number; bookingOrderDiscountAmount: number; serviceDiscountAmount?: number; promoDiscountAmount?: number; promoCode?: string; pricingLockedAt?: string; pricingVersion?: number;
 		bookingOrderItems: Array<{ serviceId: string; doctorId: string; serviceName: string; servicePrice: string; serviceDuration: string; requestedStartAt: string; appointmentId?: string }> };
 	payments: Array<{ _id: string; serviceId: string; doctorId: string; bookingOrderId: string; paymentProvider: string; paymentStatus: string; paymentAmount: number; paymentCurrency: string; testPayment: boolean; createdAt: string }>;
 	appointments: Array<{ _id: string; appointmentCode: string; appointmentStatus: string; startsAt: string; endsAt: string; holdExpiresAt?: string; roomId: string }>;

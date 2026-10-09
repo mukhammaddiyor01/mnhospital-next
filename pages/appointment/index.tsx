@@ -1,3 +1,4 @@
+import { servicePriceForDisplay } from '@/libs/components/service/service-price';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
@@ -113,7 +114,7 @@ function AppointmentPage() {
 					<label className="wide-field">{t('booking.hospitalService')}<select value={form.serviceId} required disabled={catalog.loading || !services.length} onChange={(event) => {
 						const service = services.find((item) => item._id === event.target.value);
 						update({ serviceId: service?._id || '', doctorId: service?.memberId || '', startsAt: '' });
-					}}><option value="">{t('booking.selectService')}</option>{services.map((service: Service) => <option value={service._id} key={service._id}>{service.serviceTitle || service.serviceName} · {service.memberData?.docFullName} · {formatMoney(service.servicePrice, clinic.currency)}</option>)}</select></label>
+					}}><option value="">{t('booking.selectService')}</option>{services.map((service: Service) => <option value={service._id} key={service._id}>{service.serviceTitle || service.serviceName} · {service.memberData?.docFullName} · {formatMoney(servicePriceForDisplay(service, clinic.currency), clinic.currency)}</option>)}</select></label>
 					<label>{t('booking.availableTime')}<select value={form.startsAt} required disabled={!selected || !form.date || slotsQuery.loading} onChange={(event) => update({ startsAt: event.target.value })}>
 						<option value="">{slotsQuery.loading ? t('booking.checking') : t('booking.selectTime')}</option>{slots.map((slot) => <option key={slot.startsAt} value={slot.startsAt}>{new Intl.DateTimeFormat(locale, { timeZone: clinic.timeZone, hour: '2-digit', minute: '2-digit' }).format(new Date(slot.startsAt))}</option>)}
 					</select><small>{w('clinicTime')} · {clinic.timeZone}</small></label>
@@ -126,7 +127,7 @@ function AppointmentPage() {
 				{(page > 1 || (catalog.data?.getServices.metaCounter[0]?.total || 0) > 50) && <div className="clinical-booking-actions"><button type="button" disabled={page <= 1 || catalog.loading} onClick={() => setPage((value) => value - 1)}>←</button><span>{page}</span><button type="button" disabled={page * 50 >= (catalog.data?.getServices.metaCounter[0]?.total || 0) || catalog.loading} onClick={() => setPage((value) => value + 1)}>→</button></div>}
 				{slotsQuery.error && <p role="alert">{slotsQuery.error.message}</p>}
 				{selected && form.date && !slotsQuery.loading && !slotsQuery.error && !slots.length && <p role="status">{t('booking.noSlots')}</p>}
-				{selected && <div className="clinical-booking-review"><div><h3>{selected.serviceTitle}</h3><p>{selected.memberData?.docFullName}{form.startsAt ? ` · ${clinicDateTime(form.startsAt, locale, clinic.timeZone)}` : ''}</p></div><strong>{formatMoney(selected.servicePrice, clinic.currency)}</strong></div>}
+				{selected && <div className="clinical-booking-review"><div><h3>{selected.serviceTitle}</h3><p>{selected.memberData?.docFullName}{form.startsAt ? ` · ${clinicDateTime(form.startsAt, locale, clinic.timeZone)}` : ''}</p></div><strong>{formatMoney(servicePriceForDisplay(selected, clinic.currency), clinic.currency)}</strong></div>}
 				{message && <p className="clinical-form-error" role="alert">{message}</p>}
 				<div className="clinical-booking-actions"><button className="clinical-primary-button" type="submit" disabled={creating.loading || catalog.loading || requestedQuery.loading || slotsQuery.loading || !selected || !slots.some((slot) => slot.startsAt === form.startsAt)}>{creating.loading ? t('booking.creating') : w('continuePayment')} <Icon name="arrow_forward" /></button></div>
 			</form>

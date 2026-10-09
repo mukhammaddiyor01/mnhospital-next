@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 const checkoutFields = gql`
 	fragment CheckoutFields on BookingCheckout {
-		order { _id orderCode bookingOrderStatus bookingOrderCurrency bookingOrderTotalAmount
+		order { _id orderCode bookingOrderStatus bookingOrderCurrency bookingOrderTotalAmount bookingOrderSubtotalAmount bookingOrderDiscountAmount serviceDiscountAmount promoDiscountAmount promoCode pricingLockedAt pricingVersion
 			bookingOrderItems { serviceId doctorId serviceName servicePrice serviceDuration requestedStartAt appointmentId } }
 		payments { _id serviceId doctorId bookingOrderId paymentProvider paymentStatus paymentAmount paymentCurrency testPayment createdAt }
 		appointments { _id appointmentCode appointmentStatus startsAt endsAt holdExpiresAt roomId }

@@ -10,6 +10,7 @@ export interface Service {
 	serviceRoom: string;
 	serviceTitle: string;
 	servicePrice: number;
+	serviceDiscountPercent?: number | null;
 	serviceViews: number;
 	serviceLikes: number;
 	serviceComments: number;

@@ -1,3 +1,4 @@
+import { servicePriceForDisplay } from './service-price';
 import Link from 'next/link';
 import { BookingOption, optionBookingHref } from './bookingOptions';
 import { formatMoney } from '../common/currency';
@@ -25,13 +26,13 @@ export default function ServiceBookingOptions({ options, selected, baseId, curre
 					<strong>{option._id === baseId ? text.standard : option.serviceTitle || option.serviceName}</strong>
 					<small>{option._id === baseId && <span>{option.serviceTitle || option.serviceName}</span>}{option.serviceDuration && <span>{option.serviceDuration} {text.minutes}</span>}</small>
 				</span>
-				<span className={styles.price}>{formatMoney(option.servicePrice, currency)}</span>
+				<span className={styles.price}>{(option.serviceDiscountPercent ?? 0) > 0 && <small><s>{formatMoney(option.servicePrice, currency)}</s> (−{option.serviceDiscountPercent}%)</small>}{formatMoney(servicePriceForDisplay(option, currency), currency)}</span>
 			</label>)}
 		</fieldset>
 		{loading && <p className={styles.status} role="status">{text.loading}</p>}
 		{failed && <p className={styles.status} role="alert">{text.failed} <button type="button" onClick={onRetry}>{text.retry}</button></p>}
 		<div className={styles.summary}>
-			<div className={styles.total} aria-live="polite" aria-atomic="true"><span><small>{text.selected}</small><strong>{selected.serviceTitle || selected.serviceName}</strong></span><b>{formatMoney(selected.servicePrice, currency)}</b></div>
+			<div className={styles.total} aria-live="polite" aria-atomic="true"><span><small>{text.selected}</small><strong>{selected.serviceTitle || selected.serviceName}</strong></span><b>{formatMoney(servicePriceForDisplay(selected, currency), currency)}</b></div>
 			<Link className={styles.book} href={optionBookingHref(selected)}>{text.booking}</Link>
 		</div>
 	</section>;

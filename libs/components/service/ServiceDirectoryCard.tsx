@@ -1,3 +1,4 @@
+import { servicePriceForDisplay } from './service-price';
 import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import Link from "next/link";
 import { useState } from "react";
@@ -84,8 +85,9 @@ export default function ServiceDirectoryCard({
         <p className={serviceStyles.price}>
           {t("services.from").replace(
             "{price}",
-            formatMoney(service.servicePrice, currency),
+            formatMoney(servicePriceForDisplay(service, currency), currency),
           )}
+          {(service.serviceDiscountPercent ?? 0) > 0 && <small> <s>{formatMoney(service.servicePrice, currency)}</s> (−{service.serviceDiscountPercent}%)</small>}
         </p>
         <dl className={styles.stats}>
           <div>

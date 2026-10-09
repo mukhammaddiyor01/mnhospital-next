@@ -11,7 +11,7 @@
  strong { display: block; font-size: 17px; font-weight: 600; line-height: 1.5; }
  small { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--clinical-secondary, #4e6479); margin-top: 4px; font-size: 13px; line-height: 1.5; }
 }
-.price { flex: 0 0 auto; font-weight: 700; font-size: 18px; white-space: nowrap; }
+.price { small { display: block; font-size: 12px; color: var(--clinical-secondary, #4e6479); } flex: 0 0 auto; font-weight: 700; font-size: 18px; white-space: nowrap; }
 .summary { margin-top: 24px; padding: 22px 0 0; border-top: 1px solid var(--clinical-line, #dfeaf1); }
 .total { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px;
  span { min-width: 0; }

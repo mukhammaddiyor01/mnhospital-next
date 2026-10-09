@@ -11,7 +11,7 @@ export const GET_SERVICES = gql`
 				serviceStatus
 				serviceRoomName
 				serviceTitle
-				servicePrice
+				servicePrice serviceDiscountPercent
 				serviceViews
 				serviceLikes
 				serviceRank
@@ -29,7 +29,7 @@ export const GET_SERVICES = gql`
 export const GET_SERVICE = gql`
 	query GetService($serviceId: String!) {
 		getService(serviceId: $serviceId) {
-			_id serviceName departmentId serviceType serviceStatus serviceRoomName serviceRoom serviceTitle servicePrice
+			_id serviceName departmentId serviceType serviceStatus serviceRoomName serviceRoom serviceTitle servicePrice serviceDiscountPercent
 			serviceViews serviceLikes serviceComments serviceRank serviceImages serviceDesc serviceDuration memberId
 			memberData { _id memberStatus docFullName docSpecialty docImage docExperience docPoints docPatients }
 			meLiked { memberId likeRefId myFavorite }
@@ -40,7 +40,7 @@ export const GET_SERVICE = gql`
 export const GET_RECOMMENDED_SERVICES = gql`
 	query GetRecommendedServices($serviceId: String!, $limit: Int) {
 		getRecommendedServices(serviceId: $serviceId, limit: $limit) {
-			list { _id serviceTitle servicePrice serviceImages serviceType serviceDesc serviceLikes serviceViews }
+			list { _id serviceTitle servicePrice serviceDiscountPercent serviceImages serviceType serviceDesc serviceLikes serviceViews }
 			metaCounter { total }
 		}
 	}
@@ -67,7 +67,7 @@ export const GET_FAVORITE_SERVICES = gql`
 export const GET_SERVICE_BOOKING_OPTIONS = gql`
  query GetServiceBookingOptions($input: ServicesInquiry!) {
   getServices(input: $input) {
-   list { _id memberId departmentId serviceType serviceStatus serviceTitle serviceName servicePrice serviceDuration
+   list { _id memberId departmentId serviceType serviceStatus serviceTitle serviceName servicePrice serviceDiscountPercent serviceDuration
     memberData { _id memberStatus } }
    metaCounter { total }
   }

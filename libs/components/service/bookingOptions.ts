@@ -2,7 +2,7 @@ import { Service } from './types/service';
 import { ServiceStatus } from './enums/service.enum';
 import { MemberStatus } from '../member/enums/member.enum';
 
-export type BookingOption = Pick<Service, '_id' | 'memberId' | 'departmentId' | 'serviceType' | 'serviceStatus' | 'serviceTitle' | 'serviceName' | 'servicePrice' | 'serviceDuration'> & {
+export type BookingOption = Pick<Service, '_id' | 'memberId' | 'departmentId' | 'serviceType' | 'serviceStatus' | 'serviceTitle' | 'serviceName' | 'servicePrice' | 'serviceDuration' | 'serviceDiscountPercent'> & {
 	memberData?: { memberStatus?: MemberStatus } | null;
 };
 

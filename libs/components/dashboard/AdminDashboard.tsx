@@ -1,3 +1,4 @@
+import { usePromotionText } from '@/libs/components/workspace/usePromotionText';
 import { operation } from '@/apollo/workspace/operations';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import Link from 'next/link';
@@ -18,6 +19,7 @@ const PROFILE = operation(
 );
 const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
 	const t = useTranslation();
+	const promoText = usePromotionText();
 	const w = useWorkspaceText();
 	const profile = useQuery(PROFILE, { fetchPolicy: 'network-only' });
 	const [profileOpen, setProfileOpen] = useState(false);
@@ -73,6 +75,7 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
 		},
 	];
 	const shortcuts = [
+		{ href: '/admin/promo-codes', icon: 'sell', label: promoText.promotions },
 		{ href: '/admin/doctors', icon: 'stethoscope', label: t('nav.doctors') },
 		{
 			href: '/admin/receptionists',

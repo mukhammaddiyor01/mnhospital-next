@@ -1,6 +1,6 @@
 {
-  "businessOperations": 157,
-  "coveredBusinessOperations": 157,
+  "businessOperations": 163,
+  "coveredBusinessOperations": 163,
   "operations": [
     {
       "field": "getMyAdminProfile",
@@ -136,6 +136,12 @@
     },
     {
       "field": "getMyBookingCheckout",
+      "kind": "query",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "getPromoCodesByAdmin",
       "kind": "query",
       "frontendContract": true,
       "internalDiagnostic": false
@@ -663,6 +669,30 @@
       "internalDiagnostic": false
     },
     {
+      "field": "createPromoCodeByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "updatePromoCodeByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "removePromoCodeByAdmin",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "applyBookingPromoCode",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
       "field": "createComment",
       "kind": "mutation",
       "frontendContract": true,
@@ -934,6 +964,12 @@
     },
     {
       "field": "updateReceptionTaskStatus",
+      "kind": "mutation",
+      "frontendContract": true,
+      "internalDiagnostic": false
+    },
+    {
+      "field": "setServiceDiscountByAdmin",
       "kind": "mutation",
       "frontendContract": true,
       "internalDiagnostic": false

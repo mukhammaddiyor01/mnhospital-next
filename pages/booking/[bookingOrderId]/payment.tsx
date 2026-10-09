@@ -1,3 +1,4 @@
+import BookingPromoCode from '@/libs/components/booking/BookingPromoCode';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
@@ -30,6 +31,7 @@ function PaymentPage() {
 	const options = useQuery<{ getBookingPaymentOptions: { onlineMode: string } }>(BOOKING_OPTIONS);
 	const mode = options.data?.getBookingPaymentOptions.onlineMode;
 	const state = checkout.data?.getMyBookingCheckout;
+	const requiresCashConfirmation = Boolean(state?.order.bookingOrderItems.some(line => Number(line.servicePrice) === 0));
 	const activePayments = state?.payments.filter((payment) => ['PENDING', 'PAID'].includes(payment.paymentStatus)) ?? [];
 	const pendingOnline = activePayments.filter((payment) => payment.paymentProvider === 'EXIMBAY' && payment.paymentStatus === 'PENDING');
 	const [provider, setProvider] = useState('CASH');
@@ -82,15 +84,16 @@ function PaymentPage() {
 			{state && <>
 				<h2>{w('bookingSummary')}</h2><p>{state.order.orderCode}</p>
 				{state.order.bookingOrderItems.map((line) => <div className="clinical-booking-review" key={`${line.serviceId}:${line.doctorId}`}><div><h3>{line.serviceName}</h3><p>{clinicDateTime(line.requestedStartAt, locale, clinic.timeZone)}</p><small>{w('clinicTime')} · {clinic.timeZone}</small></div><strong>{formatMoney(line.servicePrice, state.order.bookingOrderCurrency)}</strong></div>)}
+				<BookingPromoCode state={state} disabled={busy} onApplied={() => checkout.refetch()} />
 				<p className="checkout-total">{w('total')}: <strong>{formatMoney(state.order.bookingOrderTotalAmount, state.order.bookingOrderCurrency)}</strong></p>
 				{unavailable && <p role="status">{w('status')}: {state.order.bookingOrderStatus}</p>}
 				{!unavailable && !cashBooked && !(allPaid && allReserved) && pendingOnline.length === 0 && <>
 					<fieldset className="checkout-methods" disabled={busy}><legend>{w('choosePayment')}</legend>
 						<label><input type="radio" name="paymentProvider" value="CASH" checked={provider === 'CASH'} onChange={() => setProvider('CASH')} /><span><strong>{w('cash')}</strong><small>{w('cashBookingHelp')}</small></span></label>
-						<label><input type="radio" name="paymentProvider" value="EXIMBAY" checked={provider === 'EXIMBAY'} disabled={!mode || mode === 'DISABLED'} onChange={() => setProvider('EXIMBAY')} /><span><strong>{w('eximbayTest')}</strong><small>{mode === 'SIMULATED' ? w('localPaymentTest') : w('paymentSandbox')}</small></span></label>
+						<label><input type="radio" name="paymentProvider" value="EXIMBAY" checked={provider === 'EXIMBAY'} disabled={!mode || mode === 'DISABLED' || requiresCashConfirmation} onChange={() => setProvider('EXIMBAY')} /><span><strong>{w('eximbayTest')}</strong><small>{mode === 'SIMULATED' ? w('localPaymentTest') : w('paymentSandbox')}</small></span></label>
 					</fieldset>
 					{(options.error || mode === 'DISABLED') && <p role="status">{w('onlineTestDisabled')}</p>}
-					<button type="button" className="clinical-primary-button" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED'))} onClick={() => void submit()}>{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
+					<button type="button" className="clinical-primary-button" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED' || requiresCashConfirmation))} onClick={() => void submit()}>{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
 				</>}
 				{pendingOnline.length > 0 && !unavailable && <div className="checkout-online"><h3>{w('eximbayTest')}</h3><p>{w('paymentSandbox')}</p><p>{w('paymentHold')}</p>
 					{mode === 'SIMULATED' && pendingOnline.every((payment) => payment.testPayment) ? <><p>{w('localPaymentTest')}</p><div className="clinical-resource-actions"><button className="clinical-primary-button" type="button" disabled={busy} onClick={() => void testPayment('PAID')}>{w('testPaySuccess')}</button><button type="button" disabled={busy} onClick={() => void testPayment('FAILED')}>{w('testPayFailure')}</button><button type="button" disabled={busy} onClick={() => void testPayment('CANCELLED')}>{w('cancel')}</button></div></> : mode === 'SANDBOX' ? <>{eximbay.error && <p role="alert">{eximbay.error}</p>}{pendingOnline.map((payment) => <button type="button" key={payment._id} disabled={busy || !eximbay.ready} onClick={() => void openSandbox(payment._id)}>{w('pay')} · {formatMoney(payment.paymentAmount, payment.paymentCurrency)}</button>)}</> : <p role="alert">{w('onlineTestDisabled')}</p>}

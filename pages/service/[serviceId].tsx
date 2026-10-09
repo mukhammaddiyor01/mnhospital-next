@@ -1,3 +1,4 @@
+import { servicePriceForDisplay } from '@/libs/components/service/service-price';
 import { useState } from 'react';
 import ServiceBookingOptions from '@/libs/components/service/ServiceBookingOptions';
 import { BookingOption, getBookingOptions } from '@/libs/components/service/bookingOptions';
@@ -84,7 +85,7 @@ const ServiceDetailPage = () => {
 				{description && <p>{description}</p>}
 				<div className="detail-meta">
 					{(service?.serviceDuration || previewService) && <span><Icon name="schedule" /> {service?.serviceDuration || t('serviceDetail.available')}</span>}
-					<span><Icon name="payments" /> {service && Number.isFinite(service.servicePrice) ? formatMoney(service.servicePrice, clinic.currency) : t('serviceDetail.priceRequest')}</span>
+					<span><Icon name="payments" /> {service && Number.isFinite(service.servicePrice) ? formatMoney(servicePriceForDisplay(service, clinic.currency), clinic.currency) : t('serviceDetail.priceRequest')}</span>
 					<span><Icon name="location_on" /> {service?.serviceRoom || 'MN Hospital'}</span>
 				</div>
 				{canBook && selectedOption && service ? <ServiceBookingOptions options={options} selected={selectedOption} baseId={service._id} currency={clinic.currency} loading={optionsQuery.loading} failed={Boolean(optionsQuery.error)} onChange={setSelectedOptionId} onRetry={() => void optionsQuery.refetch().catch(() => undefined)} /> : <p className="query-status" role="status">{t('booking.unavailable')}</p>}
