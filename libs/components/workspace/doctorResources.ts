@@ -4,15 +4,21 @@ import { ResourceConfig } from './ResourcePanel';
 export const doctorBookings: ResourceConfig = {
 	role: MemberType.DOCTOR,
 	title: 'bookings',
-	list: operation('query', 'getMyDoctorBookingRequests', 'BookingOrderInquiry',
-		'list { _id bookingOrderId orderCode bookingOrderStatus serviceId serviceName serviceDuration requestedStartAt appointmentId } metaCounter { total }'),
+	live: true,
+	list: operation(
+		'query',
+		'getMyDoctorBookingRequests',
+		'BookingOrderInquiry',
+		'list { _id bookingOrderId orderCode bookingOrderStatus serviceId serviceName serviceDuration requestedStartAt appointmentId appointmentStatus } metaCounter { total }',
+	),
 	listKey: 'getMyDoctorBookingRequests',
 	columns: [
 		{ name: 'orderCode', label: 'code' },
 		{ name: 'serviceName', label: 'service' },
 		{ name: 'requestedStartAt', label: 'start' },
 		{ name: 'serviceDuration', label: 'duration' },
-		{ name: 'bookingOrderStatus', label: 'status' },
+		{ name: 'bookingOrderStatus', label: 'settlement' },
+		{ name: 'appointmentStatus', label: 'appointment' },
 	],
 	search: true,
 };

@@ -94,7 +94,7 @@ export const MY_REPORTS = operation(
 	'query',
 	'getMyPatientReports',
 	'DoctorReportInquiry',
-	'list { _id appointmentId docReportDiagnosis docReportSymptoms docReportMedication docReportFollowUp docReportFollowUpDate createdAt } metaCounter { total }',
+	'list { _id appointmentId appointmentCode serviceName visitAt docReportDiagnosis docReportSymptoms docReportMedication docReportFollowUp docReportFollowUpDate createdAt } metaCounter { total }',
 );
 export const MY_REPORT = operation(
 	'query',

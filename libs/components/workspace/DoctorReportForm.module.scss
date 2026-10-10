@@ -1,0 +1,15 @@
+.appointment {
+    grid-column: 1 / -1;
+    min-width: 0;
+    select { width: 100%; max-width: 100%; }
+}
+.context {
+    display: grid;
+    gap: 6px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--staff-accent);
+    background: var(--clinical-surface);
+    border-radius: 8px;
+    strong { font-size: 15px; }
+    small { opacity: .72; }
+}

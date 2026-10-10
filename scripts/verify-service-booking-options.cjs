@@ -11,13 +11,15 @@ const { getBookingOptions, optionBookingHref } = require('../libs/components/ser
 let checks = 0;
 const check = (condition) => { assert.ok(condition); checks++; };
 const base = { _id: 'a'.repeat(24), memberId: 'b'.repeat(24), departmentId: 'c'.repeat(24), serviceType: 'PROCEDURE', serviceStatus: 'ACTIVE', serviceTitle: 'Standard consultation', serviceName: 'Consultation', servicePrice: 246000, serviceDuration: '30', memberData: { memberStatus: 'ACTIVE' } };
-const alternative = { ...base, _id: 'd'.repeat(24), serviceTitle: 'Consultation and diagnostic examination', servicePrice: 1093000, serviceDuration: '60' };
+const alternative = { ...base, _id: 'd'.repeat(24), serviceTitle: 'Consultation and diagnostic examination', servicePrice: 1093000, serviceDuration: '60', packageBaseServiceId: base._id, packageRegularPrice: 1200000, packageItems: [{ serviceId: base._id, title: base.serviceTitle, price: 246000, duration: 30 }, { serviceId: 'f'.repeat(24), title: 'Diagnostic examination', price: 954000, duration: 30 }] };
 check(getBookingOptions(base, [base, alternative]).length === 2);
 check(getBookingOptions(base, [alternative])[0]._id === base._id);
-for (const patch of [{ memberId: 'e'.repeat(24) }, { departmentId: 'e'.repeat(24) }, { serviceType: 'THERAPY' }, { serviceStatus: 'INACTIVE' }, { memberData: { memberStatus: 'BLOCK' } }, { memberData: null }, { servicePrice: -1 }, { servicePrice: NaN }, { _id: 'invalid' }]) {
+for (const patch of [{ memberId: 'e'.repeat(24) }, { packageBaseServiceId: 'e'.repeat(24) }, { packageItems: [] }, { serviceStatus: 'INACTIVE' }, { memberData: { memberStatus: 'BLOCK' } }, { memberData: null }, { servicePrice: -1 }, { servicePrice: NaN }, { _id: 'invalid' }]) {
  check(getBookingOptions(base, [{ ...alternative, ...patch }]).length === 1);
 }
 check(getBookingOptions(base, [{ ...alternative, servicePrice: 0 }]).length === 2);
+check(getBookingOptions(base, [{ ...alternative, packageBaseServiceId: undefined }]).length === 1);
+check(getBookingOptions(alternative, [base, alternative])[0]._id === base._id);
 check(optionBookingHref(alternative) === `/appointment?service=${alternative._id}`);
 check(getBookingOptions({ ...base, memberData: null }, [alternative]).length === 0);
 check(getBookingOptions({ ...base, serviceStatus: 'INACTIVE' }, [alternative]).length === 0);
@@ -44,6 +46,10 @@ for (const lang of ['EN', 'KR', 'UZ']) {
  check(html.includes('aria-live="polite"'));
  check((html.match(/checked=""/g) || []).length === 1);
 }
+const adminPreview = renderToStaticMarkup(React.createElement(Choice, { ...props, preview: true }));
+check(!adminPreview.includes('<a'));
+check((adminPreview.match(/type="radio"/g) || []).length === 2);
+check(adminPreview.includes('1,093,000 KRW'));
 const failure = renderToStaticMarkup(React.createElement(Choice, { ...props, failed: true }));
 check(failure.includes('role="alert"'));
 check(failure.includes(`href="/appointment?service=${alternative._id}"`));

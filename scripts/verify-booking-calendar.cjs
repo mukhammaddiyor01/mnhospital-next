@@ -1,0 +1,17 @@
+const assert=require('node:assert/strict'), fs=require('node:fs'), path=require('node:path'), Module=require('node:module'), ts=require('typescript'), React=require('react');
+const {renderToStaticMarkup}=require('react-dom/server');
+const root=path.resolve(__dirname,'..');let response={},language='EN',variables,changes=0,checks=0;
+function check(value,label){assert.ok(value,label);checks++}
+const filename=path.join(root,'libs/components/booking/BookingDatePicker.tsx'), mod=new Module(filename,module);mod.paths=Module._nodeModulePaths(root);
+const stubs={'@apollo/client':{useQuery:(_,options)=>{variables=options.variables;return response}},'next/link':({href,children})=>React.createElement('a',{href},children),'@/apollo/booking/query':{GET_AVAILABLE_DOCTOR_DATES:{}},'@/libs/payments/clinic':{clinicToday:()=> '2026-10-10'},'../preference/PreferenceProvider':{usePreferences:()=>({language})},'../common/Icon':({name})=>React.createElement('i',{'aria-hidden':true},name),'./BookingDatePicker.module.scss':{__esModule:true,default:new Proxy({},{get:(_,key)=>key})}};
+mod.require=id=>Object.hasOwn(stubs,id)?stubs[id]:require(id);mod._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText,filename);
+const render=()=>renderToStaticMarkup(React.createElement(mod.exports.default,{serviceId:'service',doctorId:'doctor',value:'',onChange:()=>changes++,timeZone:'Asia/Seoul'}));
+response={data:{getAvailableDoctorDates:{dates:['2026-10-13','2026-10-20'],reason:'AVAILABLE'}}};
+let html=render();check(variables.input.month==='2026-10','Clinic month is requested');check(variables.input.serviceId==='service'&&variables.input.doctorId==='doctor','Real pair goes to server');
+const days=[...html.matchAll(/<button[^>]*aria-label="([^"]*)"[^>]*>\d+<\/button>/g)];check(days.length===31,'Full month is rendered');check(days.filter(([tag])=>!tag.includes('disabled')).length===2,'Only server-available dates can be chosen');check(changes===0,'Rendering never creates or selects a booking');
+for(const [reason,phrase] of [['NO_SCHEDULE','working schedule'],['NO_ROOM','available room'],['SERVICE_ENDED','period has ended'],['INVALID_SERVICE_WINDOW','update this service'],['NO_DATES','another month']]){response={data:{getAvailableDoctorDates:{dates:[],reason}}};check(render().includes(phrase),reason+' has clear guidance')}
+response={loading:true,data:{getAvailableDoctorDates:{dates:['2026-10-13'],reason:'AVAILABLE'}}};html=render();check(![...html.matchAll(/<button[^>]*aria-label="([^"]*)"[^>]*>\d+<\/button>/g)].some(([tag])=>!tag.includes('disabled')),'Pending requests cannot reuse old available dates');
+response={error:new Error('Unavailable'),data:{getAvailableDoctorDates:{dates:['2026-10-13'],reason:'AVAILABLE'}}};html=render();check(html.includes('role="alert"')&&html.includes('Try again'),'Failed calendar offers retry');
+for(language of ['UZ','KR'])check(render().includes('role="alert"'),'Localized failure renders');
+const page=fs.readFileSync(path.join(root,'pages/appointment/index.tsx'),'utf8');check(page.includes('expectedAccount: `PATIENT:${user._id}`'),'Submit retains acting account boundary');check(page.includes('encodeURIComponent(`/appointment?service=${selected._id}`)'),'Login preserves selected service outside first catalog page');
+console.log(`BOOKING_CALENDAR_VERIFIED ${checks} checks`);

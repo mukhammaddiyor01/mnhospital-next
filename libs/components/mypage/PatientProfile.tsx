@@ -1,3 +1,4 @@
+import UnreadBadge from '@/libs/components/notification/UnreadBadge';
 import ProfileAvatar from '@/libs/components/common/ProfileAvatar';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { FormEvent, useEffect, useState } from 'react';
@@ -20,7 +21,6 @@ import {
 } from '@/libs/components/patient/enums/patient.enum';
 import { resolveApiAsset } from '@/libs/config';
 import Icon from '@/libs/components/common/Icon';
-import FollowLists from '@/libs/components/follow/FollowLists';
 import AccountProfileEditor from '@/libs/components/workspace/AccountProfileEditor';
 import PatientActivity from './PatientActivity';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
@@ -325,47 +325,29 @@ const PatientProfile = () => {
 		);
 
 	return (
-		<>
-			<section className="clinical-inner-section clinical-patient-profile">
+		<div className="mn-patient-profile-layout">
+			<AccountProfileEditor role={MemberType.PATIENT} fallbackImage={patient?.patientImage} navigation={<nav className="mn-profile-navigation" aria-label={w('profileNavigation')}><a href="#account-details">{w('personalInformation')}</a><a href="#medical-details">{w('medicalInformation')}</a><a href="#care-services">{w('profileCare')}</a><a href="#profile-activity">{w('profileActivity')}</a></nav>} />
+			<section id="medical-details" className="clinical-inner-section clinical-patient-profile mn-medical-record">
+				<header className="mn-medical-heading"><div><h2>{w('medicalInformation')}</h2><p>{w('medicalProfileHint')}</p></div>{patient && !editing && <button className="clinical-secondary-button" type="button" onClick={startEditing}><Icon name="edit" />{t('patient.updateButton')}</button>}</header>
 				{patient && (
 					<>
-						<div className="clinical-patient-identity">
-							<ProfileAvatar className="clinical-profile-large" image={patient.patientImage || account.data?.getMyMemberProfile.memberImage || session.memberImage} name={displayName} />
-							<div>
-								<span className="clinical-section-kicker">
-									{t('patient.profileKicker')}
-								</span>
-								<h2>{displayName}</h2>
-								<p>
-									{t('patient.patientId')}: {patient.patientIdNumber} ·{' '}
-									{statusLabels[String(patient.memberStatus)] ??
-										String(patient.memberStatus)}
-								</p>
-							</div>
-						</div>
-						{!editing && (
-							<div className="clinical-profile-actions">
-								<button
-									className="clinical-primary-button"
-									type="button"
-									onClick={startEditing}
-								>
-									{t('patient.updateButton')} <Icon name="edit" />
-								</button>
-							</div>
-						)}
+						<div className="mn-medical-identity"><ProfileAvatar className="clinical-profile-large" image={patient.patientImage || account.data?.getMyMemberProfile.memberImage || session.memberImage} name={displayName} /><div><strong>{displayName}</strong><p>{t('patient.patientId')}: {patient.patientIdNumber}</p></div><span className="mn-medical-status">{statusLabels[String(patient.memberStatus)] ?? String(patient.memberStatus)}</span></div>
+						{!editing && <dl className="mn-medical-facts">
+							<div><dt>{t('patient.bloodType')}</dt><dd>{patient.patientBloodType ? String(patient.patientBloodType).replace('_', ' ') : t('patient.notProvided')}</dd></div>
+							<div><dt>{t('patient.gender')}</dt><dd>{genderLabels[patient.patientGender as PatientGender] ?? t('patient.notProvided')}</dd></div>
+							<div><dt>{t('patient.birthDate')}</dt><dd>{toDateInput(patient.patientBirthDate) || t('patient.notProvided')}</dd></div>
+							<div className="mn-medical-wide"><dt>{t('patient.address')}</dt><dd>{patient.patientAddress || t('patient.notProvided')}</dd></div>
+							<div className="mn-medical-wide"><dt>{t('patient.aboutYou')}</dt><dd>{patient.patientDesc || t('patient.notProvided')}</dd></div>
+						</dl>}
 					</>
 				)}
 				{profileMissing && (
 					<div>
-						<span className="clinical-section-kicker">
-							{t('patient.setupKicker')}
-						</span>
 						<h2>{t('patient.setupTitle')}</h2>
 						<p className="clinical-query-status">{t('patient.setupIntro')}</p>
 					</div>
 				)}
-				<div className="clinical-profile-contact">
+				{profileMissing && <div className="clinical-profile-contact">
 					<span>
 						<Icon name="call" />
 						<small>{t('patient.phone')}</small>
@@ -383,15 +365,15 @@ const PatientProfile = () => {
 							<b>{patient.patientBloodType.replace('_', ' ')}</b>
 						</span>
 					)}
-				</div>
+				</div>}
 				{(profileMissing || editing) && (
 					<form
 						className="clinical-contact-form clinical-patient-form"
 						onSubmit={submitProfile}
 					>
-						<span className="clinical-section-kicker">
-							{t('patient.secureData')}
-						</span>
+						<p className="mn-medical-privacy">
+							{w('medicalAccountNote')}
+						</p>
 						<h2>
 							{patient ? t('patient.updateTitle') : t('patient.createTitle')}
 						</h2>
@@ -538,14 +520,11 @@ const PatientProfile = () => {
 						</div>
 					</form>
 				)}
-				<AccountProfileEditor role={MemberType.PATIENT} fallbackImage={patient?.patientImage} />
 				{patient && !editing && error ? (
 					<p className="clinical-form-error">{t('patient.staleProfile')}</p>
 				) : null}
 			</section>
-			<FollowLists profileId={session._id} kind="patient" />
-			<PatientActivity />
-			<section className="clinical-mypage-grid">
+			<section className="mn-care-section" id="care-services"><header className="mn-medical-heading"><div><h2>{w('profileCare')}</h2><p>{w('profileCareHint')}</p></div></header><div className="clinical-mypage-grid">
 				{(
 					[
 						'cart',
@@ -578,7 +557,7 @@ const PatientProfile = () => {
 				<Link href="/mypage/messages">
 					<Icon name="mail" />
 					<div>
-						<h3>{t('messages.title')}</h3>
+						<h3>{t('messages.title')} <UnreadBadge kind="messages" /></h3>
 						<p>{t('messages.intro')}</p>
 					</div>
 					<Icon name="arrow_forward" />
@@ -586,7 +565,7 @@ const PatientProfile = () => {
 				<Link href="/mypage/notifications">
 					<Icon name="notifications" />
 					<div>
-						<h3>{t('notifications.title')}</h3>
+						<h3>{t('notifications.title')} <UnreadBadge kind="notifications" /></h3>
 						<p>{t('notifications.intro')}</p>
 					</div>
 					<Icon name="arrow_forward" />
@@ -615,16 +594,17 @@ const PatientProfile = () => {
 					</div>
 					<Icon name="arrow_forward" />
 				</Link>
-				<button type="button" onClick={() => void logOut()}>
+			</div></section>
+			<PatientActivity />
+			<footer className="mn-profile-signout"><button type="button" onClick={() => void logOut()}>
 					<Icon name="logout" />
 					<div>
 						<h3>{t('patient.signoutTitle')}</h3>
 						<p>{t('patient.signoutIntro')}</p>
 					</div>
 					<Icon name="arrow_forward" />
-				</button>
-			</section>
-		</>
+				</button></footer>
+		</div>
 	);
 };
 

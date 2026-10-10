@@ -3,6 +3,8 @@ import { Doctor } from '../../doctor/types/doctor';
 
 export interface ClinicalServiceCard extends Pick<Service, '_id' | 'serviceTitle' | 'serviceDesc' | 'servicePrice' | 'serviceViews'> {
 	serviceType?: string;
+	serviceImages?: string[];
+	serviceLikes?: number;
 	serviceStatus?: string;
 	serviceRank?: number;
 	serviceDuration?: string;

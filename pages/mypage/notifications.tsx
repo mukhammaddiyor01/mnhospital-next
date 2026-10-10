@@ -1,3 +1,4 @@
+import { useUnread } from '@/libs/components/notification/UnreadProvider';
 import { operation } from '@/apollo/workspace/operations';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { useEffect, useState } from 'react';
@@ -41,6 +42,7 @@ export const NotificationsPage = ({
 	embedded?: boolean;
 }) => {
 	const t = useTranslation();
+    const unread = useUnread();
 	const w = useWorkspaceText();
 	const [selected, setSelected] = useState('');
 	const router = useRouter();
@@ -97,6 +99,7 @@ export const NotificationsPage = ({
 			if (kind === 'archive')
 				await archive({ variables: { notificationId: id } });
 			await refetch();
+            await unread.refresh();
 		} catch (requestError: any) {
 			setActionError(requestError?.message ?? t('notifications.actionError'));
 		}
@@ -225,11 +228,11 @@ export const NotificationsPage = ({
 								<h2>{item.notificationTitle}</h2>
 								<p>{item.notificationDesc}</p>
 								<div className="clinical-notifications-actions">
-									<button type="button" onClick={() => setSelected(item._id)}>
+									<button type="button" onClick={() => { setSelected(item._id); if (item.notificationStatus === 'UNREAD') void act('read', item._id); }}>
 										{w('details')}
 									</button>
 									{destination(item) && (
-										<Link href={destination(item)!}>
+										<Link href={destination(item)!} onClick={() => { if (item.notificationStatus === 'UNREAD') void act('read', item._id); }}>
 											{t('notifications.open')}
 										</Link>
 									)}

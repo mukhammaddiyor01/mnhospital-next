@@ -1,49 +1,199 @@
 import { gql } from '@apollo/client';
 
 export const GET_DOCTOR_PROFILE = gql`
-  query GetDoctorWorkspaceProfile {
-    getMyDoctorProfile { _id memberType memberStatus docNick docFullName docPhone docMail docImage docAddress docDesc docSpecialty docRoom docExperience }
-  }
+	query GetDoctorWorkspaceProfile {
+		getMyDoctorProfile {
+			_id
+			memberType
+			memberStatus
+			docNick
+			docFullName
+			docPhone
+			docMail
+			docImage
+			docAddress
+			docDesc
+			docSpecialty
+			docRoom
+			docExperience
+		}
+	}
 `;
 
 export const GET_STAFF_APPOINTMENTS = gql`
-  query GetStaffWorkspaceAppointments($input: StaffAppointmentInquiry!) {
-    getAppointments(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt patientPreview { patientFullName patientImage } } metaCounter { total } }
-  }
+	query GetStaffWorkspaceAppointments($input: StaffAppointmentInquiry!) {
+		getAppointments(input: $input) {
+			list {
+				_id
+				appointmentCode
+				appointmentStatus
+				appointmentReason
+				patientId
+				doctorId
+				startsAt
+				endsAt
+				patientPreview {
+					patientFullName
+					patientImage
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;
 
 export const GET_DOCTOR_SERVICES = gql`
-  query GetDoctorWorkspaceServices($input: DoctorServicesInquiry!) {
-    getDoctorServices(input: $input) { list { _id serviceName serviceTitle serviceType serviceStatus servicePrice serviceDuration } metaCounter { total } }
-  }
+	query GetDoctorWorkspaceServices($input: DoctorServicesInquiry!) {
+		getDoctorServices(input: $input) {
+			list {
+				_id
+				serviceName
+				serviceTitle
+				serviceType
+				serviceStatus
+				servicePrice
+				serviceDuration
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;
 
 export const GET_DOCTOR_REPORTS = gql`
-  query GetDoctorWorkspaceReports($input: DoctorReportInquiry!) {
-    getMyDoctorReports(input: $input) { list { _id appointmentId patientId docReportDiagnosis docReportSymptoms docReportMedication docReportFollowUp docReportFollowUpDate createdAt } metaCounter { total } }
-  }
+	query GetDoctorWorkspaceReports($input: DoctorReportInquiry!) {
+		getMyDoctorReports(input: $input) {
+			list {
+				_id
+				appointmentCode patientName serviceName visitAt
+				docReportRecommendation
+				appointmentId
+				patientId
+				docReportDiagnosis
+				docReportSymptoms
+				docReportMedication
+				docReportFollowUp
+				docReportFollowUpDate
+				createdAt
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;
 
 export const GET_RECEPTIONIST_PROFILE = gql`
-  query GetReceptionistWorkspaceProfile {
-    getMyReceptionistProfile { _id memberType receptionistNick receptionistFullName receptionistPhone receptionistMail receptionistImage receptionistAddress receptionistDesc memberStatus }
-  }
+	query GetReceptionistWorkspaceProfile {
+		getMyReceptionistProfile {
+			_id
+			memberType
+			receptionistNick
+			receptionistFullName
+			receptionistPhone
+			receptionistMail
+			receptionistImage
+			receptionistAddress
+			receptionistDesc
+			memberStatus
+		}
+	}
 `;
 
 export const GET_RECEPTION_TASKS = gql`
-  query GetReceptionWorkspaceTasks($input: ReceptionTaskInquiry!) {
-    getReceptionTasks(input: $input) { list { _id appointmentId receptionistId taskType taskPriority taskStatus taskInstruction taskResult dueAt } metaCounter { total } }
-  }
+	query GetReceptionWorkspaceTasks($input: ReceptionTaskInquiry!) {
+		getReceptionTasks(input: $input) {
+			list {
+				_id
+				appointmentId
+				appointmentStatus
+				appointmentCode
+				receptionistId
+				taskType
+				taskPriority
+				taskStatus
+				taskInstruction
+				taskResult
+				dueAt
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;
 
 export const GET_RECEPTIONIST_QUEUE = gql`
-  query GetReceptionistWorkspaceAppointments($input: ReceptionistAppointmentQueueInquiry!) {
-    getMyReceptionistAppointmentQueue(input: $input) { list { _id appointmentCode appointmentStatus appointmentReason patientId doctorId startsAt endsAt patientPreview { patientFullName patientImage } } metaCounter { total } }
-  }
+	query GetReceptionistWorkspaceAppointments(
+		$input: ReceptionistAppointmentQueueInquiry!
+	) {
+		getMyReceptionistAppointmentQueue(input: $input) {
+			list {
+				_id
+				receptionAssigned
+				appointmentCode
+				appointmentStatus
+				appointmentReason
+				patientId
+				doctorId
+				startsAt
+				endsAt
+				patientPreview {
+					patientFullName
+					patientImage
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;
 
 export const GET_RECEPTIONIST_REPORTS = gql`
-  query GetReceptionistWorkspaceReports($input: ReceptionistReportInquiry!) {
-    getMyReceptionistReports(input: $input) { list { _id appointmentId patientId docReportDiagnosis docReportSymptoms docReportMedication docReportFollowUp createdAt } metaCounter { total } }
-  }
+	query GetReceptionistWorkspaceReports($input: ReceptionistReportInquiry!) {
+		getMyReceptionistReports(input: $input) {
+			list {
+				_id
+				appointmentCode patientName serviceName visitAt
+				docReportRecommendation
+				appointmentId
+				patientId
+				docReportDiagnosis
+				docReportSymptoms
+				docReportMedication
+				docReportFollowUp
+				docReportFollowUpDate
+				createdAt
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
+`;
+
+export const GET_REPORT_APPOINTMENTS = gql`
+	query GetDoctorReportAppointments($input: DoctorReportInquiry!) {
+		getMyDoctorReportAppointments(input: $input) {
+			list {
+				_id
+				appointmentCode
+				appointmentReason
+				appointmentStatus
+				startsAt
+				reportId
+				patientPreview {
+					patientFullName
+					patientImage
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;

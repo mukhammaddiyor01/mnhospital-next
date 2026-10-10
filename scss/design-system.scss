@@ -1,0 +1,407 @@
+// Shared presentation contract. Kept after the legacy page styles so that
+// existing clinical flows can adopt the same components without markup rewrites.
+:root {
+  --mn-card: #fff;
+  --mn-page: #f3f6fa;
+  --mn-radius: 16px;
+  --mn-control-radius: 10px;
+  --mn-shadow: 0 4px 20px rgba(23, 51, 75, .035);
+  --mn-heading-font: 'Manrope', Arial, sans-serif;
+  --clinical-primary: #1769b2;
+  --clinical-primary-soft: #e7f0fa;
+  --clinical-navy: #17334b;
+  --clinical-secondary: #4e6479;
+  --clinical-muted: #617489;
+  --clinical-text: #23394b;
+  --clinical-surface: #f3f6fa;
+  --clinical-low: #f4f7fa;
+  --clinical-line: #dce5ee;
+}
+
+html[data-theme='dark'] {
+  --mn-card: #172838;
+  --mn-page: #0d1722;
+  --mn-shadow: none;
+  --clinical-primary: #82c9ff;
+  --clinical-primary-soft: #19394f;
+  --clinical-navy: #e9f4fb;
+  --clinical-secondary: #b9cce0;
+  --clinical-muted: #aec0cd;
+  --clinical-text: #e4edf4;
+  --clinical-surface: #0d1722;
+  --clinical-low: #203345;
+  --clinical-line: #334b5f;
+}
+
+body { background: var(--mn-page); }
+.clinical-shell, .clinical-staff-shell { font-size: 15px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+.clinical-shell { padding-bottom: 108px; box-shadow: none; }
+.clinical-center-column { min-width: 0; }
+.clinical-workspace { gap: 16px; padding-top: 28px; padding-bottom: 48px; }
+.clinical-home .clinical-center-column { gap: 32px; }
+
+// A clear, consistent hierarchy; small type is reserved for supporting labels.
+.clinical-section-kicker, .clinical-eyebrow, .clinical-staff-panel-kicker { font-size: 11px; letter-spacing: .08em; line-height: 1.5; }
+.clinical-section-heading { align-items: center; gap: 16px; margin-bottom: 20px; }
+.clinical-section-heading h2, .clinical-inner-section > h2,
+.clinical-trust-section h2, .clinical-testimonials-heading h2 { font-size: clamp(23px, 2.5vw, 28px); line-height: 1.3; letter-spacing: -.035em; }
+.clinical-section-heading > a, .clinical-dept-bottom a { flex: none; font-size: 13px; }
+.clinical-inner-hero { padding: 32px; border: 1px solid var(--clinical-line); border-radius: var(--mn-radius); box-shadow: none; }
+.clinical-inner-hero h1 { margin: 14px 0 16px; font-size: clamp(30px, 3.3vw, 40px); letter-spacing: -.04em; line-height: 1.2; }
+.clinical-inner-hero p, .clinical-inner-section > p { font-size: 15px; line-height: 1.7; color: var(--clinical-secondary); }
+.clinical-crumb { margin-bottom: 20px; font-size: 12px; }
+.clinical-inner-section { margin-top: 24px; padding: 28px; border: 1px solid var(--clinical-line); border-radius: var(--mn-radius); background: var(--mn-card); box-shadow: var(--mn-shadow); }
+
+// Header controls remain aligned with the 820px patient canvas.
+.clinical-header { background: var(--mn-card); }
+.clinical-header-inner { height: 84px; gap: 16px; }
+.clinical-header-actions { gap: 8px; }
+.clinical-header-search input { height: 44px; font-size: 13px; border-radius: var(--mn-control-radius); }
+.clinical-theme-control, .clinical-language-control { height: 40px; border-radius: var(--mn-control-radius); background: var(--mn-card); }
+.clinical-theme-control select, .clinical-language-control select { font-size: 12px; }
+.clinical-book-top, .clinical-signup-top { min-height: 40px; border-radius: var(--mn-control-radius); font-size: 12px; font-weight: 700; }
+.clinical-profile { width: 40px; height: 40px; font-size: 12px; }
+.clinical-shell .clinical-bottom-nav { right: auto; bottom: 16px; left: 50%; width: min(820px, calc(100% - 32px)); min-height: 72px; padding: 8px; transform: translateX(-50%); border: 1px solid var(--clinical-line); border-radius: 18px; background: var(--mn-card); box-shadow: 0 8px 32px rgba(23, 51, 75, .12); }
+.clinical-bottom-nav a { min-width: 0; min-height: 52px; padding: 6px; gap: 5px; border-radius: 10px; font-size: 12px; transition: background .18s ease, color .18s ease; }
+.clinical-bottom-nav a.active { background: var(--clinical-primary-soft); }
+.clinical-bottom-nav a > span:last-child { font-size: 11px; }
+
+// One control size across directory filters, booking, contact and profile forms.
+.clinical-primary-button, .clinical-secondary-button, .clinical-light-button,
+.clinical-auth-submit, .clinical-doctor-book { min-height: 44px; padding: 11px 18px; border-radius: var(--mn-control-radius); font-size: 13px; font-weight: 700; line-height: 1.35; }
+.clinical-secondary-button { border: 1px solid var(--clinical-line); }
+.clinical-filter-bar { gap: 12px; margin: 24px 0; }
+.clinical-filter-bar label, .clinical-filter-bar select { min-height: 46px; border-radius: var(--mn-control-radius); background: var(--mn-card); }
+.clinical-filter-bar input, .clinical-filter-bar select { font-size: 14px; }
+.clinical-contact-form label, .clinical-patient-form label, .clinical-booking-form label { font-size: 13px; font-weight: 600; }
+.clinical-contact-form input, .clinical-contact-form textarea,
+.clinical-patient-form input, .clinical-patient-form select, .clinical-patient-form textarea { min-height: 46px; padding: 11px 13px; border-radius: var(--mn-control-radius); font-size: 15px; }
+.clinical-patient-form-grid { gap: 20px; }
+.clinical-shell .booking-wizard { max-width: none; }
+.clinical-shell .booking-wizard label { gap: 8px; font-size: 13px; }
+.clinical-shell .booking-wizard :is(input, select, textarea) { min-height: 46px; padding: 11px 13px; color: var(--clinical-navy); border: 1px solid var(--clinical-line); border-radius: 10px; background: var(--mn-card); font-size: 15px; }
+.clinical-shell .wizard-steps { gap: 12px; margin-bottom: 28px; }
+.clinical-shell .wizard-steps span { font-size: 12px; }
+.clinical-shell .wizard-steps b { width: 32px; height: 32px; flex: none; font-size: 12px; }
+.clinical-booking-review { padding: 20px; border-radius: 12px; }
+.clinical-booking-review small { font-size: 12px; }
+.clinical-auth-form > p, .clinical-auth-visual-content p { font-size: 14px; line-height: 1.65; }
+.clinical-auth-form label { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+.clinical-auth-field { height: 46px; border-radius: 10px; }
+.clinical-auth-field input { font-size: 14px; }
+.clinical-auth-field button { min-width: 32px; min-height: 36px; }
+.clinical-auth-card { box-shadow: var(--mn-shadow); }
+.clinical-role-signin-field { border-radius: 10px; }
+.clinical-notifications-filters button { min-height: 40px; padding: 9px 14px; border-radius: 9px; font-size: 13px; }
+.clinical-notifications-list h2 { font-size: 16px; }
+.clinical-notifications-list p { font-size: 14px; }
+.clinical-messages-conversation small { font-size: 12px; }
+.clinical-messages-history article { border-radius: 12px; }
+.clinical-about-values { border-radius: var(--mn-radius); }
+.clinical-value-grid h3 { font-size: 15px; }
+.clinical-value-grid p, .clinical-contact-item small { font-size: 13px; line-height: 1.7; }
+.clinical-contact-item strong, .clinical-check-list { font-size: 14px; }
+.clinical-shell :is(a, button, input, select, textarea):focus-visible,
+.clinical-staff-shell :is(a, button, input, select, textarea):focus-visible { outline: 3px solid var(--staff-accent, var(--clinical-primary)); outline-offset: 3px; }
+.clinical-shell button:disabled { cursor: not-allowed; }
+.clinical-pagination { flex-wrap: wrap; gap: 16px; margin-top: 24px; font-size: 13px; }
+.clinical-pagination button, .clinical-pagination b { width: 40px; height: 40px; border-radius: 10px; font-size: 13px; }
+
+// Catalog cards use the same rhythm on the homepage and directory pages.
+.clinical-department, .clinical-service-detail, .clinical-doctor-card,
+.clinical-directory-card, .clinical-article-card, .clinical-testimonial { border: 1px solid var(--clinical-line); border-radius: var(--mn-radius); background: var(--mn-card); box-shadow: none; }
+.clinical-department, .clinical-service-detail { padding: 22px; }
+.clinical-service-detail-grid, .clinical-directory-grid, .clinical-doctor-grid, .clinical-article-grid { gap: 18px; }
+.clinical-department h3, .clinical-service-detail h3, .clinical-doctor-card h3,
+.clinical-directory-info h3, .clinical-article-copy h3 { font-size: 18px; line-height: 1.4; letter-spacing: -.025em; overflow-wrap: anywhere; }
+.clinical-department p, .clinical-service-detail p, .clinical-article-copy p { font-size: 14px; line-height: 1.7; color: var(--clinical-secondary); }
+.clinical-service-detail p { min-height: 0; margin-bottom: 20px; }
+.clinical-dept-bottom, .clinical-service-detail-bottom { gap: 12px; font-size: 13px; }
+.clinical-doctor-card p, .clinical-directory-info p, .clinical-doctor-card > span { font-size: 13px; }
+.clinical-directory-card { padding: 14px; }
+.clinical-directory-portrait, .clinical-doctor-portrait { border-radius: 12px; }
+.clinical-article-copy { padding: 20px; background: var(--mn-card); }
+.clinical-trust-section { padding: 28px; border-radius: var(--mn-radius); }
+.clinical-trust-section > div > p, .clinical-trust-grid p, .clinical-testimonial blockquote { font-size: 14px; line-height: 1.75; }
+.clinical-trust-grid h3 { font-size: 16px; }
+.clinical-metrics { gap: 12px; }
+.clinical-metrics > div { min-width: 0; padding: 18px 12px; border: 1px solid var(--clinical-line); border-radius: 12px; background: var(--mn-card); }
+.clinical-metrics strong { font-size: 24px; }
+.clinical-metrics span { font-size: 12px; }
+.clinical-metrics small { font-size: 11px; line-height: 1.5; }
+
+// The photo supports the homepage copy rather than displacing it below the fold.
+.clinical-home {
+  .clinical-hero-card { border-radius: var(--mn-radius); }
+  .clinical-hero-visual { min-height: 540px; padding: 210px 32px 24px; gap: 24px; }
+  .clinical-hero-slides { inset: 0; height: 100%; }
+  .clinical-hero-content { grid-template-columns: 1fr; gap: 14px; }
+  .clinical-hero-content h1 { max-width: 600px; font-size: clamp(30px, 3vw, 38px); line-height: 1.18; }
+  .clinical-hero-content > p { max-width: 610px; font-size: 14px; line-height: 1.7; }
+  .clinical-hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+  .clinical-hero-actions a { font-size: 13px; }
+  .clinical-visual-copy small { font-size: 12px; }
+}
+
+// Quiet outer advertisement rails; each still uses its real backend content.
+.clinical-rail { gap: 16px; top: 108px; scrollbar-width: thin; }
+.clinical-rail-card { padding: 16px; border-radius: var(--mn-radius); box-shadow: none; }
+.clinical-rail-card:hover { transform: none; box-shadow: var(--mn-shadow); }
+.clinical-rail-kicker { font-size: 10px; letter-spacing: .07em; }
+.clinical-rail-card h3 { font-size: 15px; line-height: 1.4; }
+.clinical-rail-card p { font-size: 12px; line-height: 1.65; }
+.clinical-rail-card > a { min-height: 40px; font-size: 12px; border-radius: 8px; }
+.clinical-chat-launchers { bottom: 22px; flex-direction: row; align-items: center; gap: 10px; width: auto; }
+.clinical-chat-launchers button { width: 44px; height: 44px; min-height: 44px; justify-content: center; padding: 0; border-radius: 14px; }
+.clinical-chat-launchers button > span:last-child:not(.material-symbols-rounded) { display: none; }
+.clinical-chat-launchers .clinical-back-to-top { width: 44px; }
+html[data-theme='dark'] .clinical-chat-launchers button:not(.clinical-assistant-launcher):not(.clinical-back-to-top) { color: #10282e; }
+.clinical-footer { margin-top: 32px; }
+.clinical-footer p, .clinical-footer a, .clinical-footer-contact small { font-size: 13px; line-height: 1.7; }
+
+// Staff roles share structure and scale, with their existing role-specific color.
+.clinical-staff-shell { --mn-card: #fff; --mn-page: var(--clinical-surface); }
+.clinical-staff-doctor { --mn-card: var(--doctor-panel); --mn-page: var(--doctor-bg); }
+.clinical-staff-receptionist { --mn-card: var(--reception-panel); --mn-page: var(--reception-bg); }
+.clinical-staff-admin { --mn-card: #17232f; --mn-page: #0a141f; }
+html[data-theme='dark'] .clinical-staff-shell { --mn-card: #172838; }
+html[data-theme='dark'] .clinical-staff-doctor { --mn-card: var(--doctor-panel); }
+html[data-theme='dark'] .clinical-staff-receptionist { --mn-card: var(--reception-panel); }
+html[data-theme='dark'] .clinical-staff-admin { --mn-card: #17232f; }
+.clinical-staff-shell .clinical-staff-content { padding: 32px; }
+.clinical-staff-shell .clinical-staff-sidebar nav a,
+.clinical-staff-sidebar-footer :is(a, button) { min-height: 44px; border-radius: 9px; font-size: 13px; font-weight: 600; }
+.clinical-staff-shell .clinical-staff-brand strong { font-size: 18px; }
+.clinical-staff-shell .clinical-staff-brand small { font-size: 11px; }
+.mn-staff-navigation-toggle { display: none; }
+.clinical-staff-shell .clinical-staff-topbar { min-height: 76px; padding: 0 32px; }
+.clinical-staff-topbar > div:first-child :is(span, strong) { font-size: 13px; }
+.clinical-staff-top-actions > a, .clinical-staff-top-actions > button { width: 40px; height: 40px; border-radius: 10px; }
+.clinical-staff-shell .clinical-staff-page-heading h1 { font-size: 32px; letter-spacing: -.035em; }
+.clinical-staff-page-heading p { max-width: 660px; font-size: 14px; line-height: 1.65; }
+.clinical-staff-shell .clinical-staff-panel,
+.clinical-staff-shell .clinical-staff-metric { border-radius: var(--mn-radius); box-shadow: none; }
+.clinical-staff-shell .clinical-staff-panel h2 { font-size: 18px; }
+.clinical-staff-table-scroll th { padding: 16px 20px; font-size: 12px; font-weight: 600; }
+.clinical-staff-table-scroll td { padding: 16px 20px; font-size: 14px; line-height: 1.6; }
+.clinical-staff-form { gap: 20px; padding: 24px; }
+.clinical-staff-form label { gap: 8px; font-size: 13px; font-weight: 600; }
+.clinical-staff-shell .clinical-staff-form :is(input, textarea, select),
+.clinical-staff-shell .clinical-resource-form :is(input, textarea, select) { min-height: 46px; padding: 11px 13px; border-radius: var(--mn-control-radius); font-size: 14px; }
+.clinical-staff-form textarea { min-height: 120px; }
+.clinical-staff-form button { min-height: 44px; border-radius: var(--mn-control-radius); font-size: 13px; }
+
+// Profiles also occur inside the patient portal: give them complete fallback
+// tokens, then inherit the correct doctor/receptionist/admin card surface.
+.clinical-account-profile {
+  --profile-panel: var(--mn-card);
+  --profile-alt: var(--clinical-low);
+  --profile-line: var(--clinical-line);
+  --profile-text: var(--clinical-navy);
+  --profile-muted: var(--clinical-muted);
+  --profile-accent: var(--staff-accent, var(--clinical-primary));
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+.clinical-staff-shell .clinical-account-profile { max-width: 1080px; margin-top: 0; }
+.clinical-staff-doctor .clinical-account-profile { --profile-alt: var(--doctor-panel-alt); --profile-line: var(--doctor-line); --profile-text: var(--doctor-text); --profile-muted: var(--doctor-muted); }
+.clinical-staff-receptionist .clinical-account-profile { --profile-alt: var(--reception-alt); --profile-line: var(--reception-line); --profile-text: var(--reception-text); --profile-muted: var(--reception-muted); }
+.clinical-staff-admin .clinical-account-profile { --profile-alt: #101d29; }
+.clinical-account-profile .clinical-staff-profile-card { grid-template-columns: 260px minmax(0, 1fr); margin: 0; border-radius: var(--mn-radius); }
+.clinical-account-profile .clinical-staff-profile-identity { padding: 32px 24px; gap: 0; }
+.clinical-account-profile .clinical-staff-profile-photo { width: 104px; height: 104px; border-radius: 28px; color: var(--profile-accent); font-size: 32px; }
+.clinical-account-profile .clinical-staff-profile-identity h2 { margin: 18px 0 4px; font-size: 23px; line-height: 1.35; }
+.clinical-account-profile .clinical-staff-profile-identity p { font-size: 13px; }
+.mn-profile-role { margin-top: 14px; padding: 5px 11px; border-radius: 6px; color: var(--profile-accent); border: 1px solid var(--profile-line); background: var(--profile-panel); font-size: 11px; font-weight: 700; }
+.mn-profile-details { min-width: 0; padding: 24px 28px; }
+.mn-profile-details > h3 { margin: 0 0 8px; color: var(--profile-text); font: 700 17px/1.4 var(--mn-heading-font); }
+.clinical-account-profile .clinical-staff-profile-facts { gap: 0 24px; padding: 0; }
+.clinical-account-profile .clinical-staff-profile-facts > div { padding: 17px 0; }
+.clinical-account-profile .clinical-staff-profile-facts dt { font-size: 12px; }
+.clinical-account-profile .clinical-staff-profile-facts dd { margin-top: 6px; font-size: 14px; line-height: 1.65; font-weight: 500; }
+.clinical-staff-profile-facts .mn-profile-fact-wide { grid-column: 1 / -1; }
+.clinical-account-profile .clinical-staff-profile-actions button { min-height: 42px; padding: 10px 16px; border-radius: 9px; color: var(--profile-accent); font-size: 13px; }
+.clinical-account-profile .mn-profile-panel { padding: 24px; border: 1px solid var(--profile-line); border-radius: var(--mn-radius); color: var(--profile-text); background: var(--profile-panel); }
+.mn-profile-section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.mn-profile-section-heading > .material-symbols-rounded { display: grid; width: 42px; height: 42px; flex: none; place-items: center; border: 1px solid var(--profile-line); border-radius: 10px; color: var(--profile-accent); background: var(--profile-alt); }
+.mn-profile-section-heading h2, .mn-profile-section-heading strong { display: block; margin: 0; color: var(--profile-text); font: 700 18px/1.4 var(--mn-heading-font); }
+.mn-profile-section-heading small { display: block; margin-top: 4px; color: var(--profile-muted); font-size: 13px; }
+.mn-profile-section-heading p { margin: 4px 0 0; color: var(--profile-muted); font-size: 13px; }
+.mn-profile-assignment { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 0; }
+.mn-profile-assignment dt { color: var(--profile-muted); font-size: 12px; }
+.mn-profile-assignment dd { margin: 6px 0 0; font-size: 15px; font-weight: 600; }
+.mn-profile-panel .clinical-staff-profile-form { padding: 0; }
+.mn-profile-panel .clinical-staff-profile-form label { color: var(--profile-text); }
+.mn-profile-panel .clinical-staff-profile-form :is(input, textarea) { min-height: 46px; padding: 11px 13px; color: var(--profile-text); border: 1px solid var(--profile-line); border-radius: 10px; background: var(--profile-alt); font-size: 15px; }
+.mn-profile-wide-field, .mn-profile-upload { grid-column: 1 / -1; }
+.mn-profile-upload { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 20px; border: 1px dashed var(--profile-line); border-radius: 12px; background: var(--profile-alt); }
+.mn-profile-upload img { border-radius: 14px; }
+.mn-profile-upload > span { flex-basis: 100%; font-size: 13px; font-weight: 600; }
+.mn-profile-panel .clinical-staff-profile-buttons { padding-top: 20px; border-top: 1px solid var(--profile-line); }
+.mn-profile-panel .clinical-staff-profile-buttons button:first-child { color: #fff; background: var(--profile-accent); }
+html[data-theme='dark'] .mn-profile-panel .clinical-staff-profile-buttons button:first-child,
+.clinical-staff-admin .mn-profile-panel .clinical-staff-profile-buttons button:first-child { color: #10282e; }
+.mn-profile-security > summary { display: flex; align-items: center; gap: 12px; padding: 0; cursor: pointer; list-style: none; }
+.mn-profile-security > summary::-webkit-details-marker { display: none; }
+.mn-profile-security > summary .mn-profile-section-heading { flex: 1; margin-bottom: 0; }
+.mn-profile-security > summary > .material-symbols-rounded { color: var(--profile-muted); transition: transform .2s; }
+.mn-profile-security[open] > summary > .material-symbols-rounded { transform: rotate(180deg); }
+.mn-profile-security[open] > summary { padding-bottom: 24px; }
+.mn-profile-password-hint { grid-column: 1 / -1; margin: 0; color: var(--profile-muted); font-size: 13px; }
+.mn-profile-loading { height: 200px; border-radius: 16px; background: var(--profile-alt); }
+.mn-profile-loading span { display: block; padding: 28px; color: var(--profile-muted); }
+.clinical-account-profile .clinical-admin-feedback { padding: 16px; border: 1px solid var(--profile-line); border-radius: 10px; font-size: 14px; }
+.clinical-account-profile .clinical-form-error { padding: 16px; border: 1px solid currentColor; border-radius: 10px; font-size: 14px !important; }
+.clinical-profile-contact b, .clinical-profile-facts b { font-size: 13px; }
+.clinical-profile-contact small, .clinical-profile-facts small { font-size: 11px; }
+.clinical-profile-contact > span { min-width: 0; padding: 16px; border-radius: 12px; }
+.clinical-profile-contact b { white-space: normal; overflow-wrap: anywhere; }
+.clinical-mypage-grid { gap: 16px; }
+
+@media (max-width: 1120px) {
+  .clinical-workspace { grid-template-columns: minmax(0, 820px); padding: 24px; }
+  .clinical-workspace > .clinical-rail { display: none; }
+  .clinical-chat-launchers { position: sticky; top: 84px; right: auto; bottom: auto; z-index: 19; width: min(820px, 100%); margin: 0 auto; padding: 8px 16px; justify-content: flex-end; border-bottom: 1px solid var(--clinical-line); background: var(--mn-card); }
+  .clinical-chat-launchers button { width: auto; padding: 0 12px; font-size: 12px; }
+  .clinical-chat-launchers button > span:last-child:not(.material-symbols-rounded) { display: inline; }
+  .clinical-chat-launchers .clinical-back-to-top { width: 44px; padding: 0; }
+  .clinical-shell:has(.clinical-role-signin) .clinical-chat-launchers { bottom: auto; z-index: 19; }
+  .clinical-shell:has(.clinical-role-signin) .clinical-bottom-nav { height: auto; min-height: 72px; align-items: center; padding: 8px; }
+}
+
+@media (max-width: 900px) {
+  .clinical-account-profile .clinical-staff-profile-card { grid-template-columns: 1fr; }
+  .clinical-account-profile .clinical-staff-profile-identity { border-right: 0; border-bottom: 1px solid var(--profile-line); }
+  .clinical-account-profile .clinical-staff-profile-facts { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 760px) {
+  .clinical-staff-shell .clinical-staff-sidebar { position: relative; padding: 16px; }
+  .clinical-staff-shell .clinical-staff-brand { min-height: 44px; margin: 0; padding: 0 52px 0 0; }
+  .mn-staff-navigation-toggle { position: absolute; top: 16px; right: 16px; display: grid; width: 44px; height: 44px; place-items: center; color: var(--staff-accent); border: 1px solid var(--clinical-line); border-radius: 10px; background: var(--mn-card); }
+  .clinical-staff-shell .clinical-staff-sidebar nav, .clinical-staff-shell .clinical-staff-sidebar-footer { display: none; }
+  .clinical-staff-shell .clinical-staff-sidebar.is-navigation-open nav { display: grid; grid-template-columns: 1fr; max-height: min(55dvh, 420px); margin-top: 16px; gap: 6px; overflow-y: auto; }
+  .clinical-staff-shell .clinical-staff-sidebar nav a { white-space: normal; }
+  .clinical-staff-shell .clinical-staff-sidebar.is-navigation-open .clinical-staff-sidebar-footer { display: grid; margin-top: 16px; }
+}
+
+@media (max-width: 680px) {
+  .clinical-shell { font-size: 15px; }
+  .clinical-workspace { padding: 20px 16px 32px; }
+  .clinical-header-inner { width: calc(100% - 32px); height: 72px; gap: 8px; flex-wrap: nowrap; }
+  .clinical-header.has-search .clinical-header-inner { height: 116px; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
+  .clinical-header-search { flex-basis: 100%; max-width: none; order: 3; margin: 0; }
+  .clinical-header-actions { gap: 6px; }
+  .clinical-theme-control, .clinical-language-control { width: 36px; height: 40px; }
+  .clinical-theme-control select, .clinical-language-control select { width: 100%; }
+  .clinical-book-top { padding: 0 10px; font-size: 11px; }
+  .clinical-signup-top { width: 36px; padding: 0; }
+  .clinical-inner-hero, .clinical-inner-section { padding: 22px; }
+  .clinical-inner-hero h1 { font-size: 30px; }
+  .clinical-section-heading { align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+  .clinical-filter-bar, .clinical-doctor-filter { grid-template-columns: 1fr; }
+  .clinical-shell .wizard-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-shell .booking-wizard :is(input, select, textarea), .clinical-auth-field input { font-size: 16px; }
+  .clinical-auth-card { min-height: 730px; }
+  .clinical-auth-card.is-register { min-height: 800px; }
+  .clinical-service-detail-grid { grid-template-columns: 1fr; }
+  .clinical-directory-grid, .clinical-doctor-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-article-grid { grid-template-columns: 1fr; }
+  .clinical-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .clinical-home .clinical-center-column { gap: 28px; }
+  .clinical-home .clinical-hero-visual { min-height: 0; padding: 240px 22px 24px; gap: 22px; }
+  .clinical-home .clinical-hero-slides { height: 420px; }
+  .clinical-home .clinical-hero-content h1 { font-size: 30px; }
+  .clinical-home .clinical-hero-content > p { font-size: 14px; }
+  .clinical-home .clinical-hero-actions { align-items: stretch; flex-direction: column; }
+  .clinical-home .clinical-hero-actions a { width: 100%; }
+  .clinical-home .clinical-hero-footer { align-items: flex-start; }
+  .clinical-trust-section { padding: 22px; }
+  .clinical-shell .clinical-bottom-nav { bottom: 12px; width: calc(100% - 24px); padding: 6px 4px; min-height: 66px; border-radius: 16px; }
+  .clinical-shell:has(.clinical-role-signin) .clinical-bottom-nav { min-height: 66px; padding: 6px 4px; }
+  .clinical-bottom-nav a { padding: 6px 2px; gap: 4px; }
+  .clinical-bottom-nav a > span:last-child { font-size: 10px; }
+  .clinical-chat-launchers { top: 72px; }
+  .clinical-header.has-search + .clinical-chat-launchers { top: 116px; }
+  .clinical-staff-shell .clinical-staff-content { padding: 24px 16px; }
+  .clinical-staff-shell .clinical-staff-topbar { padding: 12px 16px; height: auto; gap: 8px; flex-wrap: wrap; }
+  .clinical-staff-topbar > div:first-child > span { display: none; }
+  .clinical-staff-topbar > div:first-child > strong { padding-left: 0; border-left: 0; }
+  .clinical-staff-shell .clinical-staff-page-heading h1 { font-size: 28px; }
+  .clinical-staff-page-heading { flex-wrap: wrap; }
+  .clinical-account-profile .mn-profile-panel, .mn-profile-details { padding: 22px; }
+  .clinical-account-profile .clinical-staff-profile-identity { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 6px 16px; align-items: center; text-align: left; padding: 22px; }
+  .clinical-account-profile .clinical-staff-profile-photo { grid-row: 1 / 4; width: 72px; height: 72px; border-radius: 20px; font-size: 26px; }
+  .clinical-account-profile .clinical-staff-profile-identity h2 { margin: 0; font-size: 21px; }
+  .clinical-account-profile .clinical-staff-profile-identity p { grid-column: 2; }
+  .clinical-account-profile .mn-profile-role { grid-column: 2; width: fit-content; margin-top: 4px; }
+  .clinical-account-profile .clinical-staff-profile-actions { grid-column: 1 / -1; justify-content: flex-start; margin-top: 14px; }
+  .clinical-account-profile .clinical-staff-profile-facts { grid-template-columns: 1fr; }
+  .mn-profile-panel .clinical-staff-profile-form, .mn-profile-assignment { grid-template-columns: 1fr; }
+  .clinical-profile-contact { grid-template-columns: 1fr; }
+  .clinical-staff-profile-buttons { display: grid; grid-template-columns: 1fr 1fr; }
+  .clinical-staff-profile-buttons button { width: 100%; justify-content: center; }
+  .clinical-staff-form :is(input, select, textarea), .clinical-filter-bar :is(input, select) { font-size: 16px; }
+}
+
+// Follow relationships retain the existing patient/doctor API identities.
+.mn-follow-overview { --mn-follow-text: var(--profile-text, var(--clinical-navy)); --mn-follow-muted: var(--profile-muted, var(--clinical-muted)); --mn-follow-line: var(--profile-line, var(--clinical-line)); --mn-follow-surface: var(--profile-panel, var(--mn-card)); margin: 24px 0; color: var(--mn-follow-text); }
+.clinical-account-profile .mn-follow-overview { margin: 0; }
+.mn-follow-counts { display: flex; gap: 0; width: fit-content; max-width: 100%; border: 1px solid var(--mn-follow-line); border-radius: 14px; background: var(--mn-follow-surface); overflow: hidden; }
+.mn-follow-counts > button { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; min-height: 68px; min-width: 150px; padding: 14px 24px; border: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; }
+.mn-follow-counts > button + button { border-left: 1px solid var(--mn-follow-line); }
+.mn-follow-counts strong { font: 800 24px/1.2 var(--mn-heading-font); }
+.mn-follow-counts > button > span { font-size: 13px; color: var(--mn-follow-muted); }
+.mn-follow-counts > button:hover { background: var(--profile-alt, var(--clinical-low)); }
+.mn-follow-counts > button:focus-visible { outline-offset: -4px; }
+.mn-follow-dialog { width: min(460px, calc(100vw - 32px)); max-height: min(680px, 80dvh); padding: 0; border: 1px solid var(--mn-follow-line); border-radius: 18px; color: var(--mn-follow-text); background: var(--mn-follow-surface); box-shadow: 0 20px 80px rgba(8, 24, 40, .22); }
+.mn-follow-dialog[open] { display: flex; flex-direction: column; }
+.mn-follow-dialog::backdrop { background: rgba(8, 24, 40, .55); }
+.mn-follow-dialog > header { display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--mn-follow-line); }
+.mn-follow-dialog h2 { display: flex; align-items: center; gap: 10px; flex: 1; margin: 0; color: inherit; font: 700 19px/1.4 var(--mn-heading-font); }
+.mn-follow-dialog h2 small { color: var(--mn-follow-muted); font: 500 13px/1.4 'DM Sans', sans-serif; }
+.mn-follow-dialog header button { display: grid; place-items: center; width: 44px; height: 44px; flex: none; padding: 0; border: 1px solid var(--mn-follow-line); border-radius: 10px; color: inherit; background: var(--profile-alt, var(--clinical-low)); cursor: pointer; }
+.mn-follow-dialog-content { min-height: 120px; overflow-y: auto; overscroll-behavior: contain; padding: 8px 20px 20px; }
+.mn-follow-dialog-content ul { margin: 0; padding: 0; list-style: none; }
+.mn-follow-dialog-content li + li { border-top: 1px solid var(--mn-follow-line); }
+.mn-follow-dialog-content li a { display: flex; align-items: center; gap: 14px; min-height: 76px; padding: 12px 0; color: inherit; }
+.mn-follow-dialog-content li a > span:nth-child(2) { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 15px; font-weight: 600; line-height: 1.5; }
+.mn-follow-dialog-content li a > .material-symbols-rounded { color: var(--mn-follow-muted); }
+.mn-follow-avatar { display: grid; flex: none; place-items: center; width: 48px; height: 48px; border: 1px solid var(--mn-follow-line); border-radius: 50%; overflow: hidden; background: var(--profile-alt, var(--clinical-low)); font-size: 16px; font-weight: 700; }
+.mn-follow-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.mn-follow-dialog-content p { margin: 16px 0; color: var(--mn-follow-muted); font-size: 14px; }
+.mn-follow-error button, .mn-follow-more { min-height: 44px; padding: 10px 16px; border: 1px solid var(--mn-follow-line); border-radius: 10px; color: inherit; background: var(--profile-alt, var(--clinical-low)); cursor: pointer; font: 600 13px/1.5 'DM Sans', sans-serif; }
+.mn-follow-more { width: 100%; margin-top: 16px; }
+html:has(.mn-follow-dialog[open]) { overflow: hidden; }
+
+// Counts are read-only; likes and view increments keep their existing flows.
+.clinical-department-swiper .clinical-department.mn-department-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.mn-department-image-link { display: block; flex: none; aspect-ratio: 16 / 10; overflow: hidden; background: var(--clinical-low); }
+.mn-department-photo { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mn-department-copy { display: flex; flex: 1; flex-direction: column; padding: 20px; }
+.mn-department-copy h3 { min-height: 50px; margin-top: 16px; }
+.mn-department-copy .clinical-dept-status { font-size: 10px; }
+.mn-department-copy p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; min-height: 72px; }
+.mn-department-engagement { display: flex; flex-wrap: wrap; gap: 12px; margin-top: auto; padding: 16px 0; border-top: 1px solid var(--clinical-line); color: var(--clinical-navy); font-size: 13px; }
+.mn-department-engagement > span { display: inline-flex; align-items: center; gap: 5px; }
+.mn-department-engagement .material-symbols-rounded { font-size: 18px; color: var(--clinical-muted); }
+.mn-department-engagement small { font-size: 11px; color: var(--clinical-muted); }
+.mn-department-copy .clinical-dept-bottom { padding-top: 12px; margin-top: 0; justify-content: flex-end; }
+@media (max-width: 680px) {
+  .mn-follow-counts { width: 100%; }
+  .mn-follow-counts > button { flex: 1; min-width: 0; padding: 14px 12px; }
+  .mn-follow-dialog-content { padding-right: 16px; padding-left: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clinical-shell *, .clinical-staff-shell * { scroll-behavior: auto; }
+  .mn-profile-security > summary > .material-symbols-rounded { transition: none; }
+}
+
+@media (max-width: 680px) {
+  .clinical-header.has-inbox .clinical-book-top { display: none; }
+}
+@media (max-width: 480px) {
+  .clinical-header.has-inbox .mn-logo__name { display: none; }
+}

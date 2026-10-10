@@ -1,3 +1,5 @@
+import { useUnread } from '@/libs/components/notification/UnreadProvider';
+import { useLiveWorkspaceRefresh } from '@/libs/hooks/useLiveWorkspaceRefresh';
 import { operation } from '@/apollo/workspace/operations';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -35,6 +37,7 @@ const memberTypes = Object.values(MemberType);
 
 export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 	const t = useTranslation();
+    const unread = useUnread();
 	const router = useRouter();
 	const session = useReactiveVar(userVar);
 	const staffWorkspace =
@@ -87,7 +90,7 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 		START_DIRECT_CONVERSATION,
 	);
 	const [sendMessage, sendState] = useMutation(SEND_DIRECT_MESSAGE);
-	const [markRead] = useMutation(MARK_MY_MESSAGES_READ);
+	const [markRead] = useMutation(MARK_MY_MESSAGES_READ, { onCompleted: () => { void unread.refresh(); } });
 
 	const conversation = useQuery<{ getMyConversation: ChatConversation }>(
 		CONVERSATION,
@@ -153,9 +156,10 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 					)
 						return;
 					void conversations.refetch();
+                    void unread.refresh();
 					if (packet.data?.conversationId === selectedRef.current) {
 						void messages.refetch();
-						if (packet.event === 'privateMessage')
+						if (packet.event === 'privateMessage' && document.visibilityState === 'visible')
 							void markRead({
 								variables: { conversationId: selectedRef.current },
 							});
@@ -185,6 +189,12 @@ export const MessagesPage = ({ embedded = false }: { embedded?: boolean }) => {
 		// Reconnect on a conversation change so callbacks use its current GraphQL variables.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [session._id, session.accessToken, staffWorkspace, selectedId, embedded]);
+
+    useLiveWorkspaceRefresh(async () => {
+        const fresh = await messages.refetch();
+        const incoming = fresh.data?.getMyMessages.list.some((message: ChatMessage) => !message.readAt && (message.senderId !== session._id || message.senderType !== session.memberType));
+        if (incoming && selectedRef.current === selectedId && document.visibilityState === 'visible') await markRead({ variables: { conversationId: selectedId } });
+    }, Boolean(session._id && selectedId && (!staffWorkspace || embedded)));
 
 	const openConversation = (id: string) => {
 		setSelectedId(id);

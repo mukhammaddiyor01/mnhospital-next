@@ -70,7 +70,7 @@ export const accounts: ResourceConfig = {
 	search: true,
 };
 export const bookingSelection =
-	'list { _id patientId orderCode bookingOrderStatus bookingOrderCurrency bookingOrderTotalAmount bookingOrderItems { serviceId doctorId serviceName servicePrice serviceDuration requestedStartAt appointmentId } } metaCounter { total }';
+	'list { _id patientId orderCode bookingOrderStatus bookingOrderCurrency bookingOrderTotalAmount bookingOrderItems { serviceId doctorId serviceName servicePrice serviceDuration requestedStartAt appointmentId appointmentStatus appointmentCode paymentId paymentStatus paymentProvider paymentAmount } } metaCounter { total }';
 export const bookings = (
 	role: MemberType.ADMIN | MemberType.RECEPTIONIST,
 ): ResourceConfig => ({
@@ -98,6 +98,7 @@ export const payments = (
 ): ResourceConfig => ({
 	role,
 	title: 'payments',
+	live: true,
 	list: operation('query', 'getPayments', 'PaymentInquiry', paymentSelection),
 	listKey: 'getPayments',
 	columns: [

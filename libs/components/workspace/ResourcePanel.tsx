@@ -1,3 +1,8 @@
+import { recordReference } from './recordPresentation';
+import { useBookingSettlementLabel } from './useAppointmentFlowText';
+import { appointmentStatusKeys } from '@/libs/components/dashboard/staffLabels';
+import { AppointmentStatus } from '@/libs/components/dashboard/staffTypes';
+import { useLiveWorkspaceRefresh } from '@/libs/hooks/useLiveWorkspaceRefresh';
 import RecordThumbnail from '@/libs/components/common/RecordThumbnail';
 import thumbnailStyles from '@/libs/components/common/RecordThumbnail.module.scss';
 import ServiceDateCalendar from './ServiceDateCalendar';
@@ -43,6 +48,8 @@ export type ResourceField = {
 	defaultValue?: string | boolean | string[];
 };
 export type ResourceConfig = {
+	live?: boolean;
+	onRowsChange?: (rows: RecordItem[]) => void;
 	role: MemberType;
 	title: WorkspaceTextKey;
 	list: DocumentNode;
@@ -79,6 +86,7 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 	const session = useReactiveVar(userVar);
 	const t = useTranslation();
 	const w = useWorkspaceText();
+	const settlementLabel = useBookingSettlementLabel();
 	const clinic = useClinicSettings();
 	const [page, setPage] = useState(1);
 	const [rows, setRows] = useState<RecordItem[]>([]);
@@ -97,37 +105,48 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 	const pending = useRef(false);
 	const formRef = useRef<HTMLFormElement>(null);
 	const authorized = Boolean(session._id && session.memberType === config.role);
-	const load = useCallback(async () => {
-		if (!authorized) return;
-		const generation = ++request.current;
-		setLoading(true);
-		setError('');
-		try {
-			const variables = config.variables?.(page) ?? {
-				input: { page, limit: 10 },
-			};
-			const response = config.mutationList
-				? await client.mutate({ mutation: config.list, variables })
-				: await client.query({
-						query: config.list,
-						variables,
-						fetchPolicy: 'network-only',
-					});
-			if (generation !== request.current) return;
-			const data = response.data?.[config.listKey];
-			setRows(config.arrayResult ? (data ?? []) : (data?.list ?? []));
-			setTotal(
-				config.arrayResult
-					? (data?.length ?? 0)
-					: (data?.metaCounter?.[0]?.total ?? 0),
-			);
-		} catch (e: any) {
-			if (generation === request.current)
-				setError(e.message ?? t('admin.loadError'));
-		} finally {
-			if (generation === request.current) setLoading(false);
-		}
-	}, [authorized, client, config, page]);
+	const load = useCallback(
+		async (background = false) => {
+			if (!authorized) return;
+			const generation = ++request.current;
+			if (!background) setLoading(true);
+			setError('');
+			try {
+				const variables = config.variables?.(page) ?? {
+					input: { page, limit: 10 },
+				};
+				const response = config.mutationList
+					? await client.mutate({ mutation: config.list, variables })
+					: await client.query({
+							query: config.list,
+							variables,
+							fetchPolicy: 'network-only',
+						});
+				if (generation !== request.current) return;
+				const data = response.data?.[config.listKey];
+				const nextRows = config.arrayResult ? (data ?? []) : (data?.list ?? []);
+				setRows(nextRows);
+				config.onRowsChange?.(nextRows);
+				setTotal(
+					config.arrayResult
+						? (data?.length ?? 0)
+						: (data?.metaCounter?.[0]?.total ?? 0),
+				);
+			} catch (e: any) {
+				if (generation === request.current)
+					setError(e.message ?? t('admin.loadError'));
+			} finally {
+				if (generation === request.current) setLoading(false);
+			}
+		},
+		[authorized, session._id, session.memberType, client, config, page],
+	);
+	useEffect(() => {
+		setRows([]);
+		setTotal(0);
+		setEditor(undefined);
+		config.onRowsChange?.([]);
+	}, [session._id, session.memberType]);
 	useEffect(() => {
 		void load();
 		return () => {
@@ -142,6 +161,14 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 				)
 				?.focus();
 	}, [editor]);
+	useLiveWorkspaceRefresh(
+		() => load(true),
+		authorized &&
+			Boolean(config.live) &&
+			!busy &&
+			!loading &&
+			editor === undefined,
+	);
 	const open = (record: RecordItem | null) => {
 		setEditor(record);
 		setDraft(
@@ -292,112 +319,126 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 						<p role="status">{w(config.createDisabledReason)}</p>
 					)}
 					<fieldset disabled={busy || uploading}>
-						{editorFields.map((field) => field.type === 'calendar-dates' ? (
-							<div key={field.name} style={{ gridColumn: '1 / -1' }}><ServiceDateCalendar value={Array.isArray(draft[field.name]) ? draft[field.name] : []} onChange={(days) => setDraft((current) => ({ ...current, [field.name]: days }))} /></div>
-						) : (
-							<label key={field.name}>
-								{w(field.label)}
-								{field.options && !(field.readonly && Boolean(editor)) ? (
-									<select
-										disabled={field.readonly && Boolean(editor)}
-										required={field.required}
-										value={String(draft[field.name] ?? '')}
-										onChange={(e) =>
-											setDraft((d) => ({
-												...d,
-												[field.name]: e.target.value,
-											}))
-										}
-									>
-										<option value="">{w('choose')}</option>
-										{field.options.map((option) => {
-											const value =
-												typeof option === 'string' ? option : option.value;
-											return (
-												<option key={value} value={value}>
-													{typeof option === 'string'
-														? value.replaceAll('_', ' ')
-														: option.label}
-												</option>
-											);
-										})}
-									</select>
-								) : field.type === 'textarea' || field.type === 'array' ? (
-									<textarea
-										disabled={field.readonly && Boolean(editor)}
-										required={field.required}
-										maxLength={field.maxLength}
-										minLength={field.minLength}
+						{editorFields.map((field) =>
+							field.type === 'calendar-dates' ? (
+								<div key={field.name} style={{ gridColumn: '1 / -1' }}>
+									<ServiceDateCalendar
 										value={
-											Array.isArray(draft[field.name])
-												? draft[field.name].join('\n')
-												: (draft[field.name] ?? '')
+											Array.isArray(draft[field.name]) ? draft[field.name] : []
 										}
-										onChange={(e) =>
-											setDraft((d) => ({
-												...d,
-												[field.name]: e.target.value,
+										onChange={(days) =>
+											setDraft((current) => ({
+												...current,
+												[field.name]: days,
 											}))
 										}
 									/>
-								) : (
-									<input
-										type={field.type ?? 'text'}
-										required={field.required}
-										min={field.min}
-										max={field.max}
-										maxLength={field.maxLength}
-										minLength={field.minLength}
-										step={field.step}
-										disabled={field.readonly && Boolean(editor)}
-										checked={
-											field.type === 'checkbox'
-												? Boolean(draft[field.name])
-												: undefined
-										}
-										value={
-											field.type === 'checkbox'
-												? undefined
-												: field.type === 'datetime-local' && draft[field.name]
-													? String(draft[field.name])
+								</div>
+							) : (
+								<label key={field.name}>
+									{w(field.label)}
+									{field.options && !(field.readonly && Boolean(editor)) ? (
+										<select
+											disabled={field.readonly && Boolean(editor)}
+											required={field.required}
+											value={String(draft[field.name] ?? '')}
+											onChange={(e) =>
+												setDraft((d) => ({
+													...d,
+													[field.name]: e.target.value,
+												}))
+											}
+										>
+											<option value="">{w('choose')}</option>
+											{field.options.map((option) => {
+												const value =
+													typeof option === 'string' ? option : option.value;
+												return (
+													<option key={value} value={value}>
+														{typeof option === 'string'
+															? value.replaceAll('_', ' ')
+															: option.label}
+													</option>
+												);
+											})}
+										</select>
+									) : field.type === 'textarea' || field.type === 'array' ? (
+										<textarea
+											disabled={field.readonly && Boolean(editor)}
+											required={field.required}
+											maxLength={field.maxLength}
+											minLength={field.minLength}
+											value={
+												Array.isArray(draft[field.name])
+													? draft[field.name].join('\n')
 													: (draft[field.name] ?? '')
-										}
-										onChange={(e) =>
-											setDraft((d) => ({
-												...d,
-												[field.name]:
-													field.type === 'checkbox'
-														? e.target.checked
-														: e.target.value,
-											}))
-										}
-									/>
-								)}
-								{field.imageTarget && (!field.readonly || !editor) && (
-									<ImageUpload
-										target={field.imageTarget}
-										multiple={field.type === 'array'}
-										onBusy={setUploading}
-										onUploaded={(paths) =>
-											setDraft((d) => ({
-												...d,
-												[field.name]:
-													field.type === 'array'
-														? [
-																...(Array.isArray(d[field.name])
-																	? d[field.name]
-																	: String(d[field.name] ?? '')
-																			.split(/\r?\n/)
-																			.filter(Boolean)),
-																...paths,
-															].join('\n')
-														: paths[0],
-											}))
-										}
-									/>
-								)}
-							</label>
-						))}
+											}
+											onChange={(e) =>
+												setDraft((d) => ({
+													...d,
+													[field.name]: e.target.value,
+												}))
+											}
+										/>
+									) : (
+										<input
+											type={field.type ?? 'text'}
+											required={field.required}
+											min={field.min}
+											max={field.max}
+											maxLength={field.maxLength}
+											minLength={field.minLength}
+											step={field.step}
+											disabled={field.readonly && Boolean(editor)}
+											checked={
+												field.type === 'checkbox'
+													? Boolean(draft[field.name])
+													: undefined
+											}
+											value={
+												field.type === 'checkbox'
+													? undefined
+													: field.type === 'datetime-local' && draft[field.name]
+														? String(draft[field.name])
+														: (draft[field.name] ?? '')
+											}
+											onChange={(e) =>
+												setDraft((d) => ({
+													...d,
+													[field.name]:
+														field.type === 'checkbox'
+															? e.target.checked
+															: e.target.value,
+												}))
+											}
+										/>
+									)}
+									{field.imageTarget && (!field.readonly || !editor) && (
+										<ImageUpload
+											target={field.imageTarget}
+											multiple={field.type === 'array'}
+											onBusy={setUploading}
+											onUploaded={(paths) =>
+												setDraft((d) => ({
+													...d,
+													[field.name]:
+														field.type === 'array'
+															? [
+																	...(Array.isArray(d[field.name])
+																		? d[field.name]
+																		: String(d[field.name] ?? '')
+																				.split(/\r?\n/)
+																				.filter(Boolean)),
+																	...paths,
+																].join('\n')
+															: paths[0],
+												}))
+											}
+										/>
+									)}
+								</label>
+							),
+						)}
 					</fieldset>
 					<div className="clinical-resource-actions">
 						<button
@@ -436,20 +477,72 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 								<tr key={record._id ?? index}>
 									{config.columns.map((field) => (
 										<td key={field.name}>
-											{config.thumbnail && field.name === config.columns[0].name ? <span className={thumbnailStyles.identity}><RecordThumbnail image={Array.isArray(record[config.thumbnail.image]) ? record[config.thumbnail.image][0] : record[config.thumbnail.image]} name={String(record[config.thumbnail.name] || record[field.name] || '')} portrait={config.thumbnail.portrait} /><span>{String(record[field.name] ?? '—')}</span></span> : <>
-											{['startsAt', 'endsAt', 'requestedStartAt'].includes(field.name) && record[field.name] && Number.isFinite(new Date(record[field.name]).getTime())
-												? clinicDateTime(record[field.name], 'en-US', clinic.timeZone)
-												: Array.isArray(record[field.name])
-												? field.type === 'calendar-dates' ? (record[field.name].length ? record[field.name].slice(0, 3).join(', ') + (record[field.name].length > 3 ? ` (+${record[field.name].length - 3})` : '') : w('schedule')) : record[field.name].join(', ')
-												: typeof record[field.name] === 'boolean'
-													? record[field.name]
-														? '✓'
-														: '—'
-													: String(record[field.name] ?? '—').replaceAll(
-															'_',
-															' ',
+											{config.thumbnail &&
+											field.name === config.columns[0].name ? (
+												<span className={thumbnailStyles.identity}>
+													<RecordThumbnail
+														image={
+															Array.isArray(record[config.thumbnail.image])
+																? record[config.thumbnail.image][0]
+																: record[config.thumbnail.image]
+														}
+														name={String(
+															record[config.thumbnail.name] ||
+																record[field.name] ||
+																'',
 														)}
-										</>}
+														portrait={config.thumbnail.portrait}
+													/>
+													<span>{String(record[field.name] ?? '—')}</span>
+												</span>
+											) : (
+												<>
+													{['appointmentCode', 'orderCode'].includes(field.name) ? recordReference(record[field.name]) : field.name === 'docReportFollowUp' && ['NONE', 'OPTIONAL', 'REQUIRED'].includes(record[field.name]) ? t(({ NONE: 'staff.none', OPTIONAL: 'staff.optional', REQUIRED: 'staff.required' } as const)[record[field.name] as 'NONE' | 'OPTIONAL' | 'REQUIRED']) : field.name === 'bookingOrderStatus'
+														? settlementLabel(record[field.name])
+														: field.name === 'appointmentStatus' &&
+															  appointmentStatusKeys[
+																	record[field.name] as AppointmentStatus
+															  ]
+															? t(
+																	appointmentStatusKeys[
+																		record[field.name] as AppointmentStatus
+																	],
+																)
+															: [
+																		'startsAt',
+																		'endsAt',
+																		'requestedStartAt',
+                                                        'visitAt',
+																  ].includes(field.name) &&
+																  record[field.name] &&
+																  Number.isFinite(
+																		new Date(record[field.name]).getTime(),
+																  )
+																? clinicDateTime(
+																		record[field.name],
+																		'en-US',
+																		clinic.timeZone,
+																	)
+																: Array.isArray(record[field.name])
+																	? field.type === 'calendar-dates'
+																		? record[field.name].length
+																			? record[field.name]
+																					.slice(0, 3)
+																					.join(', ') +
+																				(record[field.name].length > 3
+																					? ` (+${record[field.name].length - 3})`
+																					: '')
+																			: w('schedule')
+																		: record[field.name].join(', ')
+																	: typeof record[field.name] === 'boolean'
+																		? record[field.name]
+																			? '✓'
+																			: '—'
+																		: String(
+																				record[field.name] ?? '—',
+																			).replaceAll('_', ' ')}
+												</>
+											)}
 										</td>
 									))}
 									<td>

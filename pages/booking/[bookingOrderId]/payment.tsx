@@ -1,3 +1,5 @@
+import { recordReference } from '@/libs/components/workspace/recordPresentation';
+import EximbayTestCard from '@/libs/payments/EximbayTestCard';
 import BookingPromoCode from '@/libs/components/booking/BookingPromoCode';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -82,10 +84,9 @@ function PaymentPage() {
 			{checkout.loading && !state && <p role="status">{w('paymentChecking')}</p>}
 			{(checkout.error || (router.isReady && !valid)) && <p role="alert">{checkout.error?.message || w('paymentUnavailable')}</p>}
 			{state && <>
-				<h2>{w('bookingSummary')}</h2><p>{state.order.orderCode}</p>
+				<h2>{w('bookingSummary')}</h2><p>{recordReference(state.order.orderCode)}</p>
 				{state.order.bookingOrderItems.map((line) => <div className="clinical-booking-review" key={`${line.serviceId}:${line.doctorId}`}><div><h3>{line.serviceName}</h3><p>{clinicDateTime(line.requestedStartAt, locale, clinic.timeZone)}</p><small>{w('clinicTime')} · {clinic.timeZone}</small></div><strong>{formatMoney(line.servicePrice, state.order.bookingOrderCurrency)}</strong></div>)}
 				<BookingPromoCode state={state} disabled={busy} onApplied={() => checkout.refetch()} />
-				<p className="checkout-total">{w('total')}: <strong>{formatMoney(state.order.bookingOrderTotalAmount, state.order.bookingOrderCurrency)}</strong></p>
 				{unavailable && <p role="status">{w('status')}: {state.order.bookingOrderStatus}</p>}
 				{!unavailable && !cashBooked && !(allPaid && allReserved) && pendingOnline.length === 0 && <>
 					<fieldset className="checkout-methods" disabled={busy}><legend>{w('choosePayment')}</legend>
@@ -95,6 +96,7 @@ function PaymentPage() {
 					{(options.error || mode === 'DISABLED') && <p role="status">{w('onlineTestDisabled')}</p>}
 					<button type="button" className="clinical-primary-button" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED' || requiresCashConfirmation))} onClick={() => void submit()}>{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
 				</>}
+				{!unavailable && !allPaid && !cashBooked && (provider === 'EXIMBAY' || pendingOnline.length > 0) && <EximbayTestCard mode={mode} />}
 				{pendingOnline.length > 0 && !unavailable && <div className="checkout-online"><h3>{w('eximbayTest')}</h3><p>{w('paymentSandbox')}</p><p>{w('paymentHold')}</p>
 					{mode === 'SIMULATED' && pendingOnline.every((payment) => payment.testPayment) ? <><p>{w('localPaymentTest')}</p><div className="clinical-resource-actions"><button className="clinical-primary-button" type="button" disabled={busy} onClick={() => void testPayment('PAID')}>{w('testPaySuccess')}</button><button type="button" disabled={busy} onClick={() => void testPayment('FAILED')}>{w('testPayFailure')}</button><button type="button" disabled={busy} onClick={() => void testPayment('CANCELLED')}>{w('cancel')}</button></div></> : mode === 'SANDBOX' ? <>{eximbay.error && <p role="alert">{eximbay.error}</p>}{pendingOnline.map((payment) => <button type="button" key={payment._id} disabled={busy || !eximbay.ready} onClick={() => void openSandbox(payment._id)}>{w('pay')} · {formatMoney(payment.paymentAmount, payment.paymentCurrency)}</button>)}</> : <p role="alert">{w('onlineTestDisabled')}</p>}
 				</div>}

@@ -1,3 +1,5 @@
+import EximbayTestCard from '@/libs/payments/EximbayTestCard';
+import { BOOKING_OPTIONS } from '@/apollo/booking/checkout';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
@@ -11,6 +13,7 @@ import { useWorkspaceText } from './useWorkspaceText';
 
 export default function PatientPayments() {
 	const w = useWorkspaceText();
+	const options = useQuery(BOOKING_OPTIONS);
 	const [selected, setSelected] = useState<RecordItem | null>(null);
 
 
@@ -49,7 +52,7 @@ export default function PatientPayments() {
 					</header>
 					{detail.error && <p role="alert">{detail.error.message}</p>}
 
-					{selected.paymentProvider === 'EXIMBAY' && <p>{w('paymentSandbox')}</p>}
+					{selected.paymentProvider === 'EXIMBAY' && <><p>{w('paymentSandbox')}</p><EximbayTestCard mode={options.data?.getBookingPaymentOptions.onlineMode} /></>}
 
 					{payment && (
 						<>

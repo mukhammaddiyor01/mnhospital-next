@@ -8,6 +8,7 @@ export const GET_PROMO_CODES = gql`
 				discountType
 				discountValue
 				currency
+				showOnHomepage
 				isActive
 				minSubtotal
 				startsAt
@@ -73,10 +74,17 @@ export const ADMIN_DISCOUNT_SERVICES = gql`
 				servicePrice
 				serviceDiscountPercent
 				serviceStatus
+				serviceImages
 			}
 			metaCounter {
 				total
 			}
 		}
 	}
+`;
+
+export const GET_PUBLIC_PROMO_OFFERS = gql`
+ query GetPublicPromoOffers {
+  getPublicPromoOffers { _id code discountType discountValue currency minSubtotal serviceIds expiresAt }
+ }
 `;

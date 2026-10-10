@@ -1,6 +1,17 @@
-import { ServiceRoom, ServiceRoomName, ServiceStatus, ServiceType } from '../enums/service.enum';
+import {
+	ServiceRoom,
+	ServiceRoomName,
+	ServiceStatus,
+	ServiceType,
+} from '../enums/service.enum';
 
 export interface Service {
+	packageBaseServiceId?: string | null;
+	packageRegularPrice?: number | null;
+	packageItems?:
+		| { serviceId: string; title: string; price: number; duration: number }[]
+		| null;
+
 	_id: string;
 	serviceName: string;
 	departmentId: string;
@@ -33,6 +44,8 @@ export interface ServicesInquiry {
 	sort?: string;
 	direction?: 'ASC' | 'DESC';
 	search: {
+		discountedOnly?: boolean;
+		priceRange?: { start: number; end: number };
 		memberId?: string;
 	departmentId?: string;
 	serviceTypeList?: ServiceType[];

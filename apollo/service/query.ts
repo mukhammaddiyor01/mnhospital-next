@@ -11,17 +11,31 @@ export const GET_SERVICES = gql`
 				serviceStatus
 				serviceRoomName
 				serviceTitle
-				servicePrice serviceDiscountPercent
+				servicePrice
+				serviceDiscountPercent
 				serviceViews
 				serviceLikes
 				serviceRank
 				serviceImages
 				serviceDesc
 				serviceDuration
-				memberData { _id docFullName docSpecialty docImage docExperience docPoints }
-				meLiked { memberId likeRefId myFavorite }
+				memberData {
+					_id
+					docFullName
+					docSpecialty
+					docImage
+					docExperience
+					docPoints
+				}
+				meLiked {
+					memberId
+					likeRefId
+					myFavorite
+				}
 			}
-			metaCounter { total }
+			metaCounter {
+				total
+			}
 		}
 	}
 `;
@@ -29,10 +43,47 @@ export const GET_SERVICES = gql`
 export const GET_SERVICE = gql`
 	query GetService($serviceId: String!) {
 		getService(serviceId: $serviceId) {
-			_id serviceName departmentId serviceType serviceStatus serviceRoomName serviceRoom serviceTitle servicePrice serviceDiscountPercent
-			serviceViews serviceLikes serviceComments serviceRank serviceImages serviceDesc serviceDuration memberId
-			memberData { _id memberStatus docFullName docSpecialty docImage docExperience docPoints docPatients }
-			meLiked { memberId likeRefId myFavorite }
+			_id
+			packageBaseServiceId
+			packageRegularPrice
+			packageItems {
+				serviceId
+				title
+				price
+				duration
+			}
+			serviceName
+			departmentId
+			serviceType
+			serviceStatus
+			serviceRoomName
+			serviceRoom
+			serviceTitle
+			servicePrice
+			serviceDiscountPercent
+			serviceViews
+			serviceLikes
+			serviceComments
+			serviceRank
+			serviceImages
+			serviceDesc
+			serviceDuration
+			memberId
+			memberData {
+				_id
+				memberStatus
+				docFullName
+				docSpecialty
+				docImage
+				docExperience
+				docPoints
+				docPatients
+			}
+			meLiked {
+				memberId
+				likeRefId
+				myFavorite
+			}
 		}
 	}
 `;
@@ -40,8 +91,20 @@ export const GET_SERVICE = gql`
 export const GET_RECOMMENDED_SERVICES = gql`
 	query GetRecommendedServices($serviceId: String!, $limit: Int) {
 		getRecommendedServices(serviceId: $serviceId, limit: $limit) {
-			list { _id serviceTitle servicePrice serviceDiscountPercent serviceImages serviceType serviceDesc serviceLikes serviceViews }
-			metaCounter { total }
+			list {
+				_id
+				serviceTitle
+				servicePrice
+				serviceDiscountPercent
+				serviceImages
+				serviceType
+				serviceDesc
+				serviceLikes
+				serviceViews
+			}
+			metaCounter {
+				total
+			}
 		}
 	}
 `;
@@ -49,8 +112,16 @@ export const GET_RECOMMENDED_SERVICES = gql`
 export const GET_VISITED_SERVICES = gql`
 	query GetVisitedServices($input: OrdinaryInquiry!) {
 		getVisited(input: $input) {
-			list { _id serviceTitle serviceDesc serviceType serviceImages }
-			metaCounter { total }
+			list {
+				_id
+				serviceTitle
+				serviceDesc
+				serviceType
+				serviceImages
+			}
+			metaCounter {
+				total
+			}
 		}
 	}
 `;
@@ -58,18 +129,50 @@ export const GET_VISITED_SERVICES = gql`
 export const GET_FAVORITE_SERVICES = gql`
 	query GetFavoriteServices($input: OrdinaryInquiry!) {
 		getFavorites(input: $input) {
-			list { _id serviceTitle serviceDesc serviceType serviceImages }
-			metaCounter { total }
+			list {
+				_id
+				serviceTitle
+				serviceDesc
+				serviceType
+				serviceImages
+			}
+			metaCounter {
+				total
+			}
 		}
 	}
 `;
 
 export const GET_SERVICE_BOOKING_OPTIONS = gql`
- query GetServiceBookingOptions($input: ServicesInquiry!) {
-  getServices(input: $input) {
-   list { _id memberId departmentId serviceType serviceStatus serviceTitle serviceName servicePrice serviceDiscountPercent serviceDuration
-    memberData { _id memberStatus } }
-   metaCounter { total }
-  }
- }
+	query GetServiceBookingOptions($serviceId: String!) {
+		getServiceBookingOptions(serviceId: $serviceId) {
+			list {
+				_id
+				memberId
+				departmentId
+				serviceType
+				serviceStatus
+				serviceTitle
+				serviceName
+				servicePrice
+				serviceDiscountPercent
+				serviceDuration
+				packageBaseServiceId
+				packageRegularPrice
+				packageItems {
+					serviceId
+					title
+					price
+					duration
+				}
+				memberData {
+					_id
+					memberStatus
+				}
+			}
+			metaCounter {
+				total
+			}
+		}
+	}
 `;

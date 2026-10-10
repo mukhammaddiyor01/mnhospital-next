@@ -1,0 +1,119 @@
+// MN Hospital's account record: identity first, details in a readable ledger.
+// Scoped to profiles; catalogs, booking and workspace navigation stay untouched.
+.mn-profile-page-heading { padding: 8px 0 24px; }
+.mn-profile-page-heading .clinical-crumb { margin-bottom: 12px; }
+.mn-profile-page-heading h1 { margin: 0; color: var(--clinical-navy); font: 750 30px/1.25 'Manrope', sans-serif; letter-spacing: -.035em; }
+.mn-profile-page-heading > p { max-width: 60ch; margin: 10px 0 0; color: var(--clinical-muted); font-size: 14px; line-height: 1.65; }
+.mn-patient-profile-layout { display: grid; gap: 24px; }
+.mn-profile-record { gap: 16px; margin: 0; }
+.mn-profile-record .clinical-staff-profile-card { display: block; overflow: hidden; border: 1px solid var(--profile-line); border-top: 3px solid var(--profile-accent); border-radius: 12px; background: var(--profile-panel); box-shadow: none; }
+.mn-profile-record .clinical-staff-profile-identity { display: flex; flex-direction: row; align-items: flex-start; gap: 24px; padding: 28px 28px 24px; text-align: left; border: 0; background: var(--profile-panel); }
+.mn-profile-record .clinical-staff-profile-photo { flex: none; width: 96px; height: 112px; border-radius: 10px; font-size: 32px; background-color: var(--profile-alt); box-shadow: none; }
+.mn-profile-name { flex: 1; min-width: 0; }
+.mn-profile-record .clinical-staff-profile-identity h2 { margin: 2px 0 6px; color: var(--profile-text); font: 750 28px/1.25 'Manrope', sans-serif; letter-spacing: -.04em; overflow-wrap: anywhere; }
+.mn-profile-record .clinical-staff-profile-identity p { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 0; color: var(--profile-muted); font-size: 13px; line-height: 1.5; }
+.mn-profile-record .mn-profile-role { display: inline; width: auto; margin: 0; padding: 0 0 0 12px; border: 0; border-left: 1px solid var(--profile-line); border-radius: 0; background: transparent; color: var(--profile-accent); font-size: 13px; font-weight: 600; }
+.mn-profile-record .clinical-staff-profile-actions { flex: none; margin: 0; align-self: flex-start; }
+.mn-profile-record .clinical-staff-profile-actions button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 10px 14px; color: var(--profile-text); border: 1px solid var(--profile-line); border-radius: 8px; background: var(--profile-panel); font-size: 13px; }
+.mn-profile-record .clinical-staff-profile-actions .material-symbols-rounded { font-size: 18px; }
+.mn-profile-record .mn-follow-counts { width: auto; max-width: 100%; margin-top: 16px; gap: 24px; border: 0; border-radius: 0; background: transparent; overflow: visible; }
+.mn-profile-record .mn-follow-counts > button { flex: none; justify-content: flex-start; gap: 7px; min-width: 0; min-height: 36px; padding: 4px 0; border: 0; }
+.mn-profile-record .mn-follow-counts strong { font-size: 19px; }
+.mn-profile-record .mn-follow-counts > button:hover > span { color: var(--profile-accent); text-decoration: underline; }
+.mn-profile-record .mn-follow-counts > button:hover { background: transparent; }
+.mn-profile-record .mn-follow-counts > button:focus-visible { outline-offset: 4px; }
+.mn-profile-record .mn-profile-details { padding: 24px 28px 12px; border-top: 1px solid var(--profile-line); }
+.mn-profile-record .mn-profile-details > h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.02em; }
+.mn-profile-record .clinical-staff-profile-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
+.mn-profile-record .clinical-staff-profile-facts > div { min-width: 0; padding: 16px 0; border-bottom: 1px solid var(--profile-line); }
+.mn-profile-record .clinical-staff-profile-facts > div:last-child { border-bottom: 0; }
+.mn-profile-record .clinical-staff-profile-facts dt { text-transform: none; letter-spacing: 0; color: var(--profile-muted); font-size: 12px; }
+.mn-profile-record .clinical-staff-profile-facts dd { margin: 6px 0 0; color: var(--profile-text); font-size: 15px; font-weight: 500; line-height: 1.65; overflow-wrap: anywhere; max-width: 70ch; }
+.mn-profile-record .mn-profile-panel { border-radius: 10px; padding: 24px 28px; }
+.mn-profile-record .mn-profile-section-heading { align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.mn-profile-record .mn-profile-section-heading > .material-symbols-rounded { width: 24px; height: 28px; border: 0; border-radius: 0; background: transparent; font-size: 22px; }
+.mn-profile-record .mn-profile-section-heading h2, .mn-profile-record .mn-profile-section-heading strong { font-size: 17px; }
+.mn-profile-record .mn-profile-security { padding-top: 18px; padding-bottom: 18px; }
+.mn-profile-record .mn-profile-security > summary { min-height: 38px; }
+.mn-profile-record .mn-profile-security .mn-profile-section-heading { margin-bottom: 0; }
+.mn-profile-record .mn-profile-security small { margin-top: 4px; font-size: 12px; }
+.mn-profile-record .mn-profile-panel .clinical-staff-profile-form { gap: 18px 24px; }
+.mn-profile-record .mn-profile-upload { padding: 18px; }
+.mn-profile-record .clinical-staff-profile-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+.mn-profile-record .clinical-staff-profile-buttons button { width: auto; min-width: 110px; }
+.mn-profile-record .mn-profile-assignment { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mn-profile-navigation { display: flex; gap: 24px; flex-wrap: wrap; padding: 0 28px; border-top: 1px solid var(--profile-line); }
+.mn-profile-navigation a { min-height: 52px; display: inline-flex; align-items: center; color: var(--profile-muted); font-size: 12px; font-weight: 600; border-bottom: 2px solid transparent; }
+.mn-profile-navigation a:hover, .mn-profile-navigation a:focus-visible { color: var(--profile-accent); border-bottom-color: var(--profile-accent); }
+.mn-my-profile-page :is(#account-details, #medical-details, #care-services, #profile-activity) { scroll-margin-top: 152px; }
+.mn-medical-record.clinical-inner-section { margin: 0; padding: 24px 28px; border-radius: 12px; box-shadow: none; gap: 22px; }
+.mn-medical-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.mn-medical-heading h2, .mn-profile-activity > h2 { margin: 0; color: var(--clinical-navy); font: 700 19px/1.4 'Manrope', sans-serif; letter-spacing: -.025em; }
+.mn-medical-heading p { max-width: 60ch; margin: 6px 0 0; color: var(--clinical-muted); font-size: 13px; line-height: 1.6; }
+.mn-medical-heading button { display: inline-flex; align-items: center; gap: 8px; flex: none; background: var(--mn-card); }
+.mn-medical-heading button .material-symbols-rounded { font-size: 18px; }
+.mn-medical-identity { display: flex; gap: 12px; align-items: center; padding: 16px 0; border-top: 1px solid var(--clinical-line); border-bottom: 1px solid var(--clinical-line); }
+.mn-medical-identity .clinical-profile-large { width: 42px; height: 48px; flex-basis: 42px; border-radius: 6px; font-size: 16px; background-color: var(--clinical-primary-soft); color: var(--clinical-primary); box-shadow: none; }
+.mn-medical-identity > div { min-width: 0; flex: 1; }
+.mn-medical-identity strong { color: var(--clinical-navy); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.mn-medical-identity p { margin: 3px 0 0; color: var(--clinical-muted); font-size: 12px; overflow-wrap: anywhere; }
+.mn-medical-status { align-self: flex-start; color: var(--clinical-primary); font-size: 11px; padding: 5px 0; }
+.mn-medical-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 24px; margin: 0; }
+.mn-medical-facts > div { min-width: 0; }
+.mn-medical-facts dt { margin: 0 0 6px; color: var(--clinical-muted); font-size: 12px; }
+.mn-medical-facts dd { margin: 0; color: var(--clinical-navy); font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }
+.mn-medical-facts .mn-medical-wide { grid-column: 1 / -1; padding-top: 18px; border-top: 1px solid var(--clinical-line); }
+.mn-medical-privacy { color: var(--clinical-muted); font-size: 12px; line-height: 1.6; }
+.mn-medical-record .clinical-patient-form > h2 { font-size: 18px; }
+.mn-medical-record .clinical-patient-form { padding: 22px 0 0; border-top: 1px solid var(--clinical-line); }
+.mn-medical-record .clinical-photo-row { flex-wrap: wrap; }
+.mn-medical-record .clinical-photo-row input { max-width: 100%; }
+.mn-care-section { padding: 24px 28px 12px; border: 1px solid var(--clinical-line); border-radius: 12px; background: var(--mn-card); }
+.mn-care-section .clinical-mypage-grid { gap: 0 28px; margin-top: 18px; }
+.mn-care-section .clinical-mypage-grid > a { min-height: 78px; padding: 16px 0; gap: 12px; border: 0; border-top: 1px solid var(--clinical-line); border-radius: 0; background: transparent; box-shadow: none; transform: none; }
+.mn-care-section .clinical-mypage-grid > a:hover { background: transparent; box-shadow: none; transform: none; }
+.mn-care-section .clinical-mypage-grid > a > .material-symbols-rounded:first-child { width: 26px; height: 32px; background: transparent; border-radius: 0; font-size: 23px; }
+.mn-care-section .clinical-mypage-grid h3 { margin: 0; font-size: 14px; line-height: 1.5; }
+.mn-care-section .clinical-mypage-grid p { margin-top: 4px; font-size: 12px; line-height: 1.6; }
+.mn-profile-activity.clinical-inner-section { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 24px 28px; margin: 0; border-radius: 12px; box-shadow: none; gap: 18px 28px; }
+.mn-profile-activity > h2 { grid-column: 1 / -1; }
+.mn-profile-activity > div h3 { margin: 0 0 12px; color: var(--clinical-navy); font: 600 14px/1.5 'Manrope', sans-serif; }
+.mn-profile-activity .clinical-profile-list { grid-template-columns: 1fr; gap: 0; }
+.mn-profile-activity .clinical-profile-list a { min-width: 0; padding: 14px 0; border: 0; border-top: 1px solid var(--clinical-line); border-radius: 0; box-shadow: none; background: transparent; }
+.mn-profile-activity .clinical-profile-list a:hover { box-shadow: none; }
+.mn-profile-activity .clinical-profile-list strong { font-size: 14px; }
+.mn-profile-activity .clinical-profile-list span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; font-size: 12px; line-height: 1.6; }
+.mn-profile-signout { padding: 4px 0; }
+.mn-profile-signout button { display: flex; align-items: center; gap: 12px; padding: 12px 0; color: var(--clinical-muted); border: 0; background: transparent; text-align: left; cursor: pointer; }
+.mn-profile-signout h3 { margin: 0; color: var(--clinical-secondary); font-size: 13px; font-weight: 600; }
+.mn-profile-signout p { margin: 4px 0 0; font-size: 12px; }
+.mn-profile-signout button > .material-symbols-rounded:last-child { display: none; }
+@media (max-width: 680px) {
+  .mn-profile-page-heading { padding-top: 0; padding-bottom: 20px; }
+  .mn-profile-page-heading h1 { font-size: 25px; }
+  .mn-patient-profile-layout { gap: 18px; }
+  .mn-profile-record .clinical-staff-profile-identity { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 18px 16px; padding: 22px; }
+  .mn-profile-record .clinical-staff-profile-photo { grid-row: auto; width: 70px; height: 84px; font-size: 26px; }
+  .mn-profile-record .clinical-staff-profile-identity h2 { font-size: 23px; }
+  .mn-profile-record .clinical-staff-profile-identity p { display: flex; gap: 6px 10px; }
+  .mn-profile-record .mn-profile-role { padding-left: 10px; font-size: 12px; }
+  .mn-profile-record .mn-follow-counts { flex-wrap: wrap; gap: 4px 18px; margin-top: 10px; }
+  .mn-profile-record .mn-follow-counts > button { gap: 5px; min-height: 44px; }
+  .mn-profile-record .mn-follow-counts strong { font-size: 17px; }
+  .mn-profile-record .mn-follow-counts > button > span { font-size: 11px; }
+  .mn-profile-record .clinical-staff-profile-actions { grid-column: 1 / -1; margin: 0; }
+  .mn-profile-record .clinical-staff-profile-actions button { min-height: 44px; }
+  .mn-profile-record .mn-profile-details, .mn-profile-record .mn-profile-panel { padding: 22px; }
+  .mn-profile-record .clinical-staff-profile-facts { grid-template-columns: 1fr; gap: 0; }
+  .mn-profile-record .clinical-staff-profile-facts > div { padding: 14px 0; }
+  .mn-profile-record .clinical-staff-profile-buttons button { min-width: 0; flex: 1; }
+  .mn-profile-record .mn-profile-assignment { grid-template-columns: 1fr; }
+  .mn-profile-navigation { padding: 0 22px; gap: 0 18px; }
+  .mn-profile-navigation a { min-height: 44px; font-size: 11px; }
+  .mn-medical-record.clinical-inner-section, .mn-care-section, .mn-profile-activity.clinical-inner-section { padding: 22px; }
+  .mn-medical-heading { flex-wrap: wrap; }
+  .mn-medical-heading h2, .mn-profile-activity > h2 { font-size: 18px; }
+  .mn-medical-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .mn-profile-activity.clinical-inner-section, .mn-care-section .clinical-mypage-grid { grid-template-columns: 1fr; }
+  .mn-profile-signout p { max-width: 44ch; }
+}

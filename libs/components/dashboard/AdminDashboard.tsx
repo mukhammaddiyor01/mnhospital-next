@@ -1,3 +1,4 @@
+import { useServiceOptionText } from '@/libs/components/workspace/useServiceOptionText';
 import { usePromotionText } from '@/libs/components/workspace/usePromotionText';
 import { operation } from '@/apollo/workspace/operations';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
@@ -20,6 +21,7 @@ const PROFILE = operation(
 const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
 	const t = useTranslation();
 	const promoText = usePromotionText();
+	const optionText = useServiceOptionText();
 	const w = useWorkspaceText();
 	const profile = useQuery(PROFILE, { fetchPolicy: 'network-only' });
 	const [profileOpen, setProfileOpen] = useState(false);
@@ -75,6 +77,7 @@ const AdminDashboard = ({ stats }: { stats: AdminDashboardStats }) => {
 		},
 	];
 	const shortcuts = [
+		{ href: '/admin/services?view=options', icon: 'format_list_bulleted', label: optionText.title },
 		{ href: '/admin/promo-codes', icon: 'sell', label: promoText.promotions },
 		{ href: '/admin/doctors', icon: 'stethoscope', label: t('nav.doctors') },
 		{

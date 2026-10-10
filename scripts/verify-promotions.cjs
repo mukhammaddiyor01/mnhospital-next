@@ -6,9 +6,9 @@ check(servicePriceForDisplay({servicePrice:100,serviceDiscountPercent:33.33},'KR
 check(servicePriceForDisplay({servicePrice:100,serviceDiscountPercent:33.33},'UZS')===66.67);
 check(servicePriceForDisplay({servicePrice:100,serviceDiscountPercent:100},'KRW')===0);
 check(servicePriceForDisplay({servicePrice:100},'KRW')===100);
-let mutations=0;const text={promotions:'Promo codes',subtotal:'Subtotal',serviceDiscount:'Service discount',promoDiscount:'Promo discount',applied:'Applied promo',remove:'Remove',code:'Promo code',apply:'Apply code',locked:'Locked'};
+let mutations=0;const text={promotions:'Promo codes',subtotal:'Subtotal',serviceDiscount:'Service discount',promoDiscount:'Promo discount',applied:'Applied promo',remove:'Remove',code:'Promo code',apply:'Apply code',locked:'Locked',checkoutTitle:'Payment summary',total:'Total',haveCode:'Have a promo code?',saving:'Saving',checkoutHelp:'Apply before payment'};
 const filename=root+'/libs/components/booking/BookingPromoCode.tsx',component=new Module(filename,module);component.filename=filename;component.paths=Module._nodeModulePaths(root);
-const stubs={'@apollo/client':{useMutation:()=>[()=>{mutations++},{loading:false}]},'@/apollo/promotion/operations':{APPLY_BOOKING_PROMO:{}},'../workspace/usePromotionText':{usePromotionText:()=>text}};
+const stubs={'@apollo/client':{useMutation:()=>[()=>{mutations++},{loading:false}],useReactiveVar:()=>({_id:'fixture-patient',memberType:'MEMBER'})},'@/apollo/promotion/operations':{APPLY_BOOKING_PROMO:{}},'@/apollo/store':{userVar:{}},'../common/Icon':({name})=>React.createElement('span',{'aria-hidden':true},name),'../promotions/Promotions.module.scss':new Proxy({},{get:(_,name)=>name}),'../workspace/usePromotionText':{usePromotionText:()=>text}};
 component.require=name=>Object.hasOwn(stubs,name)?stubs[name]:Module.prototype.require.call(component,name);
 component._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText,filename);
 const Control=component.exports.default;
@@ -19,5 +19,19 @@ html=render({...state,order:{...state.order,promoCode:'VISIT10'}});check(html.in
 html=render({...state,order:{...state.order,pricingLockedAt:new Date().toISOString()}});check(!html.includes('<form'));check(html.includes('Locked'));
 html=render({...state,payments:[{paymentStatus:'PENDING'}]});check(!html.includes('<form'));
 html=render({...state,order:{...state.order,pricingVersion:undefined}});check(!html.includes('<form'));
-check(mutations===0);
+check(mutations===0);check(html.includes('72 KRW'));
+const discovery=require('../libs/components/service/service-discovery.ts');
+const base=discovery.emptyServiceFilters;
+check(discovery.validPriceRange({...base,min:'0',max:'0'}));
+for(const patch of [{min:'-1'},{max:'NaN'},{min:'200',max:'100'},{min:'1000000001'},{min:'0.001'}])check(!discovery.validPriceRange({...base,...patch}));
+const filter={...base,text:' [check] ',category:'CONSULTATION',min:'100',max:'200',sort:'low',discounted:true};
+const inquiry=discovery.serviceInquiry(filter,2);check(inquiry.page===2&&inquiry.limit===6&&inquiry.sort==='servicePrice'&&inquiry.direction==='ASC');
+check(inquiry.search.text==='[check]'&&inquiry.search.discountedOnly===true&&inquiry.search.serviceTypeList[0]==='CONSULTATION');
+check(inquiry.search.priceRange.start===100&&inquiry.search.priceRange.end===200);
+const restored=discovery.filtersFromQuery(discovery.filtersToQuery(filter,2));check(restored.text==='[check]'&&restored.discounted&&restored.min==='100'&&restored.sort==='low');
+check(discovery.filtersFromQuery({category:'INVALID',sort:'toString',q:['bad'],min:'200',max:'100'}).sort==='recommended');
+check(discovery.filtersFromQuery({category:'INVALID',min:'200',max:'100'}).min==='');
+check(discovery.serviceInquiry({...base,max:'0'}).search.priceRange.end===0);
+check(!Object.hasOwn(discovery.serviceInquiry(base).search,'discountedOnly'));
+
 console.log(`PROMOTIONS_UI_VERIFIED ${checks} checks`);

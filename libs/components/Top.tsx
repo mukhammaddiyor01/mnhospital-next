@@ -1,3 +1,5 @@
+import { UnreadLink } from './notification/UnreadBadge';
+import Icon from './common/Icon';
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent } from "react";
@@ -15,6 +17,7 @@ const Top = () => {
   const router = useRouter();
   const user = useReactiveVar(userVar);
   const t = useTranslation();
+  const workspace = user.memberType === MemberType.ADMIN ? '/admin' : user.memberType === MemberType.DOCTOR ? '/doctor-workspace' : user.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace' : '/mypage';
   const isHome = router.pathname === "/";
   const isStaffSignIn = ['/account/admin-signin', '/account/doctor-signin', '/account/receptionist-signin'].includes(router.pathname);
 
@@ -39,7 +42,7 @@ const Top = () => {
     "MN";
 
   return (
-    <header className={`clinical-header ${isHome ? "has-search" : ""}`}>
+    <header className={`clinical-header ${isHome ? "has-search" : ""} ${user._id ? "has-inbox" : ""}`}>
       <div className="clinical-header-inner">
         <MnLogo />
         {isHome ? (
@@ -58,6 +61,10 @@ const Top = () => {
           <Link className="clinical-book-top" href="/appointment">
             {t('nav.book')}
           </Link>
+          {user._id && <>
+            <UnreadLink kind="messages" href={`${workspace}/messages`} label={t('messages.title')}><Icon name="mail" /></UnreadLink>
+            <UnreadLink kind="notifications" href={`${workspace}/notifications`} label={t('notifications.title')}><Icon name="notifications" /></UnreadLink>
+          </>}
           {user._id ? (
             <Link
               className="clinical-profile"

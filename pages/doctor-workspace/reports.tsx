@@ -1,10 +1,20 @@
+import reportStyles from '@/libs/components/workspace/DoctorReportForm.module.scss';
+import { useEffect } from 'react';
+import Link from 'next/link';
+import { recordReference } from '@/libs/components/workspace/recordPresentation';
+import { clinicDateTime } from '@/libs/payments/clinic';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
+import { useLiveWorkspaceRefresh } from '@/libs/hooks/useLiveWorkspaceRefresh';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { operation } from '@/apollo/workspace/operations';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
-import { GET_DOCTOR_REPORTS } from '@/apollo/staff-workspace/query';
+import {
+	GET_DOCTOR_REPORTS,
+	GET_REPORT_APPOINTMENTS,
+} from '@/apollo/staff-workspace/query';
 import {
 	CREATE_DOCTOR_REPORT,
 	UPDATE_DOCTOR_REPORT,
@@ -29,7 +39,14 @@ const LIMIT = 10;
 export default function DoctorReports() {
 	const t = useTranslation();
 	const w = useWorkspaceText();
+	const clinic = useClinicSettings();
+	const [choicePage, setChoicePage] = useState(1);
+	const [chosenAppointment, chooseAppointment] = useState('');
 	const router = useRouter();
+	const appointmentId =
+		typeof router.query.appointmentId === 'string'
+			? router.query.appointmentId
+			: '';
 	const session = useReactiveVar(userVar);
 	const [page, setPage] = useState(1);
 	const [feedback, setFeedback] = useState('');
@@ -47,6 +64,25 @@ export default function DoctorReports() {
 		skip: !session._id || session.memberType !== MemberType.DOCTOR,
 		fetchPolicy: 'network-only',
 	});
+	const choices = useQuery(GET_REPORT_APPOINTMENTS, {
+		variables: {
+			input: {
+				page: appointmentId ? 1 : choicePage,
+				limit: 20,
+				...(appointmentId ? { appointmentId } : {}),
+			},
+		},
+		skip: !session._id || session.memberType !== MemberType.DOCTOR,
+		fetchPolicy: 'network-only',
+	});
+	const visits = choices.data?.getMyDoctorReportAppointments.list ?? [];
+	useLiveWorkspaceRefresh(
+		async () => {
+			await refetch();
+			await choices.refetch();
+		},
+		Boolean(session._id && session.memberType === MemberType.DOCTOR),
+	);
 	const detail = useQuery(DETAIL, {
 		variables: { reportId: editing?._id ?? '' },
 		skip: !editing || session.memberType !== MemberType.DOCTOR,
@@ -57,18 +93,57 @@ export default function DoctorReports() {
 	const [updateReport, updateState] = useMutation(UPDATE_DOCTOR_REPORT);
 	const list = data?.getMyDoctorReports.list ?? [];
 	const total = data?.getMyDoctorReports.metaCounter?.[0]?.total ?? 0;
-	const appointmentId =
-		typeof router.query.appointmentId === 'string'
-			? router.query.appointmentId
-			: '';
+
+	useEffect(() => {
+		if (appointmentId) {
+			chooseAppointment(appointmentId);
+			setChoicePage(1);
+			setEditing(null);
+			setFeedback('');
+		}
+	}, [appointmentId]);
+	useEffect(() => {
+		const reportId =
+			typeof router.query.reportId === 'string' ? router.query.reportId : '';
+		if (reportId) setEditing({ _id: reportId } as DoctorReport);
+	}, [router.query.reportId]);
+	useEffect(() => {
+		if (current?.docReportFollowUp)
+			setEditingFollowUp(current.docReportFollowUp);
+	}, [current?._id]);
+	const chosenVisit = visits.find(
+		(visit: any) => visit._id === chosenAppointment,
+	);
+	// Appointment links open the report that already belongs to this visit.
+	// Keep the visit picker for creating a report for a different appointment.
+	useEffect(() => {
+		if (!appointmentId || choices.loading || choices.error || !chosenVisit?.reportId) return;
+		void router.replace(
+			{ pathname: '/doctor-workspace/reports', query: { reportId: chosenVisit.reportId } },
+			undefined,
+			{ shallow: true },
+		);
+	}, [appointmentId, chosenVisit?.reportId, choices.loading, choices.error, router]);
+	useEffect(() => {
+		if (editing && current?._id === editing._id) {
+			document.getElementById('doctor-report-editor')?.scrollIntoView({ block: 'start' });
+		}
+	}, [editing?._id, current?._id]);
 	const submit = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setFeedback('');
+		if (
+			!chosenVisit ||
+			chosenVisit.reportId ||
+			choices.loading ||
+			choices.error
+		)
+			return;
 		const form = event.currentTarget;
 		const values = new FormData(form);
 		const followUpDate = String(values.get('followUpDate') ?? '');
 		const input = {
-			appointmentId: String(values.get('appointmentId') ?? '').trim(),
+			appointmentId: chosenAppointment,
 			docReportSymptoms: String(values.get('symptoms') ?? '').trim(),
 			docReportDiagnosis: String(values.get('diagnosis') ?? '').trim(),
 			docReportMedication: String(values.get('medication') ?? '').trim(),
@@ -87,6 +162,8 @@ export default function DoctorReports() {
 		};
 		try {
 			await createReport({ variables: { input } });
+			chooseAppointment('');
+			await choices.refetch();
 			form.reset();
 			setFollowUp('NONE');
 			setPage(1);
@@ -145,18 +222,67 @@ export default function DoctorReports() {
 				<p className="clinical-staff-state">
 					{t('staff.reportOnlyAfterVisit')}
 				</p>
+				<AdminPagination
+					page={appointmentId ? 1 : choicePage}
+					total={
+						choices.data?.getMyDoctorReportAppointments.metaCounter?.[0]
+							?.total ?? 0
+					}
+					limit={20}
+					onChange={(next) => {
+						setChoicePage(next);
+						chooseAppointment('');
+					}}
+				/>
 				<form
 					className="clinical-staff-form"
 					onSubmit={(event) => void submit(event)}
-					key={appointmentId || 'new'}
+					key={chosenAppointment || 'new'}
 				>
-					<label>
-						{t('staff.appointmentId')}
-						<input name="appointmentId" defaultValue={appointmentId} required />
+					<label className={reportStyles.appointment}>
+						{w('appointment')}
+						<select
+                            aria-label={w('appointment')}
+							value={chosenAppointment}
+							onChange={(event) => { chooseAppointment(event.target.value); setFollowUp('NONE'); }}
+							required
+							disabled={choices.loading || Boolean(choices.error)}
+						>
+							<option value="" disabled>
+								{w('choose')}
+							</option>
+							{visits.map((visit: any) => (
+								<option key={visit._id} value={visit._id}>
+									{visit.patientPreview?.patientFullName || w('patient')} ·{' '}
+									{visit.appointmentReason} ·{' '}
+									{clinicDateTime(visit.startsAt, 'en-US', clinic.timeZone)} ·{' '}
+									{recordReference(visit.appointmentCode)}
+									{visit.reportId ? ` · ${w('edit')}` : ''}
+								</option>
+							))}
+						</select>
+                        {chosenVisit && <span className={reportStyles.context}>
+                            <strong>{chosenVisit.patientPreview?.patientFullName || w('patient')}</strong>
+                            <span>{chosenVisit.appointmentReason}</span>
+                            <small>{clinicDateTime(chosenVisit.startsAt, 'en-US', clinic.timeZone)} · {recordReference(chosenVisit.appointmentCode)}</small>
+                        </span>}
+						{choices.error && <span role="alert">{choices.error.message}</span>}
+						{chosenVisit?.reportId && (
+							<Link
+								href={`/doctor-workspace/reports?reportId=${chosenVisit.reportId}`}
+							>
+								{w('edit')}
+							</Link>
+						)}
 					</label>
 					<label>
 						{t('staff.symptoms')}
-						<textarea name="symptoms" maxLength={5000} required />
+						<textarea
+							disabled={!chosenVisit || Boolean(chosenVisit.reportId)}
+							name="symptoms"
+							maxLength={5000}
+							required
+						/>
 					</label>
 					<label>
 						{t('staff.diagnosis')}
@@ -193,7 +319,16 @@ export default function DoctorReports() {
 							<input name="followUpDate" type="date" required />
 						</label>
 					)}
-					<button type="submit" disabled={createState.loading}>
+					<button
+						type="submit"
+						disabled={
+							createState.loading ||
+							choices.loading ||
+							Boolean(choices.error) ||
+							!chosenVisit ||
+							Boolean(chosenVisit.reportId)
+						}
+					>
 						{t('staff.createReport')}
 					</button>
 				</form>
@@ -223,8 +358,8 @@ export default function DoctorReports() {
 						<table>
 							<thead>
 								<tr>
-									<th>{t('staff.appointmentId')}</th>
-									<th>{t('staff.patientId')}</th>
+									<th>{w('appointment')}</th>
+									<th>{w('patient')}</th>
 									<th>{t('staff.diagnosis')}</th>
 									<th>{t('staff.followUp')}</th>
 									<th>{t('staff.update')}</th>
@@ -233,13 +368,16 @@ export default function DoctorReports() {
 							<tbody>
 								{list.map((report) => (
 									<tr key={report._id}>
-										<td>{report.appointmentId}</td>
-										<td>{report.patientId}</td>
+										<td>
+											{recordReference(report.appointmentCode)}
+											<small>{report.serviceName}</small>
+										</td>
+										<td>{report.patientName || w('patient')}</td>
 										<td>
 											<strong>{report.docReportDiagnosis}</strong>
 											<small>{report.docReportSymptoms}</small>
 										</td>
-										<td>{report.docReportFollowUp}</td>
+										<td>{t(({ NONE: 'staff.none', OPTIONAL: 'staff.optional', REQUIRED: 'staff.required' } as const)[report.docReportFollowUp ?? 'NONE'] ?? 'staff.none')}</td>
 										<td>
 											<button
 												type="button"
@@ -268,8 +406,8 @@ export default function DoctorReports() {
 				/>
 			</section>
 			{detail.error && <p role="alert">{detail.error.message}</p>}
-			{editing && current && (
-				<section className="clinical-staff-panel clinical-admin-resource">
+			{editing && current?._id === editing._id && (
+				<section id="doctor-report-editor" className="clinical-staff-panel clinical-admin-resource">
 					<header>
 						<h2>{t('staff.update')}</h2>
 						<button

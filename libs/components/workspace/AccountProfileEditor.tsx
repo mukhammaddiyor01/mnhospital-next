@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useRef, useState } from 'react';
 import { gql, useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
 import { GET_MY_MEMBER_PROFILE } from '@/apollo/member/query';
@@ -11,6 +11,8 @@ import { resolveApiAsset } from '@/libs/config';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 import { useWorkspaceText, WorkspaceTextKey } from './useWorkspaceText';
 import ImageUpload from './ImageUpload';
+import Icon from '@/libs/components/common/Icon';
+import FollowLists from '@/libs/components/follow/FollowLists';
 
 const ADMIN_PROFILE = gql`
 	query GetMyAdminEditableProfile {
@@ -56,7 +58,7 @@ const suffixes: Record<string, string> = {
 	experience: 'Experience',
 };
 
-export default function AccountProfileEditor({ role, fallbackImage }: { role: MemberType; fallbackImage?: string }) {
+export default function AccountProfileEditor({ role, navigation, fallbackImage }: { role: MemberType; navigation?: ReactNode; fallbackImage?: string }) {
 	const w = useWorkspaceText();
 	const specialtyLabel = useDoctorSpecialtyLabel();
 	const session = useReactiveVar(userVar);
@@ -158,9 +160,11 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 		}
 	};
 	const busy = uploading || pending || updateState.loading || passwordState.loading;
+	const changed = Boolean(draft && Object.entries(draft).some(([key, item]) => item.trim() !== value(key)));
+	const roleLabel = w(role === MemberType.DOCTOR ? 'doctor' : role === MemberType.RECEPTIONIST ? 'receptionist' : role === MemberType.ADMIN ? 'profileAdministrator' : 'patient');
 	return (
-		<>
-			{profile.loading && <p role="status">{w('retry')}…</p>}
+		<section className="clinical-account-profile mn-profile-record" aria-label={w('accountProfile')}>
+			{profile.loading && !record && <div className="mn-profile-loading" role="status"><span>{w('profileLoading')}</span></div>}
 			{profile.error && (
 				<p role="alert">
 					{profile.error.message}{' '}
@@ -172,29 +176,41 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 			{record && (
 				<>
 					<StaffProfileCard
+						heading={w('personalInformation')}
+						roleLabel={roleLabel}
 						name={value('fullName') || value('nickname')}
 						nickname={value('nickname')}
 						image={value('image') || fallbackImage}
+						navigation={navigation}
+						connections={[MemberType.PATIENT, MemberType.DOCTOR].includes(role) ? <FollowLists profileId={record._id} kind={role === MemberType.DOCTOR ? 'doctor' : 'patient'} /> : undefined}
 						facts={fields
 							.filter((key) => !['nickname', 'fullName'].includes(key))
-							.map((key) => ({ label: w(labels[key]), value: value(key) || '—' }))}
+							.map((key) => ({ label: w(labels[key]), value: value(key) || '—', wide: key === 'description' || key === 'address' }))}
 					>
 						<button type="button" disabled={busy || Boolean(draft)} onClick={open}>
+							<Icon name="edit" />
 							{w('edit')}
 						</button>
 					</StaffProfileCard>
 					{role === MemberType.DOCTOR && (
-						<p>
-							{w('specialty')}: {specialtyLabel(record.docSpecialty)} · {w('room')}: {record.docRoom}
-						</p>
+						<section className="mn-profile-panel">
+							<header className="mn-profile-section-heading">
+								<Icon name="verified_user" />
+								<div><h2>{w('professionalAssignment')}</h2><p>{w('managedByHospital')}</p></div>
+							</header>
+							<dl className="mn-profile-assignment">
+								<div><dt>{w('specialty')}</dt><dd>{specialtyLabel(record.docSpecialty)}</dd></div>
+								<div><dt>{w('room')}</dt><dd>{record.docRoom || '—'}</dd></div>
+							</dl>
+						</section>
 					)}
 					{draft && (
-						<section className="clinical-staff-panel clinical-resource-panel">
-							<h2>{w('accountProfile')}</h2>
+						<section className="mn-profile-panel">
+							<header className="mn-profile-section-heading"><Icon name="edit" /><h2>{w('accountProfile')}</h2></header>
 							<form className="clinical-staff-form clinical-staff-profile-form" onSubmit={save}>
 								<fieldset disabled={busy} style={{ display: 'contents' }}>
 									{fields.map((key) => (
-										<label key={key}>
+										<label className={key === 'description' || key === 'address' ? 'mn-profile-wide-field' : undefined} key={key}>
 											{w(labels[key])}
 											{key === 'description' ? (
 												<textarea
@@ -226,7 +242,7 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 											)}
 										</label>
 									))}
-									<div>
+									<div className="mn-profile-upload">
 										<span>{w('image')}</span>
 										{draft.image && (
 											<img
@@ -248,7 +264,7 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 									</div>
 								</fieldset>
 								<div className="clinical-staff-profile-buttons">
-									<button type="submit" disabled={busy}>
+									<button type="submit" disabled={busy || !changed}>
 										{w('save')}
 									</button>
 									<button type="button" disabled={busy} onClick={() => setDraft(null)}>
@@ -258,11 +274,14 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 							</form>
 						</section>
 					)}
-					<section className="clinical-staff-panel clinical-resource-panel">
-						<h2>{w('changePassword')}</h2>
+					<details className="mn-profile-panel mn-profile-security">
+						<summary>
+							<span className="mn-profile-section-heading"><Icon name="lock" /><span><strong>{w('profileSecurity')}</strong><small>{w('changePassword')}</small></span></span>
+							<Icon name="expand_more" />
+						</summary>
 						<form className="clinical-staff-form clinical-staff-profile-form" onSubmit={changePassword}>
 							<fieldset disabled={busy} style={{ display: 'contents' }}>
-								<label>
+								<label className="mn-profile-wide-field">
 									{w('currentPassword')}
 									<input
 										name="currentPassword"
@@ -295,11 +314,10 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 									/>
 								</label>
 							</fieldset>
-							<button type="submit" disabled={busy}>
-								{w('changePassword')}
-							</button>
+							<p className="mn-profile-password-hint">{w('profilePasswordHint')}</p>
+							<div className="clinical-staff-profile-buttons"><button type="submit" disabled={busy}>{w('changePassword')}</button></div>
 						</form>
-					</section>
+					</details>
 				</>
 			)}
 			{feedback && (
@@ -312,6 +330,6 @@ export default function AccountProfileEditor({ role, fallbackImage }: { role: Me
 					{error}
 				</p>
 			)}
-		</>
+		</section>
 	);
 }

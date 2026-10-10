@@ -1,3 +1,10 @@
+import { bookingSelection } from '@/libs/components/workspace/adminResources';
+import { useClinicSettings } from '@/libs/payments/useClinicSettings';
+import { clinicDateTime } from '@/libs/payments/clinic';
+import { recordReference } from '@/libs/components/workspace/recordPresentation';
+import { useAppointmentFlowText } from '@/libs/components/workspace/useAppointmentFlowText';
+import { appointmentStatusKeys } from '@/libs/components/dashboard/staffLabels';
+import { useLiveWorkspaceRefresh } from '@/libs/hooks/useLiveWorkspaceRefresh';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { operation } from '@/apollo/workspace/operations';
 import { FormEvent, useState } from 'react';
@@ -34,6 +41,12 @@ const DETAIL = operation(
 	'taskId',
 );
 const LIMIT = 10;
+const BOOKING_APPOINTMENTS = operation(
+	'query',
+	'getBookingOrders',
+	'StaffBookingOrderInquiry',
+	bookingSelection,
+);
 const taskTypes = [
 	{ value: 'CHECK_IN', label: 'staff.taskCheckIn' },
 	{ value: 'PREPARE_ROOM', label: 'staff.taskPrepareRoom' },
@@ -50,6 +63,8 @@ const priorities = [
 export default function ReceptionistTasks() {
 	const t = useTranslation();
 	const w = useWorkspaceText();
+	const f = useAppointmentFlowText();
+	const clinic = useClinicSettings();
 	const [selected, setSelected] = useState('');
 	const label = (value: string, keys: Partial<Record<string, MessageKey>>) => {
 		const key = keys[value];
@@ -57,13 +72,23 @@ export default function ReceptionistTasks() {
 	};
 	const router = useRouter();
 	const session = useReactiveVar(userVar);
+	const appointmentId =
+		typeof router.query.appointmentId === 'string'
+			? router.query.appointmentId
+			: '';
 	const [page, setPage] = useState(1);
 	const [busyId, setBusyId] = useState('');
 	const [feedback, setFeedback] = useState('');
 	const { data, loading, error, refetch } = useQuery<{
 		getReceptionTasks: StaffList<ReceptionTask>;
 	}>(GET_RECEPTION_TASKS, {
-		variables: { input: { page, limit: LIMIT } },
+		variables: {
+			input: {
+				page,
+				limit: LIMIT,
+				...(appointmentId ? { appointmentId } : {}),
+			},
+		},
 		skip: !session._id || session.memberType !== MemberType.RECEPTIONIST,
 		fetchPolicy: 'network-only',
 	});
@@ -72,14 +97,30 @@ export default function ReceptionistTasks() {
 		skip: !selected || session.memberType !== MemberType.RECEPTIONIST,
 		fetchPolicy: 'network-only',
 	});
+	useLiveWorkspaceRefresh(
+		() => refetch(),
+		Boolean(
+			session._id && session.memberType === MemberType.RECEPTIONIST && !busyId,
+		),
+	);
+	const bookingChoices = useQuery(BOOKING_APPOINTMENTS, {
+		variables: { input: { page: 1, limit: 100 } },
+		skip: !session._id || session.memberType !== MemberType.RECEPTIONIST,
+		fetchPolicy: 'network-only',
+	});
+	const choices = (bookingChoices.data?.getBookingOrders.list ?? [])
+		.flatMap((order: any) => order.bookingOrderItems)
+		.filter(
+			(line: any) =>
+				line.appointmentId &&
+				['PENDING', 'CONFIRMED', 'IN_PROGRESS'].includes(
+					line.appointmentStatus,
+				),
+		);
 	const [updateTask] = useMutation(UPDATE_RECEPTION_TASK);
 	const [createTask, createState] = useMutation(CREATE_RECEPTION_TASK);
 	const list = data?.getReceptionTasks.list ?? [];
 	const total = data?.getReceptionTasks.metaCounter?.[0]?.total ?? 0;
-	const appointmentId =
-		typeof router.query.appointmentId === 'string'
-			? router.query.appointmentId
-			: '';
 	const create = async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		setFeedback('');
@@ -98,7 +139,13 @@ export default function ReceptionistTasks() {
 			await createTask({ variables: { input } });
 			form.reset();
 			setPage(1);
-			await refetch({ input: { page: 1, limit: LIMIT } });
+			await refetch({
+				input: {
+					page: 1,
+					limit: LIMIT,
+					...(appointmentId ? { appointmentId } : {}),
+				},
+			});
 			setFeedback(t('admin.saved'));
 			if (appointmentId)
 				void router.replace('/receptionist-workspace/tasks', undefined, {
@@ -109,6 +156,11 @@ export default function ReceptionistTasks() {
 		}
 	};
 	const transitions = (task: ReceptionTask): ReceptionTaskStatus[] => {
+		if (
+			task.appointmentStatus &&
+			['CANCELLED', 'NO_SHOW'].includes(task.appointmentStatus)
+		)
+			return [];
 		if (task.taskStatus === 'PENDING')
 			return task.receptionistId ? ['ACCEPTED', 'CANCELLED'] : ['ACCEPTED'];
 		if (task.taskStatus === 'ACCEPTED')
@@ -159,6 +211,7 @@ export default function ReceptionistTasks() {
 			titleKey="dashboard.pendingWork"
 			introKey="staff.tasksIntro"
 		>
+			<p>{f('tasksIndependent')}</p>
 			{detail.error && <p role="alert">{detail.error.message}</p>}
 			{detail.data && (
 				<section className="clinical-staff-panel">
@@ -168,57 +221,93 @@ export default function ReceptionistTasks() {
 					<p>{detail.data.getReceptionTask.dueAt}</p>
 				</section>
 			)}
-			<section className="clinical-staff-panel clinical-admin-resource">
-				<header>
-					<h2>{t('staff.createTask')}</h2>
-				</header>
-				<form
-					className="clinical-staff-form"
-					onSubmit={(event) => void create(event)}
-					key={appointmentId || 'new'}
-				>
-					<label>
-						{t('staff.appointmentId')}
-						<input name="appointmentId" defaultValue={appointmentId} required />
-					</label>
-					<label>
-						{t('admin.serviceType')}
-						<select name="taskType" required defaultValue="CHECK_IN">
-							{taskTypes.map((type) => (
-								<option key={type.value} value={type.value}>
-									{t(type.label)}
+			<details className="clinical-staff-panel" open={Boolean(appointmentId)}>
+				<summary>{t('staff.createTask')}</summary>
+				<section className="clinical-staff-panel clinical-admin-resource">
+					<header>
+						<h2>{t('staff.createTask')}</h2>
+					</header>
+					<form
+						className="clinical-staff-form"
+						onSubmit={(event) => void create(event)}
+						key={appointmentId || 'new'}
+					>
+						<label>
+							{f('appointment')}
+							<select
+								name="appointmentId"
+								defaultValue={appointmentId}
+								required
+								disabled={
+									bookingChoices.loading || Boolean(bookingChoices.error)
+								}
+							>
+								<option value="" disabled>
+									{w('choose')}
 								</option>
-							))}
-						</select>
-					</label>
-					<label>
-						{t('staff.priority')}
-						<select name="taskPriority" required defaultValue="MEDIUM">
-							{priorities.map((priority) => (
-								<option key={priority.value} value={priority.value}>
-									{t(priority.label)}
-								</option>
-							))}
-						</select>
-					</label>
-					<label>
-						{t('staff.instruction')}
-						<textarea
-							name="taskInstruction"
-							minLength={1}
-							maxLength={2000}
-							required
-						/>
-					</label>
-					<label>
-						{w('due')}
-						<input type="datetime-local" name="dueAt" />
-					</label>
-					<button type="submit" disabled={createState.loading}>
-						{t('staff.createTask')}
-					</button>
-				</form>
-			</section>
+								{appointmentId &&
+									!choices.some(
+										(line: any) => line.appointmentId === appointmentId,
+									) && (
+										<option value={appointmentId}>
+											{f('selectedAppointment')}
+										</option>
+									)}
+								{choices.map((line: any) => (
+									<option key={line.appointmentId} value={line.appointmentId}>
+										{line.serviceName} ·{' '}
+										{clinicDateTime(
+											line.requestedStartAt,
+											'en-US',
+											clinic.timeZone,
+										)}{' '}
+										· {recordReference(line.appointmentCode)}
+									</option>
+								))}
+							</select>
+							{bookingChoices.error && (
+								<span role="alert">{bookingChoices.error.message}</span>
+							)}
+						</label>
+						<label>
+							{t('admin.serviceType')}
+							<select name="taskType" required defaultValue="CHECK_IN">
+								{taskTypes.map((type) => (
+									<option key={type.value} value={type.value}>
+										{t(type.label)}
+									</option>
+								))}
+							</select>
+						</label>
+						<label>
+							{t('staff.priority')}
+							<select name="taskPriority" required defaultValue="MEDIUM">
+								{priorities.map((priority) => (
+									<option key={priority.value} value={priority.value}>
+										{t(priority.label)}
+									</option>
+								))}
+							</select>
+						</label>
+						<label>
+							{t('staff.instruction')}
+							<textarea
+								name="taskInstruction"
+								minLength={1}
+								maxLength={2000}
+								required
+							/>
+						</label>
+						<label>
+							{w('due')}
+							<input type="datetime-local" name="dueAt" />
+						</label>
+						<button type="submit" disabled={createState.loading}>
+							{t('staff.createTask')}
+						</button>
+					</form>
+				</section>
+			</details>
 			<section className="clinical-staff-panel clinical-admin-resource">
 				<header>
 					<h2>{t('dashboard.receptionistTasks')}</h2>
@@ -244,10 +333,11 @@ export default function ReceptionistTasks() {
 						<table>
 							<thead>
 								<tr>
-									<th>{t('staff.appointmentId')}</th>
+									<th>{f('appointment')}</th>
 									<th>{t('staff.instruction')}</th>
 									<th>{t('staff.priority')}</th>
-									<th>{t('admin.status')}</th>
+									<th>{f('reception')}</th>
+									<th>{f('appointment')}</th>
 									<th>{t('staff.update')}</th>
 								</tr>
 							</thead>
@@ -258,7 +348,11 @@ export default function ReceptionistTasks() {
 											<button onClick={() => setSelected(task._id)}>
 												{w('details')}
 											</button>
-											<small>{task.appointmentId}</small>
+											<small>
+												{task.appointmentCode
+													? recordReference(task.appointmentCode)
+													: f('appointment')}
+											</small>
 										</td>
 										<td>
 											<strong>{label(task.taskType, taskTypeKeys)}</strong>
@@ -271,6 +365,11 @@ export default function ReceptionistTasks() {
 											>
 												{t(taskStatusKeys[task.taskStatus])}
 											</span>
+										</td>
+										<td>
+											{task.appointmentStatus
+												? t(appointmentStatusKeys[task.appointmentStatus])
+												: '—'}
 										</td>
 										<td>
 											<div className="clinical-staff-row-actions">

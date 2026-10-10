@@ -1,9 +1,12 @@
 import { FormEvent, useRef, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useMutation, useReactiveVar } from '@apollo/client';
 import { APPLY_BOOKING_PROMO } from '@/apollo/promotion/operations';
+import { userVar } from '@/apollo/store';
 import { CheckoutState } from '@/libs/payments/clinic';
 import { formatMoney } from '../common/currency';
 import { usePromotionText } from '../workspace/usePromotionText';
+import Icon from '../common/Icon';
+import styles from '../promotions/Promotions.module.scss';
 export default function BookingPromoCode({
 	state,
 	disabled,
@@ -13,28 +16,32 @@ export default function BookingPromoCode({
 	disabled: boolean;
 	onApplied: () => Promise<unknown>;
 }) {
-	const text = usePromotionText();
-	const [code, setCode] = useState(''),
+	const text = usePromotionText(),
+		session = useReactiveVar(userVar),
+		[code, setCode] = useState(''),
 		[error, setError] = useState('');
-	const lock = useRef(false);
-	const [apply, mutation] = useMutation(APPLY_BOOKING_PROMO);
-	const blocked =
+	const lock = useRef(false),
+		[apply, mutation] = useMutation(APPLY_BOOKING_PROMO);
+	const ineligible =
 		state.order.pricingVersion !== 1 ||
 		disabled ||
-		mutation.loading ||
 		Boolean(state.order.pricingLockedAt) ||
 		state.order.bookingOrderStatus !== 'PENDING' ||
 		state.payments.length > 0;
+	const blocked = ineligible || mutation.loading;
 	const save = async (promoCode: string | null) => {
 		if (blocked || lock.current) return;
 		lock.current = true;
 		setError('');
 		try {
-			await apply({ variables: { input: { bookingOrderId: state.order._id, promoCode } } });
+			await apply({
+				variables: { input: { bookingOrderId: state.order._id, promoCode } },
+				context: { expectedAccount: `${session.memberType}:${session._id}` },
+			});
 			await onApplied();
 			setCode('');
 		} catch (error) {
-			setError(error instanceof Error ? error.message : 'Error');
+			setError(error instanceof Error ? error.message : text.retryLoad);
 		} finally {
 			lock.current = false;
 		}
@@ -45,50 +52,103 @@ export default function BookingPromoCode({
 	};
 	const currency = state.order.bookingOrderCurrency;
 	return (
-		<section aria-label={text.promotions}>
-			<dl>
-				<dt>{text.subtotal}</dt>
-				<dd>{formatMoney(state.order.bookingOrderSubtotalAmount, currency)}</dd>
-				<dt>{text.serviceDiscount}</dt>
-				<dd>−{formatMoney(state.order.serviceDiscountAmount ?? 0, currency)}</dd>
-				<dt>{text.promoDiscount}</dt>
-				<dd>−{formatMoney(state.order.promoDiscountAmount ?? 0, currency)}</dd>
+		<section className={styles.checkoutSummary} aria-label={text.checkoutTitle}>
+			<h3>{text.checkoutTitle}</h3>
+			<dl className={styles.priceSummary}>
+				<div>
+					<dt>{text.subtotal}</dt>
+					<dd>
+						{formatMoney(state.order.bookingOrderSubtotalAmount, currency)}
+					</dd>
+				</div>
+				{(state.order.serviceDiscountAmount ?? 0) > 0 && (
+					<div className={styles.discountLine}>
+						<dt>{text.serviceDiscount}</dt>
+						<dd>
+							−{formatMoney(state.order.serviceDiscountAmount ?? 0, currency)}
+						</dd>
+					</div>
+				)}
+				{(state.order.promoDiscountAmount ?? 0) > 0 && (
+					<div className={styles.discountLine}>
+						<dt>{text.promoDiscount}</dt>
+						<dd>
+							−{formatMoney(state.order.promoDiscountAmount ?? 0, currency)}
+						</dd>
+					</div>
+				)}
 			</dl>
 			{state.order.promoCode && (
-				<p>
-					{text.applied}: <strong>{state.order.promoCode}</strong>{' '}
-					<button type="button" disabled={blocked} onClick={() => void save(null)}>
+				<div className={styles.appliedCode}>
+					<span>
+						<Icon name="check_circle" />
+						{text.applied}: <strong>{state.order.promoCode}</strong>
+					</span>
+					<button
+						className={styles.textButton}
+						type="button"
+						disabled={blocked}
+						onClick={() => void save(null)}
+					>
 						{text.remove}
 					</button>
-				</p>
+				</div>
 			)}
-			{!blocked && (
-				<form className="clinical-resource-form" onSubmit={submit}>
-					<fieldset className="clinical-resource-fields" disabled={mutation.loading}>
+			{!ineligible && (
+				<details className={styles.codeDisclosure}>
+					<summary>
+						<Icon name="local_offer" />
+						{text.haveCode}
+						<Icon name="expand_more" />
+					</summary>
+					<form onSubmit={submit}>
 						<label>
 							{text.code}
-							<input
-								value={code}
-								onChange={(e) => setCode(e.target.value.toUpperCase())}
-								required
-								minLength={3}
-								maxLength={32}
-								pattern="[A-Za-z0-9_-]+"
-								autoComplete="off"
-							/>
+							<div className={styles.codeEntry}>
+								<input
+									aria-label={text.code}
+									value={code}
+									onChange={(event) =>
+										setCode(event.target.value.toUpperCase())
+									}
+									placeholder={text.codePlaceholder}
+									required
+									minLength={3}
+									maxLength={32}
+									pattern="[A-Za-z0-9_-]+"
+									autoComplete="off"
+									disabled={mutation.loading}
+								/>
+								<button
+									className={styles.primary}
+									type="submit"
+									disabled={mutation.loading || code.trim().length < 3}
+								>
+									{mutation.loading ? text.saving : text.apply}
+								</button>
+							</div>
 						</label>
-						<button type="submit" disabled={mutation.loading}>
-							{text.apply}
-						</button>
-					</fieldset>
-				</form>
+						<p className={styles.help}>{text.checkoutHelp}</p>
+					</form>
+				</details>
 			)}
-			{state.order.pricingLockedAt && <p>{text.locked}</p>}
+			{state.order.pricingLockedAt && (
+				<p className={styles.help}>
+					<Icon name="lock" />
+					{text.locked}
+				</p>
+			)}
 			{error && (
-				<p className="clinical-form-error" role="alert">
+				<p className={styles.error} role="alert">
 					{error}
 				</p>
 			)}
+			<div className={styles.checkoutTotal}>
+				<span>{text.total}</span>
+				<strong>
+					{formatMoney(state.order.bookingOrderTotalAmount, currency)}
+				</strong>
+			</div>
 		</section>
 	);
 }

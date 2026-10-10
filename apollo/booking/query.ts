@@ -8,3 +8,9 @@ export const GET_AVAILABLE_DOCTOR_SLOTS = gql`
 		}
 	}
 `;
+
+export const GET_AVAILABLE_DOCTOR_DATES = gql`
+ query GetAvailableDoctorDates($input: AvailableDoctorDatesInput!) {
+  getAvailableDoctorDates(input: $input) { dates reason }
+ }
+`;

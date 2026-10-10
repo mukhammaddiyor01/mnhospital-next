@@ -17,8 +17,8 @@ import { resolveApiAsset } from '@/libs/config';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
 import RightAdvertisementRail from '../advertisement/RightAdvertisementRail';
 import { ClinicalDoctorCard, ClinicalServiceCard } from './types/clinical-home';
-import { DoctorSpecialty } from '../doctor/enums/doctor.enum';
 import DepartmentSwiper from './DepartmentSwiper';
+import DiscountedServices from './DiscountedServices';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
@@ -44,25 +44,11 @@ const heroSlides = [
 		description: 'home.slide3.description',
 	},
 ] as const;
-const doctorRole = (
-	specialty: string | undefined,
-	t: ReturnType<typeof useTranslation>,
-	specialtyLabel: ReturnType<typeof useDoctorSpecialtyLabel>,
-) => {
-	if (specialty === DoctorSpecialty.CARDIOLOGIST)
-		return t('home.doctor.cardio');
-	if (specialty === DoctorSpecialty.NEUROLOGIST) return t('home.doctor.neuro');
-	if (specialty === DoctorSpecialty.PEDIATRICIAN)
-		return t('home.doctor.pediatric');
-	return specialtyLabel(specialty);
-};
-
 const ClinicalHome = () => {
 	const t = useTranslation();
 	const specialtyLabel = useDoctorSpecialtyLabel();
 	const w = useWorkspaceText();
 	const clinic = useClinicSettings();
-	const [notice, setNotice] = useState('');
 	const [activeSlide, setActiveSlide] = useState(0);
 	useEffect(() => {
 		const timer = window.setInterval(
@@ -208,7 +194,7 @@ const ClinicalHome = () => {
 						<Metric
 							value={servicesQuery.error || servicesQuery.loading && !servicesQuery.data ? '—' : String(servicesQuery.data?.getServices?.metaCounter?.[0]?.total ?? 0)}
 							label={t('nav.services')}
-							note={t('nav.services')}
+							note=""
 						/>
 						<Metric
 							value={doctorsQuery.error || doctorsQuery.loading && !doctorsQuery.data ? '—' : String(doctorsQuery.data?.getDoctors?.metaCounter?.[0]?.total ?? 0)}
@@ -218,7 +204,7 @@ const ClinicalHome = () => {
 						<Metric
 							value={articlesQuery.error || articlesQuery.loading && !articlesQuery.data ? '—' : String(articlesQuery.data?.getArticles?.metaCounter?.[0]?.total ?? 0)}
 							label={w('articles')}
-							note={t('nav.articles')}
+							note=""
 							teal
 						/>
 						<Metric
@@ -230,7 +216,6 @@ const ClinicalHome = () => {
 
 					<section className="clinical-content-section" id="departments">
 						<SectionHeading
-							kicker={t('home.departments.kicker')}
 							title={t('home.departments.title')}
 							linkLabel={t('home.departments.link')}
 							linkHref="/service"
@@ -246,7 +231,6 @@ const ClinicalHome = () => {
 						id="doctors"
 					>
 						<SectionHeading
-							kicker={t('home.doctors.kicker')}
 							title={t('home.doctors.title')}
 							linkLabel={t('home.doctors.link')}
 							linkHref="/doctor"
@@ -278,13 +262,9 @@ const ClinicalHome = () => {
 										) : (
 											initials(doctor.docFullName)
 										)}
-										<span className="clinical-rating">
-											<Icon name="star" />{' '}
-											{Number(doctor.docPoints ?? 0).toFixed(1)}
-										</span>
 									</div>
 									<h3><Link className={cardInteraction.primaryLink} href={`/doctor/${doctor._id}`}>{doctor.docFullName}</Link></h3>
-									<b>{doctorRole(doctor.docSpecialty, t, specialtyLabel)}</b>
+									<b>{specialtyLabel(doctor.docSpecialty)}</b>
 									<p>
 										{Number(doctor.docExperience ?? 0)} {t('home.doctor.years')}
 									</p>
@@ -298,12 +278,12 @@ const ClinicalHome = () => {
 							))}
 						</div>
 					</section>
+					<DiscountedServices />
 					<section
 						className="clinical-content-section clinical-articles"
 						id="articles"
 					>
 						<SectionHeading
-							kicker={t('home.articles.kicker')}
 							title={t('home.articles.title')}
 							linkLabel={t('home.articles.link')}
 							linkHref="/article"
@@ -317,61 +297,30 @@ const ClinicalHome = () => {
 
 					<section className="clinical-trust-section">
 						<div>
-							<span className="clinical-section-kicker">
-								{t('home.trust.kicker')}
-							</span>
 							<h2>{t('home.trust.title')}</h2>
 							<p>{t('home.trust.intro')}</p>
 						</div>
 						<div className="clinical-trust-grid">
 							<TrustItem
-								icon="verified_user"
+								icon="medical_services"
 								title={t('home.trust.accredited')}
 								text={t('home.trust.accreditedText')}
 							/>
 							<TrustItem
-								icon="biotech"
+								icon="calendar_month"
 								title={t('home.trust.labs')}
 								text={t('home.trust.labsText')}
 							/>
 							<TrustItem
-								icon="favorite"
+								icon="payments"
 								title={t('home.trust.personal')}
 								text={t('home.trust.personalText')}
 							/>
 						</div>
 					</section>
 
-					<section className="clinical-testimonials" id="journal">
-						<div className="clinical-testimonials-heading">
-							<span className="clinical-section-kicker">
-								{t('home.testimonial.kicker')}
-							</span>
-							<h2>{t('home.testimonial.title')}</h2>
-						</div>
-						<div className="clinical-testimonial-grid">
-							<Testimonial
-								initials="RH"
-								name="Rebecca Henderson"
-								role={t('home.testimonial.role1')}
-							>
-								{t('home.testimonial.quote1')}
-							</Testimonial>
-							<Testimonial
-								initials="DL"
-								name="David Lockwood"
-								role={t('home.testimonial.role2')}
-							>
-								{t('home.testimonial.quote2')}
-							</Testimonial>
-						</div>
-					</section>
-
 					<section className="clinical-cta-card" id="booking">
 						<div>
-							<span className="clinical-cta-kicker">
-								<Icon name="access_alarm" /> {t('home.cta.kicker')}
-							</span>
 							<h2>
 								{t('home.cta.title1')}
 								<br />
@@ -380,20 +329,11 @@ const ClinicalHome = () => {
 							<p>{t('home.cta.intro')}</p>
 						</div>
 						<div className="clinical-cta-actions">
-							<button
-								className="clinical-light-button"
-								onClick={() => setNotice(t('home.cta.notice'))}
-							>
+							<Link className="clinical-light-button" href="/appointment">
 								<Icon name="edit_calendar" /> {t('home.cta.schedule')}
-							</button>
-							<a href="tel:+821000000077">
-								<Icon name="call" /> {t('home.cta.helpline')}: +82 10 0000-0077
-							</a>
+							</Link>
 						</div>
 					</section>
-					<p className="clinical-notice" aria-live="polite">
-						{notice}
-					</p>
 				</div>
 				<RightAdvertisementRail />
 			</div>
@@ -402,19 +342,16 @@ const ClinicalHome = () => {
 };
 
 const SectionHeading = ({
-	kicker,
 	title,
 	linkLabel,
 	linkHref,
 }: {
-	kicker: string;
 	title: string;
 	linkLabel: string;
 	linkHref: string;
 }) => (
 	<div className="clinical-section-heading">
 		<div>
-			<span className="clinical-section-kicker">{kicker}</span>
 			<h2>{title}</h2>
 		</div>
 		<Link href={linkHref}>
@@ -436,7 +373,7 @@ const Metric = ({
 	<div className={teal ? 'teal' : ''}>
 		<strong>{value}</strong>
 		<span>{label}</span>
-		<small>{note}</small>
+		{note && <small>{note}</small>}
 	</div>
 );
 const TrustItem = ({
@@ -456,28 +393,4 @@ const TrustItem = ({
 		<p>{text}</p>
 	</article>
 );
-const Testimonial = ({
-	initials,
-	name,
-	role,
-	children,
-}: {
-	initials: string;
-	name: string;
-	role: string;
-	children: string;
-}) => (
-	<article className="clinical-testimonial">
-		<div className="clinical-stars">★★★★★</div>
-		<blockquote>{children}</blockquote>
-		<div className="clinical-patient">
-			<span>{initials}</span>
-			<div>
-				<strong>{name}</strong>
-				<small>{role}</small>
-			</div>
-		</div>
-	</article>
-);
-
 export default ClinicalHome;

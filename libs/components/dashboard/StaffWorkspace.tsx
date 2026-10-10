@@ -1,10 +1,12 @@
+import UnreadBadge, { UnreadLink } from '@/libs/components/notification/UnreadBadge';
 import {
 	useWorkspaceText,
 	WorkspaceTextKey,
 } from '@/libs/components/workspace/useWorkspaceText';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useRef, useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/libs/components/common/Icon';
+import { usePromotionText } from '@/libs/components/workspace/usePromotionText';
 import GeneralChat from '@/libs/components/chat/GeneralChat';
 import { logOut } from '@/libs/auth';
 import { useTranslation } from '@/libs/i18n/useTranslation';
@@ -31,8 +33,11 @@ const StaffWorkspace = ({
 }) => {
 	const t = useTranslation();
 	const w = useWorkspaceText();
+	const promotionText = usePromotionText();
 	const router = useRouter();
 	const [chatOpen, setChatOpen] = useState(false);
+	const [navigationOpen, setNavigationOpen] = useState(false);
+	const navigationToggle = useRef<HTMLButtonElement>(null);
 	const isAdmin = role === MemberType.ADMIN;
 	const dashboardHref = '/mypage/dashboard';
 	const workspaceRoot = isAdmin
@@ -53,6 +58,7 @@ const StaffWorkspace = ({
 		icon: string;
 		label: MessageKey;
 		workspaceLabel?: WorkspaceTextKey;
+		promotion?: boolean;
 	}[] = [
 		{ href: dashboardHref, icon: 'dashboard', label: 'dashboard.title' },
 		{ href: profileHref, icon: 'account_circle', label: 'dashboard.profileLink' },
@@ -67,6 +73,12 @@ const StaffWorkspace = ({
 						href: '/admin/services',
 						icon: 'medical_services',
 						label: 'nav.services' as MessageKey,
+					},
+					{
+						href: '/admin/promo-codes',
+						icon: 'local_offer',
+						label: 'nav.services' as MessageKey,
+						promotion: true,
 					},
 					{
 						href: '/admin/receptionists',
@@ -156,7 +168,12 @@ const StaffWorkspace = ({
 		<div
 			className={`clinical-staff-shell clinical-staff-${role.toLowerCase()}`}
 		>
-			<aside className="clinical-staff-sidebar">
+			<aside className={`clinical-staff-sidebar${navigationOpen ? ' is-navigation-open' : ''}`} onKeyDown={(event) => {
+				if (event.key === 'Escape' && navigationOpen) {
+					setNavigationOpen(false);
+					navigationToggle.current?.focus();
+				}
+			}}>
 				<Link className="clinical-staff-brand" href={dashboardHref}>
 					<span>
 						<Icon name="local_hospital" />
@@ -166,19 +183,25 @@ const StaffWorkspace = ({
 						<small>{t('dashboard.staffPortal')}</small>
 					</div>
 				</Link>
+				<button className="mn-staff-navigation-toggle" ref={navigationToggle} type="button" aria-label={t('dashboard.workspaceNavigation')} aria-expanded={navigationOpen} aria-controls="staff-navigation" onClick={() => setNavigationOpen((current) => !current)}>
+					<Icon name={navigationOpen ? 'close' : 'menu'} />
+				</button>
 				<div className="clinical-staff-role">{t(roleLabel)}</div>
-				<nav aria-label={t('dashboard.workspaceNavigation')}>
+				<nav id="staff-navigation" aria-label={t('dashboard.workspaceNavigation')}>
 					{nav.map((item) => (
 						<Link
 							key={item.href}
 							className={router.pathname === item.href ? 'active' : ''}
 							href={item.href}
 							aria-current={router.pathname === item.href ? 'page' : undefined}
+							onClick={() => setNavigationOpen(false)}
 						>
 							<Icon name={item.icon} />
 							<span>
-								{item.workspaceLabel ? w(item.workspaceLabel) : t(item.label)}
+								{item.promotion ? promotionText.promotions : item.workspaceLabel ? w(item.workspaceLabel) : t(item.label)}
 							</span>
+                            {item.href.endsWith('/messages') && <UnreadBadge kind="messages" />}
+                            {item.href.endsWith('/notifications') && <UnreadBadge kind="notifications" />}
 						</Link>
 					))}
 				</nav>
@@ -215,9 +238,8 @@ const StaffWorkspace = ({
 						>
 							<Icon name="chat_bubble" />
 						</button>
-						<Link href={notificationHref} aria-label={t('notifications.title')}>
-							<Icon name="notifications" />
-						</Link>
+                        <UnreadLink kind="messages" href={`${workspaceRoot}/messages`} label={t('messages.title')}><Icon name="mail" /></UnreadLink>
+                        <UnreadLink kind="notifications" href={notificationHref} label={t('notifications.title')}><Icon name="notifications" /></UnreadLink>
 						<Link
 							className="clinical-staff-avatar"
 							href={profileHref}
