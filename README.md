@@ -21,7 +21,7 @@ npm run dev
 
 The GraphQL API defaults to `http://localhost:2001/graphql`.
 
-The frontend defaults to `http://localhost:4002`. To use a different local port:
+The frontend defaults to `http://localhost:2002`. To use a different local port:
 
 ```bash
 PORT=4005 npm run dev
@@ -29,4 +29,4 @@ PORT=4005 npm run dev
 
 Both `dev` and `start` respect the `PORT` environment variable. With the current
 Docker Compose configuration, Next.js listens on port 4002 inside the container
-and is available at `http://localhost:4002` on the host (`4002:4002`).
+and is available at `http://localhost:2002` on the host (`2002:4002`).
