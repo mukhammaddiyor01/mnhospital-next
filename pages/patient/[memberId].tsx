@@ -1,3 +1,4 @@
+import Icon from '@/libs/components/common/Icon';
 import LikeButton from '@/libs/components/common/LikeButton';
 import { LIKE_TARGET_MEMBER } from '@/apollo/member/mutation';
 import CommentsSection from '@/libs/components/comment/CommentsSection';
@@ -70,8 +71,10 @@ const PatientPage = () => {
 								{patient.memberFollowers ?? 0} {t('follow.followers')} ·{' '}
 								{patient.memberFollowings ?? 0} {t('follow.following')}
 							</p>
+							<p className="clinical-community-stats"><span><Icon name="favorite_border" />{patient.memberLikes ?? 0} {t('profile.likes')}</span><span><Icon name="visibility" />{patient.memberViews ?? 0} {t('profile.views')}</span></p>
 							<LikeButton
 								mutation={LIKE_TARGET_MEMBER}
+								onChanged={refetch}
 								id={patient._id}
 								variableName="memberId"
 								initialLiked={Boolean(patient.meLiked?.[0]?.myFavorite)}

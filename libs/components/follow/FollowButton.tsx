@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useApolloClient, useMutation, useReactiveVar } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { userVar } from '@/apollo/store';
@@ -14,25 +14,27 @@ const FollowButton = ({ targetId, kind, initialFollowing = false, onChanged }: {
 	const [following, setFollowing] = useState(initialFollowing);
 	const [error, setError] = useState('');
 	const [refreshing, setRefreshing] = useState(false);
+	const lock = useRef(false);
 	const [subscribeDoctor, doctorSubscribeState] = useMutation(SUBSCRIBE_DOCTOR);
 	const [unsubscribeDoctor, doctorUnsubscribeState] = useMutation(UNSUBSCRIBE_DOCTOR);
 	const [subscribeMember, memberSubscribeState] = useMutation(SUBSCRIBE_MEMBER);
 	const [unsubscribeMember, memberUnsubscribeState] = useMutation(UNSUBSCRIBE_MEMBER);
-	useEffect(() => setFollowing(initialFollowing), [initialFollowing, targetId]);
-	if (user._id === targetId) return null;
+	useEffect(() => { setFollowing(initialFollowing); setError(''); }, [initialFollowing, targetId, user._id]);
+	if (user._id === targetId || (user._id && !['PATIENT', 'DOCTOR'].includes(String(user.memberType)))) return null;
 	const busy = refreshing || doctorSubscribeState.loading || doctorUnsubscribeState.loading || memberSubscribeState.loading || memberUnsubscribeState.loading;
 	const toggle = async () => {
-		if (busy) return;
+		if (busy || lock.current) return;
 		setError('');
 		if (!user._id) { await router.push(`/account/signin?redirect=${encodeURIComponent(router.asPath)}`); return; }
+		lock.current = true;
 		setRefreshing(true);
 		try {
 			const mutation = kind === 'doctor' ? (following ? unsubscribeDoctor : subscribeDoctor) : (following ? unsubscribeMember : subscribeMember);
-			await mutation({ variables: { input: targetId } });
+			await mutation({ variables: { input: targetId }, context: { expectedAccount: `${user.memberType}:${user._id}` } });
 			setFollowing((value) => !value);
-			await refreshFollowViews(client, kind, onChanged);
+			await refreshFollowViews(client, kind, onChanged).catch(() => setError(t('follow.refreshError')));
 		} catch (requestError) { setError(requestError instanceof Error ? requestError.message : t('follow.actionError')); }
-		finally { setRefreshing(false); }
+		finally { lock.current = false; setRefreshing(false); }
 	};
 	return <span className="clinical-follow-control"><button className={following ? 'clinical-secondary-button' : 'clinical-primary-button'} type="button" onClick={() => void toggle()} disabled={busy} aria-pressed={following}>{busy ? t('follow.saving') : following ? t('follow.followingAction') : t('follow.action')}</button>{error && <small role="alert">{error}</small>}</span>;
 };
