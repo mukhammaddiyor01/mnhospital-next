@@ -3,9 +3,9 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev -p 2002",
+		"dev": "next dev -p ${PORT:-2002}",
 		"build": "next build",
-		"start": "next start -p 2002",
+		"start": "next start -p ${PORT:-2002}",
 		"lint": "next lint",
 		"test:auth": "node scripts/verify-auth-session.cjs"
 	},
