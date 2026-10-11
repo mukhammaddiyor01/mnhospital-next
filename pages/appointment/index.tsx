@@ -42,7 +42,8 @@ function AppointmentPage() {
 	const [message, setMessage] = useState('');
 	const [page, setPage] = useState(1);
 	const [search, setSearch] = useState('');
-	const restored = useRef(false);
+	const accountKey = user._id ? `${user.memberType}:${user._id}` : 'guest';
+	const account = useRef(accountKey);
 	const preselected = useRef('');
 	const lock = useRef(false);
 	const requestKey = useRef('');
@@ -112,19 +113,41 @@ function AppointmentPage() {
 			? (slotsQuery.data?.getAvailableDoctorSlots ?? [])
 			: [];
 	useEffect(() => {
-		if (!router.isReady || restored.current) return;
-		restored.current = true;
-		try {
-			const saved = JSON.parse(sessionStorage.getItem(draftKey) || 'null');
-			if (
-				saved &&
-				Object.keys(emptyDraft).every((key) => typeof saved[key] === 'string')
-			)
-				setForm(saved);
-		} catch {
-			/* A malformed or unavailable draft does not block booking. */
-		}
-	}, [router.isReady]);
+		const clearLegacyDraft = () => {
+			try {
+				sessionStorage.removeItem(draftKey);
+			} catch {
+				/* Booking works when browser storage is unavailable. */
+			}
+		};
+		const leavePage = () => {
+			setForm(emptyDraft);
+			setSearch('');
+			setPage(1);
+			setMessage('');
+			requestKey.current = '';
+			clearLegacyDraft();
+		};
+		clearLegacyDraft();
+		router.events.on('routeChangeStart', leavePage);
+		window.addEventListener('pagehide', leavePage);
+		return () => {
+			router.events.off('routeChangeStart', leavePage);
+			window.removeEventListener('pagehide', leavePage);
+			clearLegacyDraft();
+		};
+	}, [router.events]);
+	useEffect(() => {
+		if (account.current === accountKey) return;
+		account.current = accountKey;
+		setForm(emptyDraft);
+		setSearch('');
+		setPage(1);
+		setMessage('');
+		requestKey.current = '';
+		// An old service URL must not refill the previous account's selection.
+		preselected.current = selectionKey;
+	}, [accountKey, selectionKey]);
 	useEffect(() => {
 		if (
 			!router.isReady ||
@@ -137,20 +160,13 @@ function AppointmentPage() {
 			? requestedService
 			: services.find((service) => service.memberId === router.query.doctor);
 		if (requested)
-			setForm((current) => ({
-				...current,
+			setForm({
+				...emptyDraft,
 				serviceId: requested._id,
 				doctorId: requested.memberId,
-				date: current.serviceId === requested._id ? current.date : '',
-				startsAt: '',
-			}));
+			});
 		else if (requestedServiceId)
-			setForm((current) => ({
-				...current,
-				serviceId: '',
-				doctorId: '',
-				startsAt: '',
-			}));
+			setForm(emptyDraft);
 		requestKey.current = '';
 		setMessage('');
 	}, [
@@ -178,12 +194,7 @@ function AppointmentPage() {
 		)
 			return;
 		if (!user._id) {
-			try {
-				sessionStorage.setItem(draftKey, JSON.stringify(form));
-			} catch {
-				/* Keep the in-page draft. */
-			}
-			await router.push(`/account/signin?redirect=${encodeURIComponent(`/appointment?service=${selected._id}`)}`);
+			await router.push('/account/signin?redirect=%2Fappointment');
 			return;
 		}
 		if (user.memberType !== MemberType.PATIENT)
