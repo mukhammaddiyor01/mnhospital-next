@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   mnhospital-next:
     container_name: mnhospital-next
