@@ -10,6 +10,7 @@ import { userVar } from '@/apollo/store';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
 import Icon from '@/libs/components/common/Icon';
 import BookingDatePicker from '@/libs/components/booking/BookingDatePicker';
+import { createBookingRequestKey } from '@/libs/components/booking/request-key';
 import { AppointmentDraft } from '@/libs/components/booking/types/booking';
 import { Service, Services } from '@/libs/components/service/types/service';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
@@ -189,8 +190,8 @@ function AppointmentPage() {
 			return setMessage(w('patientBookingOnly'));
 		lock.current = true;
 		setMessage('');
-		if (!requestKey.current) requestKey.current = crypto.randomUUID();
 		try {
+			if (!requestKey.current) requestKey.current = createBookingRequestKey();
 			const result = await create({
 				variables: {
 					input: {
