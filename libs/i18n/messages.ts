@@ -2,6 +2,9 @@ import { PreferenceLanguage } from "@/libs/components/preference/types/preferenc
 
 const en = {
   "assistant.open": "AI assistant",
+  "assistant.helpGuest": "Need Help?",
+  "assistant.helpNamed": "Need a help, {name}?",
+  "assistant.helpAction": "Ask MN Hospital AI Assistant!",
   "assistant.title": "MN assistant",
   "assistant.subtitle": "Services and appointment guidance",
   "assistant.welcome":
@@ -883,6 +886,9 @@ export type MessageKey = keyof typeof en;
 
 const kr: Record<MessageKey, string> = {
   "assistant.open": "AI 도우미",
+  "assistant.helpGuest": "도움이 필요하신가요?",
+  "assistant.helpNamed": "{name}님, 도움이 필요하신가요?",
+  "assistant.helpAction": "MN Hospital AI 도우미에게 물어보세요!",
   "assistant.title": "MN 도우미",
   "assistant.subtitle": "진료 서비스 및 예약 안내",
   "assistant.welcome":
@@ -1744,6 +1750,9 @@ const kr: Record<MessageKey, string> = {
 
 const uz: Record<MessageKey, string> = {
   "assistant.open": "AI yordamchi",
+  "assistant.helpGuest": "Yordam kerakmi?",
+  "assistant.helpNamed": "{name}, yordam kerakmi?",
+  "assistant.helpAction": "MN Hospital AI yordamchisidan so‘rang!",
   "assistant.title": "MN yordamchi",
   "assistant.subtitle": "Xizmat va qabul bo‘yicha yordam",
   "assistant.welcome":

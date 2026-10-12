@@ -335,3 +335,49 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
 @media (prefers-reduced-motion: reduce) { .clinical-admin-signin-glitch { animation: none; display: none; } }
 
 .clinical-rail-status { margin: 0; padding: 14px; color: var(--clinical-muted); border: 1px solid var(--clinical-line); border-radius: 12px; background: var(--clinical-low); font-size: 11px; line-height: 1.5; }
+
+.clinical-assistant-anchor { position: relative; display: flex; }
+.clinical-chat-launchers .clinical-assistant-invite {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 14px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  width: min(290px, calc(100vw - 32px));
+  height: auto;
+  padding: 14px 16px;
+  color: var(--clinical-text);
+  border: 1px solid var(--clinical-line);
+  border-radius: 16px;
+  background: var(--clinical-surface);
+  box-shadow: 0 8px 28px rgba(18, 48, 55, .16);
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px) scale(.96);
+  transform-origin: bottom right;
+  transition: opacity .25s ease, transform .25s ease, visibility 0s .25s;
+}
+.clinical-assistant-invite strong { font-size: 14px; line-height: 1.4; }
+.clinical-assistant-invite small { color: var(--clinical-primary); font-size: 12px; line-height: 1.5; }
+.clinical-assistant-invite::after {
+  content: ''; position: absolute; right: 18px; bottom: -6px;
+  width: 10px; height: 10px; transform: rotate(45deg);
+  background: var(--clinical-surface); border-right: 1px solid var(--clinical-line); border-bottom: 1px solid var(--clinical-line);
+}
+.clinical-chat-launchers .clinical-assistant-invite.is-visible {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: none;
+  transition-delay: 0s;
+}
+@media (max-width: 900px) {
+  .clinical-chat-launchers .clinical-assistant-invite { top: calc(100% + 14px); bottom: auto; transform-origin: top right; }
+  .clinical-assistant-invite::after { top: -6px; bottom: auto; transform: rotate(225deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .clinical-chat-launchers .clinical-assistant-invite { transition: none; transform: none; }
+}
