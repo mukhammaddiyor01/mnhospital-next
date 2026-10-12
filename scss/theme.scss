@@ -5,6 +5,13 @@
 .clinical-theme-control, .clinical-language-control { position: relative; display: flex; height: 36px; align-items: center; gap: 3px; padding: 0 6px; color: var(--clinical-navy); border: 1px solid var(--clinical-line); border-radius: 7px; background: var(--clinical-low); }
 .clinical-theme-control .material-symbols-rounded, .clinical-language-control .material-symbols-rounded { color: var(--clinical-primary); font-size: 17px; }
 .clinical-theme-control select, .clinical-language-control select { width: 70px; color: inherit; border: 0; outline: 0; background: transparent; font-size: 10px; font-weight: 700; }
+// Native popup menus must set both foreground and background, especially on Windows.
+.clinical-theme-control select, .clinical-language-control select { color-scheme: light; }
+.clinical-theme-control option, .clinical-language-control option {
+	color: var(--clinical-text);
+	background-color: var(--clinical-low);
+}
+html[data-theme='dark'] :is(.clinical-theme-control, .clinical-language-control) select { color-scheme: dark; }
 .clinical-theme-control:focus-within, .clinical-language-control:focus-within { outline: 2px solid var(--clinical-primary); outline-offset: 2px; }
 .clinical-theme-error { position: absolute; z-index: 5; top: 42px; right: 0; width: 190px; padding: 7px 9px; color: #fff; border-radius: 6px; background: #8f3444; font-size: 10px; box-shadow: 0 5px 15px rgba(0, 0, 0, .18); }
 .clinical-signup-top-icon { display: none; }

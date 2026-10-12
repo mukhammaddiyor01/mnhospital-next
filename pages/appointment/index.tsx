@@ -41,7 +41,6 @@ function AppointmentPage() {
 	const [form, setForm] = useState(emptyDraft);
 	const [message, setMessage] = useState('');
 	const [page, setPage] = useState(1);
-	const [search, setSearch] = useState('');
 	const accountKey = user._id ? `${user.memberType}:${user._id}` : 'guest';
 	const account = useRef(accountKey);
 	const preselected = useRef('');
@@ -58,7 +57,6 @@ function AppointmentPage() {
 				sort: 'serviceRank',
 				direction: 'DESC',
 				search: {
-					...(search ? { text: search } : {}),
 					...(typeof router.query.doctor === 'string' &&
 					/^[a-f\d]{24}$/i.test(router.query.doctor)
 						? { memberId: router.query.doctor }
@@ -122,7 +120,6 @@ function AppointmentPage() {
 		};
 		const leavePage = () => {
 			setForm(emptyDraft);
-			setSearch('');
 			setPage(1);
 			setMessage('');
 			requestKey.current = '';
@@ -141,7 +138,6 @@ function AppointmentPage() {
 		if (account.current === accountKey) return;
 		account.current = accountKey;
 		setForm(emptyDraft);
-		setSearch('');
 		setPage(1);
 		setMessage('');
 		requestKey.current = '';
@@ -261,23 +257,6 @@ function AppointmentPage() {
 						</span>
 					</div>
 					<div className="booking-fields">
-						<label>
-							{w('searchService')}
-							<input
-								type="search"
-								value={search}
-								onChange={(event) => {
-									setSearch(event.target.value);
-									setPage(1);
-									update({
-										serviceId: '',
-										doctorId: '',
-										date: '',
-										startsAt: '',
-									});
-								}}
-							/>
-						</label>
 						<label className="wide-field">
 							{t('booking.hospitalService')}
 							<select
