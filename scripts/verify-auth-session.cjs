@@ -114,6 +114,52 @@ function result(link, operation) {
 }
 async function main() {
 	const fresh = token('PATIENT', 900, 'Updated');
+	for (const role of ['PATIENT', 'DOCTOR', 'RECEPTIONIST', 'ADMIN']) {
+		const saved = token(role, 900, role + ' restored');
+		setJwtToken(saved);
+		userVar({ _id: '', memberNick: '' });
+		fetchWith(async () => response({ getMyPreferences: { theme: 'LIGHT', language: 'EN' } }));
+		await session.restoreSession();
+		check(calls.length === 1 && calls[0].query.includes('GetMyPreferences') && !calls[0].query.includes('RefreshSession'), role + ' reload verifies valid access without requiring refresh cookie');
+		check(getJwtToken() === saved && userVar().memberType === role, role + ' reload restores the same account');
+	}
+	setJwtToken(token());
+	userVar({ _id: '', memberNick: '' });
+	fetchWith(async () => response(null, [{ code: 'UNAUTHENTICATED' }]));
+	await session.restoreSession();
+	check(!getJwtToken() && !userVar()._id, 'server-revoked valid access is not restored');
+	setJwtToken(token());
+	userVar({ _id: '', memberNick: '' });
+	fetchWith(async () => { throw new TypeError('offline'); });
+	await session.restoreSession();
+	check(Boolean(getJwtToken()) && userVar()._id === id, 'temporary bootstrap network failure preserves valid session');
+	for (const rejected of [false, true]) {
+		setJwtToken(token('PATIENT'));
+		userVar({ _id: '', memberNick: '' });
+		let finish;
+		fetchWith(async () => new Promise(resolve => { finish = () => resolve(rejected ? response(null, [{ code: 'UNAUTHENTICATED' }]) : response({ getMyPreferences: { theme: 'LIGHT', language: 'EN' } })); }));
+		const restoring = session.restoreSession();
+		await new Promise(resolve => setImmediate(resolve));
+		const doctor = token('DOCTOR', 900, 'New doctor');
+		session.applySessionToken(doctor);
+		finish();
+		await restoring;
+		check(getJwtToken() === doctor && userVar().memberType === 'DOCTOR', 'late bootstrap ' + (rejected ? 'rejection' : 'success') + ' cannot change new account');
+	}
+	setJwtToken(token());
+	userVar({ _id: '', memberNick: '' });
+	let finishBootstrap;
+	fetchWith(async options => JSON.parse(options.body).query.includes('LogoutSession') ? response({ logoutSession: true }) : new Promise(resolve => { finishBootstrap = () => resolve({ ok: true, json: async () => ({ data: { getMyPreferences: { theme: 'LIGHT', language: 'EN' } } }) }); }));
+	const bootstrap = session.restoreSession();
+	await new Promise(resolve => setImmediate(resolve));
+	await session.revokeBrowserSession();
+	finishBootstrap();
+	await bootstrap;
+	check(!getJwtToken() && !userVar()._id, 'logout cannot be undone by an in-flight bootstrap');
+	seed();
+	fetchWith(async () => response({ refreshSession: { accessToken: fresh } }));
+	await session.restoreSession();
+	check(calls.length === 1 && calls[0].query.includes('RefreshSession') && getJwtToken() === fresh, 'expired access reload still uses refresh rotation');
 	seed();
 	fetchWith(async () => response({ refreshSession: { accessToken: fresh } }));
 	const renewed = await Promise.all(

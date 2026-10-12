@@ -2,6 +2,7 @@ import { jwtDecode } from 'jwt-decode';
 import { print } from 'graphql';
 import { userVar } from '@/apollo/store';
 import { REFRESH_SESSION, LOGOUT_SESSION } from '@/apollo/auth/mutation';
+import { GET_MY_PREFERENCES } from '@/apollo/preference/query';
 import { MemberSession } from '@/libs/components/member/types/member';
 import { getJwtToken, setJwtToken, removeJwtToken, storedSessionIdentity, publishSessionEvent, SESSION_ROLE_HEADER, SessionRole } from './token';
 
@@ -95,7 +96,7 @@ export async function withBrowserSessionLock<T>(
 		return navigator.locks.request(`mn-hospital-auth-session-${role ?? 'legacy'}`, action);
 	return action();
 }
-async function requestSession(refresh: boolean) {
+async function requestSession(action: 'check' | 'refresh' | 'logout') {
 	const controller = new AbortController();
 	const timeout = setTimeout(() => controller.abort(), 10000);
 	try {
@@ -112,7 +113,7 @@ async function requestSession(refresh: boolean) {
 					: {}),
 			},
 			body: JSON.stringify({
-				query: print(refresh ? REFRESH_SESSION : LOGOUT_SESSION),
+				query: print({ check: GET_MY_PREFERENCES, refresh: REFRESH_SESSION, logout: LOGOUT_SESSION }[action]),
 			}),
 		});
 		const body = await response.json();
@@ -144,7 +145,7 @@ export function refreshSessionToken(): Promise<string> {
 	pendingRefresh = withBrowserSessionLock(async () => {
 		if (loggingOut || !hasStoredSession() || !sameSession())
 			throw new SessionRejectedError('No login session');
-		const data = await requestSession(true);
+		const data = await requestSession('refresh');
 		if (!data.refreshSession?.accessToken)
 			throw new SessionRejectedError('Session is unavailable');
 		const renewed = jwtDecode<Claims>(data.refreshSession.accessToken);
@@ -162,38 +163,47 @@ export function refreshSessionToken(): Promise<string> {
 		});
 	return pendingRefresh;
 }
+function hasUsableAccessToken(token: string): boolean {
+	try {
+		const claims = jwtDecode<Claims>(token);
+		return Boolean(claims.sid && claims.tokenType === 'access' &&
+			Number.isFinite(claims.exp) && claims.exp! * 1000 > Date.now() + 60000);
+	} catch {
+		return false;
+	}
+}
 export async function ensureAccessToken(): Promise<string> {
 	if (typeof window === 'undefined' || loggingOut) return '';
 	const token = getJwtToken();
-	if (token) {
-		try {
-			const claims = jwtDecode<Claims>(token);
-			if (
-				claims.sid &&
-				claims.tokenType === 'access' &&
-				claims.exp &&
-				claims.exp * 1000 > Date.now() + 60000
-			)
-				return token;
-		} catch {
-			/* Restore with the server-owned cookie. */
-		}
-	}
+	if (hasUsableAccessToken(token)) return token;
 	if (!hasStoredSession()) return '';
 	return refreshSessionToken();
 }
 export async function restoreSession(): Promise<void> {
-	if (!hasStoredSession()) return;
+	if (loggingOut || !hasStoredSession()) return;
+	const savedToken = getJwtToken();
 	try {
-		await refreshSessionToken();
+		if (hasUsableAccessToken(savedToken)) {
+			// Guards verify session revocation and active role/profile using the bearer token.
+			// Reloading a valid session does not need to rotate its refresh cookie.
+			const data = await requestSession('check');
+			if (!data.getMyPreferences) throw new Error('Session check failed');
+			if (!loggingOut && getJwtToken() === savedToken) applySessionToken(savedToken);
+		} else {
+			await refreshSessionToken();
+		}
 	} catch (error) {
+		// A response for the old account must not restore or clear a replacement session.
+		if (loggingOut || getJwtToken() !== savedToken) return;
+		if (error instanceof SessionRejectedError) {
+			clearSession();
+			return;
+		}
 		// Connection failures keep local credentials so a later request can retry.
-		if (!(error instanceof SessionRejectedError)) {
-			try {
-				applySessionToken(getJwtToken());
-			} catch {
-				/* Wait for a successful connection. */
-			}
+		try {
+			applySessionToken(savedToken);
+		} catch {
+			/* Wait for a successful connection. */
 		}
 	}
 }
@@ -203,7 +213,7 @@ export async function revokeBrowserSession(): Promise<void> {
 		// Also wait within this tab when the browser does not provide Web Locks.
 		await pendingRefresh?.catch(() => undefined);
 		await withBrowserSessionLock(async () => {
-			await requestSession(false);
+			await requestSession('logout');
 			clearSession();
 		});
 	} finally {
