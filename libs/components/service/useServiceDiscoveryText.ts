@@ -1,5 +1,6 @@
 import { usePreferences } from '../preference/PreferenceProvider';
 const en = {
+	moreFilters: 'More filters',
 	promoTitle: 'Have a promo code?',
 	promoHelp:
 		'Select a service, then enter your code in the booking total before choosing your payment method.',
@@ -32,7 +33,7 @@ const en = {
 	next: 'Next page',
 	page: 'Page',
 	invalidRange:
-		'Enter a valid price range with the maximum at least the minimum.',
+		'Enter prices from 0 to 1,000,000,000, with the maximum at least the minimum.',
 	remove: 'Remove filter',
 	offersTitle: 'Discounted services',
 	offersIntro:
@@ -54,6 +55,7 @@ type Copy = Record<keyof typeof en, string>;
 const copy: Record<'EN' | 'UZ' | 'KR', Copy> = {
 	EN: en,
 	UZ: {
+		moreFilters: 'Qo‘shimcha filtrlar',
 		promoTitle: 'Promo-kodingiz bormi?',
 		promoHelp:
 			'Xizmatni tanlang. So‘ng to‘lov usulini tanlashdan oldin promo-kodni buyurtmaning narx xulosasiga kiriting.',
@@ -86,7 +88,7 @@ const copy: Record<'EN' | 'UZ' | 'KR', Copy> = {
 		next: 'Keyingi sahifa',
 		page: 'Sahifa',
 		invalidRange:
-			'Narx oralig‘ini to‘g‘ri kiriting: eng ko‘p narx eng kam narxdan kichik bo‘lmasin.',
+			'Narxlar 0–1,000,000,000 oralig‘ida bo‘lsin; eng ko‘p narx eng kam narxdan kichik bo‘lmasin.',
 		remove: 'Filtrni olib tashlash',
 		offersTitle: 'Chegirmali xizmatlar',
 		offersIntro:
@@ -105,6 +107,7 @@ const copy: Record<'EN' | 'UZ' | 'KR', Copy> = {
 		price: 'Narx',
 	},
 	KR: {
+		moreFilters: '상세 검색',
 		promoTitle: '프로모션 코드가 있나요?',
 		promoHelp:
 			'서비스를 선택한 후 결제 수단을 고르기 전에 예약 금액 요약에서 코드를 입력하세요.',
@@ -136,7 +139,7 @@ const copy: Record<'EN' | 'UZ' | 'KR', Copy> = {
 		previous: '이전 페이지',
 		next: '다음 페이지',
 		page: '페이지',
-		invalidRange: '최대 가격은 최소 가격 이상이어야 합니다.',
+		invalidRange: '가격은 0~1,000,000,000 범위로 입력하고, 최대 가격은 최소 가격 이상으로 설정해 주세요.',
 		remove: '필터 삭제',
 		offersTitle: '할인 서비스',
 		offersIntro: '기본 가격과 할인 가격을 함께 확인하고 진료를 선택하세요.',

@@ -54,8 +54,9 @@ const ServicesPage = () => {
 		fetchPolicy: 'cache-and-network',
 		notifyOnNetworkStatusChange: true,
 	});
-	const services = catalog.data?.getServices.list ?? [],
-		total = catalog.data?.getServices.metaCounter[0]?.total ?? 0;
+	const result = catalog.data?.getServices ?? catalog.previousData?.getServices;
+	const services = result?.list ?? [],
+		total = result?.metaCounter[0]?.total ?? 0;
 	const change = (patch: Partial<ServiceFilters>) => {
 		setDraft((current) => ({ ...current, ...patch }));
 		setValidation('');
@@ -71,8 +72,12 @@ const ServicesPage = () => {
 			{ shallow: true, scroll: false },
 		);
 	};
-	const submit = (event: FormEvent) => {
+	const submit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		if (!event.currentTarget.checkValidity()) {
+			setValidation(copy.invalidRange);
+			return;
+		}
 		navigate(draft);
 	};
 	const chips = [
@@ -106,10 +111,12 @@ const ServicesPage = () => {
 						<em>{t('services.hero2')}</em>
 					</h1>
 					<p>{t('services.intro')}</p>
+					<Link href="/visit-guide">{t('visit.title')} <Icon name="arrow_forward" /></Link>
 				</div>
 			</section>
 			<section className="clinical-inner-section">
 				<form
+					noValidate
 					className={styles.discovery}
 					onSubmit={submit}
 					aria-label={copy.filters}
@@ -133,7 +140,9 @@ const ServicesPage = () => {
 							{copy.apply}
 						</button>
 					</div>
-					<div className={styles.filterGrid}>
+					<details className={styles.advanced} open={Boolean(applied.category || applied.min || applied.max || applied.sort !== 'recommended' || validation)}>
+						<summary>{copy.moreFilters}</summary>
+						<div className={styles.filterGrid}>
 						<label>
 							{copy.category}
 							<select
@@ -193,7 +202,9 @@ const ServicesPage = () => {
 								/>
 							</label>
 						</fieldset>
-					</div>
+						</div>
+						<p className={styles.help}>{copy.priceHelp}</p>
+					</details>
 					<div className={styles.filterFooter}>
 						<label className={styles.check}>
 							<input
@@ -217,7 +228,6 @@ const ServicesPage = () => {
 							{copy.reset}
 						</button>
 					</div>
-					<p className={styles.help}>{copy.priceHelp}</p>
 					{validation && (
 						<p role="alert" className={styles.error}>
 							{validation}

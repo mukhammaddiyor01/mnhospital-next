@@ -16,6 +16,8 @@ jobs:
       - run: npx tsc --noEmit
       - run: npm run test:auth
       - run: node scripts/verify-booking-draft-reset.cjs
+      - run: node scripts/verify-catalog-localization.cjs
+      - run: node scripts/verify-booking-focus.cjs
       - run: node scripts/verify-preference-controls.cjs
       - run: node scripts/verify-doctor-directory.cjs
       - run: node scripts/verify-booking-submit.cjs

@@ -68,6 +68,7 @@ const DoctorsPage = () => {
             <em>{t("doctors.hero2")}</em>
           </h1>
           <p>{t("doctors.intro")}</p>
+          <Link href="/visit-guide">{t("visit.title")} <Icon name="arrow_forward" /></Link>
         </div>
       </section>
       <section className="clinical-inner-section">

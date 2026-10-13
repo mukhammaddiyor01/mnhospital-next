@@ -26,3 +26,9 @@
 @supports not selector(:has(*)) {
   .clinical-shell :is(.clinical-theme-control, .clinical-language-control) select:focus-visible { outline: 2px solid var(--clinical-primary); outline-offset: 2px; }
 }
+
+.clinical-shell .clinical-focused-workspace { grid-template-columns: minmax(0, 820px); }
+.clinical-booking-support { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; padding: 16px 20px 32px; color: var(--clinical-secondary); font-size: 13px; }
+.clinical-booking-support a { color: var(--clinical-primary); text-decoration: underline; text-underline-offset: 3px; }
+
+.clinical-focused-shell .clinical-book-top { display: none; }

@@ -1107,3 +1107,8 @@
  p { margin: 10px 0 14px; font-size: 12px; line-height: 1.7; color: var(--p-muted); }
  a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--p-accent); font-size: 12px; font-weight: 700; text-decoration: none; }
 }
+
+.advanced { margin-top: 12px; color: var(--p-text); }
+.advanced > summary { min-height: 44px; padding: 10px 0; cursor: pointer; color: var(--p-accent); font-size: 13px; font-weight: 600; }
+.advanced > summary:focus-visible { outline: 2px solid var(--p-accent); outline-offset: 3px; border-radius: 4px; }
+.advanced .filterGrid { margin-top: 8px; }

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { ComponentType, ReactNode, useState } from 'react';
@@ -20,6 +21,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 		const router = useRouter();
 		const t = useTranslation();
 		const isHome = router.pathname === '/';
+		const focused = router.pathname === '/appointment' || router.pathname.startsWith('/booking/');
 		const [chatOpen, setChatOpen] = useState(false);
 		const [assistantOpen, setAssistantOpen] = useState(false);
 		return (
@@ -30,10 +32,10 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 					<meta name="viewport" content="width=device-width, initial-scale=1" />
 					<link rel="icon" type="image/png" href="/favicon.png" />
 				</Head>
-				<div id="pc-wrap" className="clinical-shell app-frame">
+				<div id="pc-wrap" className={`clinical-shell app-frame${focused ? ' clinical-focused-shell' : ''}`}>
 					<Top />
 					<ChatLauncher
-						inviteEnabled={!/^\/(appointment|checkout|account)(\/|$)/.test(router.pathname)}
+						inviteEnabled={!focused && !router.pathname.startsWith('/account')}
 						chatOpen={chatOpen}
 						onChatToggle={() => {
 							setAssistantOpen(false);
@@ -49,16 +51,16 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 						{isHome ? (
 							<Component {...props} />
 						) : (
-							<div className="clinical-workspace clinical-inner-workspace">
-								<AdvertisementRail side="left" />
+							<div className={`clinical-workspace clinical-inner-workspace${focused ? ' clinical-focused-workspace' : ''}`}>
+								{!focused && <AdvertisementRail side="left" />}
 								<div className="clinical-center-column">
 									<Component {...props} />
 								</div>
-								<RightAdvertisementRail />
+								{!focused && <RightAdvertisementRail />}
 							</div>
 						)}
 					</main>
-					<Footer />
+					{focused ? <footer className="clinical-booking-support"><Link href="/visit-guide">{t('visit.title')}</Link><Link href="/contact">{t('nav.contact')}</Link></footer> : <Footer />}
 					<GeneralChat open={chatOpen} onClose={() => setChatOpen(false)} />
 					<HospitalAssistant
 						open={assistantOpen}
