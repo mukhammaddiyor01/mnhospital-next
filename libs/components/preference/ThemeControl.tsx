@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useRef } from 'react';
 import { usePreferences } from './PreferenceProvider';
 import { PreferenceTheme } from './types/preference';
 import { useTranslation } from '@/libs/i18n/useTranslation';
@@ -12,7 +12,9 @@ const iconByTheme: Record<PreferenceTheme, string> = {
 const ThemeControl = () => {
 	const { theme, setTheme, error, saving, ready } = usePreferences();
 	const t = useTranslation();
+	const pointerSelection = useRef(false);
 	const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+		if (pointerSelection.current) event.currentTarget.blur();
 		void setTheme(event.target.value as PreferenceTheme);
 	};
 
@@ -20,7 +22,7 @@ const ThemeControl = () => {
 		<label className="clinical-theme-control">
 			<span className="material-symbols-rounded" aria-hidden="true">{iconByTheme[theme]}</span>
 			<span className="sr-only">{t('nav.theme')}</span>
-			<select aria-label={t('nav.theme')} value={theme} onChange={onChange} disabled={saving}>
+			<select aria-label={t('nav.theme')} value={theme} onChange={onChange} onPointerDown={() => { pointerSelection.current = true; }} onKeyDown={() => { pointerSelection.current = false; }} disabled={saving}>
 				<option value="LIGHT">{t('theme.light')}</option>
 				<option value="DARK">{t('theme.dark')}</option>
 				<option value="SYSTEM">{t('theme.system')}</option>

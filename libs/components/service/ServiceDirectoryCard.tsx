@@ -44,7 +44,7 @@ export default function ServiceDirectoryCard({
       language === "KR" ? "ko-KR" : language === "UZ" ? "uz-UZ" : "en-US",
     ).format(Math.max(0, Number.isFinite(value) ? value! : 0));
   return (
-    <article className={`${styles.card} ${cardInteraction.surface}`}>
+    <article className={`${styles.card} ${serviceStyles.card} ${cardInteraction.surface}`}>
       <Link
         className={`${styles.portrait} ${serviceStyles.image}`}
         href={href}
@@ -74,13 +74,15 @@ export default function ServiceDirectoryCard({
           </div>
         )}
       </Link>
-      <div className={styles.body}>
+      <div className={`${styles.body} ${serviceStyles.body}`}>
         <p className={styles.specialty}>{typeLabel(service.serviceType)}</p>
         <h3>
           <Link className={cardInteraction.primaryLink} href={href}>{title}</Link>
         </h3>
-        {service.memberData?.docFullName && <p className={styles.details}><Icon name="stethoscope" />{service.memberData.docFullName}</p>}
-        {service.serviceDuration && <p className={styles.details}><Icon name="schedule" />{service.serviceDuration} {t("directory.minutes")}</p>}
+        <div className={serviceStyles.metadata}>
+          {service.memberData?.docFullName && <span><Icon name="stethoscope" />{service.memberData.docFullName}</span>}
+          {service.serviceDuration && <span><Icon name="schedule" />{service.serviceDuration} {t("directory.minutes")}</span>}
+        </div>
         {service.serviceDesc && (
           <p className={serviceStyles.description}>{service.serviceDesc}</p>
         )}
@@ -91,18 +93,17 @@ export default function ServiceDirectoryCard({
           )}
           {(service.serviceDiscountPercent ?? 0) > 0 && <small> <s>{formatMoney(service.servicePrice, currency)}</s> (−{service.serviceDiscountPercent}%)</small>}
         </p>
-        <dl className={styles.stats}>
+        <dl className={`${styles.stats} ${serviceStyles.stats}`}>
           <div>
             <dt>
               <Icon name="visibility" />
-              {labels.views}
+              <span className="sr-only">{labels.views}</span>
             </dt>
             <dd>{count(service.serviceViews)}</dd>
           </div>
           <div>
             <dt>
-              <Icon name="favorite" />
-              {labels.likes}
+              <span className="sr-only">{labels.likes}</span>
             </dt>
             <dd className={serviceStyles.likes}>
               <span>{count(service.serviceLikes)}</span>
@@ -116,7 +117,7 @@ export default function ServiceDirectoryCard({
           </div>
         </dl>
         <Link className={styles.book} href={href}>
-          {t("services.explore")}
+          {t("services.explore").replace(/\s*→\s*$/, "")}
           <Icon name="arrow_forward" />
         </Link>
       </div>
