@@ -12,7 +12,6 @@ export default function SeoHead({ asPath, meta }: { asPath: string; meta?: SeoMe
 		name: 'MN Hospital',
 		url: SITE_URL,
 		logo: `${SITE_URL}/img/mn-logo-mark.png`,
-		image: SOCIAL_IMAGE,
 	};
 	return <Head>
 		<title key="title">{page.title}</title>
@@ -28,7 +27,7 @@ export default function SeoHead({ asPath, meta }: { asPath: string; meta?: SeoMe
 		<meta property="og:image" content={SOCIAL_IMAGE} key="og:image" />
 		<meta property="og:image:width" content="1672" key="og:image:width" />
 		<meta property="og:image:height" content="941" key="og:image:height" />
-		<meta property="og:image:alt" content="A doctor welcoming a patient at MN Hospital" key="og:image:alt" />
+		<meta property="og:image:alt" content="A doctor speaking with a patient in a bright clinic" key="og:image:alt" />
 		<meta name="twitter:card" content="summary_large_image" key="twitter:card" />
 		<meta name="twitter:title" content={page.title} key="twitter:title" />
 		<meta name="twitter:description" content={page.description} key="twitter:description" />
