@@ -1,7 +1,6 @@
 import LikeButton from '@/libs/components/common/LikeButton';
 import { LIKE_TARGET_DOCTOR } from '@/apollo/doctor/mutation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { GET_DOCTOR } from '@/apollo/doctor/query';
@@ -15,32 +14,25 @@ import DoctorProfileExtras from '@/libs/components/doctor/DoctorProfileExtras';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 import type { GetServerSideProps } from 'next';
-import { detailSeo } from '@/libs/seo/server';
-import { SeoMeta } from '@/libs/seo/site';
+import { publicDetailProps, type PublicDetailProps } from '@/libs/seo/server';
+import type { Doctor } from '@/libs/components/doctor/types/doctor';
 
-export const getServerSideProps: GetServerSideProps<{ seo: SeoMeta | null }> = async ({ params }) => ({
-	props: { seo: (await detailSeo('doctor', String(params?.doctorId ?? ''))) ?? null },
-});
+export const getServerSideProps: GetServerSideProps<PublicDetailProps<Doctor>> = async ({ params, res }) =>
+	publicDetailProps<Doctor>('doctor', String(params?.doctorId ?? ''), GET_DOCTOR, res);
 
-const DoctorDetailPage = () => {
+const DoctorDetailPage = ({ initialDetail }: PublicDetailProps<Doctor>) => {
 	const t = useTranslation();
 	const specialtyLabel = useDoctorSpecialtyLabel();
 	const router = useRouter();
-	const [doctorId, setDoctorId] = useState('');
-	useEffect(() => {
-		if (!router.isReady) return;
-		const routeId =
-			typeof router.query.doctorId === 'string'
-				? router.query.doctorId
-				: (window.location.pathname.split('/').filter(Boolean).at(-1) ?? '');
-		setDoctorId(routeId);
-	}, [router.isReady, router.query.doctorId]);
+	const doctorId = typeof router.query.doctorId === 'string' ? router.query.doctorId.toLowerCase() : '';
 	const isApiDoctor = /^[a-f\d]{24}$/i.test(doctorId);
 	const { data, loading, error, refetch } = useQuery(GET_DOCTOR, {
 		variables: { doctorId },
 		skip: !router.isReady || !isApiDoctor,
+		ssr: false,
 	});
-	const doctor = data?.getDoctor;
+	const doctor = data?.getDoctor?._id === doctorId ? data.getDoctor
+		: !error && initialDetail?._id === doctorId ? initialDetail : undefined;
 	const name =
 		doctor?.docFullName || doctor?.docNick || t('doctors.nameFallback');
 	const specialty = specialtyLabel(doctor?.docSpecialty);
@@ -60,7 +52,7 @@ const DoctorDetailPage = () => {
 						{t('doctors.detail.profile')}
 					</div>
 					<span className="clinical-eyebrow">{t('doctors.detail.kicker')}</span>
-					<h1>{loading ? t('doctors.detail.loading') : name}</h1>
+					<h1>{loading && !doctor ? t('doctors.detail.loading') : name}</h1>
 					<p>{doctor?.docDesc ?? t('doctors.detail.heroFallback')}</p>
 				</div>
 			</section>

@@ -10,10 +10,7 @@ const StaffLayout = ({ children }: { children: ReactNode }) => {
 	return (
 		<>
 			<Head>
-				<title>{t('dashboard.title')} | MN Hospital</title>
-				<meta name="robots" content="noindex, nofollow" />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<link rel="icon" type="image/png" href="/favicon.png" />
+				<title key="title">{t('dashboard.title')} | MN Hospital</title>
 			</Head>
 			{restored ? (
 				children

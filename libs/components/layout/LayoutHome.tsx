@@ -10,8 +10,6 @@ import GeneralChat from '../chat/GeneralChat';
 import ChatLauncher from '../chat/ChatLauncher';
 import { useRouter } from 'next/router';
 import { useTranslation } from '@/libs/i18n/useTranslation';
-import SeoHead from '@/libs/components/seo/SeoHead';
-import { SeoMeta } from '@/libs/seo/site';
 
 const HospitalAssistant = dynamic(() => import('../chat/HospitalAssistant'), {
 	ssr: false,
@@ -27,7 +25,6 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 		const [assistantOpen, setAssistantOpen] = useState(false);
 		return (
 			<>
-				<SeoHead asPath={router.asPath} meta={(props as { seo?: SeoMeta | null }).seo} />
 				<div id="pc-wrap" className={`clinical-shell app-frame${focused ? ' clinical-focused-shell' : ''}`}>
 					<Top />
 					<ChatLauncher

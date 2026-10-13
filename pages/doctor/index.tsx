@@ -11,19 +11,33 @@ import {
 } from "@/libs/components/doctor/enums/doctor.enum";
 import DoctorDirectoryCard from "@/libs/components/doctor/DoctorDirectoryCard";
 import cardStyles from "@/libs/components/common/DirectoryCard.module.scss";
-import { Doctor } from "@/libs/components/doctor/types/doctor";
+import { Doctor, Doctors } from "@/libs/components/doctor/types/doctor";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 import { useWorkspaceText } from "@/libs/components/workspace/useWorkspaceText";
 import { useDoctorSpecialtyLabel } from "@/libs/i18n/useDoctorSpecialtyLabel";
+import type { GetServerSideProps } from 'next';
+import { publicCatalogProps, type PublicCatalogProps } from '@/libs/seo/server';
 
-const DoctorsPage = () => {
+type DoctorsPageProps = PublicCatalogProps<Doctors> & { initialSearch: string };
+const doctorInquiry = (text: string, page = 1, specialty = '') => ({
+  page, limit: 12, sort: DoctorSort.POINTS, direction: 'DESC',
+  ...(specialty ? { docSpecialty: specialty } : {}),
+  search: { ...(text ? { text } : {}) },
+});
+
+export const getServerSideProps: GetServerSideProps<DoctorsPageProps> = async ({ query, res }) => {
+  const initialSearch = typeof query.search === 'string' ? query.search : '';
+  return { props: { ...await publicCatalogProps<Doctors>(GET_DOCTORS, 'getDoctors', doctorInquiry(initialSearch), res), initialSearch } };
+};
+
+const DoctorsPage = ({ initialCatalog, initialInquiryKey, initialSearch }: DoctorsPageProps) => {
   const t = useTranslation();
   const w = useWorkspaceText();
   const specialtyLabel = useDoctorSpecialtyLabel();
   const router = useRouter();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [specialty, setSpecialty] = useState("");
-  const [appliedSearch, setAppliedSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
   useEffect(() => {
     if (router.isReady) {
@@ -33,19 +47,14 @@ const DoctorsPage = () => {
       setPage(1);
     }
   }, [router.isReady, router.query.search]);
-  const inquiry = {
-    page,
-    limit: 12,
-    sort: DoctorSort.POINTS,
-    direction: "DESC",
-    ...(specialty ? { docSpecialty: specialty } : {}),
-    search: { ...(appliedSearch ? { text: appliedSearch } : {}) },
-  };
+  const inquiry = doctorInquiry(appliedSearch, page, specialty);
   const { data, previousData, loading, error } = useQuery(GET_DOCTORS, {
     variables: { input: inquiry },
     fetchPolicy: "cache-and-network",
+    ssr: false,
   });
-  const result = data?.getDoctors ?? previousData?.getDoctors;
+  const initial = JSON.stringify(inquiry) === initialInquiryKey ? initialCatalog : null;
+  const result = data?.getDoctors ?? previousData?.getDoctors ?? (!error ? initial : null);
   const doctors = result?.list ?? [];
   const total = result?.metaCounter?.[0]?.total ?? 0;
   const submitHandler = (event: FormEvent) => {

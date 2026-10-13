@@ -32,7 +32,7 @@ function mockRequire(name) {
   return {__esModule:true,default:()=>null};
 }
 new Function('require','exports',source)(mockRequire,exportsObject);
-function render() {index=0;effects=[];const tree=exportsObject.default();effects.forEach(run=>run());return tree;}
+function render() {index=0;effects=[];const tree=exportsObject.default({initialCatalog:null,initialInquiryKey:'',initialSearch:'Khan'});effects.forEach(run=>run());return tree;}
 function nodes(tree,predicate) {if(!tree || typeof tree!=='object')return [];const children=React.Children.toArray(tree.props?.children);return [...(predicate(tree)?[tree]:[]),...children.flatMap(child=>nodes(child,predicate))];}
 let tree=render();tree=render();
 assert.equal(inquiry.search.text,'Khan');assert.equal(inquiry.page,1);

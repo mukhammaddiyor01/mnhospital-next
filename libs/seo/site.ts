@@ -45,10 +45,14 @@ export const sitemapPaths = Object.keys(publicPages);
 
 export function seoForPath(path: string, override?: SeoMeta | null): SeoMeta {
 	if (override) return override;
+	if (path === '/404' || path === '/_error') return { title: 'Page unavailable | MN Hospital', description: 'This page is unavailable. Explore MN Hospital services, doctors and visit information.' };
+	if (path.startsWith('/account/')) return { title: 'Account | MN Hospital', description: 'Sign in to your MN Hospital account.' };
+	if (path.startsWith('/mypage') || path.startsWith('/patient/')) return { title: 'Patient account | MN Hospital', description: 'Manage your MN Hospital account and visits.' };
+	if (path === '/appointment' || path.startsWith('/booking/')) return { title: 'Appointment and booking | MN Hospital', description: 'Manage your MN Hospital appointment and booking.' };
 	if (path.startsWith('/service/')) return { title: 'Medical Service | MN Hospital', description: publicPages['/service'].description };
 	if (path.startsWith('/doctor/')) return { title: 'Doctor Profile | MN Hospital', description: publicPages['/doctor'].description };
 	if (path.startsWith('/article/')) return { title: 'Health Article | MN Hospital', description: publicPages['/article'].description };
-	return publicPages[path] ?? publicPages['/'];
+	return publicPages[path] ?? { title: 'Workspace | MN Hospital', description: 'MN Hospital account workspace.' };
 }
 
 export function isIndexablePath(path: string): boolean {
@@ -57,5 +61,6 @@ export function isIndexablePath(path: string): boolean {
 
 export function canonicalPath(asPath: string): string {
 	const path = asPath.split(/[?#]/, 1)[0] || '/';
-	return path !== '/' ? path.replace(/\/$/, '') : path;
+	const trimmed = path !== '/' ? path.replace(/\/$/, '') : path;
+	return /^\/(service|doctor|article)\/[a-f\d]{24}$/i.test(trimmed) ? trimmed.toLowerCase() : trimmed;
 }

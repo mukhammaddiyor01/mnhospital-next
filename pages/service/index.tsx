@@ -22,7 +22,16 @@ import {
 } from '@/libs/components/service/service-discovery';
 import cardStyles from '@/libs/components/common/DirectoryCard.module.scss';
 import styles from '@/libs/components/promotions/Promotions.module.scss';
-const ServicesPage = () => {
+import type { GetServerSideProps } from 'next';
+import { publicCatalogProps, type PublicCatalogProps } from '@/libs/seo/server';
+
+export const getServerSideProps: GetServerSideProps<PublicCatalogProps<Services>> = async ({ query, res }) => {
+	const page = typeof query.page === 'string' && Number.isFinite(Number(query.page))
+		? Math.max(1, Math.min(100000, Math.floor(Number(query.page)))) : 1;
+	return { props: await publicCatalogProps<Services>(GET_SERVICES, 'getServices', serviceInquiry(filtersFromQuery(query), page), res) };
+};
+
+const ServicesPage = ({ initialCatalog, initialInquiryKey }: PublicCatalogProps<Services>) => {
 	const t = useTranslation(),
 		copy = useServiceDiscoveryText(),
 		clinic = useClinicSettings(),
@@ -54,7 +63,8 @@ const ServicesPage = () => {
 		fetchPolicy: 'cache-and-network',
 		notifyOnNetworkStatusChange: true,
 	});
-	const result = catalog.data?.getServices ?? catalog.previousData?.getServices;
+	const initial = JSON.stringify(serviceInquiry(applied, page)) === initialInquiryKey ? initialCatalog : null;
+	const result = catalog.data?.getServices ?? catalog.previousData?.getServices ?? (!catalog.error ? initial : null);
 	const services = result?.list ?? [],
 		total = result?.metaCounter[0]?.total ?? 0;
 	const change = (patch: Partial<ServiceFilters>) => {

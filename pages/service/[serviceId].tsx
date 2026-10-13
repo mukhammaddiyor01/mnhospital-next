@@ -33,12 +33,13 @@ import { ServiceType } from '@/libs/components/service/enums/service.enum';
 import { Service } from '@/libs/components/service/types/service';
 import { MemberStatus } from '@/libs/components/member/enums/member.enum';
 import type { GetServerSideProps } from 'next';
-import { detailSeo } from '@/libs/seo/server';
-import { SeoMeta } from '@/libs/seo/site';
+import { publicDetailProps, type PublicDetailProps } from '@/libs/seo/server';
 
-export const getServerSideProps: GetServerSideProps<{ seo: SeoMeta | null }> = async ({ params }) => ({
-	props: { seo: (await detailSeo('service', String(params?.serviceId ?? ''))) ?? null },
-});
+export const getServerSideProps: GetServerSideProps<PublicDetailProps<ServiceDetail>> = async ({ params, res }) => {
+	const id = String(params?.serviceId ?? '');
+	if (Object.prototype.hasOwnProperty.call(previewServices, id)) return { props: { seo: null, initialDetail: null } };
+	return publicDetailProps<ServiceDetail>('service', id, GET_SERVICE, res);
+};
 
 const previewServices: Record<string, { title: MessageKey; description: MessageKey; type: ServiceType }> = {
 	'general-medicine': {
@@ -78,20 +79,21 @@ type ServiceDetail = Omit<Service, 'memberData'> & {
 	meLiked?: Array<{ myFavorite: boolean }>;
 };
 
-const ServiceDetailPage = () => {
+const ServiceDetailPage = ({ initialDetail }: PublicDetailProps<ServiceDetail>) => {
 	const t = useTranslation();
 	const { language } = usePreferences();
 	const [selectedOptionId, setSelectedOptionId] = useState('');
 	const clinic = useClinicSettings();
 	const typeLabel = useServiceTypeLabel();
 	const router = useRouter();
-	const serviceId = typeof router.query.serviceId === 'string' ? router.query.serviceId : '';
+	const serviceId = typeof router.query.serviceId === 'string' ? router.query.serviceId.toLowerCase() : '';
 	const isApiService = /^[a-f\d]{24}$/i.test(serviceId);
 	const previewService = previewServices[serviceId];
 	const { data, loading, error, refetch } = useQuery<{ getService: ServiceDetail }>(GET_SERVICE, {
-		variables: { serviceId }, skip: !router.isReady || !isApiService, fetchPolicy: 'cache-and-network',
+		variables: { serviceId }, skip: !router.isReady || !isApiService, fetchPolicy: 'cache-and-network', ssr: false,
 	});
-	const service = data?.getService?._id === serviceId ? data.getService : undefined;
+	const service = data?.getService?._id === serviceId ? data.getService
+		: !error && initialDetail?._id === serviceId ? initialDetail : undefined;
 	const { data: relatedData } = useQuery<{ getRecommendedServices: { list: Service[] } }>(GET_RECOMMENDED_SERVICES, {
 		variables: { serviceId, limit: 3 }, skip: !service, fetchPolicy: 'cache-first',
 	});
@@ -118,7 +120,7 @@ const ServiceDetailPage = () => {
 	const title = catalogText(service?.serviceTitle || service?.serviceName, language) || (previewService ? t(previewService.title) : t('nav.services'));
 	const description = service ? catalogText(service.serviceDesc, language) : previewService ? t(previewService.description) : undefined;
 	const canBook = Boolean(selectedOption);
-	if (!router.isReady || (isApiService && loading && !service))
+	if ((!router.isReady && !service && !previewService) || (isApiService && loading && !service))
 		return (
 			<div className="inner-page clinical-service-page"><div className="container"><ServiceLoading /></div></div>
 		);
