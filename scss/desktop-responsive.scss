@@ -1,0 +1,73 @@
+// Grow the established three-column desktop composition with the viewport.
+// Scope to the public shell: mobile layouts and staff workspaces retain their rules.
+@media (min-width: 1121px) {
+  .clinical-shell {
+    --mn-desktop-gutter: clamp(24px, 4vw, 120px);
+    --mn-desktop-width: min(2600px, calc(100vw - 2 * var(--mn-desktop-gutter)));
+    --mn-desktop-rail: clamp(216px, 14vw, 360px);
+    --mn-desktop-gap: clamp(16px, 1.25vw, 32px);
+    --mn-desktop-center: calc(var(--mn-desktop-width) - 2 * var(--mn-desktop-rail) - 2 * var(--mn-desktop-gap) - 48px);
+    width: var(--mn-desktop-width);
+    max-width: none;
+  }
+  .clinical-shell .clinical-workspace {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: var(--mn-desktop-rail) minmax(0, 1fr) var(--mn-desktop-rail);
+    gap: var(--mn-desktop-gap);
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+  .clinical-shell .clinical-header-inner {
+    width: min(1600px, calc(100% - 48px));
+    gap: clamp(16px, 1.2vw, 28px);
+  }
+  .clinical-shell .clinical-header-search { flex: 1; max-width: 440px; }
+  .clinical-shell .clinical-bottom-nav { width: var(--mn-desktop-center); }
+  .clinical-shell .clinical-footer-grid,
+  .clinical-shell .clinical-copyright { width: min(1600px, calc(100% - 64px)); }
+
+  // Keep forms readable while the surrounding page and header expand.
+  .clinical-shell .clinical-focused-workspace { grid-template-columns: minmax(0, 960px); }
+  .clinical-focused-shell .clinical-bottom-nav { width: min(960px, calc(100% - 48px)); }
+
+  // Fixed chat controls stay inside the right rail, outside the center navigation.
+  .clinical-shell > .clinical-chat-launchers,
+  .clinical-shell > .clinical-chat-widget {
+    right: calc((100vw - var(--mn-desktop-width)) / 2 + 24px);
+  }
+}
+@media (min-width: 1600px) {
+  .clinical-shell .clinical-header-inner { height: clamp(84px, 5vw, 112px); }
+  .clinical-shell .clinical-header-inner .mn-logo__mark { width: clamp(64px, 3.7vw, 96px); height: auto; }
+  .clinical-shell .clinical-header-inner .mn-logo__name { font-size: clamp(20px, 1.15vw, 28px); }
+  .clinical-shell .clinical-ad-image { height: auto; aspect-ratio: 16 / 9; }
+  .clinical-shell .clinical-section-heading h2 { font-size: clamp(28px, 1.4vw, 36px); }
+  .clinical-shell .clinical-rail { top: clamp(108px, 6vw, 144px); }
+  .clinical-shell .clinical-rail-card h3 { font-size: clamp(15px, .85vw, 21px); }
+  .clinical-shell .clinical-rail-card p { font-size: clamp(12px, .7vw, 17px); }
+  .clinical-shell .clinical-rail-card > a { font-size: clamp(12px, .7vw, 16px); }
+  .clinical-shell .clinical-header-actions select,
+  .clinical-shell .clinical-book-top,
+  .clinical-shell .clinical-signup-top { font-size: clamp(12px, .7vw, 16px); }
+  .clinical-shell .clinical-theme-control select,
+  .clinical-shell .clinical-language-control select { width: clamp(70px, 4.5vw, 108px); }
+  .clinical-shell .clinical-theme-control,
+  .clinical-shell .clinical-language-control { height: clamp(40px, 2.5vw, 52px); }
+  .clinical-shell .clinical-bottom-nav a > span:last-child { font-size: clamp(11px, .7vw, 16px); }
+  .clinical-shell .clinical-home .clinical-hero-visual {
+    min-height: clamp(540px, 32vw, 820px);
+    padding: clamp(210px, 17vw, 420px) clamp(32px, 2.5vw, 64px) 32px;
+  }
+  .clinical-shell .clinical-home .clinical-hero-content h1 {
+    max-width: 1000px;
+    font-size: clamp(38px, 2.1vw, 56px);
+  }
+  .clinical-shell .clinical-home .clinical-hero-content > p {
+    max-width: 78ch;
+    font-size: clamp(14px, .85vw, 20px);
+  }
+  .clinical-shell .clinical-home .clinical-hero-actions a { font-size: clamp(13px, .8vw, 18px); }
+  .clinical-shell .clinical-directory-grid,
+  .clinical-shell .clinical-doctor-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+}

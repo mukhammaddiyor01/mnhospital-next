@@ -153,3 +153,9 @@
 .details { display: flex; align-items: center; gap: 8px; color: var(--clinical-secondary); font-size: 13px; margin: 0 0 12px; }
 .book:hover { background: var(--clinical-primary-fill); color: var(--clinical-on-fill); }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+
+@media (min-width: 1600px) {
+  :global(.clinical-shell) .grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
