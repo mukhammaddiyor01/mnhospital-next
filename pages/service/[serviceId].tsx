@@ -32,6 +32,13 @@ import { MessageKey } from '@/libs/i18n/messages';
 import { ServiceType } from '@/libs/components/service/enums/service.enum';
 import { Service } from '@/libs/components/service/types/service';
 import { MemberStatus } from '@/libs/components/member/enums/member.enum';
+import type { GetServerSideProps } from 'next';
+import { detailSeo } from '@/libs/seo/server';
+import { SeoMeta } from '@/libs/seo/site';
+
+export const getServerSideProps: GetServerSideProps<{ seo: SeoMeta | null }> = async ({ params }) => ({
+	props: { seo: (await detailSeo('service', String(params?.serviceId ?? ''))) ?? null },
+});
 
 const previewServices: Record<string, { title: MessageKey; description: MessageKey; type: ServiceType }> = {
 	'general-medicine': {

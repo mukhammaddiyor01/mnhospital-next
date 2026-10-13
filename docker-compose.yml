@@ -7,6 +7,7 @@ services:
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:2001}
         NEXT_PUBLIC_API_GRAPHQL_URL: ${NEXT_PUBLIC_API_GRAPHQL_URL:-http://localhost:2001/graphql}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-https://mnhospital.uz}
         NEXT_PUBLIC_CLINIC_TIME_ZONE: ${NEXT_PUBLIC_CLINIC_TIME_ZONE:-Asia/Seoul}
         NEXT_PUBLIC_CLINIC_CURRENCY: ${NEXT_PUBLIC_CLINIC_CURRENCY:-KRW}
         NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${NEXT_PUBLIC_GOOGLE_CLIENT_ID:-}
@@ -15,6 +16,8 @@ services:
         NEXT_PUBLIC_CLINIC_PHONE: ${NEXT_PUBLIC_CLINIC_PHONE:-}
         MN_RELEASE_SHA: ${MN_RELEASE_SHA:-unknown}
     restart: unless-stopped
+    environment:
+      SEO_API_GRAPHQL_URL: ${SEO_API_GRAPHQL_URL:-https://mnhospital.uz/graphql}
     ports:
       - "2002:4002"
     networks:

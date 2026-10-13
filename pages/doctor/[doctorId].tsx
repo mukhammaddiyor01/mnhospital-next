@@ -14,6 +14,13 @@ import FollowButton from '@/libs/components/follow/FollowButton';
 import DoctorProfileExtras from '@/libs/components/doctor/DoctorProfileExtras';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
+import type { GetServerSideProps } from 'next';
+import { detailSeo } from '@/libs/seo/server';
+import { SeoMeta } from '@/libs/seo/site';
+
+export const getServerSideProps: GetServerSideProps<{ seo: SeoMeta | null }> = async ({ params }) => ({
+	props: { seo: (await detailSeo('doctor', String(params?.doctorId ?? ''))) ?? null },
+});
 
 const DoctorDetailPage = () => {
 	const t = useTranslation();

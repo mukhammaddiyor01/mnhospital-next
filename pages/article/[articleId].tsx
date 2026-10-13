@@ -13,6 +13,13 @@ import { ReferenceGroup } from '@/libs/components/comment/enums/comment.enum';
 import LikeButton from '@/libs/components/common/LikeButton';
 import { LIKE_TARGET_ARTICLE } from '@/apollo/article/mutation';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import type { GetServerSideProps } from 'next';
+import { detailSeo } from '@/libs/seo/server';
+import { SeoMeta } from '@/libs/seo/site';
+
+export const getServerSideProps: GetServerSideProps<{ seo: SeoMeta | null }> = async ({ params }) => ({
+	props: { seo: (await detailSeo('article', String(params?.articleId ?? ''))) ?? null },
+});
 
 const ArticleDetailPage = () => {
 	const t = useTranslation();
