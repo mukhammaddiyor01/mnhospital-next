@@ -7,25 +7,27 @@ import { useTranslation } from '@/libs/i18n/useTranslation';
 
 const ChatLauncher = ({
   chatOpen,
+  inviteEnabled = true,
   assistantOpen,
   onChatToggle,
   onAssistantToggle,
 }: {
   chatOpen: boolean;
+  inviteEnabled?: boolean;
   assistantOpen: boolean;
   onChatToggle: () => void;
   onAssistantToggle?: () => void;
 }) => {
   const t = useTranslation();
   const user = useReactiveVar(userVar);
-  const nickname = user._id ? user.memberNick.trim() : '';
+  const nickname = user._id ? (user.memberNick || '').trim() : '';
   const [inviteVisible, setInviteVisible] = useState(false);
 
   const assistantEnabled = Boolean(onAssistantToggle);
 
   useEffect(() => {
     setInviteVisible(false);
-    if (!assistantEnabled || chatOpen || assistantOpen) return;
+    if (!inviteEnabled || !assistantEnabled || chatOpen || assistantOpen) return;
     let hideTimer: ReturnType<typeof setTimeout>;
     const show = () => {
       if (document.hidden) return;
@@ -39,7 +41,7 @@ const ChatLauncher = ({
       clearTimeout(hideTimer);
       clearInterval(repeatTimer);
     };
-  }, [chatOpen, assistantOpen, assistantEnabled, user._id]);
+  }, [chatOpen, assistantOpen, assistantEnabled, inviteEnabled, user._id]);
 
   const greeting = nickname
     ? t('assistant.helpNamed').replace('{name}', nickname)

@@ -23,25 +23,35 @@ const DoctorsPage = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
+  const [page, setPage] = useState(1);
   useEffect(() => {
-    if (router.isReady && typeof router.query.search === "string")
-      setSearch(router.query.search);
+    if (router.isReady) {
+      const value = typeof router.query.search === "string" ? router.query.search : "";
+      setSearch(value);
+      setAppliedSearch(value);
+      setPage(1);
+    }
   }, [router.isReady, router.query.search]);
   const inquiry = {
-    page: 1,
+    page,
     limit: 12,
     sort: DoctorSort.POINTS,
     direction: "DESC",
     ...(specialty ? { docSpecialty: specialty } : {}),
-    search: { ...(search ? { text: search } : {}) },
+    search: { ...(appliedSearch ? { text: appliedSearch } : {}) },
   };
-  const { data, loading, error } = useQuery(GET_DOCTORS, {
+  const { data, previousData, loading, error } = useQuery(GET_DOCTORS, {
     variables: { input: inquiry },
     fetchPolicy: "cache-and-network",
   });
-  const doctors = data?.getDoctors?.list ?? [];
+  const result = data?.getDoctors ?? previousData?.getDoctors;
+  const doctors = result?.list ?? [];
+  const total = result?.metaCounter?.[0]?.total ?? 0;
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
+    setAppliedSearch(search.trim());
+    setPage(1);
   };
 
   return (
@@ -77,7 +87,7 @@ const DoctorsPage = () => {
           </label>
           <select
             value={specialty}
-            onChange={(event) => setSpecialty(event.target.value)}
+            onChange={(event) => { setSpecialty(event.target.value); setPage(1); }}
             aria-label={t("doctors.filterSpecialty")}
           >
             <option value="">{t("doctors.allDepartments")}</option>
@@ -87,20 +97,21 @@ const DoctorsPage = () => {
               </option>
             ))}
           </select>
-          <select aria-label={t("doctors.filterAvailability")}>
-            <option>{t("doctors.anyAvailability")}</option>
-            <option>{t("doctors.today")}</option>
-            <option>{t("doctors.week")}</option>
-          </select>
+
           <button className="clinical-primary-button" type="submit">
             {t("doctors.search")}
           </button>
         </form>
-        <div className={cardStyles.grid}>
+        <div className={cardStyles.grid} aria-busy={loading}>
           {doctors.map((doctor: Doctor) => (
             <DoctorDirectoryCard doctor={doctor} key={doctor._id} />
           ))}
         </div>
+        {!error && total > 12 && <nav className="clinical-directory-pagination" aria-label={t("directory.pagination")}>
+          <button type="button" disabled={page <= 1 || loading} onClick={() => setPage(value => value - 1)}>{t("directory.previous")}</button>
+          <span aria-live="polite">{page} / {Math.ceil(total / 12)}</span>
+          <button type="button" disabled={page * 12 >= total || loading} onClick={() => setPage(value => value + 1)}>{t("directory.next")}</button>
+        </nav>}
         {error && <p role="alert">{w("catalogUnavailable")}</p>}
         {!loading && !error && !doctors.length && <p>{w("catalogEmpty")}</p>}
         {loading && (

@@ -1,4 +1,3 @@
-import { FormEvent, useState } from "react";
 import Link from "next/link";
 import withLayoutMain from "@/libs/components/layout/LayoutHome";
 import Icon from "@/libs/components/common/Icon";
@@ -6,11 +5,7 @@ import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const ContactPage = () => {
   const t = useTranslation();
-  const [submitted, setSubmitted] = useState(false);
-  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitted(true);
-  };
+  const phone = process.env.NEXT_PUBLIC_CLINIC_PHONE?.trim();
 
   return (
     <div className="clinical-inner-page">
@@ -54,7 +49,7 @@ const ContactPage = () => {
               <div>
                 <strong>{t('contact.call')}</strong>
                 <small>
-                  <a href="tel:+821077777777">+821077777777</a>
+                  {phone && /^\+?[0-9 ()-]{7,20}$/.test(phone) ? <a href={`tel:${phone.replace(/[ ()-]/g, '')}`}>{phone}</a> : <Link href="/doctor">{t('contact.privateLink')}</Link>}
                   <br />
                   <a href="tel:119">{t('contact.emergency')}: 119</a>
                 </small>
@@ -74,34 +69,13 @@ const ContactPage = () => {
               </div>
             </div>
           </div>
-          <form className="clinical-contact-form" onSubmit={submitHandler}>
+          <div className="clinical-contact-form">
             <span className="clinical-section-kicker">{t('contact.messageKicker')}</span>
             <h2>{t('contact.messageTitle')}</h2>
-            <label>
-              {t('contact.name')}
-              <input required placeholder={t('contact.namePlaceholder')} />
-            </label>
-            <label>
-              {t('contact.email')}
-              <input required type="email" placeholder="you@example.com" />
-            </label>
-            <label>
-              {t('contact.message')}
-              <textarea
-                required
-                rows={5}
-                placeholder={t('contact.messagePlaceholder')}
-              />
-            </label>
-            <button className="clinical-primary-button" type="submit">
-              {submitted ? t('contact.received') : t('contact.send')}
-            </button>
-            {submitted && (
-              <p className="clinical-form-success">
-                {t('contact.thanks')}
-              </p>
-            )}
-          </form>
+            <p>{t('contact.privateHelp')}</p>
+            <Link className="clinical-primary-button" href="/doctor">{t('nav.doctors')}</Link>
+            <Link href="/visit-guide">{t('visit.title')}</Link>
+          </div>
         </div>
       </section>
     </div>

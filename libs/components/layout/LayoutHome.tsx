@@ -33,6 +33,7 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 				<div id="pc-wrap" className="clinical-shell app-frame">
 					<Top />
 					<ChatLauncher
+						inviteEnabled={!/^\/(appointment|checkout|account)(\/|$)/.test(router.pathname)}
 						chatOpen={chatOpen}
 						onChatToggle={() => {
 							setAssistantOpen(false);

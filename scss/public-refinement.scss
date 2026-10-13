@@ -1,0 +1,17 @@
+// Keep the established page structure; harmonize controls with existing theme tokens.
+.clinical-shell {
+  :is(input, select, textarea) { color: var(--clinical-text); background-color: var(--mn-card); border-color: var(--clinical-line); }
+  select option { color: var(--clinical-text); background: var(--mn-card); }
+  input::placeholder, textarea::placeholder { color: var(--clinical-muted); opacity: 1; }
+  :is(a, button, input, select, textarea):focus-visible { outline: 3px solid var(--clinical-primary); outline-offset: 3px; }
+  .clinical-chat-launchers .clinical-assistant-invite strong { color: var(--clinical-navy); }
+  .clinical-filter-bar label input { background: transparent; }
+  .clinical-doctor-filter { grid-template-columns: minmax(0, 1fr) minmax(150px, .6fr) auto; }
+  .clinical-directory-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 24px; }
+  .clinical-directory-pagination button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--clinical-line); border-radius: 8px; background: var(--mn-card); color: var(--clinical-primary); }
+  .clinical-directory-pagination button:disabled { opacity: .6; cursor: default; }
+  .clinical-contact-form { display: flex; flex-direction: column; gap: 20px; color: var(--clinical-text); }
+  .clinical-visit-guide article { border-bottom: 1px solid var(--clinical-line); padding: 20px 0; }
+  .clinical-visit-guide p { color: var(--clinical-secondary); }
+}
+@media (max-width: 600px) { .clinical-shell .clinical-doctor-filter { grid-template-columns: 1fr; } }

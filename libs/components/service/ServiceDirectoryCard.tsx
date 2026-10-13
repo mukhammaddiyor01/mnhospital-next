@@ -79,6 +79,8 @@ export default function ServiceDirectoryCard({
         <h3>
           <Link className={cardInteraction.primaryLink} href={href}>{title}</Link>
         </h3>
+        {service.memberData?.docFullName && <p className={styles.details}><Icon name="stethoscope" />{service.memberData.docFullName}</p>}
+        {service.serviceDuration && <p className={styles.details}><Icon name="schedule" />{service.serviceDuration} {t("directory.minutes")}</p>}
         {service.serviceDesc && (
           <p className={serviceStyles.description}>{service.serviceDesc}</p>
         )}

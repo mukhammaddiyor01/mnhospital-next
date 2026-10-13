@@ -7,6 +7,7 @@ import { useTranslation } from "@/libs/i18n/useTranslation";
 
 const Footer = () => {
   const t = useTranslation();
+  const phone = process.env.NEXT_PUBLIC_CLINIC_PHONE?.trim();
   return (
   <footer id="footer" className="clinical-footer">
     <AnimatedWave variant="footer" />
@@ -18,6 +19,7 @@ const Footer = () => {
         <Link href="/doctor">{t('footer.findDoctor')}</Link>
         <Link href="/article">{t('footer.healthArticles')}</Link>
         <Link href="/appointment">{t('footer.book')}</Link>
+        <Link href="/visit-guide">{t("visit.title")}</Link>
         <Link href="/contact">{t('footer.contact')}</Link>
       </nav>
       <div className="clinical-footer-contact">
@@ -41,7 +43,7 @@ const Footer = () => {
           </span>
           <div>
             <small>{t('footer.call')}</small>
-            <a href="tel:+821077777777">+821077777777</a>
+            {phone && /^\+?[0-9 ()-]{7,20}$/.test(phone) ? <a href={`tel:${phone.replace(/[ ()-]/g, '')}`}>{phone}</a> : <Link href="/doctor">{t('contact.privateLink')}</Link>}
           </div>
         </div>
         <div className="clinical-footer-contact-item">

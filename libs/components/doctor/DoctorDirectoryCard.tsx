@@ -71,6 +71,7 @@ export default function DoctorDirectoryCard({ doctor }: { doctor: Doctor }) {
           <Icon name="stethoscope" />
           {count(doctor.docExperience)} {t("doctors.experience")}
         </p>
+        {doctor.docDesc && <p className={styles.summary}>{doctor.docDesc}</p>}
         <dl className={styles.stats}>
           <div>
             <dt>

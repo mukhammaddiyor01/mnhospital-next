@@ -383,3 +383,5 @@
 
 .clinical-like-control { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; small { max-width: 30ch; color: var(--clinical-error, #b42318); font-size: 12px; } }
 .clinical-community-stats { display: flex; flex-wrap: wrap; gap: 16px; span { display: inline-flex; align-items: center; gap: 6px; } }
+
+@import "public-refinement";
