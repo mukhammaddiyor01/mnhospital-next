@@ -17,12 +17,15 @@ const hooks = {
  useEffect(fn, deps) { const i = cursor++, old = cells[i]; if (!old || deps.some((d, j) => !Object.is(d, old.deps[j]))) { cells[i] = { deps, cleanup: old?.cleanup }; pending.push(() => { cells[i].cleanup?.(); cells[i].cleanup = fn(); }); } },
 };
 const Picker = () => null;
+const catalogModule = new Module(path.join(root,'libs/i18n/catalog.ts'), module);
+catalogModule._compile(ts.transpileModule(fs.readFileSync(catalogModule.id,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,catalogModule.id);
 const stubs = {
  'react': { ...React, ...hooks }, 'next/router': { useRouter: () => router }, 'next/link': ({ children }) => children,
  '@apollo/client': { useReactiveVar: () => user, useMutation: () => [async () => { throw new Error('No real booking writes in draft reset tests'); }, { loading: false }], useQuery: (_, options) => Object.hasOwn(options.variables, 'serviceId') ? { data: { getService: service }, loading: false } : Object.hasOwn(options.variables.input, 'date') ? { data: { getAvailableDoctorSlots: [{ startsAt: time }] }, loading: false } : catalog },
  '@/libs/components/layout/LayoutHome': value => value,
  '@/libs/components/common/Icon': () => null, '@/libs/components/booking/BookingDatePicker': Picker,
  '@/libs/components/member/enums/member.enum': { MemberType: { PATIENT: 'PATIENT' } },
+ '@/libs/i18n/catalog': catalogModule.exports,
  '@/libs/i18n/useTranslation': { useTranslation: () => key => key }, '@/libs/components/workspace/useWorkspaceText': { useWorkspaceText: () => key => key },
  '@/libs/components/preference/PreferenceProvider': { usePreferences: () => ({ language: 'EN' }) },
  '@/libs/payments/useClinicSettings': { useClinicSettings: () => ({ currency: 'KRW', timeZone: 'Asia/Seoul' }) },

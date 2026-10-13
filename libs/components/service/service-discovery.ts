@@ -1,3 +1,4 @@
+import { catalogSearchText } from '../../i18n/catalog';
 import { ServiceType } from './enums/service.enum';
 export interface ServiceFilters {
 	text: string;
@@ -42,7 +43,7 @@ export function serviceInquiry(filters: ServiceFilters, page = 1, limit = 6) {
 		limit,
 		...(sorts[filters.sort] || sorts.recommended),
 		search: {
-			...(filters.text.trim() ? { text: filters.text.trim() } : {}),
+			...(filters.text.trim() ? { text: catalogSearchText(filters.text) } : {}),
 			...(filters.category ? { serviceTypeList: [filters.category] } : {}),
 			...(filters.discounted ? { discountedOnly: true } : {}),
 			...(validPriceRange(filters) && (filters.min || filters.max)

@@ -1,3 +1,4 @@
+import { catalogText } from '@/libs/i18n/catalog';
 import { servicePriceForDisplay } from './service-price';
 import Link from 'next/link';
 import { BookingOption, optionBookingHref } from './bookingOptions';
@@ -72,14 +73,13 @@ export default function ServiceBookingOptions({
 								{option._id === baseId
 									? text.standard
 									: option.packageItems
-											?.map((item) => item.title)
+											?.map((item) => catalogText(item.title, language))
 											.join(' + ') ||
-										option.serviceTitle ||
-										option.serviceName}
+										catalogText(option.serviceTitle || option.serviceName, language)}
 							</strong>
 							<small>
 								{option._id === baseId && (
-									<span>{option.serviceTitle || option.serviceName}</span>
+									<span>{catalogText(option.serviceTitle || option.serviceName, language)}</span>
 								)}
 								{option.packageRegularPrice &&
 								option.packageRegularPrice >
@@ -136,7 +136,7 @@ export default function ServiceBookingOptions({
 				<div className={styles.total} aria-live="polite" aria-atomic="true">
 					<span>
 						<small>{text.selected}</small>
-						<strong>{selected.serviceTitle || selected.serviceName}</strong>
+						<strong>{catalogText(selected.serviceTitle || selected.serviceName, language)}</strong>
 					</span>
 					<b>
 						{formatMoney(servicePriceForDisplay(selected, currency), currency)}

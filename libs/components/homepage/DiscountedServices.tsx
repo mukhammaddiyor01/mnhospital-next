@@ -1,3 +1,5 @@
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { catalogText } from '@/libs/i18n/catalog';
 import PromoOffers from './PromoOffers';
 import { useQuery } from '@apollo/client';
 import Link from 'next/link';
@@ -20,12 +22,13 @@ export function DiscountedServiceCard({
 	service: Service;
 	currency: string;
 }) {
+	const { language } = usePreferences();
 	const text = useServiceDiscoveryText(),
 		typeLabel = useServiceTypeLabel(),
 		[failed, setFailed] = useState(false);
 	const image = resolveApiAsset(service.serviceImages?.[0]),
 		price = servicePriceForDisplay(service, currency),
-		title = service.serviceTitle || service.serviceName;
+		title = catalogText(service.serviceTitle || service.serviceName, language);
 	const href = `/service/${service._id}`;
 	return (
 		<article className={`${styles.offerCard} ${cardInteraction.surface}`}>

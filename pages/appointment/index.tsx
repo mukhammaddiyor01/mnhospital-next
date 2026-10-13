@@ -1,3 +1,4 @@
+import { catalogText } from '@/libs/i18n/catalog';
 import { servicePriceForDisplay } from '@/libs/components/service/service-price';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -278,7 +279,7 @@ function AppointmentPage() {
 								<option value="">{t('booking.selectService')}</option>
 								{services.map((service: Service) => (
 									<option value={service._id} key={service._id}>
-										{service.serviceTitle || service.serviceName} ·{' '}
+										{catalogText(service.serviceTitle || service.serviceName, language)} ·{' '}
 										{service.memberData?.docFullName} ·{' '}
 										{formatMoney(
 											servicePriceForDisplay(service, clinic.currency),
@@ -411,7 +412,7 @@ function AppointmentPage() {
 					{selected && (
 						<div className="clinical-booking-review">
 							<div>
-								<h3>{selected.serviceTitle}</h3>
+								<h3>{catalogText(selected.serviceTitle || selected.serviceName, language)}</h3>
 								<p>
 									{selected.memberData?.docFullName}
 									{form.startsAt

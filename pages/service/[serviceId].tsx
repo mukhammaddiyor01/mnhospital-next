@@ -1,3 +1,5 @@
+import { usePreferences } from '@/libs/components/preference/PreferenceProvider';
+import { catalogText } from '@/libs/i18n/catalog';
 import { servicePriceForDisplay } from '@/libs/components/service/service-price';
 import { useState } from 'react';
 import ServiceBookingOptions from '@/libs/components/service/ServiceBookingOptions';
@@ -71,6 +73,7 @@ type ServiceDetail = Omit<Service, 'memberData'> & {
 
 const ServiceDetailPage = () => {
 	const t = useTranslation();
+	const { language } = usePreferences();
 	const [selectedOptionId, setSelectedOptionId] = useState('');
 	const clinic = useClinicSettings();
 	const typeLabel = useServiceTypeLabel();
@@ -105,8 +108,8 @@ const ServiceDetailPage = () => {
 		options.find((row) => row._id === service?._id) ??
 		options[0];
 	const relatedServices = relatedData?.getRecommendedServices?.list ?? [];
-	const title = service?.serviceTitle || service?.serviceName || (previewService ? t(previewService.title) : t('nav.services'));
-	const description = service ? service.serviceDesc : previewService ? t(previewService.description) : undefined;
+	const title = catalogText(service?.serviceTitle || service?.serviceName, language) || (previewService ? t(previewService.title) : t('nav.services'));
+	const description = service ? catalogText(service.serviceDesc, language) : previewService ? t(previewService.description) : undefined;
 	const canBook = Boolean(selectedOption);
 	if (!router.isReady || (isApiService && loading && !service))
 		return (

@@ -24,6 +24,7 @@ function component() {
   '@/libs/components/common/Icon': ()=>null,
   '@/libs/components/booking/BookingDatePicker': ()=>null,
   '@/libs/components/member/enums/member.enum': {MemberType:{PATIENT:'PATIENT'}},
+  '@/libs/i18n/catalog': compile(path.join(root,'libs/i18n/catalog.ts')),
   '@/libs/i18n/useTranslation': {useTranslation:()=>key=>key},
   '@/libs/components/workspace/useWorkspaceText': {useWorkspaceText:()=>key=>key},
   '@/libs/components/preference/PreferenceProvider': {usePreferences:()=>({language:'EN'})},

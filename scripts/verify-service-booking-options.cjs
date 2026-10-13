@@ -29,6 +29,7 @@ component.filename = filename;
 component.paths = Module._nodeModulePaths(root);
 let language = 'EN';
 const stubs = {
+ '@/libs/i18n/catalog': require('../libs/i18n/catalog.ts'),
  'next/link': ({ children, ...props }) => React.createElement('a', props, children),
  './ServiceBookingOptions.module.scss': new Proxy({}, { get: (_, name) => name }),
  '../preference/PreferenceProvider': { usePreferences: () => ({ language }) },

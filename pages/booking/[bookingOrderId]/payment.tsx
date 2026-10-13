@@ -1,3 +1,4 @@
+import { catalogText } from '@/libs/i18n/catalog';
 import { recordReference } from '@/libs/components/workspace/recordPresentation';
 import EximbayTestCard from '@/libs/payments/EximbayTestCard';
 import BookingPromoCode from '@/libs/components/booking/BookingPromoCode';
@@ -85,7 +86,7 @@ function PaymentPage() {
 			{(checkout.error || (router.isReady && !valid)) && <p role="alert">{checkout.error?.message || w('paymentUnavailable')}</p>}
 			{state && <>
 				<h2>{w('bookingSummary')}</h2><p>{recordReference(state.order.orderCode)}</p>
-				{state.order.bookingOrderItems.map((line) => <div className="clinical-booking-review" key={`${line.serviceId}:${line.doctorId}`}><div><h3>{line.serviceName}</h3><p>{clinicDateTime(line.requestedStartAt, locale, clinic.timeZone)}</p><small>{w('clinicTime')} · {clinic.timeZone}</small></div><strong>{formatMoney(line.servicePrice, state.order.bookingOrderCurrency)}</strong></div>)}
+				{state.order.bookingOrderItems.map((line) => <div className="clinical-booking-review" key={`${line.serviceId}:${line.doctorId}`}><div><h3>{catalogText(line.serviceName, language)}</h3><p>{clinicDateTime(line.requestedStartAt, locale, clinic.timeZone)}</p><small>{w('clinicTime')} · {clinic.timeZone}</small></div><strong>{formatMoney(line.servicePrice, state.order.bookingOrderCurrency)}</strong></div>)}
 				<BookingPromoCode state={state} disabled={busy} onApplied={() => checkout.refetch()} />
 				{unavailable && <p role="status">{w('status')}: {state.order.bookingOrderStatus}</p>}
 				{!unavailable && !cashBooked && !(allPaid && allReserved) && pendingOnline.length === 0 && <>

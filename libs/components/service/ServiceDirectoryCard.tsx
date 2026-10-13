@@ -1,3 +1,4 @@
+import { catalogText } from '@/libs/i18n/catalog';
 import { servicePriceForDisplay } from './service-price';
 import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
 import Link from "next/link";
@@ -36,7 +37,7 @@ export default function ServiceDirectoryCard({
     KR: { views: "조회", likes: "좋아요", photo: "사진 없음" },
   }[language];
   const [failedImage, setFailedImage] = useState("");
-  const title = service.serviceTitle || service.serviceName;
+  const title = catalogText(service.serviceTitle || service.serviceName, language);
   const image = resolveApiAsset(service.serviceImages?.[0]);
   const href = `/service/${service._id}`;
   const count = (value?: number) =>
@@ -84,7 +85,7 @@ export default function ServiceDirectoryCard({
           {service.serviceDuration && <span><Icon name="schedule" />{service.serviceDuration} {t("directory.minutes")}</span>}
         </div>
         {service.serviceDesc && (
-          <p className={serviceStyles.description}>{service.serviceDesc}</p>
+          <p className={serviceStyles.description}>{catalogText(service.serviceDesc, language)}</p>
         )}
         <p className={serviceStyles.price}>
           {t("services.from").replace(
