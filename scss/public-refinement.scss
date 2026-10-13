@@ -37,3 +37,14 @@
 // input caret and wrapper highlight without a second rectangular outline.
 :is(.clinical-shell, .clinical-staff-shell, .clinical-role-signin)
   :is(.clinical-auth-field, .clinical-role-signin-field) input:focus-visible { outline: none; }
+
+// The booking banner link overrides the generic pale link color on a white button.
+.clinical-shell .clinical-cta-actions > .clinical-light-button {
+  color: var(--clinical-navy);
+  background: var(--mn-card);
+  border: 1px solid var(--clinical-line);
+}
+.clinical-shell .clinical-cta-actions > .clinical-light-button:hover {
+  color: var(--clinical-navy);
+  background: var(--clinical-low);
+}
