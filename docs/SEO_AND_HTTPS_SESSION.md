@@ -2,11 +2,11 @@
 
 ## Current session behavior
 
-The existing API issues a 15-minute access JWT and a 30-day, rotating, HttpOnly refresh cookie. The frontend restores a same-tab session after reload, refreshes shortly before access expiry, retries one rejected guarded request, and clears account data on sign-out. The access token is scoped to `sessionStorage` so different staff roles can use separate tabs. Closing a tab removes that tab's access token; opening a new tab does not silently select one of the role-specific refresh cookies. This is intentional for the current multi-role model.
+The API issues a 15-minute access JWT and a 30-day, rotating, HttpOnly refresh cookie. The frontend restores a same-tab session after reload, refreshes shortly before access expiry, retries one rejected guarded request, and clears account data on sign-out. The access token remains in per-tab `sessionStorage` so different staff roles can use separate tabs. A new tab remembers only the latest active role and session ID in localStorage, then restores that matching role cookie; it never stores either credential there. A new tab without the remembered identity starts as a guest. Deploy the matching backend change before the frontend because cookie-only new-tab refresh needs the updated resolver.
 
 The production deployment must use one HTTPS origin for the site and GraphQL API. Confirm backend `.env` contains `CLIENT_URL=https://mnhospital.uz`, `AUTH_ALLOWED_ORIGINS=https://mnhospital.uz,https://www.mnhospital.uz`, and `BASE_URL=https://mnhospital.uz/backend`. Frontend `.env` must contain `NEXT_PUBLIC_API_URL=https://mnhospital.uz/backend` and `NEXT_PUBLIC_API_GRAPHQL_URL=https://mnhospital.uz/graphql`. Recreate the API container after backend environment changes; rebuild the frontend image after public environment changes. Do not print or paste refresh cookie values into chat or logs.
 
-To verify a refresh in a browser, sign in over `https://mnhospital.uz`, keep the tab open for more than 15 minutes, then reload a protected page. It should stay signed in. Sign out and reload: the private page must require sign-in. The regression harness is `npm run test:auth`.
+To verify a refresh in a browser, sign in over `https://mnhospital.uz`, reload, then open a new tab and confirm the same account returns. Keep a tab open for more than 15 minutes and reload a protected page; it should stay signed in. Sign out and open another tab: the private page must require sign-in. The regression harness is `npm run test:auth`.
 
 ## Search and link previews
 

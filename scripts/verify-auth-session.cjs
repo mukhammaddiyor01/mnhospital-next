@@ -36,7 +36,7 @@ global.window = {
 		removeItem: (key) => values.delete(key),
 	},
 	localStorage: {
-		getItem: () => null,
+		getItem: (key) => sharedValues.get(key) ?? null,
 		setItem: (key, value) => sharedValues.set(key, String(value)),
 		removeItem: (key) => sharedValues.delete(key),
 	},
@@ -58,7 +58,7 @@ Object.defineProperty(global, 'navigator', {
 	},
 });
 const session = require(root + '/libs/auth/session.ts');
-const { getJwtToken, setJwtToken, sessionEventInvalidatesTab, SESSION_EVENT_KEY } = require(root + '/libs/auth/token.ts');
+const { getJwtToken, setJwtToken, rememberSessionIdentity, rememberedSessionIdentity, sessionEventInvalidatesTab, SESSION_EVENT_KEY } = require(root + '/libs/auth/token.ts');
 const { userVar } = require(root + '/apollo/store.ts');
 const { createSessionLinks } = require(root + '/libs/auth/sessionLink.ts');
 const { ApolloLink, Observable, gql, execute } = require('@apollo/client');
@@ -66,7 +66,7 @@ let checks = 0,
 	calls = [];
 const id = '000000000000000000000001',
 	sid = '000000000000000000000002';
-function token(role = 'PATIENT', seconds = 900, name = 'Patient') {
+function token(role = 'PATIENT', seconds = 900, name = 'Patient', sessionId = sid) {
 	return (
 		Buffer.from('{}').toString('base64url') +
 		'.' +
@@ -74,7 +74,7 @@ function token(role = 'PATIENT', seconds = 900, name = 'Patient') {
 			JSON.stringify({
 				_id: id,
 				memberType: role,
-				sid,
+				sid: sessionId,
 				tokenType: 'access',
 				exp: Math.floor(Date.now() / 1000) + seconds,
 				...(role === 'PATIENT'
@@ -199,6 +199,50 @@ async function main() {
 	check(getJwtToken() !== patientTab, 'doctor tab stores its own access identity');
 	window.sessionStorage = originalStorage;
 	check(getJwtToken() === patientTab, 'patient tab identity survives another tab login');
+	session.applySessionToken(token('PATIENT'));
+	const existingTabStorage = window.sessionStorage;
+	const newTabValues = new Map();
+	window.sessionStorage = { getItem: key => newTabValues.get(key) ?? null, setItem: (key, value) => newTabValues.set(key, value), removeItem: key => newTabValues.delete(key) };
+	userVar({ _id: '', memberNick: '' });
+	check(!getJwtToken() && session.hasStoredSession(), 'new tab remembers only a non-secret session identity');
+	fetchWith(async () => response({ refreshSession: { accessToken: token('PATIENT', 900, 'Restored tab') } }));
+	await session.restoreSession();
+	check(getJwtToken() && userVar().memberNick === 'Restored tab', 'new tab restores from its HttpOnly role cookie');
+	check(calls.length === 1 && calls[0].options.headers['X-MN-Session-Role'] === 'PATIENT' && !calls[0].options.headers.Authorization, 'new-tab refresh selects the role without a bearer');
+	check([...sharedValues.values()].every(value => !value.includes('fixture')), 'persistent hint never contains access credentials');
+	fetchWith(async () => response({ logoutSession: true }));
+	await session.revokeBrowserSession();
+	check(!session.hasStoredSession() && !getJwtToken(), 'logout removes the remembered session');
+	window.sessionStorage = existingTabStorage;
+	session.applySessionToken(token('PATIENT'));
+	window.sessionStorage = { getItem: key => newTabValues.get(key) ?? null, setItem: (key, value) => newTabValues.set(key, value), removeItem: key => newTabValues.delete(key) };
+	newTabValues.clear();
+	userVar({ _id: '', memberNick: '' });
+	fetchWith(async () => response({ refreshSession: { accessToken: token('PATIENT', 900, 'Replacement', '000000000000000000000099') } }));
+	await session.restoreSession();
+	check(!getJwtToken() && !session.hasStoredSession(), 'new tab refuses a different account session in the selected role');
+	window.sessionStorage = existingTabStorage;
+	session.applySessionToken(token('PATIENT'));
+	const racingTabValues = new Map();
+	window.sessionStorage = { getItem: key => racingTabValues.get(key) ?? null, setItem: (key, value) => racingTabValues.set(key, value), removeItem: key => racingTabValues.delete(key) };
+	let finishNewTab;
+	fetchWith(async () => new Promise(resolve => { finishNewTab = () => resolve(response(null, [{ code: 'UNAUTHENTICATED' }])); }));
+	const racingRestore = session.restoreSession();
+	await new Promise(resolve => setImmediate(resolve));
+	rememberSessionIdentity({ memberType: 'DOCTOR', sid: '000000000000000000000088' });
+	finishNewTab();
+	await racingRestore;
+	check(rememberedSessionIdentity()?.memberType === 'DOCTOR' && !getJwtToken(), 'old new-tab rejection cannot erase another tab login hint');
+	window.sessionStorage = existingTabStorage;
+	session.applySessionToken(token('PATIENT'));
+	rememberSessionIdentity({ memberType: 'DOCTOR', sid: '000000000000000000000088' });
+	fetchWith(async () => response({ logoutSession: true }));
+	await session.revokeBrowserSession();
+	check(!session.hasStoredSession() && rememberedSessionIdentity()?.memberType === 'DOCTOR', 'logout keeps another role hint but leaves this tab a guest');
+	const emptyTab = new Map();
+	window.sessionStorage = { getItem: key => emptyTab.get(key) ?? null, setItem: (key, value) => emptyTab.set(key, value), removeItem: key => emptyTab.delete(key) };
+	check(session.hasStoredSession(), 'a separate new tab may restore the other role');
+	window.sessionStorage = existingTabStorage;
 	for (const role of ['PATIENT', 'DOCTOR', 'RECEPTIONIST', 'ADMIN']) {
 		session.applySessionToken(token(role, 900, role + ' login'));
 		check(
