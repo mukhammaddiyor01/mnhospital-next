@@ -18,13 +18,13 @@
 
 // Native selects can remain focus-visible after pointer selection. Draw one
 // keyboard ring on the containing control instead of two nested outlines.
-.clinical-shell {
+:is(.clinical-shell, .clinical-staff-shell) {
   .clinical-theme-control:focus-within, .clinical-language-control:focus-within { outline: none; }
   :is(.clinical-theme-control, .clinical-language-control) select:focus-visible { outline: none; }
   :is(.clinical-theme-control, .clinical-language-control):has(select:focus-visible) { outline: 2px solid var(--clinical-primary); outline-offset: 3px; }
 }
 @supports not selector(:has(*)) {
-  .clinical-shell :is(.clinical-theme-control, .clinical-language-control) select:focus-visible { outline: 2px solid var(--clinical-primary); outline-offset: 2px; }
+  :is(.clinical-shell, .clinical-staff-shell) :is(.clinical-theme-control, .clinical-language-control) select:focus-visible { outline: 2px solid var(--clinical-primary); outline-offset: 2px; }
 }
 
 .clinical-shell .clinical-focused-workspace { grid-template-columns: minmax(0, 820px); }
@@ -32,3 +32,8 @@
 .clinical-booking-support a { color: var(--clinical-primary); text-decoration: underline; text-underline-offset: 3px; }
 
 .clinical-focused-shell .clinical-book-top { display: none; }
+
+// These fields already indicate focus on their rounded wrapper. Keep the
+// input caret and wrapper highlight without a second rectangular outline.
+:is(.clinical-shell, .clinical-staff-shell, .clinical-role-signin)
+  :is(.clinical-auth-field, .clinical-role-signin-field) input:focus-visible { outline: none; }
