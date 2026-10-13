@@ -336,11 +336,11 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
 
 .clinical-rail-status { margin: 0; padding: 14px; color: var(--clinical-muted); border: 1px solid var(--clinical-line); border-radius: 12px; background: var(--clinical-low); font-size: 11px; line-height: 1.5; }
 
-.clinical-assistant-anchor { position: relative; display: flex; }
+.clinical-assistant-anchor { position: static; display: flex; }
 .clinical-chat-launchers .clinical-assistant-invite {
   position: absolute;
   right: 0;
-  bottom: calc(100% + 14px);
+  bottom: calc(100% + 40px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -363,7 +363,7 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
   transform-origin: bottom right;
   transition: opacity .25s ease, transform .25s ease, visibility 0s .25s;
 }
-.clinical-assistant-invite strong { font-size: 14px; line-height: 1.4; }
+.clinical-assistant-invite strong { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; max-width: 100%; font-size: 14px; line-height: 1.4; }
 .clinical-assistant-invite small { color: var(--clinical-primary); font-size: 12px; line-height: 1.5; }
 .clinical-assistant-invite::after {
   content: ''; position: absolute; right: 18px; bottom: -6px;
@@ -374,9 +374,14 @@ html[data-theme='dark'] .clinical-assistant-help .clinical-chat-error { color: #
   opacity: 1; visibility: visible; pointer-events: auto; transform: none;
   transition-delay: 0s;
 }
-@media (max-width: 900px) {
+// Anchor to the whole control row. Desktop floats above the bottom controls;
+// tablet/mobile uses the sticky toolbar, so open below it to clear the header.
+@media (max-width: 1120px) {
   .clinical-chat-launchers .clinical-assistant-invite { top: calc(100% + 14px); bottom: auto; transform-origin: top right; }
   .clinical-assistant-invite::after { top: -6px; bottom: auto; transform: rotate(225deg); }
+}
+@media (max-height: 420px) {
+  .clinical-chat-launchers .clinical-assistant-invite { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .clinical-chat-launchers .clinical-assistant-invite { transition: none; transform: none; }
