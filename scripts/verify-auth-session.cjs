@@ -29,6 +29,7 @@ const sharedValues = new Map();
 const values = new Map(),
 	events = [];
 let lock = Promise.resolve();
+global.document = { visibilityState: 'visible' };
 global.window = {
 	sessionStorage: {
 		getItem: (key) => values.get(key) ?? null,
@@ -48,6 +49,7 @@ global.window = {
 Object.defineProperty(global, 'navigator', {
 	configurable: true,
 	value: {
+		onLine: true,
 		locks: {
 			request: (_name, action) => {
 				const pending = lock.then(action);
@@ -114,6 +116,24 @@ function result(link, operation) {
 }
 async function main() {
 	const fresh = token('PATIENT', 900, 'Updated');
+	session.applySessionToken(token('PATIENT', 900));
+	fetchWith(async () => response({ refreshSession: { accessToken: fresh } }));
+	await session.renewVisibleSession();
+	check(calls.length === 0, 'visible heartbeat does not rotate a healthy access token');
+	session.applySessionToken(token('PATIENT', 120));
+	await session.renewVisibleSession();
+	check(calls.length === 1 && getJwtToken() === fresh, 'visible heartbeat renews before the 15-minute access expires');
+	session.applySessionToken(token('PATIENT', 120));
+	document.visibilityState = 'hidden';
+	fetchWith(async () => response({ refreshSession: { accessToken: fresh } }));
+	await session.renewVisibleSession();
+	await assert.rejects(session.refreshSessionToken(), /visible tab/);
+	check(calls.length === 0 && Boolean(getJwtToken()), 'hidden tab cannot extend its session');
+	document.visibilityState = 'visible';
+	navigator.onLine = false;
+	await session.renewVisibleSession();
+	check(calls.length === 0, 'offline tab cannot extend its session');
+	navigator.onLine = true;
 	for (const role of ['PATIENT', 'DOCTOR', 'RECEPTIONIST', 'ADMIN']) {
 		const saved = token(role, 900, role + ' restored');
 		setJwtToken(saved);

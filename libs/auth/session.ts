@@ -25,6 +25,11 @@ let pendingRefresh: Promise<string> | undefined;
 let loggingOut = false;
 
 export class SessionRejectedError extends Error {}
+const HEARTBEAT_LEAD_MS = 3 * 60 * 1000;
+function canRenewSession(): boolean {
+	return (typeof document === 'undefined' || document.visibilityState !== 'hidden') &&
+		(typeof navigator === 'undefined' || navigator.onLine !== false);
+}
 export function applySessionToken(token: string, member?: MemberSession): void {
 	if (loggingOut) return;
 	const claims = jwtDecode<Claims>(token);
@@ -142,12 +147,14 @@ export function refreshSessionToken(): Promise<string> {
 	if (loggingOut)
 		return Promise.reject(new SessionRejectedError('Logout is in progress'));
 	if (pendingRefresh) return pendingRefresh;
+	if (!canRenewSession()) return Promise.reject(new Error('Session renewal waits for an online visible tab'));
 	const expected = storedSessionIdentity() ?? restorableSessionIdentity();
 	const sameSession = () => {
 		const current = storedSessionIdentity() ?? restorableSessionIdentity();
 		return Boolean(expected && current?.sid === expected.sid && current.memberType === expected.memberType);
 	};
 	pendingRefresh = withBrowserSessionLock(async () => {
+		if (!canRenewSession()) throw new Error('Session renewal waits for an online visible tab');
 		if (loggingOut || !hasStoredSession() || !sameSession())
 			throw new SessionRejectedError('No login session');
 		const data = await requestSession('refresh');
@@ -177,6 +184,18 @@ function hasUsableAccessToken(token: string): boolean {
 		return false;
 	}
 }
+export async function renewVisibleSession(): Promise<void> {
+	if (!canRenewSession() || !hasStoredSession() || loggingOut) return;
+	const access = getJwtToken();
+	try {
+		const claims = jwtDecode<Claims>(access);
+		if (claims.tokenType === 'access' && claims.sid && Number.isFinite(claims.exp) &&
+			claims.exp! * 1000 > Date.now() + HEARTBEAT_LEAD_MS) return;
+	} catch {
+		// A remembered cookie can restore an expired or missing tab access token.
+	}
+	await refreshSessionToken();
+}
 export async function ensureAccessToken(): Promise<string> {
 	if (typeof window === 'undefined' || loggingOut) return '';
 	const token = getJwtToken();
@@ -185,7 +204,7 @@ export async function ensureAccessToken(): Promise<string> {
 	return refreshSessionToken();
 }
 export async function restoreSession(): Promise<void> {
-	if (loggingOut || !hasStoredSession()) return;
+	if (loggingOut || !hasStoredSession() || !canRenewSession()) return;
 	const savedToken = getJwtToken();
 	const savedIdentity = storedSessionIdentity() ?? restorableSessionIdentity();
 	try {
