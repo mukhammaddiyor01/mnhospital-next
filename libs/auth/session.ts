@@ -4,7 +4,7 @@ import { userVar } from '@/apollo/store';
 import { REFRESH_SESSION, LOGOUT_SESSION } from '@/apollo/auth/mutation';
 import { GET_MY_PREFERENCES } from '@/apollo/preference/query';
 import { MemberSession } from '@/libs/components/member/types/member';
-import { getJwtToken, setJwtToken, removeJwtToken, endTabSession, storedSessionIdentity, rememberedSessionIdentity, restorableSessionIdentity, rememberSessionIdentity, forgetSessionIdentity, publishSessionEvent, SESSION_ROLE_HEADER, SessionRole } from './token';
+import { getJwtToken, setJwtToken, removeJwtToken, endTabSession, storedSessionIdentity, waitForTabSession, publishSessionEvent, SESSION_ROLE_HEADER, SessionRole } from './token';
 
 type Claims = MemberSession & {
 	exp?: number;
@@ -46,7 +46,6 @@ export function applySessionToken(token: string, member?: MemberSession): void {
 			? previous
 			: {};
 	setJwtToken(token);
-	rememberSessionIdentity({ memberType: claims.memberType as SessionRole, sid: claims.sid });
 	userVar({
 		...existing,
 		...claims,
@@ -82,9 +81,7 @@ export function applySessionToken(token: string, member?: MemberSession): void {
 		window.dispatchEvent(new Event('mn-hospital-session-changed'));
 }
 export function clearSession(broadcast = true): void {
-	const identity = storedSessionIdentity() ?? rememberedSessionIdentity();
 	if (broadcast) publishSessionEvent('logout');
-	forgetSessionIdentity(identity);
 	removeJwtToken();
 	endTabSession();
 	userVar({ _id: '', memberNick: '' });
@@ -93,12 +90,12 @@ export function clearSession(broadcast = true): void {
 export function hasStoredSession(): boolean {
 	return (
 		typeof window !== 'undefined' &&
-		Boolean(storedSessionIdentity() ?? restorableSessionIdentity())
+		Boolean(storedSessionIdentity())
 	);
 }
 export async function withBrowserSessionLock<T>(
 	action: () => Promise<T>,
-	role: SessionRole | undefined = (storedSessionIdentity() ?? restorableSessionIdentity())?.memberType,
+	role: SessionRole | undefined = storedSessionIdentity()?.memberType,
 ): Promise<T> {
 	// Same-role tabs share one HttpOnly cookie; different roles rotate independently.
 	if (typeof navigator !== 'undefined' && navigator.locks)
@@ -106,7 +103,7 @@ export async function withBrowserSessionLock<T>(
 	return action();
 }
 async function requestSession(action: 'check' | 'refresh' | 'logout') {
-	const identity = storedSessionIdentity() ?? restorableSessionIdentity();
+	const identity = storedSessionIdentity();
 	const controller = new AbortController();
 	const timeout = setTimeout(() => controller.abort(), 10000);
 	try {
@@ -148,9 +145,9 @@ export function refreshSessionToken(): Promise<string> {
 		return Promise.reject(new SessionRejectedError('Logout is in progress'));
 	if (pendingRefresh) return pendingRefresh;
 	if (!canRenewSession()) return Promise.reject(new Error('Session renewal waits for an online visible tab'));
-	const expected = storedSessionIdentity() ?? restorableSessionIdentity();
+	const expected = storedSessionIdentity();
 	const sameSession = () => {
-		const current = storedSessionIdentity() ?? restorableSessionIdentity();
+		const current = storedSessionIdentity();
 		return Boolean(expected && current?.sid === expected.sid && current.memberType === expected.memberType);
 	};
 	pendingRefresh = withBrowserSessionLock(async () => {
@@ -185,6 +182,7 @@ function hasUsableAccessToken(token: string): boolean {
 	}
 }
 export async function renewVisibleSession(): Promise<void> {
+	await waitForTabSession();
 	if (!canRenewSession() || !hasStoredSession() || loggingOut) return;
 	const access = getJwtToken();
 	try {
@@ -198,15 +196,17 @@ export async function renewVisibleSession(): Promise<void> {
 }
 export async function ensureAccessToken(): Promise<string> {
 	if (typeof window === 'undefined' || loggingOut) return '';
+	await waitForTabSession();
 	const token = getJwtToken();
 	if (hasUsableAccessToken(token)) return token;
 	if (!hasStoredSession()) return '';
 	return refreshSessionToken();
 }
 export async function restoreSession(): Promise<void> {
+	await waitForTabSession();
 	if (loggingOut || !hasStoredSession() || !canRenewSession()) return;
 	const savedToken = getJwtToken();
-	const savedIdentity = storedSessionIdentity() ?? restorableSessionIdentity();
+	const savedIdentity = storedSessionIdentity();
 	try {
 		if (hasUsableAccessToken(savedToken)) {
 			// Guards verify session revocation and active role/profile using the bearer token.
@@ -219,7 +219,7 @@ export async function restoreSession(): Promise<void> {
 		}
 	} catch (error) {
 		// A response for the old account must not restore or clear a replacement session.
-		const currentIdentity = storedSessionIdentity() ?? restorableSessionIdentity();
+		const currentIdentity = storedSessionIdentity();
 		if (loggingOut || getJwtToken() !== savedToken || currentIdentity?.memberType !== savedIdentity?.memberType || currentIdentity?.sid !== savedIdentity?.sid) return;
 		if (error instanceof SessionRejectedError) {
 			clearSession();

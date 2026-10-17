@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start -p ${PORT:-2002}",
 		"lint": "next lint",
-		"test:auth": "node scripts/verify-auth-session.cjs",
+		"test:auth": "node scripts/verify-auth-session.cjs && node scripts/verify-tab-ownership.cjs",
 		"test:seo": "node scripts/verify-seo.cjs",
 		"test:seo:http": "node scripts/verify-seo-http.cjs"
 	},
