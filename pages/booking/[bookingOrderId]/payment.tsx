@@ -59,7 +59,7 @@ function PaymentPage() {
 			await checkout.refetch();
 			setSuccess(provider === 'CASH');
 			const nextPayment = (chosen.data?.chooseBookingPayment as CheckoutState | undefined)?.payments.find((payment) => payment.paymentProvider === 'EXIMBAY' && payment.paymentStatus === 'PENDING');
-			if (mode === 'SANDBOX' && nextPayment && eximbay.ready) await eximbay.openCheckout(nextPayment._id);
+			if (mode === 'SANDBOX' && nextPayment) await eximbay.openCheckout(nextPayment._id);
 		} catch (error) { setMessage(error instanceof Error ? error.message : w('paymentUnavailable')); }
 		finally { lock.current = false; }
 	};
@@ -94,8 +94,9 @@ function PaymentPage() {
 						<label><input type="radio" name="paymentProvider" value="CASH" checked={provider === 'CASH'} onChange={() => setProvider('CASH')} /><span><strong>{w('cash')}</strong><small>{w('cashBookingHelp')}</small></span></label>
 						<label><input type="radio" name="paymentProvider" value="EXIMBAY" checked={provider === 'EXIMBAY'} disabled={!mode || mode === 'DISABLED' || requiresCashConfirmation} onChange={() => setProvider('EXIMBAY')} /><span><strong>{w('eximbayTest')}</strong><small>{mode === 'SIMULATED' ? w('localPaymentTest') : w('paymentSandbox')}</small></span></label>
 					</fieldset>
+					{provider === 'EXIMBAY' && eximbay.error && <p role="alert">{eximbay.error}</p>}
 					{(options.error || mode === 'DISABLED') && <p role="status">{w('onlineTestDisabled')}</p>}
-					<button type="button" className="clinical-primary-button" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED' || requiresCashConfirmation))} onClick={() => void submit()}>{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
+					<button type="button" className="clinical-primary-button" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED' || requiresCashConfirmation || (mode === 'SANDBOX' && !eximbay.ready)))} onClick={() => void submit()}>{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
 				</>}
 				{!unavailable && !allPaid && !cashBooked && (provider === 'EXIMBAY' || pendingOnline.length > 0) && <EximbayTestCard mode={mode} />}
 				{pendingOnline.length > 0 && !unavailable && <div className="checkout-online"><h3>{w('eximbayTest')}</h3><p>{w('paymentSandbox')}</p><p>{w('paymentHold')}</p>
