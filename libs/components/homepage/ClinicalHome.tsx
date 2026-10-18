@@ -1,6 +1,8 @@
-import cardInteraction from '@/libs/components/common/CardInteraction.module.scss';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { useRef, useState } from 'react';
+import type { Swiper as SwiperInstance } from 'swiper';
+import HeroSwiper, { heroSlides } from './HeroSwiper';
+import DoctorSwiper from './DoctorSwiper';
+import ArticleSwiper from './ArticleSwiper';
 import Link from 'next/link';
 import { useQuery as useApolloQuery } from '@apollo/client';
 import { GET_DOCTORS } from '@/apollo/doctor/query';
@@ -9,11 +11,7 @@ import { GET_SERVICES } from '@/apollo/service/query';
 import { GET_ARTICLES } from '@/apollo/article/query';
 import { ArticleStatus } from '@/libs/components/article/enums/article.enum';
 import { Article } from '@/libs/components/article/types/article';
-import {
-	ArticleCard,
-} from '@/libs/components/article/ArticleCard';
 import Icon from '../common/Icon';
-import { resolveApiAsset } from '@/libs/config';
 import AdvertisementRail from '../advertisement/AdvertisementRail';
 import RightAdvertisementRail from '../advertisement/RightAdvertisementRail';
 import { ClinicalDoctorCard, ClinicalServiceCard } from './types/clinical-home';
@@ -21,42 +19,14 @@ import DepartmentSwiper from './DepartmentSwiper';
 import DiscountedServices from './DiscountedServices';
 import { useTranslation } from '@/libs/i18n/useTranslation';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
-import { useDoctorSpecialtyLabel } from '@/libs/i18n/useDoctorSpecialtyLabel';
 import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 
-const heroSlides = [
-	{
-		image: '/img/hospital-care-1.png',
-		alt: 'home.slide1.alt',
-		title: 'home.slide1.title',
-		description: 'home.slide1.description',
-	},
-	{
-		image: '/img/hospital-care-2.png',
-		alt: 'home.slide2.alt',
-		title: 'home.slide2.title',
-		description: 'home.slide2.description',
-	},
-	{
-		image: '/img/hospital-care-3.png',
-		alt: 'home.slide3.alt',
-		title: 'home.slide3.title',
-		description: 'home.slide3.description',
-	},
-] as const;
 const ClinicalHome = () => {
 	const t = useTranslation();
-	const specialtyLabel = useDoctorSpecialtyLabel();
 	const w = useWorkspaceText();
 	const clinic = useClinicSettings();
 	const [activeSlide, setActiveSlide] = useState(0);
-	useEffect(() => {
-		const timer = window.setInterval(
-			() => setActiveSlide((current) => (current + 1) % heroSlides.length),
-			3000,
-		);
-		return () => window.clearInterval(timer);
-	}, []);
+	const hero = useRef<SwiperInstance | null>(null);
 	const servicesQuery = useApolloQuery(GET_SERVICES, {
 		variables: {
 			input: {
@@ -73,7 +43,7 @@ const ClinicalHome = () => {
 		variables: {
 			input: {
 				page: 1,
-				limit: 3,
+				limit: 8,
 				sort: DoctorSort.POINTS,
 				direction: 'DESC',
 				search: {},
@@ -85,7 +55,7 @@ const ClinicalHome = () => {
 		variables: {
 			input: {
 				page: 1,
-				limit: 3,
+				limit: 8,
 				sort: 'createdAt',
 				direction: 'DESC',
 				search: { articleStatus: ArticleStatus.PUBLISHED },
@@ -123,23 +93,7 @@ const ClinicalHome = () => {
 							role="region"
 							aria-label={t('home.highlights')}
 						>
-							<div className="clinical-hero-slides">
-								{heroSlides.map((slide, index) => (
-									<div
-										className={`clinical-hero-slide ${activeSlide === index ? 'is-active' : ''}`}
-										aria-hidden={activeSlide !== index}
-										key={slide.image}
-									>
-										<Image
-											src={slide.image}
-											alt={t(slide.alt)}
-											fill
-											priority={index === 0}
-											sizes="(max-width: 680px) calc(100vw - 24px), (max-width: 1120px) calc(100vw - 64px), 768px"
-										/>
-									</div>
-								))}
-							</div>
+							<HeroSwiper onSlideChange={setActiveSlide} onReady={(swiper) => { hero.current = swiper; }} />
 							<div className="clinical-hero-image-overlay" />
 							<div className="clinical-hero-content">
 								<div className="clinical-hero-heading">
@@ -181,7 +135,7 @@ const ClinicalHome = () => {
 											className={activeSlide === index ? 'is-active' : ''}
 											aria-label={`${t('home.showImage')} ${index + 1}: ${t(slide.title)}`}
 											aria-current={activeSlide === index ? 'true' : undefined}
-											onClick={() => setActiveSlide(index)}
+											onClick={() => hero.current?.slideTo(index)}
 											key={slide.image}
 										/>
 									))}
@@ -244,39 +198,7 @@ const ClinicalHome = () => {
 						{!doctorsQuery.loading &&
 							!doctorsQuery.error &&
 							!doctors.length && <p>{w('catalogEmpty')}</p>}
-						<div className="clinical-doctor-grid">
-							{doctors.map((doctor, index) => (
-								<article className={`clinical-doctor-card ${cardInteraction.surface}`} key={doctor._id}>
-									<div
-										className={`clinical-doctor-portrait clinical-portrait-${index === 1 ? 'teal' : index === 2 ? 'slate' : 'blue'}`}
-									>
-										{doctor.docImage ? (
-											<span
-												className="clinical-api-doctor-image"
-												role="img"
-												aria-label={doctor.docFullName}
-												style={{
-													backgroundImage: `url(${resolveApiAsset(doctor.docImage)})`,
-												}}
-											/>
-										) : (
-											initials(doctor.docFullName)
-										)}
-									</div>
-									<h3><Link className={cardInteraction.primaryLink} href={`/doctor/${doctor._id}`}>{doctor.docFullName}</Link></h3>
-									<b>{specialtyLabel(doctor.docSpecialty)}</b>
-									<p>
-										{Number(doctor.docExperience ?? 0)} {t('home.doctor.years')}
-									</p>
-									<Link
-										className="clinical-doctor-book"
-										href={`/appointment?doctor=${doctor._id}`}
-									>
-										{t('home.doctor.book')}
-									</Link>
-								</article>
-							))}
-						</div>
+						{!!doctors.length && <DoctorSwiper doctors={doctors} />}
 					</section>
 					<DiscountedServices />
 					<section
@@ -288,11 +210,9 @@ const ClinicalHome = () => {
 							linkLabel={t('home.articles.link')}
 							linkHref="/article"
 						/>
-						<div className="clinical-article-grid">
-							{articles.slice(0, 3).map((article) => (
-								<ArticleCard article={article} key={article._id} />
-							))}
-						</div>
+						{articlesQuery.loading && !articles.length && <p role="status">{t('dashboard.loading')}</p>}
+						{articlesQuery.error && !articles.length && <p role="alert">{w('catalogUnavailable')}</p>}
+						{!!articles.length && <ArticleSwiper articles={articles} />}
 					</section>
 
 					<section className="clinical-trust-section">

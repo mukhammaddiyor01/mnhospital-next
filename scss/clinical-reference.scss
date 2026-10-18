@@ -3542,3 +3542,10 @@ html[data-theme="dark"] {
     animation-duration: 2s;
   }
 }
+
+/* Keep text and booking controls steady while the hero images move. */
+.clinical-home .clinical-hero-image-overlay,
+.clinical-home .clinical-hero-content,
+.clinical-home .clinical-hero-footer { pointer-events: none; }
+.clinical-home .clinical-hero-actions a,
+.clinical-home .clinical-hero-dots button { pointer-events: auto; }
