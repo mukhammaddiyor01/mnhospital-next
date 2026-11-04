@@ -387,3 +387,32 @@
 @import "public-refinement";
 
 @import "desktop-responsive";
+
+// Checkout decisions: one clear booking action, then distinct record/navigation links.
+.booking-checkout {
+  .checkout-methods { margin-block: 24px 18px; }
+  .checkout-methods label { min-height: 86px; border-color: var(--clinical-line); background: var(--mn-card); transition: border-color .15s, background-color .15s; }
+  .checkout-methods label:has(input:checked) { border: 2px solid var(--clinical-primary); background: var(--clinical-primary-soft); }
+  .checkout-methods label:has(input:focus-visible) { outline: 2px solid var(--clinical-primary); outline-offset: 3px; }
+  .checkout-methods strong { color: var(--clinical-navy); font-size: 15px; }
+  .checkout-methods small { color: var(--clinical-secondary); font-size: 12px; }
+  .checkout-methods input { accent-color: #1769b2; }
+  .checkout-submit.clinical-primary-button,
+  .checkout-online .clinical-primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 48px; padding: 12px 20px; border: 1px solid transparent; border-radius: 10px; background: var(--clinical-primary-fill, #1769b2); color: #fff; font-size: 14px; font-weight: 700; box-shadow: 0 3px 10px rgba(23, 105, 178, .2); }
+  .checkout-submit.clinical-primary-button:hover:not(:disabled),
+  .checkout-online .clinical-primary-button:hover:not(:disabled) { background: var(--clinical-primary-fill-hover, #0f568f); color: #fff; }
+  .checkout-submit .material-symbols-rounded { font-size: 20px; }
+  .checkout-records { padding: 12px 0; margin-top: 18px; border-top: 1px solid var(--clinical-line); color: var(--clinical-secondary); font-size: 12px; }
+  .checkout-records p { margin: 4px 0; }
+  .checkout-next-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 18px; margin-top: 18px; border-top: 1px solid var(--clinical-line); }
+  .checkout-next-actions :is(a, button) { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 42px; padding: 9px 13px; border: 1px solid var(--clinical-line); border-radius: 9px; background: var(--mn-card); color: var(--clinical-primary); font-size: 12px; font-weight: 700; text-decoration: none; }
+  .checkout-next-actions .material-symbols-rounded { font-size: 18px; }
+  .checkout-next-actions .checkout-next-primary { border-color: var(--clinical-primary-fill, #1769b2); background: var(--clinical-primary-fill, #1769b2); color: #fff; }
+  .checkout-next-actions .checkout-next-primary:hover { background: var(--clinical-primary-fill-hover, #0f568f); color: #fff; }
+  .checkout-next-actions :is(.checkout-next-secondary, .checkout-refresh):hover { border-color: var(--clinical-primary); background: var(--clinical-primary-soft); }
+  .checkout-next-actions .checkout-refresh { margin-left: auto; color: var(--clinical-secondary); }
+}
+@media (max-width: 600px) {
+  .booking-checkout .checkout-submit { width: 100%; }
+  .booking-checkout .checkout-next-actions .checkout-refresh { margin-left: 0; }
+}

@@ -17,6 +17,7 @@ import { useEximbayCheckout } from '@/libs/payments/useEximbayCheckout';
 import { CheckoutState, clinicDateTime } from '@/libs/payments/clinic';
 import { useClinicSettings } from '@/libs/payments/useClinicSettings';
 import { formatMoney } from '@/libs/components/common/currency';
+import Icon from '@/libs/components/common/Icon';
 
 function PaymentPage() {
 	const router = useRouter();
@@ -96,16 +97,23 @@ function PaymentPage() {
 					</fieldset>
 					{provider === 'EXIMBAY' && eximbay.error && <p role="alert">{eximbay.error}</p>}
 					{(options.error || mode === 'DISABLED') && <p role="status">{w('onlineTestDisabled')}</p>}
-					<button type="button" className="clinical-primary-button" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED' || requiresCashConfirmation || (mode === 'SANDBOX' && !eximbay.ready)))} onClick={() => void submit()}>{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
+					<button type="button" className="clinical-primary-button checkout-submit" disabled={busy || (provider === 'EXIMBAY' && (!mode || mode === 'DISABLED' || requiresCashConfirmation || (mode === 'SANDBOX' && !eximbay.ready)))} onClick={() => void submit()}><Icon name={provider === 'CASH' ? 'event_available' : 'payments'} />{busy ? w('paymentChecking') : provider === 'CASH' ? w('confirmCashBooking') : w('continueOnline')}</button>
 				</>}
 				{!unavailable && !allPaid && !cashBooked && (provider === 'EXIMBAY' || pendingOnline.length > 0) && <EximbayTestCard mode={mode} />}
 				{pendingOnline.length > 0 && !unavailable && <div className="checkout-online"><h3>{w('eximbayTest')}</h3><p>{w('paymentSandbox')}</p><p>{w('paymentHold')}</p>
 					{mode === 'SIMULATED' && pendingOnline.every((payment) => payment.testPayment) ? <><p>{w('localPaymentTest')}</p><div className="clinical-resource-actions"><button className="clinical-primary-button" type="button" disabled={busy} onClick={() => void testPayment('PAID')}>{w('testPaySuccess')}</button><button type="button" disabled={busy} onClick={() => void testPayment('FAILED')}>{w('testPayFailure')}</button><button type="button" disabled={busy} onClick={() => void testPayment('CANCELLED')}>{w('cancel')}</button></div></> : mode === 'SANDBOX' ? <>{eximbay.error && <p role="alert">{eximbay.error}</p>}{pendingOnline.map((payment) => <button type="button" key={payment._id} disabled={busy || !eximbay.ready} onClick={() => void openSandbox(payment._id)}>{w('pay')} · {formatMoney(payment.paymentAmount, payment.paymentCurrency)}</button>)}</> : <p role="alert">{w('onlineTestDisabled')}</p>}
 				</div>}
 				{((success && allReserved) || cashBooked || (allPaid && allReserved)) && <div className="checkout-success" role="status"><h3>{w('appointmentSaved')}</h3><p>{cashBooked && !allPaid ? w('cashBookingHelp') : w('paidBookingHelp')}</p></div>}
-				{reservations.map((appointment) => <p key={appointment._id}>{appointment.appointmentCode} · {w('status')}: {appointment.appointmentStatus}</p>)}
-				{activePayments.map((payment) => <p key={payment._id}>{payment.paymentProvider} · {w('status')}: {payment.paymentStatus}</p>)}
-				<div className="clinical-resource-actions"><Link href="/mypage/appointments">{w('appointments')}</Link><Link href="/mypage/bookings">{w('bookings')}</Link><Link href="/appointment">{w('newAppointment')}</Link><button type="button" disabled={checkout.loading || busy} onClick={() => void checkout.refetch().catch(() => undefined)}>{w('refresh')}</button></div>
+				{(reservations.length > 0 || activePayments.length > 0) && <div className="checkout-records" aria-label={w('status')}>
+					{reservations.map((appointment) => <p key={appointment._id}>{appointment.appointmentCode} · {w('status')}: {appointment.appointmentStatus}</p>)}
+					{activePayments.map((payment) => <p key={payment._id}>{payment.paymentProvider} · {w('status')}: {payment.paymentStatus}</p>)}
+				</div>}
+				<nav className="checkout-next-actions" aria-label={w('appointments')}>
+					<Link className="checkout-next-primary" href="/mypage/appointments"><Icon name="event_note" />{w('appointments')}</Link>
+					<Link className="checkout-next-secondary" href="/mypage/bookings"><Icon name="receipt_long" />{w('bookings')}</Link>
+					<Link className="checkout-next-secondary" href="/appointment"><Icon name="add_circle" />{w('newAppointment')}</Link>
+					<button className="checkout-refresh" type="button" disabled={checkout.loading || busy} onClick={() => void checkout.refetch().catch(() => undefined)}><Icon name="refresh" />{w('refresh')}</button>
+				</nav>
 			</>}
 			{message && <p className="clinical-form-error" role="alert">{message}</p>}
 		</section>
