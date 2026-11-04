@@ -12,11 +12,13 @@ import ThemeControl from "./preference/ThemeControl";
 import LanguageControl from "./preference/LanguageControl";
 import { useTranslation } from "@/libs/i18n/useTranslation";
 import { MemberType } from "@/libs/components/member/enums/member.enum";
+import { usePatientProfileCompletion } from '@/libs/components/mypage/usePatientProfileCompletion';
 
 const Top = () => {
   const router = useRouter();
   const user = useReactiveVar(userVar);
   const t = useTranslation();
+  const profileIncomplete = usePatientProfileCompletion(user._id, user.memberType === MemberType.PATIENT);
   const workspace = user.memberType === MemberType.ADMIN ? '/admin' : user.memberType === MemberType.DOCTOR ? '/doctor-workspace' : user.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace' : '/mypage';
   const isHome = router.pathname === "/";
   const isStaffSignIn = ['/account/admin-signin', '/account/doctor-signin', '/account/receptionist-signin'].includes(router.pathname);
@@ -67,10 +69,10 @@ const Top = () => {
           </>}
           {user._id ? (
             <Link
-              className="clinical-profile"
+              className={`clinical-profile${profileIncomplete ? ' is-incomplete' : ''}`}
               href={user.memberType === MemberType.ADMIN ? '/mypage/dashboard' : user.memberType === MemberType.DOCTOR ? '/doctor-workspace/profile' : user.memberType === MemberType.RECEPTIONIST ? '/receptionist-workspace/profile' : '/mypage'}
-              aria-label={t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'nav.profile')}
-              title={t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'page.profile')}
+              aria-label={profileIncomplete ? `${t('page.profile')}. ${t('page.profileIncomplete')}` : t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'nav.profile')}
+              title={profileIncomplete ? t('page.profileIncomplete') : t(user.memberType === MemberType.ADMIN ? 'dashboard.title' : 'page.profile')}
               style={
                 user.memberImage
                   ? {
@@ -80,6 +82,7 @@ const Top = () => {
               }
             >
               <span>{initials}</span>
+              {profileIncomplete && <span className="mn-profile-alert-mark" aria-hidden="true">!</span>}
             </Link>
           ) : !isStaffSignIn ? (
             <Link className="clinical-signup-top" href="/account/join" aria-label={t('nav.signup')}>

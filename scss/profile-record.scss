@@ -1,6 +1,11 @@
 // MN Hospital's account record: identity first, details in a readable ledger.
 // Scoped to profiles; catalogs, booking and workspace navigation stay untouched.
 .mn-profile-page-heading { padding: 8px 0 24px; }
+.clinical-profile.is-incomplete { position: relative; overflow: visible; }
+.mn-profile-alert-mark { position: absolute; top: -8px; right: -7px; display: grid !important; width: 18px !important; height: 18px !important; place-items: center; border: 2px solid var(--mn-card); border-radius: 50%; background: #bd2635 !important; color: #fff; font: 800 11px/1 'DM Sans', sans-serif; }
+.mn-profile-page-heading > .mn-profile-completion-notice, .mn-medical-heading .mn-profile-completion-notice { display: inline-flex; align-items: center; gap: 7px; margin: 10px 0 4px; color: #a72332; font-size: 13px; font-weight: 700; line-height: 1.4; }
+.mn-profile-completion-notice .material-symbols-rounded { font-size: 20px; }
+html[data-theme='dark'] .mn-profile-page-heading > .mn-profile-completion-notice, html[data-theme='dark'] .mn-medical-heading .mn-profile-completion-notice { color: #ffb5bc; }
 .mn-profile-page-heading .clinical-crumb { margin-bottom: 12px; }
 .mn-profile-page-heading h1 { margin: 0; color: var(--clinical-navy); font: 750 30px/1.25 'Manrope', sans-serif; letter-spacing: -.035em; }
 .mn-profile-page-heading > p { max-width: 60ch; margin: 10px 0 0; color: var(--clinical-muted); font-size: 14px; line-height: 1.65; }

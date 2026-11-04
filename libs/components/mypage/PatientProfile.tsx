@@ -25,6 +25,7 @@ import AccountProfileEditor from '@/libs/components/workspace/AccountProfileEdit
 import PatientActivity from './PatientActivity';
 import { MemberType } from '@/libs/components/member/enums/member.enum';
 import { useTranslation } from '@/libs/i18n/useTranslation';
+import { isPatientProfileComplete } from './usePatientProfileCompletion';
 
 interface PatientFormState {
 	patientBloodType: PatientBloodType | '';
@@ -87,6 +88,7 @@ const PatientProfile = () => {
 		!loading &&
 		!patient &&
 		(!error || error.message.includes('No data is found'));
+	const profileIncomplete = profileMissing || (Boolean(patient) && !isPatientProfileComplete(patient));
 
 	useEffect(() => {
 		if (!patient) return;
@@ -328,7 +330,7 @@ const PatientProfile = () => {
 		<div className="mn-patient-profile-layout">
 			<AccountProfileEditor role={MemberType.PATIENT} fallbackImage={patient?.patientImage} navigation={<nav className="mn-profile-navigation" aria-label={w('profileNavigation')}><a href="#account-details">{w('personalInformation')}</a><a href="#medical-details">{w('medicalInformation')}</a><a href="#care-services">{w('profileCare')}</a><a href="#profile-activity">{w('profileActivity')}</a></nav>} />
 			<section id="medical-details" className="clinical-inner-section clinical-patient-profile mn-medical-record">
-				<header className="mn-medical-heading"><div><h2>{w('medicalInformation')}</h2><p>{w('medicalProfileHint')}</p></div>{patient && !editing && <button className="clinical-secondary-button" type="button" onClick={startEditing}><Icon name="edit" />{t('patient.updateButton')}</button>}</header>
+				<header className="mn-medical-heading"><div><h2>{w('medicalInformation')}</h2><p>{w('medicalProfileHint')}</p>{profileIncomplete && <p className="mn-profile-completion-notice" role="status"><Icon name="error" />{t('page.profileIncomplete')}</p>}</div>{patient && !editing && <button className="clinical-secondary-button" type="button" onClick={startEditing}><Icon name="edit" />{t('patient.updateButton')}</button>}</header>
 				{patient && (
 					<>
 						<div className="mn-medical-identity"><ProfileAvatar className="clinical-profile-large" image={patient.patientImage || account.data?.getMyMemberProfile.memberImage || session.memberImage} name={displayName} /><div><strong>{displayName}</strong><p>{t('patient.patientId')}: {patient.patientIdNumber}</p></div><span className="mn-medical-status">{statusLabels[String(patient.memberStatus)] ?? String(patient.memberStatus)}</span></div>
@@ -341,13 +343,13 @@ const PatientProfile = () => {
 						</dl>}
 					</>
 				)}
-				{profileMissing && (
+				{profileIncomplete && (
 					<div>
 						<h2>{t('patient.setupTitle')}</h2>
 						<p className="clinical-query-status">{t('patient.setupIntro')}</p>
 					</div>
 				)}
-				{profileMissing && <div className="clinical-profile-contact">
+				{profileIncomplete && <div className="clinical-profile-contact">
 					<span>
 						<Icon name="call" />
 						<small>{t('patient.phone')}</small>
@@ -366,7 +368,7 @@ const PatientProfile = () => {
 						</span>
 					)}
 				</div>}
-				{(profileMissing || editing) && (
+				{(profileIncomplete || editing) && (
 					<form
 						className="clinical-contact-form clinical-patient-form"
 						onSubmit={submitProfile}
