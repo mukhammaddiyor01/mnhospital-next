@@ -22,7 +22,7 @@ services:
     environment:
       SEO_API_GRAPHQL_URL: ${SEO_API_GRAPHQL_URL:-https://mnhospital.uz/graphql}
     ports:
-      - "2002:4002"
+      - "127.0.0.1:2002:4002"
     networks:
       - client-network
 networks:
