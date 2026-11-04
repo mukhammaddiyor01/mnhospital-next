@@ -28,6 +28,10 @@
 }
 
 .clinical-shell .clinical-focused-workspace { grid-template-columns: minmax(0, 820px); }
+.clinical-focused-shell :is(.clinical-appointment-section, .booking-checkout) {
+  width: 100%;
+  margin-inline: auto;
+}
 .clinical-booking-support { display: flex; justify-content: center; flex-wrap: wrap; gap: 24px; padding: 16px 20px 32px; color: var(--clinical-secondary); font-size: 13px; }
 .clinical-booking-support a { color: var(--clinical-primary); text-decoration: underline; text-underline-offset: 3px; }
 
