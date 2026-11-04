@@ -910,10 +910,11 @@ html[data-theme="dark"] {
   right: calc(50% - 82px);
 }
 .clinical-department-swiper .swiper-button-prev::after {
-  content: "←";
+  // Swiper supplies the arrow icon; a second pseudo-element doubles it.
+  content: none;
 }
 .clinical-department-swiper .swiper-button-next::after {
-  content: "→";
+  content: none;
 }
 .clinical-department-swiper .swiper-button-disabled {
   opacity: 0.4;
