@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { ComponentType, ReactNode, useState } from 'react';
+import { ComponentType, ReactNode, useEffect, useState } from 'react';
 import Top from '../Top';
 import Footer from '../Footer';
 import MobileBottomNav from '../common/MobileBottomNav';
@@ -23,6 +23,27 @@ const withLayoutMain = <P extends object>(Component: ComponentType<P>) => {
 		const focused = router.pathname === '/appointment' || router.pathname.startsWith('/booking/');
 		const [chatOpen, setChatOpen] = useState(false);
 		const [assistantOpen, setAssistantOpen] = useState(false);
+		useEffect(() => {
+			if (!router.isReady || window.location.hash || window.scrollY > 24) return;
+			const targetSelector: Record<string, string> = {
+				'/service': '#main .clinical-inner-page > .clinical-inner-section',
+				'/doctor': '#main .clinical-inner-page > .clinical-inner-section',
+				'/article': '#main .clinical-article-page > .clinical-content-section',
+				'/mypage/appointments': '#main .clinical-center-column',
+			};
+			const selector = targetSelector[router.pathname];
+			if (!selector) return;
+			const timer = window.setTimeout(() => {
+				const target = document.querySelector(selector);
+				if (target && window.scrollY <= 24 && !window.location.hash) {
+					target.scrollIntoView({
+						behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+						block: 'start',
+					});
+				}
+			}, 220);
+			return () => window.clearTimeout(timer);
+		}, [router.isReady, router.pathname]);
 		return (
 			<>
 				<div id="pc-wrap" className={`clinical-shell app-frame${focused ? ' clinical-focused-shell' : ''}`}>

@@ -1,0 +1,126 @@
+// Readable record details inside the existing admin workspace.
+.clinical-staff-admin .clinical-admin-detail {
+  scroll-margin-top: 24px;
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid #355065;
+  border-radius: 14px;
+  background: #172837;
+  box-shadow: 0 12px 30px rgba(3, 13, 24, .12);
+  color: #e9f2fb;
+}
+.clinical-staff-admin .clinical-admin-detail > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 18px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid #365064;
+}
+.clinical-staff-admin .clinical-admin-detail > header h2 {
+  margin: 0;
+  color: #f2f7fc;
+  font: 700 clamp(17px, 1.4vw, 22px)/1.3 'Manrope', Arial, sans-serif;
+  overflow-wrap: anywhere;
+}
+.clinical-staff-admin .clinical-admin-detail > header button {
+  flex: none;
+  min-height: 38px;
+  padding: 7px 13px;
+  border-color: #48667d;
+  border-radius: 8px;
+  background: #223a4c;
+  color: #d9ecfa;
+}
+.clinical-staff-admin .clinical-admin-detail > header button:hover,
+.clinical-staff-admin .clinical-admin-detail > header button:focus-visible {
+  border-color: #82c9ff;
+  background: #2b4b62;
+}
+.clinical-staff-admin .clinical-admin-detail > dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 20px;
+}
+.clinical-staff-admin .clinical-admin-detail > dl > div {
+  min-width: 0;
+  padding: 13px 15px;
+  border: 1px solid #334c60;
+  border-radius: 10px;
+  background: #1b3040;
+}
+.clinical-staff-admin .clinical-admin-detail > dl > .clinical-admin-detail-wide { grid-column: 1 / -1; }
+.clinical-staff-admin .clinical-admin-detail dt {
+  margin-bottom: 4px;
+  color: #aac3d5;
+  font-size: 11px;
+  font-weight: 600;
+}
+.clinical-staff-admin .clinical-admin-detail dd {
+  margin: 0;
+  color: #f0f6fb;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.clinical-staff-admin .clinical-admin-detail > h3,
+.clinical-staff-admin .clinical-admin-detail-groups h3 {
+  margin: 0 0 10px;
+  color: #e9f2fb;
+  font: 700 15px/1.4 'Manrope', Arial, sans-serif;
+}
+.clinical-staff-admin .clinical-admin-detail-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.clinical-staff-admin .clinical-admin-detail-groups > section {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #334c60;
+  border-radius: 10px;
+  background: #1b3040;
+}
+.clinical-staff-admin .clinical-admin-detail-groups ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.clinical-staff-admin .clinical-admin-detail-groups li { display: grid; gap: 2px; padding: 9px 0; border-top: 1px solid #334c60; overflow-wrap: anywhere; }
+.clinical-staff-admin .clinical-admin-detail-groups li strong { color: #f0f6fb; font-size: 13px; }
+.clinical-staff-admin .clinical-admin-detail-groups li span { color: #b6ccdc; font-size: 12px; }
+.clinical-staff-admin .clinical-admin-detail-field { display: grid; gap: 7px; max-width: 560px; margin-bottom: 18px; color: #b6ccdc; font-size: 12px; }
+.clinical-staff-admin .clinical-admin-detail .clinical-resource-actions { padding-top: 16px; border-top: 1px solid #365064; }
+.clinical-staff-admin .clinical-admin-detail .clinical-resource-actions button { min-height: 40px; padding: 8px 14px; border-radius: 8px; }
+.clinical-staff-admin .clinical-admin-detail .clinical-resource-actions button:hover:not(:disabled) { border-color: #82c9ff; background: #294b62; }
+.clinical-staff-admin .clinical-resource-actions .clinical-resource-details-button {
+  min-height: 38px;
+  padding: 8px 13px;
+  border-color: #4e91c2;
+  border-radius: 8px;
+  background: #24435a;
+  color: #e7f5ff;
+  font-weight: 700;
+}
+.clinical-staff-admin .clinical-resource-actions .clinical-resource-details-button:hover { border-color: #82c9ff; background: #2d5773; }
+.clinical-staff-admin .clinical-booking-details-button {
+  border-color: #4e91c2;
+  background: #24435a;
+  color: #e7f5ff;
+  font-weight: 700;
+}
+.clinical-staff-admin .clinical-booking-details-button:hover { border-color: #82c9ff; background: #2d5773; }
+.clinical-staff-admin .clinical-admin-booking-detail {
+  scroll-margin-top: 24px;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #355065;
+  border-radius: 14px;
+  background: #172837;
+}
+.clinical-staff-admin .clinical-admin-booking-detail > h3 { margin: 0 0 14px; color: #f2f7fc; font-size: 19px; }
+.clinical-staff-admin .clinical-admin-booking-detail article { border-color: #365064; background: #1b3040; }
+@media (max-width: 640px) {
+  .clinical-staff-admin .clinical-admin-detail { padding: 16px; }
+  .clinical-staff-admin .clinical-admin-detail > dl,
+  .clinical-staff-admin .clinical-admin-detail-groups { grid-template-columns: minmax(0, 1fr); }
+}

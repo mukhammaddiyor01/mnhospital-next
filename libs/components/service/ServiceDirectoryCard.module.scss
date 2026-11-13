@@ -1,14 +1,14 @@
-.card .image { aspect-ratio: 16 / 9; }
+.card .image { aspect-ratio: 2 / 1; }
 .image img { object-position: center; }
-.card .body { padding: 16px; }
-.body h3 { font-size: 17px; line-height: 1.35; margin: 4px 0 8px; min-height: 2.7em; }
-.metadata { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 8px; color: var(--clinical-secondary); font-size: 12px; }
+.card .body { padding: 15px 16px 16px; }
+.body h3 { font-size: 17px; line-height: 1.3; margin: 3px 0 6px; min-height: 0; }
+.metadata { display: flex; flex-wrap: wrap; gap: 3px 10px; margin: 0 0 6px; color: var(--clinical-secondary); font-size: 12px; }
 .metadata > span { display: inline-flex; align-items: center; gap: 5px; min-width: 0; overflow-wrap: anywhere; }
 .metadata :global(.material-symbols-rounded) { font-size: 17px; }
-.description { margin: 0 0 10px; color: var(--clinical-secondary); font-size: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.price { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--clinical-navy); }
+.description { margin: 0 0 7px; color: var(--clinical-secondary); font-size: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.price { margin: 0 0 7px; font-size: 14px; font-weight: 600; color: var(--clinical-navy); }
 .price small { display: block; margin-top: 4px; font-size: 12px; font-weight: 400; color: var(--clinical-secondary); }
-.card .stats { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: auto 0 10px; padding: 6px 0; }
+.card .stats { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: auto 0 7px; padding: 5px 0; }
 .stats > div { display: flex; align-items: center; gap: 5px; }
 .card .stats > div + div { border-left: 0; padding-left: 0; }
 .stats dt { font-size: 11px; gap: 4px; }

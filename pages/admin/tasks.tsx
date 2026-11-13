@@ -165,16 +165,17 @@ function Tasks() {
 				</p>
 			)}
 			{selected && (
-				<section className="clinical-staff-panel clinical-resource-panel">
+				<section className="clinical-staff-panel clinical-resource-panel clinical-admin-detail">
 					{detail.error && <p role="alert">{detail.error.message}</p>}
 					{feedback && <p role="alert">{feedback}</p>}
 					{task && (
 						<>
-							<h2>{task.taskType}</h2>
-							<p>{task.taskInstruction}</p>
-							<p>
-								{task.taskStatus} · {task.taskResult}
-							</p>
+							<header><h2>{task.taskType.replaceAll('_', ' ')}</h2><button type="button" onClick={() => setSelected(null)}>{w('cancel')}</button></header>
+							<dl>
+								<div className="clinical-admin-detail-wide"><dt>{w('instruction')}</dt><dd>{task.taskInstruction || '—'}</dd></div>
+								<div><dt>{w('status')}</dt><dd>{task.taskStatus.replaceAll('_', ' ')}</dd></div>
+								<div><dt>{w('result')}</dt><dd>{task.taskResult || '—'}</dd></div>
+							</dl>
 							{transitions[task.taskStatus] && (
 								<form className="clinical-resource-form" onSubmit={save}>
 									<label>

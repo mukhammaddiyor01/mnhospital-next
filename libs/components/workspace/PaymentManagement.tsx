@@ -58,19 +58,18 @@ export default function PaymentManagement({
 		<>
 			<ResourcePanel key={revision} config={config} />
 			{selected && (
-				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">
+				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel clinical-admin-detail">
 					<header>
 						<h2>{w('payments')}</h2>
 						<button type="button" onClick={() => setSelected(null)}>
 							{w('cancel')}
 						</button>
 					</header>
-					<p>
-						{selected.paymentAmount} {selected.paymentCurrency} ·{' '}
-						{selected.paymentProvider} · {selected.paymentMethod} ·{' '}
-						{selected.paymentStatus}
-					</p>
 					<dl>
+						<div><dt>{w('total')}</dt><dd>{selected.paymentAmount} {selected.paymentCurrency}</dd></div>
+						<div><dt>{w('status')}</dt><dd>{selected.paymentStatus.replaceAll('_', ' ')}</dd></div>
+						<div><dt>{w('provider')}</dt><dd>{selected.paymentProvider || '—'}</dd></div>
+						<div><dt>{w('paymentMethod')}</dt><dd>{selected.paymentMethod || '—'}</dd></div>
 						{(
 							['bookingOrderId', 'patientId', 'doctorId', 'serviceId'] as const
 						).map((field, index) => (

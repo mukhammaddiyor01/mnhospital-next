@@ -181,11 +181,18 @@ export default function BookingManagement({
 									</td>
 									<td>
 										<button
+											className="clinical-booking-details-button"
 											type="button"
 											aria-expanded={selectedId === row._id}
 											onClick={() => {
 												select(selectedId === row._id ? '' : row._id);
 												setFeedback('');
+												if (selectedId !== row._id && role === MemberType.ADMIN) requestAnimationFrame(() => {
+													document.querySelector('.clinical-admin-booking-detail')?.scrollIntoView({
+														behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+														block: 'start',
+													});
+												});
 											}}
 										>
 											{f('details')}
@@ -206,7 +213,7 @@ export default function BookingManagement({
 				}}
 			/>
 			{selected && (
-				<div className={styles.detail}>
+				<div className={`${styles.detail} clinical-admin-booking-detail`}>
 					<h3>{recordReference(selected.orderCode)}</h3>
 					{selected.bookingOrderItems.map((line: RecordItem) => {
 						const active = ['PENDING', 'CONFIRMED', 'IN_PROGRESS'].includes(

@@ -42,10 +42,10 @@ export default function Page() {
 			<ResourcePanel config={config} />
 			<ResourcePanel config={accounts} />
 			{selected && (
-				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">
+				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel clinical-admin-detail">
 					<header>
 						<h2>{w('details')}</h2>
-						<button onClick={() => setSelected('')}>{w('cancel')}</button>
+						<button type="button" onClick={() => setSelected('')}>{w('cancel')}</button>
 					</header>
 					{detail.error && <p role="alert">{detail.error.message}</p>}
 					{activity.error && <p role="alert">{activity.error.message}</p>}
@@ -67,26 +67,21 @@ export default function Page() {
 						</dl>
 					)}
 					{a && (
-						<>
-							<h3>{w('bookings')}</h3>
-							{a.bookingOrders.map((o: any) => (
-								<p key={o._id}>
-									{o.orderCode}: {o.bookingOrderStatus} ·{' '}
-									{o.bookingOrderTotalAmount} {o.bookingOrderCurrency}
-								</p>
-							))}
-							<h3>{w('appointment')}</h3>
-							{a.appointments.map((r: any) => (
-								<p key={r._id}>
-									{r.appointmentCode}: {r.appointmentStatus} ·{' '}
-									{new Date(r.startsAt).toLocaleString()}
-								</p>
-							))}
-							<h3>{w('service')}</h3>
-							{a.services.map((r: any) => (
-								<p key={r._id}>{r.serviceName}</p>
-							))}
-						</>
+						<div className="clinical-admin-detail-groups">
+							<section><h3>{w('bookings')}</h3><ul>
+								{a.bookingOrders.map((o: any) => (
+									<li key={o._id}><strong>{o.orderCode}</strong><span>{o.bookingOrderStatus.replaceAll('_', ' ')} · {o.bookingOrderTotalAmount} {o.bookingOrderCurrency}</span></li>
+								))}
+							</ul></section>
+							<section><h3>{w('appointment')}</h3><ul>
+								{a.appointments.map((r: any) => (
+									<li key={r._id}><strong>{r.appointmentCode}</strong><span>{r.appointmentStatus.replaceAll('_', ' ')} · <time dateTime={r.startsAt}>{new Date(r.startsAt).toLocaleString()}</time></span></li>
+								))}
+							</ul></section>
+							<section><h3>{w('service')}</h3><ul>
+								{a.services.map((r: any) => <li key={r._id}><strong>{r.serviceName}</strong></li>)}
+							</ul></section>
+						</div>
 					)}
 				</section>
 			)}

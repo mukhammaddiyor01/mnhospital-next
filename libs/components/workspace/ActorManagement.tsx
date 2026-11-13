@@ -313,7 +313,7 @@ export default function ActorManagement({
 				<p className="clinical-staff-state">{w('doctorStatusHelp')}</p>
 			)}
 			{selected && (
-				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">
+				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel clinical-admin-detail">
 					<header>
 						<h2>{w('details')}</h2>
 						<button onClick={() => setSelected(null)}>{w('cancel')}</button>

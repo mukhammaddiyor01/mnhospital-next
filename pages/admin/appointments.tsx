@@ -64,19 +64,20 @@ export default function Page() {
 		<WorkspacePage role={MemberType.ADMIN} title={w('appointment')}>
 			<ResourcePanel key={revision} config={config} />
 			{selected && (
-				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel">
+				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel clinical-admin-detail">
 					<header>
 						<h2>{selected.appointmentCode}</h2>
-						<button onClick={() => setSelected(null)}>{w('cancel')}</button>
+						<button type="button" onClick={() => setSelected(null)}>{w('cancel')}</button>
 					</header>
-					<p>
-						{new Date(selected.startsAt).toLocaleString()} –{' '}
-						{new Date(selected.endsAt).toLocaleString()}
-					</p>
-					<p>{selected.appointmentReason}</p>
-					<p>{selected.appointmentDesc}</p>
+					<dl>
+						<div><dt>{w('start')}</dt><dd><time dateTime={selected.startsAt}>{new Date(selected.startsAt).toLocaleString()}</time></dd></div>
+						<div><dt>{w('end')}</dt><dd><time dateTime={selected.endsAt}>{new Date(selected.endsAt).toLocaleString()}</time></dd></div>
+						<div><dt>{w('status')}</dt><dd>{selected.appointmentStatus.replaceAll('_', ' ')}</dd></div>
+						<div><dt>{w('reason')}</dt><dd>{selected.appointmentReason || '—'}</dd></div>
+						<div className="clinical-admin-detail-wide"><dt>{w('description')}</dt><dd>{selected.appointmentDesc || '—'}</dd></div>
+					</dl>
 					{feedback && <p role="alert">{feedback}</p>}
-					<label>
+					<label className="clinical-admin-detail-field">
 						{w('reason')}
 						<input value={reason} onChange={(e) => setReason(e.target.value)} />
 					</label>

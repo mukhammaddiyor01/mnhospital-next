@@ -549,8 +549,17 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 										<div className="clinical-resource-actions">
 											{config.onSelect && (
 												<button
+													className="clinical-resource-details-button"
 													type="button"
-													onClick={() => config.onSelect?.(record)}
+													onClick={() => {
+													config.onSelect?.(record);
+													if (config.role === MemberType.ADMIN) requestAnimationFrame(() => {
+														document.querySelector('.clinical-admin-detail')?.scrollIntoView({
+															behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+															block: 'start',
+														});
+													});
+												}}
 												>
 													{w('details')}
 												</button>
