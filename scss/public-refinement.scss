@@ -53,15 +53,16 @@
   background: var(--clinical-low);
 }
 
-// A restrained, cool daylight canvas behind the existing white care surfaces.
+// A daylight wash in the hospital's blue and pink, visible across the viewport.
 html:not([data-theme='dark']) {
-  body { background: #eaf3f9; }
-  .clinical-shell {
+  body {
     background:
-      radial-gradient(ellipse 70% 36% at 10% 3%, rgba(255, 255, 255, .94), transparent 72%),
-      radial-gradient(ellipse 55% 32% at 94% 28%, rgba(206, 231, 246, .7), transparent 76%),
-      linear-gradient(154deg, #f7fbfe 0%, #eaf4fa 49%, #f3f8fc 100%);
+      radial-gradient(ellipse 78% 86% at 4% 0%, rgba(80, 162, 211, .78), transparent 76%),
+      radial-gradient(ellipse 78% 88% at 100% 100%, rgba(235, 166, 195, .76), transparent 76%),
+      linear-gradient(145deg, #96c8e5 0%, #c3cae9 52%, #eac6da 100%);
+    background-attachment: fixed;
   }
+  .clinical-shell { background: transparent; }
   .clinical-shell :is(.clinical-workspace, .clinical-inner-page) { background: transparent; }
 }
 
