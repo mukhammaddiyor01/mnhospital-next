@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import withLayoutMain from "@/libs/components/layout/LayoutHome";
@@ -39,6 +39,14 @@ const DoctorsPage = ({ initialCatalog, initialInquiryKey, initialSearch }: Docto
   const [specialty, setSpecialty] = useState("");
   const [appliedSearch, setAppliedSearch] = useState(initialSearch);
   const [page, setPage] = useState(1);
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const changePage = (nextPage: number) => {
+    resultsRef.current?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      block: 'start',
+    });
+    setPage(nextPage);
+  };
   useEffect(() => {
     if (router.isReady) {
       const value = typeof router.query.search === "string" ? router.query.search : "";
@@ -112,15 +120,15 @@ const DoctorsPage = ({ initialCatalog, initialInquiryKey, initialSearch }: Docto
             {t("doctors.search")}
           </button>
         </form>
-        <div className={cardStyles.grid} aria-busy={loading}>
+        <div className={cardStyles.grid} ref={resultsRef} aria-busy={loading}>
           {doctors.map((doctor: Doctor) => (
             <DoctorDirectoryCard doctor={doctor} key={doctor._id} />
           ))}
         </div>
         {!error && total > 12 && <nav className="clinical-directory-pagination" aria-label={t("directory.pagination")}>
-          <button type="button" disabled={page <= 1 || loading} onClick={() => setPage(value => value - 1)}>{t("directory.previous")}</button>
+          <button type="button" disabled={page <= 1 || loading} onClick={() => changePage(page - 1)}>{t("directory.previous")}</button>
           <span aria-live="polite">{page} / {Math.ceil(total / 12)}</span>
-          <button type="button" disabled={page * 12 >= total || loading} onClick={() => setPage(value => value + 1)}>{t("directory.next")}</button>
+          <button type="button" disabled={page * 12 >= total || loading} onClick={() => changePage(page + 1)}>{t("directory.next")}</button>
         </nav>}
         {error && <p role="alert">{w("catalogUnavailable")}</p>}
         {!loading && !error && !doctors.length && <p>{w("catalogEmpty")}</p>}

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery } from '@apollo/client';
 import withLayoutMain from '@/libs/components/layout/LayoutHome';
@@ -51,6 +51,7 @@ const ServicesPage = ({ initialCatalog, initialInquiryKey }: PublicCatalogProps<
 			: 1;
 	const [draft, setDraft] = useState<ServiceFilters>(emptyServiceFilters),
 		[validation, setValidation] = useState('');
+	const resultsRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
 		if (router.isReady) {
 			setDraft(applied);
@@ -81,6 +82,13 @@ const ServicesPage = ({ initialCatalog, initialInquiryKey }: PublicCatalogProps<
 			undefined,
 			{ shallow: true, scroll: false },
 		);
+	};
+	const changePage = (nextPage: number) => {
+		resultsRef.current?.scrollIntoView({
+			behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+			block: 'start',
+		});
+		navigate(applied, nextPage);
 	};
 	const submit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -278,7 +286,7 @@ const ServicesPage = ({ initialCatalog, initialInquiryKey }: PublicCatalogProps<
 						</button>
 					</div>
 				) : (
-					<div className={cardStyles.grid} aria-busy={catalog.loading}>
+					<div className={cardStyles.grid} ref={resultsRef} aria-busy={catalog.loading}>
 						{services.map((service) => (
 							<ServiceDirectoryCard
 								key={service._id}
@@ -314,7 +322,7 @@ const ServicesPage = ({ initialCatalog, initialInquiryKey }: PublicCatalogProps<
 								type="button"
 								disabled={page <= 1 || catalog.loading}
 								aria-label={copy.previous}
-								onClick={() => navigate(applied, page - 1)}
+								onClick={() => changePage(page - 1)}
 							>
 								<Icon name="chevron_left" />
 							</button>
@@ -325,7 +333,7 @@ const ServicesPage = ({ initialCatalog, initialInquiryKey }: PublicCatalogProps<
 								type="button"
 								disabled={page * 6 >= total || catalog.loading}
 								aria-label={copy.next}
-								onClick={() => navigate(applied, page + 1)}
+								onClick={() => changePage(page + 1)}
 							>
 								<Icon name="chevron_right" />
 							</button>
