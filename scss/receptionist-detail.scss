@@ -1,0 +1,109 @@
+// Record details follow the receptionist workspace palette in both themes.
+.clinical-staff-receptionist .clinical-receptionist-detail {
+  scroll-margin-top: 24px;
+  margin-top: 18px;
+  border: 1px solid var(--reception-line);
+  border-radius: 12px;
+  background: var(--reception-panel);
+  color: var(--reception-text);
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > header {
+  border-bottom-color: var(--reception-line);
+  background: var(--reception-alt);
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > header h2 {
+  margin: 0;
+  color: var(--reception-text);
+  font: 800 18px/1.35 'Manrope', Arial, sans-serif;
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > header button {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid var(--reception-line);
+  border-radius: 8px;
+  background: var(--reception-panel);
+  color: var(--reception-text);
+  cursor: pointer;
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 20px;
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > dl > div {
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--reception-line);
+  border-radius: 9px;
+  background: var(--reception-alt);
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > dl > .clinical-receptionist-detail-wide { grid-column: 1 / -1; }
+.clinical-staff-receptionist .clinical-receptionist-detail dt {
+  margin-bottom: 5px;
+  color: var(--reception-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.clinical-staff-receptionist .clinical-receptionist-detail dd {
+  margin: 0;
+  color: var(--reception-text);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > [role='alert'] { margin: 0 20px 16px; }
+.clinical-staff-receptionist .clinical-receptionist-detail > .clinical-resource-actions {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--reception-line);
+}
+.clinical-staff-receptionist .clinical-receptionist-detail > .clinical-resource-actions button {
+  min-height: 40px;
+  padding: 9px 15px;
+  border: 1px solid var(--reception-accent);
+  border-radius: 8px;
+  background: var(--reception-accent);
+  color: #fff;
+  font-weight: 700;
+}
+html[data-theme='dark'] .clinical-staff-receptionist .clinical-receptionist-detail > .clinical-resource-actions button { color: #0a141f; }
+.clinical-staff-receptionist :is(.clinical-resource-details-button, .clinical-receptionist-details-button, .clinical-booking-details-button) {
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid var(--reception-accent);
+  border-radius: 8px;
+  background: var(--staff-accent-soft);
+  color: var(--reception-accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+.clinical-staff-receptionist :is(.clinical-resource-details-button, .clinical-receptionist-details-button, .clinical-booking-details-button):hover:not(:disabled),
+.clinical-staff-receptionist .clinical-receptionist-detail > header button:hover {
+  background: var(--reception-alt);
+  border-color: var(--reception-accent);
+}
+.clinical-staff-receptionist .clinical-receptionist-booking-detail {
+  scroll-margin-top: 24px;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--reception-line);
+  border-radius: 12px;
+  background: var(--reception-panel);
+}
+.clinical-staff-receptionist .clinical-receptionist-booking-detail > h3 {
+  margin: 0 0 16px;
+  color: var(--reception-text);
+  font: 800 18px/1.35 'Manrope', Arial, sans-serif;
+}
+.clinical-staff-receptionist .clinical-receptionist-booking-detail article {
+  border-color: var(--reception-line);
+  background: var(--reception-alt);
+}
+.clinical-staff-receptionist .clinical-receptionist-booking-detail :is(h4, dd) { color: var(--reception-text); }
+.clinical-staff-receptionist .clinical-receptionist-booking-detail :is(time, dt) { color: var(--reception-muted); }
+@media (max-width: 640px) {
+  .clinical-staff-receptionist .clinical-receptionist-detail > dl { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+  .clinical-staff-receptionist .clinical-receptionist-booking-detail { padding: 16px; }
+}

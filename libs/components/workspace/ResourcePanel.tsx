@@ -553,12 +553,14 @@ export default function ResourcePanel({ config }: { config: ResourceConfig }) {
 													type="button"
 													onClick={() => {
 													config.onSelect?.(record);
-													if (config.role === MemberType.ADMIN) requestAnimationFrame(() => {
-														document.querySelector('.clinical-admin-detail')?.scrollIntoView({
-															behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-															block: 'start',
+													if (config.role === MemberType.ADMIN || config.role === MemberType.RECEPTIONIST) {
+														requestAnimationFrame(() => {
+															document.querySelector(config.role === MemberType.ADMIN ? '.clinical-admin-detail' : '.clinical-receptionist-detail')?.scrollIntoView({
+																behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+																block: 'start',
+															});
 														});
-													});
+													}
 												}}
 												>
 													{w('details')}

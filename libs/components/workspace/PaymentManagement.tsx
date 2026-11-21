@@ -58,7 +58,7 @@ export default function PaymentManagement({
 		<>
 			<ResourcePanel key={revision} config={config} />
 			{selected && (
-				<section className="clinical-staff-panel clinical-admin-resource clinical-resource-panel clinical-admin-detail">
+				<section className={`clinical-staff-panel clinical-admin-resource clinical-resource-panel ${role === MemberType.RECEPTIONIST ? 'clinical-receptionist-detail' : 'clinical-admin-detail'}`}>
 					<header>
 						<h2>{w('payments')}</h2>
 						<button type="button" onClick={() => setSelected(null)}>

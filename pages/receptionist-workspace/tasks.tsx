@@ -7,7 +7,7 @@ import { appointmentStatusKeys } from '@/libs/components/dashboard/staffLabels';
 import { useLiveWorkspaceRefresh } from '@/libs/hooks/useLiveWorkspaceRefresh';
 import { useWorkspaceText } from '@/libs/components/workspace/useWorkspaceText';
 import { operation } from '@/apollo/workspace/operations';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useMutation, useQuery, useReactiveVar } from '@apollo/client';
 import { userVar } from '@/apollo/store';
 import { GET_RECEPTION_TASKS } from '@/apollo/staff-workspace/query';
@@ -97,6 +97,16 @@ export default function ReceptionistTasks() {
 		skip: !selected || session.memberType !== MemberType.RECEPTIONIST,
 		fetchPolicy: 'network-only',
 	});
+	const selectedDetail = detail.data?.getReceptionTask?._id === selected
+		? detail.data.getReceptionTask
+		: null;
+	useEffect(() => {
+		if (!selectedDetail) return;
+		document.getElementById('reception-task-detail')?.scrollIntoView({
+			behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+			block: 'start',
+		});
+	}, [selectedDetail?._id]);
 	useLiveWorkspaceRefresh(
 		() => refetch(),
 		Boolean(
@@ -213,12 +223,18 @@ export default function ReceptionistTasks() {
 		>
 			<p>{f('tasksIndependent')}</p>
 			{detail.error && <p role="alert">{detail.error.message}</p>}
-			{detail.data && (
-				<section className="clinical-staff-panel">
-					<h2>{w('details')}</h2>
-					<p>{detail.data.getReceptionTask.taskInstruction}</p>
-					<p>{detail.data.getReceptionTask.taskResult}</p>
-					<p>{detail.data.getReceptionTask.dueAt}</p>
+			{selectedDetail && (
+				<section id="reception-task-detail" className="clinical-staff-panel clinical-receptionist-detail">
+					<header>
+						<h2>{w('details')}</h2>
+						<button type="button" onClick={() => setSelected('')}>{w('cancel')}</button>
+					</header>
+					<dl>
+						<div className="clinical-receptionist-detail-wide"><dt>{w('instruction')}</dt><dd>{selectedDetail.taskInstruction || '—'}</dd></div>
+						<div><dt>{w('status')}</dt><dd>{label(selectedDetail.taskStatus, taskStatusKeys)}</dd></div>
+						<div><dt>{w('due')}</dt><dd>{selectedDetail.dueAt ? <time dateTime={selectedDetail.dueAt}>{clinicDateTime(selectedDetail.dueAt, 'en-US', clinic.timeZone)}</time> : '—'}</dd></div>
+						<div className="clinical-receptionist-detail-wide"><dt>{w('result')}</dt><dd>{selectedDetail.taskResult || '—'}</dd></div>
+					</dl>
 				</section>
 			)}
 			<details className="clinical-staff-panel" open={Boolean(appointmentId)}>
@@ -345,7 +361,7 @@ export default function ReceptionistTasks() {
 								{list.map((task) => (
 									<tr key={task._id}>
 										<td>
-											<button onClick={() => setSelected(task._id)}>
+											<button type="button" className="clinical-receptionist-details-button" aria-expanded={selected === task._id} onClick={() => setSelected(task._id)}>
 												{w('details')}
 											</button>
 											<small>
