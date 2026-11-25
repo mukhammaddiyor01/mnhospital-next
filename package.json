@@ -2,7 +2,11 @@
 	"name": "mnhospital-next",
 	"version": "0.1.0",
 	"private": true,
+	"workspaces": ["apps/mobile", "packages/*"],
+	"engines": { "node": ">=22.13.0" },
 	"scripts": {
+		"mobile:start": "npm run start --workspace @mnhospital/mobile",
+		"mobile:typecheck": "npm run typecheck --workspace @mnhospital/mobile",
 		"dev": "next dev -p ${PORT:-2002}",
 		"build": "next build",
 		"start": "next start -p ${PORT:-2002}",

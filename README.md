@@ -1,5 +1,11 @@
 # MN Hospital Next
 
+## Mobile workspace
+
+The `mobile` branch adds an Expo app at `apps/mobile` and platform-neutral tokens at `packages/design-tokens`. The existing Next.js app remains at the repository root during this first migration step. Read [the mobile architecture and gates](docs/ai/ARCHITECTURE.md) before moving web files or connecting private API flows.
+
+Use Node 22.13 or newer, then run `npm ci`, `npm run mobile:typecheck`, and `npm run mobile:start` from the root. The mobile app currently shows an unconnected welcome screen. Device, login, booking, and payment flows require separate verification.
+
 MN Hospital frontend built with Next.js Pages Router and TypeScript.
 
 ## Structure
