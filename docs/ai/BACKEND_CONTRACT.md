@@ -16,7 +16,9 @@ Read-only review of backend GitHub `master`/`develop` at `ea1601a` and its match
 
 Source locations: backend `auth.resolver.ts`, `session.interceptor.ts`, `session-cookie.ts`, `auth.service.ts`, and `session-cookie.spec.ts` under `apps/mnhospital-api/src/components/auth/`. This is a source-code contract audit; no running API or device session was exercised.
 
-**Decision:** Keep mobile login disabled until a supported native session contract is implemented and tested in the backend. A future design should give native clients a separate, explicitly identified login/refresh/logout flow whose refresh secret is returned only to the native client over HTTPS, rotated with the existing session ownership/replay checks, and held in SecureStore. Do not change the browser cookie flow or expose refresh secrets through the current browser GraphQL operations. Verify account switch, expired access, logout, replay, app restart, and terminal/network failure behavior before wiring UI.
+**Decision:** Keep mobile login disabled until a supported native session contract is implemented and tested in the backend. A future design should give native clients a separate login/refresh/logout flow whose refresh secret is returned over HTTPS after server credential verification, rotated with the existing session ownership/replay checks, and held in SecureStore. A route or header cannot prove that a caller is native. Do not change the browser cookie flow or expose refresh secrets through the current browser GraphQL operations. Verify account switch, expired access, logout, replay, app restart, and terminal/network failure behavior before wiring UI.
+
+The proposed patient-first route, payload, ownership rules, and exit tests are specified in `NATIVE_SESSION_DESIGN.md`. Route separation is not proof of native app identity; the server still authenticates every request. This design has not been implemented or exercised against a running API.
 
 ## Public services — 2026-11-26
 

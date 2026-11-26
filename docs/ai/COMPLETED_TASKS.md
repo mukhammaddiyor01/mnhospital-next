@@ -6,3 +6,4 @@
 - 2026-11-26: Added a read-only mobile services list using the existing public GraphQL contract. Validation is recorded in `TESTING.md`.
 - 2026-11-26: Added an ordered roadmap and privacy/security boundaries for subsequent web and mobile work.
 - 2026-11-26: Restricted the public mobile GraphQL URL to HTTPS without embedded credentials or parameters; see `TESTING.md` for checks.
+- 2026-11-26: Defined a patient-first native session contract and backend/mobile verification gates in `NATIVE_SESSION_DESIGN.md`; implementation remains open.

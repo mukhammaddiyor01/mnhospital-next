@@ -43,3 +43,8 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Offline Android Expo export passed (1132 modules). This verifies bundling, not an installed build or device behavior.
 - Eight URL/request cases passed: valid HTTPS, missing/invalid URL, HTTP rejection, embedded credentials rejection, query/fragment rejection, and an anonymous public request with an empty catalog response.
 - No live HTTPS endpoint, TLS certificate, simulator, or physical device was checked. Existing web code was not changed; web build was not rerun.
+
+## 2026-11-26 native session design
+
+- Reviewed the backend patient login resolver, session resolver, interceptor, cookie helper, and session service source read-only; checked Expo SecureStore and RFC 9700 primary documentation for storage and rotation assumptions.
+- Checked local Markdown links and `git diff --check`. This was documentation only: no backend endpoint, mobile auth, API integration test, browser check, or device test was performed.
