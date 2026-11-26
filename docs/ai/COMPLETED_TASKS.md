@@ -11,3 +11,4 @@
 - 2026-11-26: Added shared HMAC-keyed native login limits, bounded proxy/body controls, production HTTPS enforcement, and auth-log redaction on backend `codex/native-patient-session` through `1e0e7af`; 170 focused tests passed.
 - 2026-11-26: Added a separate mobile CI job for typecheck, Expo dependency compatibility, and Android/iOS bundle exports; repeated local Node 22 typecheck and both exports successfully.
 - 2026-11-26: Aligned the mobile TypeScript toolchain with Expo SDK 58 after the online CI compatibility check exposed the stale workspace range.
+- 2026-11-26: Confirmed the follow-up mobile CI job passes and updated the doctor-directory harness for the page's existing results ref.

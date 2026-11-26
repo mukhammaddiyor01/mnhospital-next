@@ -13,6 +13,7 @@ const router = {isReady:true,query:{search:'Khan'}};
 let effectKey;
 const react = {...React,
   useState(initial) {const n=index++;if(!(n in states)) states[n]=initial;return [states[n],value=>{states[n]=typeof value==='function'?value(states[n]):value}];},
+  useRef(initial) {const n=index++;if(!(n in states)) states[n]={current:initial};return states[n];},
   useEffect(callback,deps) {const key=JSON.stringify(deps);if(key!==effectKey){effects.push(callback);effectKey=key;}},
 };
 const source = ts.transpileModule(fs.readFileSync(path.join(root,'pages/doctor/index.tsx'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;

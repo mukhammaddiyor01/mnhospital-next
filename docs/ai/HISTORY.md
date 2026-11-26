@@ -11,3 +11,4 @@
 - 2026-11-26: Added backend native login abuse controls and removed profile identity from auth guard logs; real persistence, ingress, and device gates remain open.
 - 2026-11-26: Added repeatable mobile CI gates without treating bundle exports as simulator or device evidence.
 - 2026-11-26: Corrected the mobile-only TypeScript range required by Expo SDK 58; web TypeScript remains isolated at its existing version.
+- 2026-11-26: Restored the web quality gate's doctor-directory verification by keeping its hook mock aligned with the page component.
