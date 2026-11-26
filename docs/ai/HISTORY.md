@@ -13,3 +13,4 @@
 - 2026-11-26: Corrected the mobile-only TypeScript range required by Expo SDK 58; web TypeScript remains isolated at its existing version.
 - 2026-11-26: Restored the web quality gate's doctor-directory verification by keeping its hook mock aligned with the page component.
 - 2026-11-26: Prepared the public mobile screens for native accessibility review without claiming the still-open device gate.
+- 2026-11-26: Prevented repeated or overlapping public service responses from rendering duplicate mobile cards.

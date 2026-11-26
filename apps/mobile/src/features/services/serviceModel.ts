@@ -11,6 +11,19 @@ export interface ServicePage {
 
 export const SERVICES_PAGE_SIZE = 10;
 
+export function mergeUniqueServices(
+  current: PublicService[],
+  incoming: PublicService[],
+): PublicService[] {
+  const seen = new Set<string>();
+
+  return [...current, ...incoming].filter((service) => {
+    if (seen.has(service.id)) return false;
+    seen.add(service.id);
+    return true;
+  });
+}
+
 export function parseServicePage(value: unknown): ServicePage {
   if (!value || typeof value !== 'object') throw new Error('Invalid service response');
   const result = value as { list?: unknown; metaCounter?: unknown };

@@ -38,6 +38,7 @@ jobs:
       - run: npm ci
       - run: npm run mobile:typecheck
       - run: npm run test:mobile:a11y
+      - run: npm run test:mobile:services
       - run: npx expo install --check
         working-directory: apps/mobile
       - name: Export Android bundle

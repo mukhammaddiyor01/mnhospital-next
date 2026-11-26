@@ -78,3 +78,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Node 22.20.0 mobile TypeScript 6 typecheck passed. Offline Android export passed with 1132 modules and iOS export passed with 1138 modules.
 - GitHub Actions run `45823748497` passed the complete web `verify` job and the mobile job, including the new accessibility gate, Expo compatibility, typecheck, and both exports. Secret-scan run `45823748380` passed.
 - `simctl` remains unavailable and `adb` is not installed. No simulator, physical device, live HTTPS API, screen reader, dynamic type, contrast, or dark-mode behavior was observed.
+
+## 2026-11-26 idempotent public service pagination
+
+- `MOBILE_SERVICE_PAGINATION_VERIFIED 8 checks` passed for duplicates within one response, overlapping pages, a repeated page, stable first occurrence, unchanged inputs, and empty pages.
+- Node 22.20.0 mobile TypeScript 6 typecheck passed. Offline Android export passed with 1132 modules and iOS export passed with 1138 modules.
+- The new pure merge rule is included in the separate mobile CI job. No cache dependency, credential, patient data, mutation, live API, simulator, or physical device was introduced or tested.

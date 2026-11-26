@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ApiConfigurationError, getPublicServices } from './serviceApi';
-import type { PublicService } from './serviceModel';
+import { mergeUniqueServices, type PublicService } from './serviceModel';
 
 export function useServicesViewModel() {
   const [page, setPage] = useState(1);
@@ -18,9 +18,7 @@ export function useServicesViewModel() {
     getPublicServices(page, controller.signal)
       .then((result) => {
         if (controller.signal.aborted) return;
-        setServices((current) => page === 1
-          ? result.services
-          : [...current, ...result.services.filter((item) => !current.some((old) => old.id === item.id))]);
+        setServices((current) => mergeUniqueServices(page === 1 ? [] : current, result.services));
         setTotal(result.total);
       })
       .catch((cause: unknown) => {
