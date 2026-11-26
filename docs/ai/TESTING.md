@@ -65,5 +65,7 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 
 - Node 22.20.0 mobile typecheck passed. Offline Expo dependency validation reported dependencies up to date, with Expo's explicit warning that offline validation is limited.
 - Offline Expo exports passed for Android (1132 modules) and iOS (1138 modules). These are Metro bundle exports, not native builds, installed apps, simulator launches, or physical-device checks.
-- Added a separate Node 22 GitHub Actions mobile job for `npm ci`, mobile typecheck, online `expo install --check`, and Android/iOS exports. Local validation cannot prove the new remote job passes until GitHub Actions runs it.
+- Added a separate Node 22 GitHub Actions mobile job for `npm ci`, mobile typecheck, online `expo install --check`, and Android/iOS exports.
+- The first remote mobile job (`45821110744`, job `139913283368`) passed install and typecheck, then failed before exports because Expo SDK 58 expected mobile TypeScript `~6.0.3` while the workspace declared `~5.9.0`. This toolchain mismatch is fixed separately and must be confirmed by the follow-up run.
+- After aligning the mobile-only TypeScript range, the online Expo dependency check, TypeScript 6 typecheck, Android export (1132 modules), and iOS export (1138 modules) passed locally on Node 22.20.0. The exports remain bundle evidence only; the follow-up remote run and device gate remain open.
 - `xcrun` exists locally but `simctl` is unavailable; `adb` was not found. The roadmap device gate remains open.
