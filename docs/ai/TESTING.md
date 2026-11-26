@@ -60,3 +60,10 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Backend `codex/native-patient-session` through `1e0e7af`: `npm run build:api` passed. Seven focused Jest suites passed (170 tests): native HTTP, shared rate limits, proxy/body parsing, browser cookies, owned auth sessions, GraphQL session integration, and role policies.
 - Mock tests verified five account/network and twenty network attempts per 15 minutes, HMAC-only counter keys, fail-closed persistence errors, 8 KiB native bodies, fixed malformed/oversized responses, production HTTP rejection, proxy hop bounds, credential rotation/replay, and browser cookie regression. Existing auth guards no longer log account nicknames.
 - Persistence was mocked and HTTP used local test servers. No application/disposable Mongo database, deployed API, public TLS/proxy, browser UI, simulator, or physical device was tested. Mobile runtime was unchanged, so mobile typecheck/export was not rerun.
+
+## 2026-11-26 mobile CI gates
+
+- Node 22.20.0 mobile typecheck passed. Offline Expo dependency validation reported dependencies up to date, with Expo's explicit warning that offline validation is limited.
+- Offline Expo exports passed for Android (1132 modules) and iOS (1138 modules). These are Metro bundle exports, not native builds, installed apps, simulator launches, or physical-device checks.
+- Added a separate Node 22 GitHub Actions mobile job for `npm ci`, mobile typecheck, online `expo install --check`, and Android/iOS exports. Local validation cannot prove the new remote job passes until GitHub Actions runs it.
+- `xcrun` exists locally but `simctl` is unavailable; `adb` was not found. The roadmap device gate remains open.

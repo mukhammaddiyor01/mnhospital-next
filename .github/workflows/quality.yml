@@ -25,3 +25,23 @@ jobs:
       - run: node scripts/verify-dark-contrast.cjs
       - run: node scripts/verify-repository-security.cjs
       - run: npm audit --omit=dev --audit-level=high
+  mobile:
+    runs-on: ubuntu-latest
+    env:
+      EXPO_NO_TELEMETRY: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run mobile:typecheck
+      - run: npx expo install --check
+        working-directory: apps/mobile
+      - name: Export Android bundle
+        run: npx expo export --platform android --output-dir "$RUNNER_TEMP/mobile-android"
+        working-directory: apps/mobile
+      - name: Export iOS bundle
+        run: npx expo export --platform ios --output-dir "$RUNNER_TEMP/mobile-ios"
+        working-directory: apps/mobile
