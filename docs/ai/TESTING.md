@@ -16,3 +16,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Checked that every skill link in `SKILLS.md` and every new local documentation link resolves.
 - Checked the Markdown changes and Git diff for whitespace errors.
 - No web/mobile build or device check was repeated because this change only updates guidance and Markdown.
+
+## 2026-11-26 native readiness audit
+
+- Backend GitHub `master` and `develop` both pointed to `ea1601a`; reviewed matching local resolver, interceptors, cookie helper, session service, and tests read-only.
+- `xcrun simctl list devices available` could not run because `simctl` is unavailable; `adb` was not found. No device or simulator validation was performed.
+- No backend or mobile runtime changes were made. No API request with credentials or application database access was made.
