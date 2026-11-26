@@ -1,3 +1,5 @@
 # Security
 
 Store mobile credentials only in Expo SecureStore. Never log tokens, passwords, patient/staff details, GraphQL variables, or raw server errors. Public API URL alone may be exposed through `EXPO_PUBLIC_`; private keys stay on the server or deployment storage. Notifications must use generic text without clinical details. Wipe owned private caches on account switch/logout. The historical credential finding and release restrictions remain documented in `docs/SECURITY_AUDIT.md`.
+
+Do not add a mobile auth provider merely because SecureStore is installed. First verify whether the backend can rotate and revoke a native refresh credential without relying on browser HttpOnly cookie behavior. On terminal rejection, clear the correct account's credential and private cache; on temporary network failure, keep a retryable state without exposing the error body. Background notifications may identify an action generically but must not include diagnosis, treatment, report, or patient identity.

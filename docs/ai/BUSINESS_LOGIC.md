@@ -1,3 +1,5 @@
 # Business logic
 
 The welcome screen has no clinical or booking behavior. Before implementing bookings, preserve backend rules for real service/doctor selection, schedule, room, break time, server-calculated price, payment ownership, and reservation expiry. Client checks improve usability but never grant access or establish final availability. The backend `ProjectLogic.md` and existing booking docs are the detailed source of truth.
+
+For each new mobile flow, write down the actor, allowed role, ownership source, inputs, server decision, success result, failure states, and retry behavior before UI work. Patient, doctor, receptionist, and admin identities are role plus profile ID from the verified session. Do not infer that a profile ID in route params grants access. A failed booking/payment mutation must show the server result and avoid a fabricated success state. Never persist a clinical draft without an explicit data-retention design.
