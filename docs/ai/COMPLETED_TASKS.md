@@ -8,3 +8,4 @@
 - 2026-11-26: Restricted the public mobile GraphQL URL to HTTPS without embedded credentials or parameters; see `TESTING.md` for checks.
 - 2026-11-26: Defined a patient-first native session contract and backend/mobile verification gates in `NATIVE_SESSION_DESIGN.md`; implementation remains open.
 - 2026-11-26: Added a disabled-by-default native patient session route on the separate backend branch `codex/native-patient-session` (`2768d2d`); focused build/tests passed, release gates remain open.
+- 2026-11-26: Added shared HMAC-keyed native login limits, bounded proxy/body controls, production HTTPS enforcement, and auth-log redaction on backend `codex/native-patient-session` through `1e0e7af`; 170 focused tests passed.

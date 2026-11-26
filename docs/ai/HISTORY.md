@@ -8,3 +8,4 @@
 - 2026-11-26: Added the first roadmap control to the mobile public service adapter: strict API URL validation.
 - 2026-11-26: Recorded the native patient session design and kept login gated on backend and device validation.
 - 2026-11-26: Tracked the gated patient route draft in the backend repository and its outstanding release checks.
+- 2026-11-26: Added backend native login abuse controls and removed profile identity from auth guard logs; real persistence, ingress, and device gates remain open.

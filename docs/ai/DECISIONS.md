@@ -9,3 +9,4 @@
 - 2026-11-26: Use `ROADMAP.md` as the ordered delivery handoff. Public transport safety comes before new private features; native auth requires backend contract work; web relocation is isolated from clinical changes.
 - 2026-11-26: Specify a patient-first native session contract in `NATIVE_SESSION_DESIGN.md`. Reuse server session authority and rotation while keeping browser cookie operations intact. At this design step, neither an endpoint nor mobile login had been implemented.
 - 2026-11-26: Keep the new backend native route disabled by default until distributed throttling, deployed transport limits, persistence tests, and device checks are evidenced. A passing mock HTTP suite does not unlock mobile login.
+- 2026-11-26: Use MongoDB atomic fixed-window counters for native login abuse protection, with HMAC-only keys for network/account inputs. Trust only an explicit numeric proxy hop count; keep real Mongo, ingress, and device verification as separate gates.

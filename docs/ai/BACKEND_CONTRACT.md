@@ -1,6 +1,6 @@
 # Backend contract
 
-The API is a separate NestJS GraphQL repository. Current browser auth uses a bearer access JWT and role-scoped HttpOnly refresh cookies. A patient-only native HTTP contract now exists on the separate backend branch `codex/native-patient-session` at `2768d2d`, disabled by default; it is not deployed or connected to mobile. Do not claim mobile login works or reuse browser session modules. Verify role selection, CSRF/origin behavior, and ownership checks before connecting authentication. Request-body role and patient IDs are never authority. See `docs/AUTH_SESSIONS.md` and `docs/ROLE_SESSIONS.md` for browser behavior.
+The API is a separate NestJS GraphQL repository. Current browser auth uses a bearer access JWT and role-scoped HttpOnly refresh cookies. A patient-only native HTTP contract and shared login limits exist on the separate backend branch `codex/native-patient-session` through `1e0e7af`, disabled by default; they are not deployed or connected to mobile. Do not claim mobile login works or reuse browser session modules. Verify role selection, CSRF/origin behavior, and ownership checks before connecting authentication. Request-body role and patient IDs are never authority. See `docs/AUTH_SESSIONS.md` and `docs/ROLE_SESSIONS.md` for browser behavior.
 
 ## Native session audit — 2026-11-26
 
@@ -18,7 +18,7 @@ Source locations: backend `auth.resolver.ts`, `session.interceptor.ts`, `session
 
 **Decision:** Keep mobile login disabled until a supported native session contract is implemented and tested in the backend. A future design should give native clients a separate login/refresh/logout flow whose refresh secret is returned over HTTPS after server credential verification, rotated with the existing session ownership/replay checks, and held in SecureStore. A route or header cannot prove that a caller is native. Do not change the browser cookie flow or expose refresh secrets through the current browser GraphQL operations. Verify account switch, expired access, logout, replay, app restart, and terminal/network failure behavior before wiring UI.
 
-The patient-first route, payload, ownership rules, and remaining exit tests are specified in `NATIVE_SESSION_DESIGN.md`. Route separation is not proof of native app identity; the server still authenticates every request. A local mock HTTP test passed, but no real API/database or device flow was exercised.
+The patient-first route, payload, ownership rules, and remaining exit tests are specified in `NATIVE_SESSION_DESIGN.md`. Route separation is not proof of native app identity; the server still authenticates every request. Local mock HTTP/GraphQL tests and API build passed, but no real API/database, public ingress, or device flow was exercised.
 
 ## Public services — 2026-11-26
 
