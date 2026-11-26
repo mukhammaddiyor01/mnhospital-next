@@ -7,3 +7,4 @@
 - 2026-11-26: Set explicit delivery gates, privacy inventory requirements, and security threat checks.
 - 2026-11-26: Added the first roadmap control to the mobile public service adapter: strict API URL validation.
 - 2026-11-26: Recorded the native patient session design and kept login gated on backend and device validation.
+- 2026-11-26: Tracked the gated patient route draft in the backend repository and its outstanding release checks.

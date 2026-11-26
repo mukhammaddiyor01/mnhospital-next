@@ -1,6 +1,6 @@
 # Native patient session design
 
-Status: proposed contract, not implemented. This design applies to the separate NestJS API repository. Mobile login stays disabled until the backend and device gates below pass. The source audit is in `BACKEND_CONTRACT.md`.
+Status: the separate backend branch `codex/native-patient-session` implements a gated patient-only HTTP adapter at commit `2768d2d`; the route is off unless `NATIVE_PATIENT_SESSION_ENABLED=true`. This is not deployed or connected to mobile. Mobile login stays disabled until the remaining backend and device gates below pass. The original source audit is in `BACKEND_CONTRACT.md`.
 
 ## Scope and authority
 
@@ -10,7 +10,7 @@ The server derives the patient ID, role, and session ID from verified credential
 
 ## Proposed HTTP contract
 
-Implement separate `POST /mobile/session/login`, `/refresh`, and `/logout` routes (or an equivalent isolated transport) in the API. Use HTTPS and JSON only. Reject query-string credentials and cookies as a source of native authority. Responses containing credentials must use `Cache-Control: no-store` and avoid secrets in logs, traces, analytics, and error bodies. Keep the browser GraphQL login/refresh/logout response shapes and HttpOnly cookie behavior unchanged.
+The backend branch adds separate `POST /mobile/session/login`, `/refresh`, and `/logout` routes. It accepts JSON without query parameters, cookies, or browser Origin and responds with `Cache-Control: no-store`. Production HTTPS and proxy limits still need verification. Keep secrets out of logs, traces, analytics, and error bodies. The browser GraphQL login/refresh/logout response shapes and HttpOnly cookie behavior remain unchanged in source and focused tests.
 
 | Route | Request | Success | Failure |
 | --- | --- | --- | --- |
@@ -20,7 +20,7 @@ Implement separate `POST /mobile/session/login`, `/refresh`, and `/logout` route
 
 The backend must verify that the previous access JWT's signed session ID, owner, and role match the refresh-session record, ignoring only access expiry during refresh. The session record remains the authority for active/revoked/expired status. A missing previous access JWT requires login again. Do not accept a role selector as a substitute. Make refresh rotation atomic in the session store: two uses of the same credential cannot both succeed, and replay revokes the affected session. Preserve the current 15-minute access, 15-minute refresh idle, and 30-day absolute limits unless the backend team explicitly changes the policy and tests it.
 
-Apply a route-specific browser-origin policy, rate limits, request size limits, and anti-CSRF review. These reduce browser misuse but are not proof of a native caller: non-browser clients can forge headers. Never grant a native route broader privileges than the existing patient login. The API must not return a refresh credential from any existing browser GraphQL operation.
+The draft route rejects browser Origin and cookies; distributed rate limiting, a verified proxy request-size limit, and deployed HTTPS remain open release gates. These controls reduce browser misuse but are not proof of a native caller: non-browser clients can forge headers. Never grant a native route broader privileges than the existing patient login. The API must not return a refresh credential from any existing browser GraphQL operation.
 
 ## Mobile state and failure rules
 

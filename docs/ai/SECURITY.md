@@ -4,6 +4,8 @@ Store mobile credentials only in Expo SecureStore. Never log tokens, passwords, 
 
 Do not add a mobile auth provider merely because SecureStore is installed. First verify whether the backend can rotate and revoke a native refresh credential without relying on browser HttpOnly cookie behavior. On terminal rejection, clear the correct account's credential and private cache; on temporary network failure, keep a retryable state without exposing the error body. Background notifications may identify an action generically but must not include diagnosis, treatment, report, or patient identity.
 
+The backend `codex/native-patient-session` draft now binds patient refresh/logout to a signed prior access JWT and is disabled by default. Keep it off until the remaining controls in `NATIVE_SESSION_DESIGN.md` are verified; a native-facing route is still callable by an untrusted client with stolen credentials.
+
 ## Threats and required checks
 
 | Threat | Boundary and check |

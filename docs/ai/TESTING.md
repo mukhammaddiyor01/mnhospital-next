@@ -48,3 +48,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 
 - Reviewed the backend patient login resolver, session resolver, interceptor, cookie helper, and session service source read-only; checked Expo SecureStore and RFC 9700 primary documentation for storage and rotation assumptions.
 - Checked local Markdown links and `git diff --check`. This was documentation only: no backend endpoint, mobile auth, API integration test, browser check, or device test was performed.
+
+## 2026-11-26 backend native patient route draft
+
+- Separate backend branch `codex/native-patient-session` at `2768d2d`: `npm ci --offline --ignore-scripts`, `npm run build:api`, and three focused Jest suites passed (34 tests total). The HTTP suite used a local test server and an in-memory mock session store; it checked login/refresh/logout, role injection, request headers, replay, and session binding. Existing browser cookie and auth-session suites passed.
+- The first HTTP test attempt failed because the sandbox blocked a loopback socket (`listen EPERM`); the same tests passed when rerun with loopback permission. No application database, deployed API, browser UI, simulator, or physical device was tested.
+- Route is disabled by default. Distributed rate limiting, proxy request-size and HTTPS verification, real persistence integration, and live mobile validation remain open. This documentation update did not change web/mobile runtime code; no web/mobile build was rerun.
