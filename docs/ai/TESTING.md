@@ -76,4 +76,5 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Added screen-reader heading, link, list loading, empty-state announcement, alert, and button semantics to the welcome and public services screens. Navigation and action controls retain at least 44-point touch targets.
 - `MOBILE_ACCESSIBILITY_VERIFIED 11 checks` passed and the check is part of the separate mobile CI job. This is source-level regression evidence, not VoiceOver/TalkBack behavior.
 - Node 22.20.0 mobile TypeScript 6 typecheck passed. Offline Android export passed with 1132 modules and iOS export passed with 1138 modules.
+- GitHub Actions run `45823748497` passed the complete web `verify` job and the mobile job, including the new accessibility gate, Expo compatibility, typecheck, and both exports. Secret-scan run `45823748380` passed.
 - `simctl` remains unavailable and `adb` is not installed. No simulator, physical device, live HTTPS API, screen reader, dynamic type, contrast, or dark-mode behavior was observed.
