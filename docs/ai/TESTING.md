@@ -22,3 +22,12 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Backend GitHub `master` and `develop` both pointed to `ea1601a`; reviewed matching local resolver, interceptors, cookie helper, session service, and tests read-only.
 - `xcrun simctl list devices available` could not run because `simctl` is unavailable; `adb` was not found. No device or simulator validation was performed.
 - No backend or mobile runtime changes were made. No API request with credentials or application database access was made.
+
+## 2026-11-26 public mobile services
+
+- Node 22.20.0 `npm ci --offline` passed from the monorepo root.
+- `npm run mobile:typecheck` passed after correcting the FlatList empty-component type.
+- Offline Android Expo export passed: 1132 modules bundled. This is a bundle export, not an installed app or device test.
+- Five response-shape cases passed (valid service, empty list, malformed container, malformed item, invalid total).
+- Mocked public request checks passed for GraphQL URL, page/limit/search variables, selected fields, returned title, and GraphQL error handling without exposing the raw error.
+- No live GraphQL API, browser, simulator, or physical device was tested. Existing web code was not changed; web build was not rerun.

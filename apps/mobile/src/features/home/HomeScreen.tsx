@@ -1,5 +1,6 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, Text, View } from 'react-native';
+import { Link } from 'expo-router';
 import { colors, spacing } from '@mnhospital/design-tokens';
 import { useHomeViewModel } from './useHomeViewModel';
 
@@ -12,6 +13,7 @@ export function HomeScreen() {
         <Text style={styles.eyebrow}>{status}</Text>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
+        <Link href="/services" style={styles.servicesLink}>Explore services</Link>
       </View>
     </SafeAreaView>
   );
@@ -23,4 +25,5 @@ const styles = StyleSheet.create({
   eyebrow: { color: colors.primary, fontSize: 14, fontWeight: '700' },
   title: { color: colors.text, fontSize: 32, fontWeight: '700' },
   description: { color: colors.muted, fontSize: 16, lineHeight: 24 },
+  servicesLink: { color: colors.primary, fontSize: 16, fontWeight: '700', paddingVertical: spacing.md },
 });
