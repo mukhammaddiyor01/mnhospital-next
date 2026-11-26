@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getPublicServices } from './serviceApi';
+import { ApiConfigurationError, getPublicServices } from './serviceApi';
 import type { PublicService } from './serviceModel';
 
 export function useServicesViewModel() {
@@ -25,8 +25,8 @@ export function useServicesViewModel() {
       })
       .catch((cause: unknown) => {
         if (controller.signal.aborted) return;
-        setError(cause instanceof Error && cause.message === 'API URL is not configured'
-          ? 'Set EXPO_PUBLIC_API_URL to the public GraphQL endpoint.'
+        setError(cause instanceof ApiConfigurationError
+          ? 'Set EXPO_PUBLIC_API_URL to an HTTPS GraphQL endpoint without credentials.'
           : 'Services are unavailable. Please try again.');
       })
       .finally(() => {

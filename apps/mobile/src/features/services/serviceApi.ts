@@ -9,9 +9,25 @@ const GET_PUBLIC_SERVICES = `
   }
 `;
 
+export class ApiConfigurationError extends Error {}
+
+export function publicApiUrl(value: string | undefined): string {
+  if (!value) throw new ApiConfigurationError('Public API URL is missing');
+
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new ApiConfigurationError('Public API URL is invalid');
+  }
+  if (url.protocol !== 'https:' || url.username || url.password || url.search || url.hash) {
+    throw new ApiConfigurationError('Public API URL must be HTTPS without credentials or parameters');
+  }
+  return url.toString();
+}
+
 export async function getPublicServices(page: number, signal: AbortSignal): Promise<ServicePage> {
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  if (!apiUrl) throw new Error('API URL is not configured');
+  const apiUrl = publicApiUrl(process.env.EXPO_PUBLIC_API_URL);
 
   const response = await fetch(apiUrl, {
     method: 'POST',

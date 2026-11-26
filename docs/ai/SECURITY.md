@@ -16,3 +16,5 @@ Do not add a mobile auth provider merely because SecureStore is installed. First
 | Supply-chain or release drift | Review dependencies and lockfile, run secret/dependency scans and role smoke checks, verify the deployed commit and rollback path. |
 
 Review these against the actual backend and deployment; a UI check alone cannot prove them. Privacy data handling is recorded in `PRIVACY.md`.
+
+The public mobile service adapter now rejects missing or malformed API URLs, plain HTTP, embedded username/password, URL query parameters, and fragments. This is a client configuration guard; HTTPS certificate and backend authorization still require deployment/device verification.

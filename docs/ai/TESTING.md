@@ -36,3 +36,10 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 
 - Checked local Markdown links in updated entry documents and `git diff --check`.
 - No runtime files or dependencies changed in this documentation step; no build or device check was repeated.
+
+## 2026-11-26 public transport guard
+
+- Mobile TypeScript check passed on Node 22.20.0.
+- Offline Android Expo export passed (1132 modules). This verifies bundling, not an installed build or device behavior.
+- Eight URL/request cases passed: valid HTTPS, missing/invalid URL, HTTP rejection, embedded credentials rejection, query/fragment rejection, and an anonymous public request with an empty catalog response.
+- No live HTTPS endpoint, TLS certificate, simulator, or physical device was checked. Existing web code was not changed; web build was not rerun.

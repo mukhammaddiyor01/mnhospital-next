@@ -5,3 +5,4 @@
 - 2026-11-26: Recorded native session contract evidence and device-tool availability. Login remains gated on backend work.
 - 2026-11-26: Added the first public mobile data flow, limited to active service titles/descriptions from the backend.
 - 2026-11-26: Set explicit delivery gates, privacy inventory requirements, and security threat checks.
+- 2026-11-26: Added the first roadmap control to the mobile public service adapter: strict API URL validation.

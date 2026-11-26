@@ -1,6 +1,6 @@
 # Next steps
 
-Follow the ordered gates in `ROADMAP.md`. The immediate independent task is public mobile transport hardening; device validation remains open until a simulator or physical device is available.
+Follow the ordered gates in `ROADMAP.md`. Public mobile transport hardening is implemented; device validation is the next open gate. While device tooling is unavailable, native session backend design and isolated web migration preparation can progress without treating the device gate as passed.
 
 Use `SKILLS.md` and the nearest `AGENTS.md` for the next feature. The mobile welcome screen still needs device/simulator validation; the native session contract remains the gate before login. The web move to `apps/web` remains a separate migration.
 

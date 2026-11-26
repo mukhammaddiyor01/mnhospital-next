@@ -4,7 +4,7 @@ This is the ordered handoff for the `mobile` branch. Existing backend rules and 
 
 | Order | Work | Exit gate |
 | --- | --- | --- |
-| 1 | Harden public mobile transport and catalog response handling. | Reject unsafe API configuration, keep errors generic, verify valid/invalid responses and mobile typecheck/bundle. No credentials or patient data enter this flow. |
+| 1 | Harden public mobile transport and catalog response handling. | Reject unsafe API configuration, keep errors generic, verify valid/invalid responses and mobile typecheck/bundle. No credentials or patient data enter this flow. **Done in code; live device/API check remains in step 2.** |
 | 2 | Run the welcome and public services screens on a device or simulator with a reachable HTTPS API. | Check real catalog, pagination, empty/error/retry, accessibility, small and large screens; record device and API environment. If tools are unavailable, keep this gate open and continue independent work. |
 | 3 | Design and implement a dedicated native session contract in the backend repository. | Login, rotation, logout, replay, expiry, account switch, and role/profile ownership tests pass; browser HttpOnly cookie flow retains its existing tests. No refresh secret is exposed by browser operations. |
 | 4 | Connect mobile authentication using the verified native contract. | SecureStore holds only credentials; private caches clear on account change/logout; app restart, temporary failure, terminal rejection, and device tests pass. |

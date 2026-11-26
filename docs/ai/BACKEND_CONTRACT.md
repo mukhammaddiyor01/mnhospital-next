@@ -21,3 +21,5 @@ Source locations: backend `auth.resolver.ts`, `session.interceptor.ts`, `session
 ## Public services — 2026-11-26
 
 The existing web `GetServices` operation calls `getServices(input: ServicesInquiry!)`. Backend resolver uses `WithoutGuard`; the service forces `serviceStatus: ACTIVE` even if search includes another status. The mobile request sends `{ page, limit: 10, search: {} }` and selects only `_id`, `serviceTitle`, `serviceDesc`, and `metaCounter.total`. It uses no actor or patient ID, credential, mutation, price, or booking calculation. The API URL is the public `EXPO_PUBLIC_API_URL`. Empty, malformed, HTTP, and GraphQL failure states are handled without displaying raw server errors. Source: backend service resolver/service/DTO and existing web service query, all reviewed at the current commits. No running API response was observed in this change.
+
+Mobile requires this public URL to use HTTPS without embedded credentials, query parameters, or fragments. Development against a local HTTP API needs an explicitly configured HTTPS proxy or a separate reviewed development-only exception; production does not silently downgrade transport.
