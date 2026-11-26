@@ -11,9 +11,16 @@ export function HomeScreen() {
     <SafeAreaView style={styles.screen}>
       <View style={styles.content}>
         <Text style={styles.eyebrow}>{status}</Text>
-        <Text style={styles.title}>{title}</Text>
+        <Text accessibilityRole="header" style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
-        <Link href="/services" style={styles.servicesLink}>Explore services</Link>
+        <Link
+          accessibilityHint="Opens the public hospital services catalog"
+          accessibilityRole="link"
+          href="/services"
+          style={styles.servicesLink}
+        >
+          Explore services
+        </Link>
       </View>
     </SafeAreaView>
   );
@@ -25,5 +32,13 @@ const styles = StyleSheet.create({
   eyebrow: { color: colors.primary, fontSize: 14, fontWeight: '700' },
   title: { color: colors.text, fontSize: 32, fontWeight: '700' },
   description: { color: colors.muted, fontSize: 16, lineHeight: 24 },
-  servicesLink: { color: colors.primary, fontSize: 16, fontWeight: '700', paddingVertical: spacing.md },
+  servicesLink: {
+    alignSelf: 'flex-start',
+    color: colors.primary,
+    fontSize: 16,
+    fontWeight: '700',
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingVertical: spacing.sm,
+  },
 });

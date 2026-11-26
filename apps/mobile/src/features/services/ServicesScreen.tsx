@@ -11,19 +11,28 @@ export function ServicesScreen() {
   return (
     <SafeAreaView style={styles.screen}>
       <FlatList
+        accessibilityLabel="Hospital services"
+        accessibilityState={{ busy: loading }}
         data={services}
         keyExtractor={(service) => service.id}
         contentContainerStyle={styles.content}
         ListHeaderComponent={
           <View style={styles.header}>
-            <Link href="/" style={styles.back}>← Home</Link>
-            <Text style={styles.title}>Services</Text>
+            <Link
+              accessibilityHint="Returns to the MN Hospital welcome screen"
+              accessibilityRole="link"
+              href="/"
+              style={styles.back}
+            >
+              ← Home
+            </Link>
+            <Text accessibilityRole="header" style={styles.title}>Services</Text>
             <Text style={styles.subtitle}>Explore current hospital services.</Text>
           </View>
         }
         renderItem={({ item }) => <ServiceCard service={item} />}
         ListEmptyComponent={!loading && !error
-          ? <Text style={styles.message}>No services are available right now.</Text>
+          ? <Text accessibilityLiveRegion="polite" style={styles.message}>No services are available right now.</Text>
           : undefined}
         ListFooterComponent={
           <View style={styles.footer}>
@@ -41,7 +50,7 @@ export function ServicesScreen() {
 function ServiceCard({ service }: { service: PublicService }) {
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>{service.title}</Text>
+      <Text accessibilityRole="header" style={styles.cardTitle}>{service.title}</Text>
       {service.description && <Text style={styles.description}>{service.description}</Text>}
     </View>
   );
@@ -59,7 +68,14 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.canvas },
   content: { padding: spacing.lg, gap: spacing.md },
   header: { gap: spacing.sm, marginBottom: spacing.md },
-  back: { color: colors.primary, fontSize: 16, paddingVertical: spacing.sm },
+  back: {
+    alignSelf: 'flex-start',
+    color: colors.primary,
+    fontSize: 16,
+    justifyContent: 'center',
+    minHeight: 44,
+    paddingVertical: spacing.sm,
+  },
   title: { color: colors.text, fontSize: 30, fontWeight: '700' },
   subtitle: { color: colors.muted, fontSize: 15 },
   card: { padding: spacing.lg, backgroundColor: '#fff', borderRadius: 16, gap: spacing.sm },

@@ -37,6 +37,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run mobile:typecheck
+      - run: npm run test:mobile:a11y
       - run: npx expo install --check
         working-directory: apps/mobile
       - name: Export Android bundle

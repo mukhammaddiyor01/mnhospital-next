@@ -70,3 +70,10 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - After aligning the mobile-only TypeScript range, the online Expo dependency check, TypeScript 6 typecheck, Android export (1132 modules), and iOS export (1138 modules) passed locally on Node 22.20.0. Follow-up mobile job `139916944191` in run `45822169761` then passed `npm ci`, typecheck, online dependency compatibility, and both exports. The exports remain bundle evidence only; the device gate remains open.
 - The web `verify` job failed in both earlier runs at `verify-doctor-directory.cjs` because the harness still delegated the page's newer `useRef` call to React outside a renderer. The harness now models a persistent ref alongside its existing state mocks. Follow-up run `45822703035` passed both the complete web `verify` job and the separate mobile job; secret-scan run `45822703066` also passed.
 - `xcrun` exists locally but `simctl` is unavailable; `adb` was not found. The roadmap device gate remains open.
+
+## 2026-11-26 mobile accessibility readiness
+
+- Added screen-reader heading, link, list loading, empty-state announcement, alert, and button semantics to the welcome and public services screens. Navigation and action controls retain at least 44-point touch targets.
+- `MOBILE_ACCESSIBILITY_VERIFIED 11 checks` passed and the check is part of the separate mobile CI job. This is source-level regression evidence, not VoiceOver/TalkBack behavior.
+- Node 22.20.0 mobile TypeScript 6 typecheck passed. Offline Android export passed with 1132 modules and iOS export passed with 1138 modules.
+- `simctl` remains unavailable and `adb` is not installed. No simulator, physical device, live HTTPS API, screen reader, dynamic type, contrast, or dark-mode behavior was observed.

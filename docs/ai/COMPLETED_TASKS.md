@@ -12,3 +12,4 @@
 - 2026-11-26: Added a separate mobile CI job for typecheck, Expo dependency compatibility, and Android/iOS bundle exports; repeated local Node 22 typecheck and both exports successfully.
 - 2026-11-26: Aligned the mobile TypeScript toolchain with Expo SDK 58 after the online CI compatibility check exposed the stale workspace range.
 - 2026-11-26: Confirmed the follow-up mobile CI job passes and updated the doctor-directory harness for the page's existing results ref.
+- 2026-11-26: Added accessibility semantics and 44-point touch targets to the public mobile screens, with an 11-check regression gate in mobile CI.
