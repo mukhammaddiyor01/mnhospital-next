@@ -1,5 +1,7 @@
 # Next steps
 
+Follow the ordered gates in `ROADMAP.md`. The immediate independent task is public mobile transport hardening; device validation remains open until a simulator or physical device is available.
+
 Use `SKILLS.md` and the nearest `AGENTS.md` for the next feature. The mobile welcome screen still needs device/simulator validation; the native session contract remains the gate before login. The web move to `apps/web` remains a separate migration.
 
 1. Launch the Expo welcome screen on an Android/iOS device or simulator; check safe area, contrast, and screen sizes. Dependency lock, typecheck, and Android bundle export already passed.

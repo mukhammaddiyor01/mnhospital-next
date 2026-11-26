@@ -31,3 +31,8 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Five response-shape cases passed (valid service, empty list, malformed container, malformed item, invalid total).
 - Mocked public request checks passed for GraphQL URL, page/limit/search variables, selected fields, returned title, and GraphQL error handling without exposing the raw error.
 - No live GraphQL API, browser, simulator, or physical device was tested. Existing web code was not changed; web build was not rerun.
+
+## 2026-11-26 roadmap and privacy documentation
+
+- Checked local Markdown links in updated entry documents and `git diff --check`.
+- No runtime files or dependencies changed in this documentation step; no build or device check was repeated.

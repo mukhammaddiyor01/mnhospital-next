@@ -4,3 +4,4 @@
 - 2026-11-26: Expanded agent and skill guidance for mobile features, backend contract review, library selection, readable code, and commit/handoff rules. Documentation checks are recorded in `TESTING.md`.
 - 2026-11-26: Audited the current backend session flow against native requirements and recorded the cookie-only refresh gap in `BACKEND_CONTRACT.md`.
 - 2026-11-26: Added a read-only mobile services list using the existing public GraphQL contract. Validation is recorded in `TESTING.md`.
+- 2026-11-26: Added an ordered roadmap and privacy/security boundaries for subsequent web and mobile work.

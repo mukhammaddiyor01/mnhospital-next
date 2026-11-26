@@ -1,6 +1,6 @@
 # MN Hospital development rules
 
-Before work, read this file, `README.md`, `SKILLS.md`, `docs/ai/NEXT_STEPS.md`, `docs/ai/DECISIONS.md`, and the feature's relevant product documents. Check branch, remote, status, and the nearest existing implementation. Follow the nearest nested `AGENTS.md` as well. Preserve user changes.
+Before work, read this file, `README.md`, `SKILLS.md`, `docs/ai/ROADMAP.md`, `docs/ai/NEXT_STEPS.md`, `docs/ai/DECISIONS.md`, and the feature's relevant product documents. Check branch, remote, status, and the nearest existing implementation. Follow the nearest nested `AGENTS.md` as well. Preserve user changes.
 
 Keep the backend authoritative for identity, role, patient ownership, prices, appointment availability, payments, and persistence. Never log patient or staff data, credentials, GraphQL variables, or clinical details. Native secrets belong in SecureStore; only public API URLs may use `EXPO_PUBLIC_` in mobile code. Never copy browser cookies or `sessionStorage` flows into native code.
 

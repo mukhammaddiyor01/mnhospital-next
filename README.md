@@ -4,6 +4,8 @@
 
 The `mobile` branch adds an Expo app at `apps/mobile` and platform-neutral tokens at `packages/design-tokens`. The existing Next.js app remains at the repository root during this first migration step. Read [the mobile architecture and gates](docs/ai/ARCHITECTURE.md) before moving web files or connecting private API flows.
 
+Work follows the ordered [mobile delivery roadmap](docs/ai/ROADMAP.md), with [privacy boundaries](docs/ai/PRIVACY.md) and validation recorded separately.
+
 Use Node 22.13 or newer, then run `npm ci`, `npm run mobile:typecheck`, and `npm run mobile:start` from the root. The mobile app has a welcome screen and a read-only public services screen. Device, login, booking, and payment flows require separate verification.
 
 To load the public services screen on a device, copy `apps/mobile/.env.example` to `apps/mobile/.env.local`, set `EXPO_PUBLIC_API_URL` to the reachable HTTPS GraphQL endpoint, and restart Expo. Only the API URL belongs in this public variable. The services screen is read-only and shows the server's current catalog.
