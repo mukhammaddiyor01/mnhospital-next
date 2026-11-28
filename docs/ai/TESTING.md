@@ -108,3 +108,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - `MOBILE_SERVICE_REFRESH_VERIFIED 9 checks` passed for a guarded reload owner, page-one replacement, native `FlatList` refresh wiring, and the refresh loading state.
 - Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These prove Metro bundling only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI is the supported-runtime authority.
 - No live API, simulator, installed build, physical device, or actual pull gesture was observed.
+
+## 2026-11-28 web relocation preflight
+
+- Read-only inspection confirmed root-level coupling in npm scripts, TypeScript aliases, Next standalone tracing, Docker/Compose output paths, CI commands, and verification scripts that read web directories directly.
+- `adb` remains unavailable. `xcrun simctl` is not installed, so no Android/iOS simulator or physical-device validation was performed.
+- Local Node is 20.10.0 while the repository requires Node 22.13 or newer; no build was run for this documentation-only preflight. CI remains configured for Node 22.

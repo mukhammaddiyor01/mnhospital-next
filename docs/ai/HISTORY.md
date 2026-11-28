@@ -17,3 +17,4 @@
 - 2026-11-28: Patched the mobile Expo fingerprint dependency chain and raised CI supply-chain enforcement to moderate severity.
 - 2026-11-28: Localized client-owned public mobile UI in English, Korean, and Uzbek while preserving server-owned service content and authorization boundaries.
 - 2026-11-28: Added one guarded reload path for public-catalog retry and pull-to-refresh, retaining page-one replacement and duplicate suppression.
+- 2026-11-28: Audited root-level web build coupling and recorded the isolated `apps/web` migration plan without moving runtime files.
