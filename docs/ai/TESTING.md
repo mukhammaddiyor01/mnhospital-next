@@ -122,3 +122,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Mobile regression gates still passed after the workspace change: typecheck, localization (51), accessibility (11), pagination (8), refresh (9), Android export (1134 modules), and iOS export (1140 modules).
 - The Next build emitted pre-existing Sass `@import` deprecation warnings. Its standalone output contains `apps/web/server.js`, matching the updated Docker command.
 - Docker daemon was unavailable locally, so no image build, container healthcheck, browser, live API, simulator, or device validation was performed.
+
+## 2026-11-28 relocated standalone health preflight
+
+- Rebuilt the current migration commit `58a2f08`, started `apps/web/.next/standalone/apps/web/server.js` temporarily on loopback, and received `{"status":"ok","service":"mnhospital-next","release":"58a2f085e5acb40c28218de4a6f27646a398d80e"}` from `/api/health`.
+- The normal sandbox disallowed loopback binding (`listen EPERM`); the same ephemeral local check passed with explicit loopback permission. The process was stopped after the check.
+- Docker daemon remains unavailable, so this does not validate a Docker image, container healthcheck, browser behavior, live API, simulator, or device.
