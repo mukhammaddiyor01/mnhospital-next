@@ -24,3 +24,4 @@
 - 2026-11-28: Bounded public mobile catalog requests with cancellation-safe cleanup and a mobile CI regression gate; device/API validation remains open.
 - 2026-11-28: Added bounded public-catalog page/response validation before native rendering; server publication authority and device/API validation remain unchanged.
 - 2026-11-28: Added a mocked adapter integration gate for the anonymous public catalog and fixed generic handling for malformed JSON; live device/API validation remains open.
+- 2026-11-28: Observed the welcome and generic public-catalog configuration state on an Android 13 Samsung SM-A516N through Expo Go; no live catalog or private flow was exercised.

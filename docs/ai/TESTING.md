@@ -151,3 +151,10 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - `MOBILE_SERVICE_API_VERIFIED 10 checks` passed with the real public-service adapter and model compiled together against a mocked anonymous transport. It verified selected fields, the HTTPS target, no credentials in request headers, page/limit data, and fixed generic handling for HTTP, GraphQL, malformed JSON, and malformed response cases.
 - Existing response-bounds (10), timeout (8), pagination (8), and refresh (9) gates plus mobile TypeScript typecheck passed. Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These are Metro bundle exports only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
 - The mock is not a live API, TLS, simulator, installed build, or physical-device test. No patient, staff, credential, or real server error data was used.
+
+## 2026-11-28 Android physical-device smoke check
+
+- Android 13 Samsung SM-A516N ran the Expo Go development build through an authenticated Wi-Fi `adb` connection. The Mac and phone were on different local subnets, so `adb reverse` carried Metro traffic; this is a development transport only, not a production network result.
+- With Node 22.23.5, Metro bundled 1293 modules and the welcome screen rendered on the device. English, Korean, and Uzbek selection was observed; Korean and Uzbek text wrapped without overlap on the observed portrait screen.
+- The public services route was opened without `EXPO_PUBLIC_API_URL`. It displayed the localized generic configuration state and retry control without calling an API or exposing an endpoint, credential, patient, staff, or clinical data.
+- This did not test a reachable HTTPS catalog, pagination, pull-to-refresh, timeout, screen reader, dynamic type, dark mode, landscape/tablet, iOS, or a standalone installed application. Expo Go is not a release build.
