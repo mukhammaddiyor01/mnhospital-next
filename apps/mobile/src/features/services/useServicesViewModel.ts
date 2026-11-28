@@ -2,13 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiConfigurationError, getPublicServices } from './serviceApi';
 import { mergeUniqueServices, type PublicService } from './serviceModel';
 
+export type ServicesError = 'configuration' | 'unavailable';
+
 export function useServicesViewModel() {
   const [page, setPage] = useState(1);
   const [revision, setRevision] = useState(0);
   const [services, setServices] = useState<PublicService[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ServicesError | null>(null);
   const requestingNextPage = useRef(false);
 
   useEffect(() => {
@@ -23,9 +25,7 @@ export function useServicesViewModel() {
       })
       .catch((cause: unknown) => {
         if (controller.signal.aborted) return;
-        setError(cause instanceof ApiConfigurationError
-          ? 'Set EXPO_PUBLIC_API_URL to an HTTPS GraphQL endpoint without credentials.'
-          : 'Services are unavailable. Please try again.');
+        setError(cause instanceof ApiConfigurationError ? 'configuration' : 'unavailable');
       })
       .finally(() => {
         if (!controller.signal.aborted) {

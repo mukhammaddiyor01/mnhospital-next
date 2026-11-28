@@ -2,24 +2,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, Text, View } from 'react-native';
 import { Link } from 'expo-router';
 import { colors, spacing } from '@mnhospital/design-tokens';
+import { LanguageSwitcher } from '../localization/LanguageSwitcher';
+import { useMobileLocalization } from '../localization/MobileLocalizationProvider';
 import { useHomeViewModel } from './useHomeViewModel';
 
 export function HomeScreen() {
-  const { title, description, status } = useHomeViewModel();
+  const { status } = useHomeViewModel();
+  const { t } = useMobileLocalization();
 
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.content}>
+        <LanguageSwitcher />
         <Text style={styles.eyebrow}>{status}</Text>
-        <Text accessibilityRole="header" style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text accessibilityRole="header" style={styles.title}>{t('home.title')}</Text>
+        <Text style={styles.description}>{t('home.description')}</Text>
         <Link
-          accessibilityHint="Opens the public hospital services catalog"
+          accessibilityHint={t('home.servicesHint')}
           accessibilityRole="link"
           href="/services"
           style={styles.servicesLink}
         >
-          Explore services
+          {t('home.services')}
         </Link>
       </View>
     </SafeAreaView>

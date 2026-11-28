@@ -2,44 +2,51 @@ import { Link } from 'expo-router';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '@mnhospital/design-tokens';
+import { LanguageSwitcher } from '../localization/LanguageSwitcher';
+import { useMobileLocalization } from '../localization/MobileLocalizationProvider';
 import type { PublicService } from './serviceModel';
 import { useServicesViewModel } from './useServicesViewModel';
 
 export function ServicesScreen() {
   const { services, loading, error, hasMore, retry, loadMore } = useServicesViewModel();
+  const { t } = useMobileLocalization();
+  const errorMessage = error === 'configuration'
+    ? t('services.configurationError')
+    : t('services.unavailable');
 
   return (
     <SafeAreaView style={styles.screen}>
       <FlatList
-        accessibilityLabel="Hospital services"
+        accessibilityLabel={t('services.listLabel')}
         accessibilityState={{ busy: loading }}
         data={services}
         keyExtractor={(service) => service.id}
         contentContainerStyle={styles.content}
         ListHeaderComponent={
           <View style={styles.header}>
+            <LanguageSwitcher />
             <Link
-              accessibilityHint="Returns to the MN Hospital welcome screen"
+              accessibilityHint={t('services.homeHint')}
               accessibilityRole="link"
               href="/"
               style={styles.back}
             >
-              ← Home
+              ← {t('services.home')}
             </Link>
-            <Text accessibilityRole="header" style={styles.title}>Services</Text>
-            <Text style={styles.subtitle}>Explore current hospital services.</Text>
+            <Text accessibilityRole="header" style={styles.title}>{t('services.title')}</Text>
+            <Text style={styles.subtitle}>{t('services.subtitle')}</Text>
           </View>
         }
         renderItem={({ item }) => <ServiceCard service={item} />}
         ListEmptyComponent={!loading && !error
-          ? <Text accessibilityLiveRegion="polite" style={styles.message}>No services are available right now.</Text>
+          ? <Text accessibilityLiveRegion="polite" style={styles.message}>{t('services.empty')}</Text>
           : undefined}
         ListFooterComponent={
           <View style={styles.footer}>
-            {loading && <ActivityIndicator accessibilityLabel="Loading services" color={colors.primary} />}
-            {error && <Text accessibilityRole="alert" style={styles.message}>{error}</Text>}
-            {error && <Action label="Retry" onPress={retry} />}
-            {!loading && !error && hasMore && <Action label="Load more" onPress={loadMore} />}
+            {loading && <ActivityIndicator accessibilityLabel={t('services.loading')} color={colors.primary} />}
+            {error && <Text accessibilityRole="alert" style={styles.message}>{errorMessage}</Text>}
+            {error && <Action label={t('services.retry')} onPress={retry} />}
+            {!loading && !error && hasMore && <Action label={t('services.loadMore')} onPress={loadMore} />}
           </View>
         }
       />

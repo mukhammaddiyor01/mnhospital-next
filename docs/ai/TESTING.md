@@ -94,3 +94,10 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Expo fingerprint generation passed for Android and iOS. The web production build, mobile TypeScript 6 typecheck, 11 accessibility checks, and 8 pagination checks passed.
 - Offline Android export passed with 1131 modules and iOS export passed with 1137 modules. These remain bundle exports, not installed builds or device checks.
 - GitHub Actions run `46097436439` passed the moderate-level production audit, complete web `verify` job, and mobile job. Secret-scan run `46097436503` passed.
+
+## 2026-11-28 public mobile localization
+
+- Mobile TypeScript typecheck passed. `MOBILE_LOCALIZATION_VERIFIED 51 checks` passed for three language codes, all typed public UI keys, and representative Korean/Uzbek values.
+- Existing `MOBILE_ACCESSIBILITY_VERIFIED 11 checks` and `MOBILE_SERVICE_PAGINATION_VERIFIED 8 checks` still pass; localization is included in the separate mobile CI job.
+- Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. The local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
+- No live HTTPS API, simulator, installed build, physical device, VoiceOver, or TalkBack was tested. Server-provided service content remains unchanged and language preference is not persisted.

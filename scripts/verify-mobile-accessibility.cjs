@@ -24,7 +24,7 @@ includes(home, 'accessibilityRole="link"', 'The services navigation must remain 
 includes(home, 'accessibilityHint=', 'The services navigation must explain its destination');
 includes(home, 'minHeight: 44', 'The welcome action must keep a 44-point touch target');
 
-includes(services, 'accessibilityLabel="Hospital services"', 'The services list must keep its label');
+includes(services, "accessibilityLabel={t('services.listLabel')}", 'The services list must keep its localized label');
 includes(services, 'accessibilityState={{ busy: loading }}', 'The services list must expose loading state');
 includes(services, 'accessibilityLiveRegion="polite"', 'The empty state must be announced');
 includes(services, 'accessibilityRole="alert"', 'The error state must remain an alert');

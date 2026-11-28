@@ -15,3 +15,4 @@
 - 2026-11-26: Added accessibility semantics and 44-point touch targets to the public mobile screens, with an 11-check regression gate in mobile CI.
 - 2026-11-26: Made public mobile service pagination idempotent by server ID and added an 8-check pure-model CI gate for duplicate, overlap, and retry cases.
 - 2026-11-28: Remediated the Expo fingerprint minimatch availability advisory with compatible Expo patches, an exact patched override, and a moderate-or-higher production audit gate.
+- 2026-11-28: Added typed English, Korean, and Uzbek localization for the public mobile welcome and services experience, including accessible language controls and semantic view-model errors.
