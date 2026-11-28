@@ -128,3 +128,8 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Rebuilt the current migration commit `58a2f08`, started `apps/web/.next/standalone/apps/web/server.js` temporarily on loopback, and received `{"status":"ok","service":"mnhospital-next","release":"58a2f085e5acb40c28218de4a6f27646a398d80e"}` from `/api/health`.
 - The normal sandbox disallowed loopback binding (`listen EPERM`); the same ephemeral local check passed with explicit loopback permission. The process was stopped after the check.
 - Docker daemon remains unavailable, so this does not validate a Docker image, container healthcheck, browser behavior, live API, simulator, or device.
+
+## 2026-11-28 web standalone regression gate
+
+- `WEB_STANDALONE_VERIFIED 11 checks` verifies the registered web workspace, root build delegation, source directories, monorepo tracing root, Docker manifest/output/server paths, and the current build's standalone/static artifacts.
+- The check runs after `npm run build` in the web CI job. It prevents a relocated path regression without requiring a Docker daemon.

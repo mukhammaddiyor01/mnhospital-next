@@ -20,3 +20,4 @@
 - 2026-11-28: Audited root-level web build coupling and recorded the isolated `apps/web` migration plan without moving runtime files.
 - 2026-11-28: Moved the Next.js Pages Router, its source tree, workspace manifest, build config, Docker output paths, and web verification paths to `apps/web` without changing product behavior.
 - 2026-11-28: Confirmed the relocated standalone server serves its health endpoint with the migration release SHA; Docker image validation remains open.
+- 2026-11-28: Added a build-artifact regression gate for the web workspace's standalone and Docker layout.

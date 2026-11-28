@@ -8,6 +8,7 @@
 		"mobile:start": "npm run start --workspace @mnhospital/mobile",
 		"mobile:typecheck": "npm run typecheck --workspace @mnhospital/mobile",
 		"web:typecheck": "npm run typecheck --workspace @mnhospital/web",
+		"test:web:standalone": "node scripts/verify-web-standalone.cjs",
 		"test:mobile:a11y": "node scripts/verify-mobile-accessibility.cjs",
 		"test:mobile:localization": "node scripts/verify-mobile-localization.cjs",
 		"test:mobile:services": "node scripts/verify-mobile-service-pagination.cjs",

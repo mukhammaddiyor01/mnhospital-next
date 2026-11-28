@@ -13,6 +13,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - run: npm run test:web:standalone
       - run: npm run web:typecheck
       - run: npm run test:auth
       - run: npm run test:seo
