@@ -93,3 +93,4 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Node 22.20.0 `npm ci --offline` passed from the canonical package lock. Online Expo dependency compatibility reported up to date, the resolved tree showed fingerprint 0.22.0 with overridden minimatch 11.0.1, and `npm audit --omit=dev --audit-level=moderate` reported zero vulnerabilities.
 - Expo fingerprint generation passed for Android and iOS. The web production build, mobile TypeScript 6 typecheck, 11 accessibility checks, and 8 pagination checks passed.
 - Offline Android export passed with 1131 modules and iOS export passed with 1137 modules. These remain bundle exports, not installed builds or device checks.
+- GitHub Actions run `46097436439` passed the moderate-level production audit, complete web `verify` job, and mobile job. Secret-scan run `46097436503` passed.
