@@ -16,3 +16,4 @@
 - 2026-11-26: Made public mobile service pagination idempotent by server ID and added an 8-check pure-model CI gate for duplicate, overlap, and retry cases.
 - 2026-11-28: Remediated the Expo fingerprint minimatch availability advisory with compatible Expo patches, an exact patched override, and a moderate-or-higher production audit gate.
 - 2026-11-28: Added typed English, Korean, and Uzbek localization for the public mobile welcome and services experience, including accessible language controls and semantic view-model errors.
+- 2026-11-28: Added guarded pull-to-refresh for the public services catalog; repeated retry/refresh actions are coalesced and a successful refresh replaces the visible list from page one.

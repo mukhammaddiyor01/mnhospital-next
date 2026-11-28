@@ -101,3 +101,10 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Existing `MOBILE_ACCESSIBILITY_VERIFIED 11 checks` and `MOBILE_SERVICE_PAGINATION_VERIFIED 8 checks` still pass; localization is included in the separate mobile CI job.
 - Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. The local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
 - No live HTTPS API, simulator, installed build, physical device, VoiceOver, or TalkBack was tested. Server-provided service content remains unchanged and language preference is not persisted.
+
+## 2026-11-28 public catalog refresh
+
+- Mobile TypeScript typecheck passed. Existing localization (51), accessibility (11), and idempotent pagination (8) checks passed.
+- `MOBILE_SERVICE_REFRESH_VERIFIED 9 checks` passed for a guarded reload owner, page-one replacement, native `FlatList` refresh wiring, and the refresh loading state.
+- Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These prove Metro bundling only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI is the supported-runtime authority.
+- No live API, simulator, installed build, physical device, or actual pull gesture was observed.

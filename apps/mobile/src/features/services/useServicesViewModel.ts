@@ -10,8 +10,10 @@ export function useServicesViewModel() {
   const [services, setServices] = useState<PublicService[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<ServicesError | null>(null);
   const requestingNextPage = useRef(false);
+  const requestingReload = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -30,18 +32,32 @@ export function useServicesViewModel() {
       .finally(() => {
         if (!controller.signal.aborted) {
           requestingNextPage.current = false;
+          requestingReload.current = false;
           setLoading(false);
+          setRefreshing(false);
         }
       });
     return () => controller.abort();
   }, [page, revision]);
 
+  const reload = (replaceCurrentList: boolean) => {
+    if (loading || requestingReload.current) return;
+    requestingReload.current = true;
+    if (replaceCurrentList) {
+      setRefreshing(true);
+      setPage(1);
+    }
+    setRevision((value) => value + 1);
+  };
+
   return {
     services,
     loading,
+    refreshing,
     error,
     hasMore: services.length < total,
-    retry: () => setRevision((value) => value + 1),
+    retry: () => reload(false),
+    refresh: () => reload(true),
     loadMore: () => {
       if (loading || error || requestingNextPage.current || services.length >= total) return;
       requestingNextPage.current = true;

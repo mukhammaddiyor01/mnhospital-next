@@ -8,7 +8,7 @@ import type { PublicService } from './serviceModel';
 import { useServicesViewModel } from './useServicesViewModel';
 
 export function ServicesScreen() {
-  const { services, loading, error, hasMore, retry, loadMore } = useServicesViewModel();
+  const { services, loading, refreshing, error, hasMore, retry, refresh, loadMore } = useServicesViewModel();
   const { t } = useMobileLocalization();
   const errorMessage = error === 'configuration'
     ? t('services.configurationError')
@@ -18,10 +18,12 @@ export function ServicesScreen() {
     <SafeAreaView style={styles.screen}>
       <FlatList
         accessibilityLabel={t('services.listLabel')}
-        accessibilityState={{ busy: loading }}
+        accessibilityState={{ busy: loading || refreshing }}
         data={services}
         keyExtractor={(service) => service.id}
         contentContainerStyle={styles.content}
+        onRefresh={refresh}
+        refreshing={refreshing}
         ListHeaderComponent={
           <View style={styles.header}>
             <LanguageSwitcher />
@@ -43,7 +45,7 @@ export function ServicesScreen() {
           : undefined}
         ListFooterComponent={
           <View style={styles.footer}>
-            {loading && <ActivityIndicator accessibilityLabel={t('services.loading')} color={colors.primary} />}
+            {loading && !refreshing && <ActivityIndicator accessibilityLabel={t('services.loading')} color={colors.primary} />}
             {error && <Text accessibilityRole="alert" style={styles.message}>{errorMessage}</Text>}
             {error && <Action label={t('services.retry')} onPress={retry} />}
             {!loading && !error && hasMore && <Action label={t('services.loadMore')} onPress={loadMore} />}
