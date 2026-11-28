@@ -11,3 +11,5 @@ The first real mobile feature, public services, shows the pattern without a cach
 Cross-screen mobile localization uses one narrowly scoped context rather than a generic global store. `localizationModel.ts` owns typed language codes, keys, and pure lookup; the provider owns the current in-memory choice; the switcher and screens render it. View-models expose semantic error codes instead of presentation strings so business orchestration stays independent of language.
 
 Public services keeps reload ownership in `useServicesViewModel.ts`: retry and pull-to-refresh share one guarded reload action. The screen only forwards the native refresh gesture and renders its state; it does not create transport requests itself.
+
+`serviceApi.ts` owns the bounded public-request signal. It forwards caller cancellation into an inner signal, disposes its timer/listener after settlement, and lets the view-model retain its existing generic error mapping. This keeps timeout mechanics out of the screen and leaves the caller's cancellation authority intact.

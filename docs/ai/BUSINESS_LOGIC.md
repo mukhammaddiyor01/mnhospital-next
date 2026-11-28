@@ -8,4 +8,6 @@ Public services: any guest may list the server's ACTIVE catalog; the server owns
 
 The guest may pull to refresh the catalog. While a page request or reload is active, another retry/refresh action is ignored; a successful refresh replaces the current list from server page one. This prevents repeated taps or gestures from creating concurrent requests or duplicate rendered results. It does not imply cache freshness, availability, price, or booking eligibility.
 
+Each public catalog request has a bounded client wait. A caller cancellation remains cancellation; a timeout becomes the existing generic unavailable state. Neither outcome fabricates an empty catalog, changes authorization, nor exposes raw transport details.
+
 Changing the mobile display language translates only client-owned navigation, status, accessibility, and error copy. Service titles and descriptions remain server-owned and are rendered as returned; the client must not invent translations that could change medical meaning. Language selection does not change identity, role, authorization, catalog visibility, booking rules, or request data.

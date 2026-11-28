@@ -13,6 +13,7 @@
 		"test:mobile:localization": "node scripts/verify-mobile-localization.cjs",
 		"test:mobile:services": "node scripts/verify-mobile-service-pagination.cjs",
 		"test:mobile:services:refresh": "node scripts/verify-mobile-service-refresh.cjs",
+		"test:mobile:services:timeout": "node scripts/verify-mobile-service-timeout.cjs",
 		"dev": "npm run dev --workspace @mnhospital/web",
 		"build": "npm run build --workspace @mnhospital/web",
 		"start": "npm run start --workspace @mnhospital/web",

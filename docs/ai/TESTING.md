@@ -133,3 +133,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 
 - `WEB_STANDALONE_VERIFIED 11 checks` verifies the registered web workspace, root build delegation, source directories, monorepo tracing root, Docker manifest/output/server paths, and the current build's standalone/static artifacts.
 - The check runs after `npm run build` in the web CI job. It prevents a relocated path regression without requiring a Docker daemon.
+
+## 2026-11-28 public catalog request timeout
+
+- `MOBILE_SERVICE_TIMEOUT_VERIFIED 8 checks` passed for the 15-second bound, caller cancellation, timeout cancellation, pre-aborted callers, cleanup, and adapter wiring. Existing accessibility (11), localization (51), pagination (8), and refresh (9) gates also passed.
+- Mobile TypeScript typecheck passed. Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These are Metro bundle exports only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
+- No live HTTPS API, simulator, installed build, physical device, or timed-out network request was observed. `simctl` and `adb` remain unavailable, so device validation stays open.

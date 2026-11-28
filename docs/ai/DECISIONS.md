@@ -16,3 +16,4 @@
 - 2026-11-28: Record a root-to-`apps/web` relocation preflight before any file move. Preserve root lockfile ownership and public root command behavior, and isolate the migration from mobile/private clinical work.
 - 2026-11-28: Relocate the Next.js Pages Router to `apps/web` as an isolated structural change. Keep the root lockfile and root command names, with the web workspace owning its source, dependencies, TypeScript alias, Next config, and standalone output.
 - 2026-11-28: Add a build-artifact regression gate for the relocated web standalone layout. It verifies workspace delegation and expected Docker/server paths, but does not claim Docker image execution.
+- 2026-11-28: Bound the anonymous public-catalog request in its adapter at 15 seconds. Use a portable `AbortController` timer rather than newer signal helpers, preserve caller cancellation, and keep timeout presentation as the existing generic unavailable state.

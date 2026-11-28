@@ -19,3 +19,4 @@
 - 2026-11-28: Added guarded pull-to-refresh for the public services catalog; repeated retry/refresh actions are coalesced and a successful refresh replaces the visible list from page one.
 - 2026-11-28: Moved the Next.js Pages Router application to `apps/web`, retained root command compatibility and a single lockfile, and updated CI, Docker paths, and web verification paths.
 - 2026-11-28: Added a CI regression gate for the relocated web standalone build layout and Docker command paths.
+- 2026-11-28: Bounded public mobile catalog requests with cancellation-safe cleanup and added an 8-check timeout regression gate to mobile CI.

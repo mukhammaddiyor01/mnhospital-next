@@ -42,6 +42,7 @@ jobs:
       - run: npm run test:mobile:localization
       - run: npm run test:mobile:services
       - run: npm run test:mobile:services:refresh
+      - run: npm run test:mobile:services:timeout
       - run: npx expo install --check
         working-directory: apps/mobile
       - name: Export Android bundle
