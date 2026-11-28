@@ -23,3 +23,4 @@
 - 2026-11-28: Added pure public-catalog page and response-size validation, with a 10-check mobile CI regression gate for malformed and oversized input.
 - 2026-11-28: Added a 10-check mocked public-catalog adapter integration gate for minimal request fields and generic HTTP, GraphQL, malformed JSON, and malformed response handling.
 - 2026-11-28: Completed an Android physical-device smoke check for the Expo Go welcome and public-catalog configuration state on a Samsung SM-A516N; live HTTPS catalog and broader accessibility/device coverage remain open.
+- 2026-11-28: Verified the Android public configuration flow across routes: Korean selection, safe retry without an API URL, and Home navigation retain the localized state.

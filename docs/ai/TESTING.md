@@ -158,3 +158,8 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - With Node 22.23.5, Metro bundled 1293 modules and the welcome screen rendered on the device. English, Korean, and Uzbek selection was observed; Korean and Uzbek text wrapped without overlap on the observed portrait screen.
 - The public services route was opened without `EXPO_PUBLIC_API_URL`. It displayed the localized generic configuration state and retry control without calling an API or exposing an endpoint, credential, patient, staff, or clinical data.
 - This did not test a reachable HTTPS catalog, pagination, pull-to-refresh, timeout, screen reader, dynamic type, dark mode, landscape/tablet, iOS, or a standalone installed application. Expo Go is not a release build.
+
+## 2026-11-28 Android public-flow interaction check
+
+- On the same Android 13 Samsung SM-A516N Expo Go session, Korean localization was changed from the services route, the configuration retry action was invoked without an API URL, and the Home link returned to the welcome screen with Korean selection retained.
+- The configuration screen remained generic and disclosed no endpoint, response, credential, patient, staff, or clinical data. This verifies the visible public no-configuration path only; it does not exercise a reachable API, network timeout, pagination, refresh, or screen reader.
