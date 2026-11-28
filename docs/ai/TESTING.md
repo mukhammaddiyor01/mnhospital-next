@@ -170,3 +170,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Offline-config Android (1149 modules) and iOS (1155 modules) Metro exports succeeded.
 - Live anonymous check from Node against `https://mnhospital.uz`: services 10 of 14 (page 2 returned 4), doctors 10 of 16, articles 8 of 8; one detail query and one image per kind returned successfully.
 - Not checked: any rendering on a simulator or device, dark mode, screen reader, tab navigation, website hand-off.
+
+## 2026-11-28 Android check of catalog tabs and details
+
+- Android 13 Samsung SM-A516N, Expo Go 58.0.5, wireless `adb` with `adb reverse tcp:8081`, Node 22.20.0, live `https://mnhospital.uz` API.
+- Observed in system dark mode: Home, Services, Doctors and Articles tabs; one service, doctor and article detail; remote images (one doctor photo appeared after a delay); EN/KR/UZ switching with translated type labels; back navigation. The booking button brought Chrome to the front; the opened page itself was not inspected.
+- Not checked: light mode, pagination past page one, pull-to-refresh, error/timeout states, screen reader, dynamic type, small/large screens, iOS, standalone build.

@@ -1,6 +1,6 @@
 # Next steps
 
-Next: create `apps/mobile/.env` from `.env.example`, run `npm run mobile:start`, and check the new tabs, detail screens, images, dark mode and the website booking button on a device. This supersedes the older welcome/services-only wording below.
+Next: the catalog tabs, details, images, dark mode and language switching passed an Android Expo Go check (see `TESTING.md`). Still check light mode, pagination, pull-to-refresh, error states, screen reader, dynamic type, the opened booking page, iOS and a standalone build. This supersedes the older welcome/services-only wording below.
 
 Follow the ordered gates in `ROADMAP.md`. Public mobile transport hardening is implemented; an Android Expo Go smoke check passed, while the broader device validation gate remains open. Backend native session release work can progress without treating that gate as passed.
 
