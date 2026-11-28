@@ -39,6 +39,7 @@
 		"typescript": "5.2.2"
 	},
 	"overrides": {
+		"minimatch": "11.0.1",
 		"postcss": "8.5.30",
 		"source-map-js": "1.2.2"
 	}

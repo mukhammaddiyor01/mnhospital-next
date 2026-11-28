@@ -24,7 +24,7 @@ jobs:
       - run: node scripts/verify-booking-submit.cjs
       - run: node scripts/verify-dark-contrast.cjs
       - run: node scripts/verify-repository-security.cjs
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npm audit --omit=dev --audit-level=moderate
   mobile:
     runs-on: ubuntu-latest
     env:

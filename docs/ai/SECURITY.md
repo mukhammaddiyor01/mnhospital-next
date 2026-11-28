@@ -20,3 +20,9 @@ The backend `codex/native-patient-session` draft binds patient refresh/logout to
 Review these against the actual backend and deployment; a UI check alone cannot prove them. Privacy data handling is recorded in `PRIVACY.md`.
 
 The public mobile service adapter now rejects missing or malformed API URLs, plain HTTP, embedded username/password, URL query parameters, and fragments. This is a client configuration guard; HTTPS certificate and backend authorization still require deployment/device verification.
+
+## Mobile supply-chain hardening — 2026-11-28
+
+Expo 58.1.0 currently brings `@expo/fingerprint` 0.22.0, whose declared `minimatch` range still accepts the vulnerable 10.2.6 release from GHSA-g3hv-75wg-m249. The root npm override pins `minimatch` 11.0.1, the patched release. Keep this override exact and remove it only after Expo's compatible dependency range resolves to a patched version and the same fingerprint, build, export, and audit gates pass.
+
+The project requires Node 22, which satisfies the patched package engine. CI now fails for moderate-or-higher production dependency advisories. This closes the confirmed availability advisory in the tested dependency tree; it does not replace device, deployment, API authorization, or privacy review.

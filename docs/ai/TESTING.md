@@ -85,3 +85,11 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Node 22.20.0 mobile TypeScript 6 typecheck passed. Offline Android export passed with 1132 modules and iOS export passed with 1138 modules.
 - The new pure merge rule is included in the separate mobile CI job. No cache dependency, credential, patient data, mutation, live API, simulator, or physical device was introduced or tested.
 - GitHub Actions run `45824720737` passed the new pagination gate, the complete mobile job, and the web `verify` job. Secret-scan run `45824720636` passed.
+
+## 2026-11-28 mobile dependency advisory remediation
+
+- Confirmed the vulnerable tree was Expo 58.0.26 → `@expo/fingerprint` 0.21.10 → `minimatch` 10.2.6. The advisory affects availability through attacker-controlled glob pattern amplification; no confidentiality or integrity impact was identified by the advisory.
+- Updated Expo to 58.1.0 and Expo Router to 58.0.33, then pinned transitive `minimatch` to patched 11.0.1 because Expo fingerprint 0.22.0 still declares `^10.2.6`.
+- Node 22.20.0 `npm ci --offline` passed from the canonical package lock. Online Expo dependency compatibility reported up to date, the resolved tree showed fingerprint 0.22.0 with overridden minimatch 11.0.1, and `npm audit --omit=dev --audit-level=moderate` reported zero vulnerabilities.
+- Expo fingerprint generation passed for Android and iOS. The web production build, mobile TypeScript 6 typecheck, 11 accessibility checks, and 8 pagination checks passed.
+- Offline Android export passed with 1131 modules and iOS export passed with 1137 modules. These remain bundle exports, not installed builds or device checks.
