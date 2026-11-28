@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const sass = require('sass');
 const postcss = require('postcss');
-const css = postcss.parse(sass.compile(path.join(__dirname, '../scss/app.scss'), {
+const css = postcss.parse(sass.compile(path.join(__dirname, '../apps/web/scss/app.scss'), {
   logger: { warn() {}, debug() {} },
 }).css);
 

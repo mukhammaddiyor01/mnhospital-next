@@ -5,7 +5,7 @@ const Module = require('node:module');
 const path = require('node:path');
 const mod = new Module(__filename, module);
 mod.require = (id) => id.endsWith('service.enum') ? {ServiceStatus: {DELETED: 'DELETED'}} : require(id);
-mod._compile(ts.transpileModule(fs.readFileSync(path.join(__dirname, '../libs/components/workspace/serviceOptionRules.ts'), 'utf8'), {compilerOptions: {module: ts.ModuleKind.CommonJS}}).outputText, __filename);
+mod._compile(ts.transpileModule(fs.readFileSync(path.join(__dirname, '../apps/web/libs/components/workspace/serviceOptionRules.ts'), 'utf8'), {compilerOptions: {module: ts.ModuleKind.CommonJS}}).outputText, __filename);
 const {getOptionScope, isValidOptionDraft} = mod.exports;
 const base = {_id: 'base', memberId: 'doctor', departmentId: 'department', serviceType: 'type', serviceStatus: 'ACTIVE'};
 const rows = [base, {...base, _id: 'inactive', serviceStatus: 'INACTIVE', packageBaseServiceId: 'base'}, {...base, _id: 'other-dept', departmentId: 'other'}, {...base, _id: 'fourth', departmentId: 'other', serviceStatus: 'INACTIVE'}, {...base, _id: 'deleted', serviceStatus: 'DELETED'}, {...base, _id: 'other-doctor', memberId: 'other'}, {...base, _id: 'other-type', serviceType: 'other'}];

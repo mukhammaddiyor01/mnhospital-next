@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const ts = require('typescript');
 let passed = 0;
 const check = (value, expected) => { assert.deepEqual(value, expected); passed++; };
-const source = ts.transpileModule(fs.readFileSync('libs/hooks/useLiveWorkspaceRefresh.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+const source = ts.transpileModule(fs.readFileSync('apps/web/libs/hooks/useLiveWorkspaceRefresh.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 function harness() {
  const events = new Map(); const timers = new Map(); let ref; let cleanup; let dependency;
  const document = { visibilityState: 'visible', addEventListener: (name, fn) => events.set(name, fn), removeEventListener: (name) => events.delete(name) };

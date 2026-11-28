@@ -8,8 +8,27 @@ const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 let checks = 0;
 const check = (condition, label) => { assert.ok(condition, label); checks++; };
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
+const resolve = Module._resolveFilename;
+const loadModule = Module._load;
+let activeStubs = {};
+Module._resolveFilename = function (request, ...args) {
+  return resolve.call(this, request.startsWith('@/') ? path.join(root, request.slice(2)) : request, ...args);
+};
+Module._load = function (request, parent, isMain) {
+  if (Object.hasOwn(activeStubs, request)) return activeStubs[request];
+  return loadModule.call(this, request, parent, isMain);
+};
+for (const extension of ['.ts', '.tsx']) {
+  Module._extensions[extension] = (module, filename) => module._compile(
+    ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true, target: ts.ScriptTarget.ES2020 },
+    }).outputText,
+    filename,
+  );
+}
 const load = (file, stubs) => {
+  activeStubs = stubs;
   const filename = path.join(root, file);
   const mod = new Module(filename, module);
   mod.filename = filename;
@@ -65,6 +84,7 @@ check(calls.every((call) => call.options.skip), 'Invalid identities do not reach
 
 const { default: Departments } = load('libs/components/homepage/DepartmentSwiper.tsx', {
   ...common,
+  '@/libs/i18n/useServiceTypeLabel': { useServiceTypeLabel: () => (value) => value },
   'swiper/react': { Swiper: ({ children }) => React.createElement('section', {}, children), SwiperSlide: ({ children }) => React.createElement('div', {}, children) },
   'swiper/modules': {},
 });

@@ -6,7 +6,7 @@ const ts = require('typescript');
 
 let response = {};
 let options;
-const source = fs.readFileSync(path.join(__dirname, '../libs/components/mypage/usePatientProfileCompletion.ts'), 'utf8');
+const source = fs.readFileSync(path.join(__dirname, '../apps/web/libs/components/mypage/usePatientProfileCompletion.ts'), 'utf8');
 const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
 const moduleExports = {};
 vm.runInNewContext(compiled, {

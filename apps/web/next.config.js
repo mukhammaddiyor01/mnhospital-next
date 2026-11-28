@@ -1,4 +1,5 @@
 const { execFileSync } = require('node:child_process');
+const path = require('node:path');
 let releaseSha = process.env.MN_RELEASE_SHA || 'unknown';
 if (releaseSha === 'unknown') {
   try { releaseSha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(); } catch {}
@@ -7,7 +8,7 @@ if (releaseSha === 'unknown') {
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  outputFileTracingRoot: __dirname,
+  outputFileTracingRoot: path.join(__dirname, '../..'),
   poweredByHeader: false,
   env: { MN_RELEASE_SHA: releaseSha },
   async headers() {

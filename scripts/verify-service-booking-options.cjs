@@ -5,9 +5,9 @@ const Module = require('node:module');
 const ts = require('typescript');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: true } }).outputText, filename);
-const { getBookingOptions, optionBookingHref } = require('../libs/components/service/bookingOptions.ts');
+const { getBookingOptions, optionBookingHref } = require('../apps/web/libs/components/service/bookingOptions.ts');
 let checks = 0;
 const check = (condition) => { assert.ok(condition); checks++; };
 const base = { _id: 'a'.repeat(24), memberId: 'b'.repeat(24), departmentId: 'c'.repeat(24), serviceType: 'PROCEDURE', serviceStatus: 'ACTIVE', serviceTitle: 'Standard consultation', serviceName: 'Consultation', servicePrice: 246000, serviceDuration: '30', memberData: { memberStatus: 'ACTIVE' } };
@@ -29,7 +29,7 @@ component.filename = filename;
 component.paths = Module._nodeModulePaths(root);
 let language = 'EN';
 const stubs = {
- '@/libs/i18n/catalog': require('../libs/i18n/catalog.ts'),
+ '@/libs/i18n/catalog': require('../apps/web/libs/i18n/catalog.ts'),
  'next/link': ({ children, ...props }) => React.createElement('a', props, children),
  './ServiceBookingOptions.module.scss': new Proxy({}, { get: (_, name) => name }),
  '../preference/PreferenceProvider': { usePreferences: () => ({ language }) },

@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),Module=require('node:module'),ts=require('typescript'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
-const root=path.resolve(__dirname,'..');let checks=0;const check=condition=>{assert.ok(condition);checks++};
+const root=path.resolve(__dirname,'../apps/web');let checks=0;const check=condition=>{assert.ok(condition);checks++};
 require.extensions['.ts']=(module,filename)=>module._compile(ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,filename);
-const {servicePriceForDisplay}=require('../libs/components/service/service-price.ts');
+const {servicePriceForDisplay}=require('../apps/web/libs/components/service/service-price.ts');
 check(servicePriceForDisplay({servicePrice:100,serviceDiscountPercent:33.33},'KRW')===67);
 check(servicePriceForDisplay({servicePrice:100,serviceDiscountPercent:33.33},'UZS')===66.67);
 check(servicePriceForDisplay({servicePrice:100,serviceDiscountPercent:100},'KRW')===0);
@@ -20,7 +20,7 @@ html=render({...state,order:{...state.order,pricingLockedAt:new Date().toISOStri
 html=render({...state,payments:[{paymentStatus:'PENDING'}]});check(!html.includes('<form'));
 html=render({...state,order:{...state.order,pricingVersion:undefined}});check(!html.includes('<form'));
 check(mutations===0);check(html.includes('72 KRW'));
-const discovery=require('../libs/components/service/service-discovery.ts');
+const discovery=require('../apps/web/libs/components/service/service-discovery.ts');
 const base=discovery.emptyServiceFilters;
 check(discovery.validPriceRange({...base,min:'0',max:'0'}));
 for(const patch of [{min:'-1'},{max:'NaN'},{min:'200',max:'100'},{min:'1000000001'},{min:'0.001'}])check(!discovery.validPriceRange({...base,...patch}));

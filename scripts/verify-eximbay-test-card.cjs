@@ -1,5 +1,5 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),Module=require('node:module'),ts=require('typescript'),React=require('react');
-const {renderToStaticMarkup}=require('react-dom/server');const root=path.resolve(__dirname,'..');let language='EN',checks=0;
+const {renderToStaticMarkup}=require('react-dom/server');const root=path.resolve(__dirname,'../apps/web');let language='EN',checks=0;
 const file=path.join(root,'libs/payments/EximbayTestCard.tsx'),mod=new Module(file,module);assert.equal(ts.createSourceFile(file,fs.readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX).parseDiagnostics.length,0);checks++;mod.paths=Module._nodeModulePaths(root);
 const stubs={'@/libs/components/preference/PreferenceProvider':{usePreferences:()=>({language})},'@/libs/components/common/Icon':({name})=>React.createElement('i',{'aria-hidden':true},name),'./EximbayTestCard.module.scss':{__esModule:true,default:new Proxy({},{get:(_,key)=>key})}};
 mod.require=id=>Object.hasOwn(stubs,id)?stubs[id]:require(id);mod._compile(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText,file);

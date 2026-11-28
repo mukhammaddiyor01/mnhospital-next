@@ -114,3 +114,11 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - Read-only inspection confirmed root-level coupling in npm scripts, TypeScript aliases, Next standalone tracing, Docker/Compose output paths, CI commands, and verification scripts that read web directories directly.
 - `adb` remains unavailable. `xcrun simctl` is not installed, so no Android/iOS simulator or physical-device validation was performed.
 - Local Node is 20.10.0 while the repository requires Node 22.13 or newer; no build was run for this documentation-only preflight. CI remains configured for Node 22.
+
+## 2026-11-28 web workspace relocation
+
+- Root `npm install --package-lock-only --ignore-scripts --offline` completed, updating the authoritative lockfile with `apps/web` while reporting the expected unsupported local Node 20.10.0 warnings.
+- The relocated web TypeScript check, production build, auth (65 + 12), SEO (55), booking draft (18), catalog localization (108), booking focus (29), preference controls (8), doctor directory (13), booking submit (15), and contrast (70) checks passed. Additional relocated-source checks for profile, booking options, payment checkout, promotions, service options/calendar, follow refresh, signup, homepage, profile presentation, and workspace refresh also passed.
+- Mobile regression gates still passed after the workspace change: typecheck, localization (51), accessibility (11), pagination (8), refresh (9), Android export (1134 modules), and iOS export (1140 modules).
+- The Next build emitted pre-existing Sass `@import` deprecation warnings. Its standalone output contains `apps/web/server.js`, matching the updated Docker command.
+- Docker daemon was unavailable locally, so no image build, container healthcheck, browser, live API, simulator, or device validation was performed.

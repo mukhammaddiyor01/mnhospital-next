@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const Module = require('node:module');
 const ts = require('typescript');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 const resolve = Module._resolveFilename;
 Module._resolveFilename = function (request, ...args) {
 	return resolve.call(this, request.startsWith('@/') ? path.join(root, request.slice(2)) : request, ...args);
@@ -16,10 +16,10 @@ for (const ext of ['.ts', '.tsx']) Module._extensions[ext] = (module, filename) 
 );
 
 const { gql } = require('@apollo/client');
-const { canonicalPath, isIndexablePath, sitemapPaths } = require('../libs/seo/site.ts');
-const { publicDetailProps, publicCatalogProps } = require('../libs/seo/server.ts');
-const { publicSitemap } = require('../libs/seo/sitemap.ts');
-const { getServerSideProps: robots } = require('../pages/robots.txt.tsx');
+const { canonicalPath, isIndexablePath, sitemapPaths } = require('../apps/web/libs/seo/site.ts');
+const { publicDetailProps, publicCatalogProps } = require('../apps/web/libs/seo/server.ts');
+const { publicSitemap } = require('../apps/web/libs/seo/sitemap.ts');
+const { getServerSideProps: robots } = require('../apps/web/pages/robots.txt.tsx');
 const id = '000000000000000000000001';
 const query = gql`query PublicDetail($serviceId:String!){getService(serviceId:$serviceId){_id serviceTitle serviceDesc}}`;
 const calls = [];

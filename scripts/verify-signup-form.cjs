@@ -5,7 +5,7 @@ const Module = require('module');
 const ts = require('typescript');
 const { ApolloError } = require('@apollo/client');
 const { GraphQLError } = require('graphql');
-const filename = path.join(__dirname, '../libs/auth/signupForm.ts');
+const filename = path.join(__dirname, '../apps/web/libs/auth/signupForm.ts');
 const compiled = new Module(filename, module);
 compiled._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
 	compilerOptions: { module: ts.ModuleKind.CommonJS },

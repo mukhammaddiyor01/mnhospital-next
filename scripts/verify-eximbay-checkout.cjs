@@ -5,7 +5,7 @@ const ts = require('typescript');
 Module._extensions['.ts'] = (module, filename) => module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
 	compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
 }).outputText, filename);
-const { getEximbaySdkUrl, requestEximbayCheckout } = require('../libs/payments/eximbay.ts');
+const { getEximbaySdkUrl, requestEximbayCheckout } = require('../apps/web/libs/payments/eximbay.ts');
 
 assert.equal(getEximbaySdkUrl(), 'https://api-test.eximbay.com/v3/javascriptSDK.js');
 assert.equal(getEximbaySdkUrl('https://api-test.eximbay.com/v3/javascriptSDK.js'), 'https://api-test.eximbay.com/v3/javascriptSDK.js');

@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), Module = require('node:module');
 const ts = require('typescript'), React = require('react');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 const filename = process.argv[2] ? path.resolve(process.argv[2]) : path.join(root, 'pages/appointment/index.tsx');
 const service = { _id: 'a'.repeat(24), memberId: 'b'.repeat(24), serviceTitle: 'Test consultation', servicePrice: 45000 };
 const time = '2026-10-14T22:00:00.000Z';

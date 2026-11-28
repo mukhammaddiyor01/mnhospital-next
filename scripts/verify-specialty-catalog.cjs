@@ -4,7 +4,7 @@ const path = require('node:path');
 const Module = require('node:module');
 const ts = require('typescript');
 const { buildSchema } = require('graphql');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 const schema = buildSchema(fs.readFileSync(process.argv[2] || '/tmp/mn-specialty-schema.graphql', 'utf8'));
 Module._extensions['.ts'] = (module, filename) => module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
@@ -16,11 +16,11 @@ Module._load = function(request, parent, isMain) {
  if (request.startsWith('@/')) request = path.join(root, request.slice(2));
  return originalLoad.call(this, request, parent, isMain);
 };
-const { DoctorSpecialty } = require('../libs/components/doctor/enums/doctor.enum.ts');
-const { ServiceType } = require('../libs/components/service/enums/service.enum.ts');
-const catalog = require('../libs/components/workspace/catalogEnums.ts');
-const { useDoctorSpecialtyLabel } = require('../libs/i18n/useDoctorSpecialtyLabel.ts');
-const { useServiceTypeLabel } = require('../libs/i18n/useServiceTypeLabel.ts');
+const { DoctorSpecialty } = require('../apps/web/libs/components/doctor/enums/doctor.enum.ts');
+const { ServiceType } = require('../apps/web/libs/components/service/enums/service.enum.ts');
+const catalog = require('../apps/web/libs/components/workspace/catalogEnums.ts');
+const { useDoctorSpecialtyLabel } = require('../apps/web/libs/i18n/useDoctorSpecialtyLabel.ts');
+const { useServiceTypeLabel } = require('../apps/web/libs/i18n/useServiceTypeLabel.ts');
 for (const [name, values, workspaceValues] of [
  ['DoctorSpecialty', Object.values(DoctorSpecialty), catalog.DoctorSpecialty],
  ['ServiceType', Object.values(ServiceType), catalog.ServiceType],

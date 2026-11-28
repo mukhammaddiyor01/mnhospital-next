@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict'), fs = require('node:fs'), path = require('node:path'), Module = require('node:module'), ts = require('typescript');
-const filename = path.join(__dirname, '../libs/i18n/catalog.ts');
+const filename = path.join(__dirname, '../apps/web/libs/i18n/catalog.ts');
 const mod = new Module(filename, module);
 mod._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,filename);
 const {catalogText, catalogSearchText} = mod.exports;

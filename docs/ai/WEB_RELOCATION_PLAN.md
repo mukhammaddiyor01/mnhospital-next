@@ -2,9 +2,9 @@
 
 ## Status
 
-Prepared on 2026-11-28 for the `mobile` branch. This is a preflight plan only: no web files, packages, Docker paths, or CI paths have moved. The Next.js Pages Router remains at the repository root and Expo remains at `apps/mobile`.
+Completed on 2026-11-28 for the `mobile` branch. The Next.js Pages Router now lives in `apps/web`; Expo remains in `apps/mobile`.
 
-The relocation is deliberately independent from mobile catalog work, authentication, bookings, payments, medical records, and backend changes. It must be one isolated structural change with a complete web validation run.
+The relocation was deliberately independent from mobile catalog work, authentication, bookings, payments, medical records, and backend changes.
 
 ## Observed coupling
 
@@ -35,14 +35,14 @@ Keep these at the repository root:
 
 No mobile component, Expo configuration, native storage, GraphQL private flow, patient data, or backend contract belongs in this relocation.
 
-## Implementation sequence
+## Completed migration
 
-1. Create `apps/web` as a workspace and move the web-owned paths without changing behavior.
-2. Give the web app a package manifest that uses the existing root-resolved dependencies; do not introduce duplicate lockfiles or a second dependency version tree.
-3. Update root scripts to delegate web development, build, start, lint, and TypeScript validation to `@mnhospital/web` while retaining the existing command names for Docker and CI callers.
-4. Update Dockerfile and Compose to install once from the root lockfile, build the web workspace, and copy only the relocated standalone output, static assets, and public assets.
-5. Update verification scripts that explicitly open `pages/`, `scss/`, `apollo/`, or `libs/`. Maintain their assertions unchanged unless a path is the only change.
-6. Update CI paths and run the full web quality job plus the unchanged mobile job. Do not merge this relocation with a user-facing feature or dependency upgrade.
+1. Created `@mnhospital/web` and moved web-owned paths into `apps/web`.
+2. Kept one root `package-lock.json`; web dependency declarations now live in `apps/web/package.json`.
+3. Preserved root command names by delegating them to `@mnhospital/web`.
+4. Updated Docker standalone paths and command for the nested web output.
+5. Updated web verification scripts to read `apps/web` while retaining their behavioral assertions.
+6. Kept the existing separate mobile CI job unchanged apart from the root web typecheck delegation.
 
 ## Required evidence
 
@@ -54,4 +54,4 @@ No mobile component, Expo configuration, native storage, GraphQL private flow, p
 
 ## Exit decision
 
-Begin the relocation only when this plan can be performed as an isolated structural commit and the complete web validation time is available. If that condition is not met, retain the root web app and continue independent mobile/backend gates.
+The code migration is complete. The remaining Docker image/healthcheck validation needs a running local Docker daemon or CI environment; browser, simulator, device, and live API validation remain separate gates.

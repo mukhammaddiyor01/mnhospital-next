@@ -1,6 +1,6 @@
 const assert=require('node:assert/strict'), fs=require('node:fs'), path=require('node:path'), Module=require('node:module'), ts=require('typescript'), React=require('react');
 const {renderToStaticMarkup}=require('react-dom/server');
-const root=path.resolve(__dirname,'..');let response={},language='EN',variables,changes=0,checks=0;
+const root=path.resolve(__dirname,'../apps/web');let response={},language='EN',variables,changes=0,checks=0;
 function check(value,label){assert.ok(value,label);checks++}
 const filename=path.join(root,'libs/components/booking/BookingDatePicker.tsx'), mod=new Module(filename,module);mod.paths=Module._nodeModulePaths(root);
 const stubs={'@apollo/client':{useQuery:(_,options)=>{variables=options.variables;return response}},'next/link':({href,children})=>React.createElement('a',{href},children),'@/apollo/booking/query':{GET_AVAILABLE_DOCTOR_DATES:{}},'@/libs/payments/clinic':{clinicToday:()=> '2026-10-10'},'../preference/PreferenceProvider':{usePreferences:()=>({language})},'../common/Icon':({name})=>React.createElement('i',{'aria-hidden':true},name),'./BookingDatePicker.module.scss':{__esModule:true,default:new Proxy({},{get:(_,key)=>key})}};

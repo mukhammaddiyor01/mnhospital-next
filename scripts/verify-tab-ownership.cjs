@@ -5,7 +5,7 @@ const vm = require('vm');
 const ts = require('typescript');
 
 const code = ts.transpileModule(
-	fs.readFileSync(path.join(__dirname, '../libs/auth/token.ts'), 'utf8'),
+	fs.readFileSync(path.join(__dirname, '../apps/web/libs/auth/token.ts'), 'utf8'),
 	{ compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } },
 ).outputText;
 const channels = new Set();

@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const React = require('react');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 let states = [], index, effects, inquiry, loading = false, data, previousData;
 const doctors = Array.from({length:12}, (_,i)=>({_id:String(i),docFullName:`Doctor ${i}`}));
 const result = {getDoctors:{list:doctors,metaCounter:[{total:16}]}};

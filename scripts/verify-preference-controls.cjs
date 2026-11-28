@@ -8,7 +8,7 @@ for (const [name, setter, pointerValue, keyboardValue] of [
 ]) {
   const calls = [], refs = [];
   const exportsObject = {};
-  const text = fs.readFileSync(path.join(__dirname, '../libs/components/preference', name + '.tsx'), 'utf8');
+  const text = fs.readFileSync(path.join(__dirname, '../apps/web/libs/components/preference', name + '.tsx'), 'utf8');
   const source = ts.transpileModule(text, {compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
   const mockRequire = moduleName => {
     if (moduleName === 'react') return {...React,useRef:value=>{const ref={current:value};refs.push(ref);return ref;}};

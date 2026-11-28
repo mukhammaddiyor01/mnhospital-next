@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), Module = require('node:module');
 const ts = require('typescript'), React = require('react');
 const { webcrypto } = require('node:crypto');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 const filename = path.join(root, 'pages/appointment/index.tsx');
 const draft = { serviceId: 'a'.repeat(24), doctorId: 'b'.repeat(24), date: '2026-10-12', startsAt: '2026-10-12T02:30:00.000Z', patientNote: '' };
 const service = { _id: draft.serviceId, memberId: draft.doctorId, serviceTitle: 'Test consultation', servicePrice: 45000 };

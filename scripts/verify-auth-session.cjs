@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const Module = require('module');
 const ts = require('typescript');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 const resolve = Module._resolveFilename;
 Module._resolveFilename = function (request, ...args) {
 	return resolve.call(

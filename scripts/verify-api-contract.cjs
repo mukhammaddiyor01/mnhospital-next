@@ -15,7 +15,7 @@ function files(directory) {
  if(!response.ok || body.errors) throw new Error('The API schema could not be read');
  const schema = buildClientSchema(body.data);
  let checked=0, failed=0;
- for(const file of files(path.resolve('apollo')).filter(file=>file.endsWith('.ts'))) {
+ for(const file of files(path.resolve('apps/web/apollo')).filter(file=>file.endsWith('.ts'))) {
   const source=fs.readFileSync(file,'utf8');
   if(!/gql\s*`|operation\(/.test(source)) continue;
   for(const [name,document] of Object.entries(require(file))) {

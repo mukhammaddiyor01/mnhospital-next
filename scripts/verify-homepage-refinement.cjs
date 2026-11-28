@@ -5,7 +5,7 @@ const Module = require('node:module');
 const ts = require('typescript');
 const React = require('react');
 const {renderToStaticMarkup} = require('react-dom/server');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 let language = 'EN', response = {}, checks = 0;
 function check(value, label) { assert.ok(value,label); checks++; }
 function load(file, stubs) {

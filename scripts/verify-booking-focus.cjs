@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict'), fs=require('node:fs'),path=require('node:path'),ts=require('typescript'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
 let route='/appointment';
 const exportsObject={};
-const file=path.join(__dirname,'../libs/components/layout/LayoutHome.tsx');
+const file=path.join(__dirname,'../apps/web/libs/components/layout/LayoutHome.tsx');
 const component=tag=>({children,...props})=>React.createElement(tag,props,children);
 function requireMock(name) {
  if(name==='react')return React;

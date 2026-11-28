@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const Module = require('node:module');
 const ts = require('typescript');
-const root = path.resolve(__dirname, '..');
+const root = path.resolve(__dirname, '../apps/web');
 const resolve = Module._resolveFilename;
 Module._resolveFilename = function (request, ...args) {
 	return resolve.call(this, request.startsWith('@/') ? path.join(root, request.slice(2)) : request, ...args);
@@ -13,9 +13,9 @@ Module._extensions['.ts'] = (module, filename) => module._compile(ts.transpileMo
 }).outputText, filename);
 
 const { ApolloClient, ApolloLink, InMemoryCache, Observable, gql } = require('@apollo/client');
-const { refreshFollowViews } = require('../libs/components/follow/refreshFollowViews.ts');
-const { GET_DOCTOR_FOLLOWERS, GET_DOCTOR_FOLLOWINGS, GET_MEMBER_FOLLOWERS } = require('../apollo/follow/query.ts');
-const { SUBSCRIBE_DOCTOR, UNSUBSCRIBE_DOCTOR } = require('../apollo/follow/mutation.ts');
+const { refreshFollowViews } = require('../apps/web/libs/components/follow/refreshFollowViews.ts');
+const { GET_DOCTOR_FOLLOWERS, GET_DOCTOR_FOLLOWINGS, GET_MEMBER_FOLLOWERS } = require('../apps/web/apollo/follow/query.ts');
+const { SUBSCRIBE_DOCTOR, UNSUBSCRIBE_DOCTOR } = require('../apps/web/apollo/follow/mutation.ts');
 const PROFILE = gql`query FollowRegressionProfile($doctorId: String!) { getDoctor(doctorId: $doctorId) { _id docFollowers } }`;
 const doctorId = '000000000000000000000001';
 const memberId = '000000000000000000000002';

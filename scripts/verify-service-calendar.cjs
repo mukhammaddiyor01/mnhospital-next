@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const ts = require('typescript');
 const Module = require('node:module');
 const path = require('node:path');
-const source = path.resolve(__dirname, '../libs/components/workspace/service-calendar.ts');
+const source = path.resolve(__dirname, '../apps/web/libs/components/workspace/service-calendar.ts');
 const fixture = new Module(source, module);
 fixture._compile(ts.transpileModule(fs.readFileSync(source, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, source);
 const { datesInRange } = fixture.exports;

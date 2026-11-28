@@ -1,6 +1,9 @@
 FROM node:22-bookworm-slim AS dependencies
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY apps/mobile/package.json apps/mobile/package.json
+COPY apps/web/package.json apps/web/package.json
+COPY packages/design-tokens/package.json packages/design-tokens/package.json
 RUN npm ci --no-audit --no-fund
 
 FROM dependencies AS build
@@ -24,10 +27,10 @@ RUN npm run build
 FROM node:22-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production PORT=4002 HOSTNAME=0.0.0.0 NEXT_TELEMETRY_DISABLED=1
-COPY --from=build --chown=node:node /app/.next/standalone ./
-COPY --from=build --chown=node:node /app/.next/static ./.next/static
-COPY --from=build --chown=node:node /app/public ./public
+COPY --from=build --chown=node:node /app/apps/web/.next/standalone ./
+COPY --from=build --chown=node:node /app/apps/web/.next/static ./apps/web/.next/static
+COPY --from=build --chown=node:node /app/apps/web/public ./apps/web/public
 USER node
 EXPOSE 4002
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD node -e "fetch('http://127.0.0.1:4002/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-CMD ["node", "server.js"]
+CMD ["node", "apps/web/server.js"]

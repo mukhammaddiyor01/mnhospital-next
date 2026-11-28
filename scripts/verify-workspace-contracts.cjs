@@ -1,12 +1,13 @@
 const fs = require('fs'),
 	path = require('path');
-const root = path.resolve(__dirname, '..');
+const repositoryRoot = path.resolve(__dirname, '..');
+const root = path.join(repositoryRoot, 'apps/web');
 const backend = path.resolve(
-	process.argv[3] || path.join(root, '../mnhospital/node_modules'),
+	process.argv[3] || path.join(repositoryRoot, '../mnhospital/node_modules'),
 );
-const ts = require(root + '/node_modules/typescript');
+const ts = require(repositoryRoot + '/node_modules/typescript');
 const { buildSchema, parse, validate, specifiedRules, NoUnusedFragmentsRule } = require(
-	root + '/node_modules/graphql',
+	repositoryRoot + '/node_modules/graphql',
 );
 const schema = buildSchema(
 	fs.readFileSync(
