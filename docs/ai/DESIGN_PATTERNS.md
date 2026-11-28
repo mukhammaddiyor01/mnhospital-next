@@ -13,3 +13,5 @@ Cross-screen mobile localization uses one narrowly scoped context rather than a 
 Public services keeps reload ownership in `useServicesViewModel.ts`: retry and pull-to-refresh share one guarded reload action. The screen only forwards the native refresh gesture and renders its state; it does not create transport requests itself.
 
 `serviceApi.ts` owns the bounded public-request signal. It forwards caller cancellation into an inner signal, disposes its timer/listener after settlement, and lets the view-model retain its existing generic error mapping. This keeps timeout mechanics out of the screen and leaves the caller's cancellation authority intact.
+
+`serviceModel.ts` owns public-catalog request and response shape bounds: page numbers are positive safe integers and the parsed list cannot exceed its declared page size. The adapter sends only the validated page; the screen never parses untrusted transport data.

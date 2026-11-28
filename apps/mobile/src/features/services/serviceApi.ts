@@ -1,4 +1,9 @@
-import { parseServicePage, SERVICES_PAGE_SIZE, type ServicePage } from './serviceModel';
+import {
+  parseServicePage,
+  parseServicePageNumber,
+  SERVICES_PAGE_SIZE,
+  type ServicePage,
+} from './serviceModel';
 
 const GET_PUBLIC_SERVICES = `
   query GetServices($input: ServicesInquiry!) {
@@ -54,6 +59,7 @@ export function createPublicServiceRequestSignal(
 
 export async function getPublicServices(page: number, signal: AbortSignal): Promise<ServicePage> {
   const apiUrl = publicApiUrl(process.env.EXPO_PUBLIC_API_URL);
+  const validPage = parseServicePageNumber(page);
   const request = createPublicServiceRequestSignal(signal);
 
   try {
@@ -62,7 +68,7 @@ export async function getPublicServices(page: number, signal: AbortSignal): Prom
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         query: GET_PUBLIC_SERVICES,
-        variables: { input: { page, limit: SERVICES_PAGE_SIZE, search: {} } },
+        variables: { input: { page: validPage, limit: SERVICES_PAGE_SIZE, search: {} } },
       }),
       signal: request.signal,
     });

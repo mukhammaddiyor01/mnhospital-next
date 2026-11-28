@@ -20,3 +20,4 @@
 - 2026-11-28: Moved the Next.js Pages Router application to `apps/web`, retained root command compatibility and a single lockfile, and updated CI, Docker paths, and web verification paths.
 - 2026-11-28: Added a CI regression gate for the relocated web standalone build layout and Docker command paths.
 - 2026-11-28: Bounded public mobile catalog requests with cancellation-safe cleanup and added an 8-check timeout regression gate to mobile CI.
+- 2026-11-28: Added pure public-catalog page and response-size validation, with a 10-check mobile CI regression gate for malformed and oversized input.

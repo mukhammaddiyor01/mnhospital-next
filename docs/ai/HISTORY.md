@@ -22,3 +22,4 @@
 - 2026-11-28: Confirmed the relocated standalone server serves its health endpoint with the migration release SHA; Docker image validation remains open.
 - 2026-11-28: Added a build-artifact regression gate for the web workspace's standalone and Docker layout.
 - 2026-11-28: Bounded public mobile catalog requests with cancellation-safe cleanup and a mobile CI regression gate; device/API validation remains open.
+- 2026-11-28: Added bounded public-catalog page/response validation before native rendering; server publication authority and device/API validation remain unchanged.

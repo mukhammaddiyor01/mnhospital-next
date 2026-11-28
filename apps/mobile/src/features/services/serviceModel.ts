@@ -11,6 +11,13 @@ export interface ServicePage {
 
 export const SERVICES_PAGE_SIZE = 10;
 
+export function parseServicePageNumber(page: number): number {
+  if (!Number.isSafeInteger(page) || page < 1) {
+    throw new Error('Invalid service page');
+  }
+  return page;
+}
+
 export function mergeUniqueServices(
   current: PublicService[],
   incoming: PublicService[],
@@ -28,6 +35,9 @@ export function parseServicePage(value: unknown): ServicePage {
   if (!value || typeof value !== 'object') throw new Error('Invalid service response');
   const result = value as { list?: unknown; metaCounter?: unknown };
   if (!Array.isArray(result.list) || !Array.isArray(result.metaCounter)) {
+    throw new Error('Invalid service response');
+  }
+  if (result.list.length > SERVICES_PAGE_SIZE) {
     throw new Error('Invalid service response');
   }
 

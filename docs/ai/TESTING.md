@@ -139,3 +139,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - `MOBILE_SERVICE_TIMEOUT_VERIFIED 8 checks` passed for the 15-second bound, caller cancellation, timeout cancellation, pre-aborted callers, cleanup, and adapter wiring. Existing accessibility (11), localization (51), pagination (8), and refresh (9) gates also passed.
 - Mobile TypeScript typecheck passed. Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These are Metro bundle exports only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
 - No live HTTPS API, simulator, installed build, physical device, or timed-out network request was observed. `simctl` and `adb` remain unavailable, so device validation stays open.
+
+## 2026-11-28 public catalog response bounds
+
+- `MOBILE_SERVICE_RESPONSE_VERIFIED 10 checks` passed for valid and empty pages, malformed container/item/total values, an oversized list, and valid/invalid page numbers. Existing pagination (8), refresh (9), and timeout (8) gates also passed.
+- Mobile TypeScript typecheck passed. Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These are Metro bundle exports only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
+- No live HTTPS API, simulator, installed build, physical device, or malicious endpoint response was observed. Source-level response bounds do not prove a device or production transport check.
