@@ -7,3 +7,7 @@ The public mobile language selector offers `EN`, `한국어`, and `O‘Z`, expos
 ## Mobile theme tokens — 2026-11-28
 
 `packages/design-tokens` exports light and dark palettes mirroring the web SCSS, plus radius and spacing. Mobile follows the system color scheme.
+
+## Mobile catalog UI — 2026-11-28
+
+Shared native pieces live in `apps/mobile/src/ui/`: card, photo with initial fallback, badge, button, list and state views. Navigation is Home, Services, Doctors and Articles tabs with native headers on detail screens. The language selector sits on Home. Rendering on a device is not yet checked.

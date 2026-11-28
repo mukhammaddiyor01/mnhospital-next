@@ -6,9 +6,9 @@ The `mobile` branch is a monorepo: the Next.js Pages Router lives in `apps/web`,
 
 Work follows the ordered [mobile delivery roadmap](docs/ai/ROADMAP.md), with [privacy boundaries](docs/ai/PRIVACY.md) and validation recorded separately.
 
-Use Node 22.13 or newer, then run `npm ci`, `npm run mobile:typecheck`, and `npm run mobile:start` from the root. The mobile app has a welcome screen and a read-only public services screen. Device, login, booking, and payment flows require separate verification.
+Use Node 22.13 or newer, then run `npm ci`, `npm run mobile:typecheck`, and `npm run mobile:start` from the root. The mobile app has Home, Services, Doctors and Articles tabs with detail screens over the anonymous catalog, in EN/KR/UZ with light and dark themes. Device checks of these screens, login, booking, and payment flows remain open.
 
-To load the public services screen on a device, copy `apps/mobile/.env.example` to `apps/mobile/.env.local`, set `EXPO_PUBLIC_API_URL` to the reachable HTTPS GraphQL endpoint, and restart Expo. Only the API URL belongs in this public variable. The services screen is read-only and shows the server's current catalog.
+To load the catalog on a device, copy `apps/mobile/.env.example` to `apps/mobile/.env.local` and restart Expo. `EXPO_PUBLIC_API_URL` is the reachable HTTPS GraphQL endpoint and `EXPO_PUBLIC_ASSET_URL` is the public prefix for uploaded images. Only public URLs belong in these variables.
 
 MN Hospital web frontend is built with Next.js Pages Router and TypeScript in `apps/web`.
 

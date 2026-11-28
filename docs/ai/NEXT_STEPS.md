@@ -1,5 +1,7 @@
 # Next steps
 
+Next: create `apps/mobile/.env` from `.env.example`, run `npm run mobile:start`, and check the new tabs, detail screens, images, dark mode and the website booking button on a device. This supersedes the older welcome/services-only wording below.
+
 Follow the ordered gates in `ROADMAP.md`. Public mobile transport hardening is implemented; an Android Expo Go smoke check passed, while the broader device validation gate remains open. Backend native session release work can progress without treating that gate as passed.
 
 Use `SKILLS.md` and the nearest `AGENTS.md` for the next feature. The mobile welcome screen still needs device/simulator validation; the native session contract remains the gate before login. The web move to `apps/web` remains a separate migration.

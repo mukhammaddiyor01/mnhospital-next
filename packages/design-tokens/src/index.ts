@@ -15,11 +15,3 @@ export type Palette = Record<keyof typeof palettes.light, string>;
 export const radius = { control: 10, card: 16 } as const;
 
 export const spacing = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 } as const;
-
-export const colors = {
-  canvas: '#f3f6fa',
-  primary: '#1769b2',
-  text: '#23394b',
-  muted: '#617489',
-} as const;
-

@@ -1,10 +1,18 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { translate, type MobileCopyKey, type MobileLanguage } from './localizationModel';
+import {
+  enumLabel,
+  languageOptions,
+  translate,
+  type MobileCopyKey,
+  type MobileLanguage,
+} from './localizationModel';
 
 interface MobileLocalizationValue {
   language: MobileLanguage;
   setLanguage: (language: MobileLanguage) => void;
   t: (key: MobileCopyKey) => string;
+  label: (value: string | null) => string | null;
+  locale: string;
 }
 
 const MobileLocalizationContext = createContext<MobileLocalizationValue | null>(null);
@@ -15,6 +23,8 @@ export function MobileLocalizationProvider({ children }: { children: ReactNode }
     language,
     setLanguage,
     t: (key: MobileCopyKey) => translate(language, key),
+    label: (value: string | null) => enumLabel(language, value),
+    locale: languageOptions.find(({ code }) => code === language)!.locale,
   }), [language]);
 
   return (

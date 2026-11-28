@@ -26,3 +26,4 @@
 - 2026-11-28: Added a mocked adapter integration gate for the anonymous public catalog and fixed generic handling for malformed JSON; live device/API validation remains open.
 - 2026-11-28: Observed the welcome and generic public-catalog configuration state on an Android 13 Samsung SM-A516N through Expo Go; no live catalog or private flow was exercised.
 - 2026-11-28: Confirmed Android route navigation and Korean localization state across the public configuration error/retry path without contacting an API.
+- 2026-11-28: Rebuilt the mobile public experience around the backend catalog (services, doctors, articles) and replaced the service-only data layer and harnesses.

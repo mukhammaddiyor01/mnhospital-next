@@ -1,10 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors, spacing } from '@mnhospital/design-tokens';
+import { radius, spacing } from '@mnhospital/design-tokens';
+import { useTheme } from '../../ui/theme';
 import { languageOptions } from './localizationModel';
 import { useMobileLocalization } from './MobileLocalizationProvider';
 
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useMobileLocalization();
+  const theme = useTheme();
 
   return (
     <View accessibilityLabel={t('language.label')} style={styles.container}>
@@ -17,9 +19,9 @@ export function LanguageSwitcher() {
             accessibilityState={{ selected }}
             key={option.code}
             onPress={() => setLanguage(option.code)}
-            style={[styles.option, selected && styles.selectedOption]}
+            style={[styles.option, { borderColor: theme.primary }, selected && { backgroundColor: theme.primary }]}
           >
-            <Text style={[styles.label, selected && styles.selectedLabel]}>{option.label}</Text>
+            <Text style={[styles.label, { color: selected ? theme.onPrimary : theme.primary }]}>{option.label}</Text>
           </Pressable>
         );
       })}
@@ -31,15 +33,12 @@ const styles = StyleSheet.create({
   container: { flexDirection: 'row', gap: spacing.sm },
   option: {
     alignItems: 'center',
-    borderColor: colors.primary,
-    borderRadius: 10,
+    borderRadius: radius.control,
     borderWidth: 1,
     justifyContent: 'center',
     minHeight: 44,
     minWidth: 52,
     paddingHorizontal: spacing.sm,
   },
-  selectedOption: { backgroundColor: colors.primary },
-  label: { color: colors.primary, fontSize: 14, fontWeight: '700' },
-  selectedLabel: { color: '#fff' },
+  label: { fontSize: 14, fontWeight: '700' },
 });
