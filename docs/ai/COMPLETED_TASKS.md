@@ -21,3 +21,4 @@
 - 2026-11-28: Added a CI regression gate for the relocated web standalone build layout and Docker command paths.
 - 2026-11-28: Bounded public mobile catalog requests with cancellation-safe cleanup and added an 8-check timeout regression gate to mobile CI.
 - 2026-11-28: Added pure public-catalog page and response-size validation, with a 10-check mobile CI regression gate for malformed and oversized input.
+- 2026-11-28: Added a 10-check mocked public-catalog adapter integration gate for minimal request fields and generic HTTP, GraphQL, malformed JSON, and malformed response handling.

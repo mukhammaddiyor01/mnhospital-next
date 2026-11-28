@@ -41,6 +41,7 @@ jobs:
       - run: npm run test:mobile:a11y
       - run: npm run test:mobile:localization
       - run: npm run test:mobile:services
+      - run: npm run test:mobile:services:api
       - run: npm run test:mobile:services:refresh
       - run: npm run test:mobile:services:response
       - run: npm run test:mobile:services:timeout

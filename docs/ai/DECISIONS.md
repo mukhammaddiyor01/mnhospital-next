@@ -18,3 +18,4 @@
 - 2026-11-28: Add a build-artifact regression gate for the relocated web standalone layout. It verifies workspace delegation and expected Docker/server paths, but does not claim Docker image execution.
 - 2026-11-28: Bound the anonymous public-catalog request in its adapter at 15 seconds. Use a portable `AbortController` timer rather than newer signal helpers, preserve caller cancellation, and keep timeout presentation as the existing generic unavailable state.
 - 2026-11-28: Validate public catalog page input and response size in the pure model. Keep the page limit at the verified backend request limit of ten, reject malformed/oversized data before rendering, and retain the server as publication authority.
+- 2026-11-28: Add a mocked adapter-plus-model regression harness for the anonymous public catalog. It validates request minimization and fixed error mapping without a live endpoint, and remains separate from the required device/API gate.

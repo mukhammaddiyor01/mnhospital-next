@@ -25,6 +25,8 @@ Public catalog requests are also bounded to 15 seconds and settle into a generic
 
 The anonymous catalog parser rejects invalid page inputs and lists larger than its fixed ten-row contract. This limits malformed public responses before UI rendering; it does not replace backend publication or authorization controls.
 
+The adapter replaces malformed JSON and GraphQL/HTTP failure details with fixed generic errors before the view-model handles them. It selects only anonymous catalog fields and sends no credential, role, patient, or staff identifier.
+
 ## Mobile supply-chain hardening — 2026-11-28
 
 Expo 58.1.0 currently brings `@expo/fingerprint` 0.22.0, whose declared `minimatch` range still accepts the vulnerable 10.2.6 release from GHSA-g3hv-75wg-m249. The root npm override pins `minimatch` 11.0.1, the patched release. Keep this override exact and remove it only after Expo's compatible dependency range resolves to a patched version and the same fingerprint, build, export, and audit gates pass.

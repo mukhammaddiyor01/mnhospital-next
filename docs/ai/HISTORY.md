@@ -23,3 +23,4 @@
 - 2026-11-28: Added a build-artifact regression gate for the web workspace's standalone and Docker layout.
 - 2026-11-28: Bounded public mobile catalog requests with cancellation-safe cleanup and a mobile CI regression gate; device/API validation remains open.
 - 2026-11-28: Added bounded public-catalog page/response validation before native rendering; server publication authority and device/API validation remain unchanged.
+- 2026-11-28: Added a mocked adapter integration gate for the anonymous public catalog and fixed generic handling for malformed JSON; live device/API validation remains open.

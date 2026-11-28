@@ -12,4 +12,6 @@ Each public catalog request has a bounded client wait. A caller cancellation rem
 
 The catalog asks only for a positive safe page number and a fixed page size of ten. A response containing more rows than that contract limit is invalid rather than rendered. This bounds an anonymous response's impact on the native list without treating client validation as server authorization.
 
+The public adapter requests only the catalog fields used by the view and maps HTTP, GraphQL, malformed-shape, and malformed-JSON failures to generic error categories. It never forwards server error detail into the view; the view-model decides the localized unavailable state.
+
 Changing the mobile display language translates only client-owned navigation, status, accessibility, and error copy. Service titles and descriptions remain server-owned and are rendered as returned; the client must not invent translations that could change medical meaning. Language selection does not change identity, role, authorization, catalog visibility, booking rules, or request data.

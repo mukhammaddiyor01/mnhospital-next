@@ -74,7 +74,12 @@ export async function getPublicServices(page: number, signal: AbortSignal): Prom
     });
     if (!response.ok) throw new Error('Service request failed');
 
-    const body: unknown = await response.json();
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch {
+      throw new Error('Invalid service response');
+    }
     if (!body || typeof body !== 'object') throw new Error('Invalid service response');
     const result = body as { data?: { getServices?: unknown }; errors?: unknown };
     if (result.errors || !result.data) throw new Error('Service request failed');

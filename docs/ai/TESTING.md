@@ -145,3 +145,9 @@ Record distinct evidence for web build, mobile typecheck, Metro start, simulator
 - `MOBILE_SERVICE_RESPONSE_VERIFIED 10 checks` passed for valid and empty pages, malformed container/item/total values, an oversized list, and valid/invalid page numbers. Existing pagination (8), refresh (9), and timeout (8) gates also passed.
 - Mobile TypeScript typecheck passed. Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These are Metro bundle exports only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
 - No live HTTPS API, simulator, installed build, physical device, or malicious endpoint response was observed. Source-level response bounds do not prove a device or production transport check.
+
+## 2026-11-28 public catalog adapter integration
+
+- `MOBILE_SERVICE_API_VERIFIED 10 checks` passed with the real public-service adapter and model compiled together against a mocked anonymous transport. It verified selected fields, the HTTPS target, no credentials in request headers, page/limit data, and fixed generic handling for HTTP, GraphQL, malformed JSON, and malformed response cases.
+- Existing response-bounds (10), timeout (8), pagination (8), and refresh (9) gates plus mobile TypeScript typecheck passed. Offline Android export passed with 1134 modules and iOS export passed with 1140 modules. These are Metro bundle exports only; the local Node 20.10.0 runtime emitted Expo's Node >=22.13.0 warning, so CI remains the supported-runtime authority.
+- The mock is not a live API, TLS, simulator, installed build, or physical-device test. No patient, staff, credential, or real server error data was used.

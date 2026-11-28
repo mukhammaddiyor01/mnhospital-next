@@ -15,3 +15,5 @@ Public services keeps reload ownership in `useServicesViewModel.ts`: retry and p
 `serviceApi.ts` owns the bounded public-request signal. It forwards caller cancellation into an inner signal, disposes its timer/listener after settlement, and lets the view-model retain its existing generic error mapping. This keeps timeout mechanics out of the screen and leaves the caller's cancellation authority intact.
 
 `serviceModel.ts` owns public-catalog request and response shape bounds: page numbers are positive safe integers and the parsed list cannot exceed its declared page size. The adapter sends only the validated page; the screen never parses untrusted transport data.
+
+The public catalog's adapter integration harness compiles the real model and adapter together with a mocked anonymous transport. It proves the selected fields, request boundary, generic failure mapping, and cleanup behavior without calling a live endpoint or using patient data.
