@@ -12,6 +12,7 @@
 		"test:mobile:a11y": "node scripts/verify-mobile-accessibility.cjs",
 		"test:mobile:localization": "node scripts/verify-mobile-localization.cjs",
 		"test:mobile:services": "node scripts/verify-mobile-service-pagination.cjs",
+		"test:mobile:catalog": "node scripts/verify-mobile-catalog.cjs",
 		"test:mobile:services:api": "node scripts/verify-mobile-service-api.cjs",
 		"test:mobile:services:refresh": "node scripts/verify-mobile-service-refresh.cjs",
 		"test:mobile:services:response": "node scripts/verify-mobile-service-response.cjs",

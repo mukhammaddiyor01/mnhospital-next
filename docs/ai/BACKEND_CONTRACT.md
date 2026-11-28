@@ -25,3 +25,14 @@ The patient-first route, payload, ownership rules, and remaining exit tests are 
 The existing web `GetServices` operation calls `getServices(input: ServicesInquiry!)`. Backend resolver uses `WithoutGuard`; the service forces `serviceStatus: ACTIVE` even if search includes another status. The mobile request sends `{ page, limit: 10, search: {} }` and selects only `_id`, `serviceTitle`, `serviceDesc`, and `metaCounter.total`. It uses no actor or patient ID, credential, mutation, price, or booking calculation. The API URL is the public `EXPO_PUBLIC_API_URL`. Empty, malformed, HTTP, and GraphQL failure states are handled without displaying raw server errors. Source: backend service resolver/service/DTO and existing web service query, all reviewed at the current commits. No running API response was observed in this change.
 
 Mobile requires this public URL to use HTTPS without embedded credentials, query parameters, or fragments. Development against a local HTTP API needs an explicitly configured HTTPS proxy or a separate reviewed development-only exception; production does not silently downgrade transport.
+
+## Public catalog — 2026-11-28
+
+Mobile calls six anonymous operations at `https://mnhospital.uz/graphql`: `getServices`/`getService`, `getDoctors`/`getDoctor`, `getArticles`/`getArticle`. Lists send `{ page, limit: 10, search: {} }`. Resolvers use `WithoutGuard`; the server filters ACTIVE services, public doctors and PUBLISHED articles, and records no view without a member. Selected fields are in `apps/mobile/src/features/catalog/catalogApi.ts`. Uploaded images are served under `https://mnhospital.uz/backend/uploads/...`, so mobile needs `EXPO_PUBLIC_ASSET_URL=https://mnhospital.uz/backend`. This supersedes the narrower field selection in the 2026-11-26 section.
+
+| Operations | Arguments | Role / owner source | Server-owned decisions | Error cases |
+| --- | --- | --- | --- | --- |
+| `getServices`, `getDoctors`, `getArticles` | `input`: `page`, `limit`, `search` | None; anonymous | Publication/status filter, order, total | Invalid input returns `BAD_REQUEST` in `errors` |
+| `getService`, `getDoctor`, `getArticle` | `serviceId`, `doctorId`, `articleId` | None; anonymous | Whether the record is publicly visible | A missing or hidden record returns `INTERNAL_SERVER_ERROR` "No data is found!" |
+
+On 2026-11-28 a live `getService` with an unknown ID and a `getServices` with `page: 0` both returned HTTP 200 with an `errors` array. Mobile maps every error to one generic unavailable state, so a deleted record is not distinguished from an outage.

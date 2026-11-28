@@ -15,3 +15,5 @@ The catalog asks only for a positive safe page number and a fixed page size of t
 The public adapter requests only the catalog fields used by the view and maps HTTP, GraphQL, malformed-shape, and malformed-JSON failures to generic error categories. It never forwards server error detail into the view; the view-model decides the localized unavailable state.
 
 Changing the mobile display language translates only client-owned navigation, status, accessibility, and error copy. Service titles and descriptions remain server-owned and are rendered as returned; the client must not invent translations that could change medical meaning. Language selection does not change identity, role, authorization, catalog visibility, booking rules, or request data.
+
+Mobile catalog (2026-11-28): guests may browse services, doctors and articles. Price and discount are shown as returned; mobile computes no payable amount, availability or booking. The booking button only opens the service page on the website. Detail routes accept only a 24-character hex ID.
